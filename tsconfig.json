@@ -73,6 +73,6 @@
     "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "data/seeds/00-clean.js"
   ]
 }
