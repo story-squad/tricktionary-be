@@ -2,7 +2,7 @@ type Result<T> = { ok: true; value: T } | { ok: true; value: null } | {ok: false
 
 interface ExpectedVote {
   user_id: string;
-  definition_id: string | null;
+  definition_id: number | null;
   round_id: number;
 }
 
@@ -20,7 +20,7 @@ export function validateVote(voteObj: any): Result<ExpectedVote> {
     }
   }
   // usable
-  if (typeof voteObj.definition_id !== "string") {
+  if (typeof voteObj.definition_id !== "number") {
     return {
       ok: true,
       value: {...voteObj, definition_id: null} // nullified
