@@ -1,5 +1,5 @@
 import db from "../../dbConfig";
-
-export function add(user_id: string, round_id: number) {
-  return db("User-Rounds").insert({ user_id, round_id });
+// variable name must be in lowerCamelCase, PascalCase or UPPER_CASE
+export function add(userID: string, roundID: number) {
+  return db("User-Rounds").insert({ user_id:userID, round_id:roundID });
 }
