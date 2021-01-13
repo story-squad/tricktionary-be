@@ -13,6 +13,18 @@ TypeScript Express API
 
 #
 
+**Install**
+
+
+    git clone https://github.com/ss-mvp/tricktionary-be
+
+    cd tricktionary
+
+    npm install
+
+
+#
+
 **Commands**
 
     npm run start
