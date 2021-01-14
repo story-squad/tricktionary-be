@@ -20,8 +20,12 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) =>
+  res.status(200).json({ app: "running", timestamp: Date.now() })
+);
+app.get("/api", (req, res) =>
   res.status(200).json({ api: "𝜋", timestamp: Date.now() })
 );
+
 app.use("/api/words", wordRoutes);
 app.use("/api/definition-reactions", definitionReactionRoutes);
 app.use("/api/reactions", reactionRoutes);
