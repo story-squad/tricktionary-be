@@ -1,7 +1,7 @@
 import db from "../../dbConfig";
 import { validateDefinition } from "./utils";
 
-export function add(userID: string, definition: string | null, roundID: number) {
+function add(userID: string, definition: string | null, roundID: number) {
   // validate object.property types
   const newDefinition = validateDefinition({
     user_id: userID,
@@ -10,5 +10,7 @@ export function add(userID: string, definition: string | null, roundID: number) 
   });
   return newDefinition.ok
     ? db("Definitions").insert(newDefinition.value).returning("id")
-    : newDefinition.message;
+    : [ -1, newDefinition.message ];
 }
+
+export default {add}
