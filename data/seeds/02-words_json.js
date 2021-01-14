@@ -1,5 +1,4 @@
-const wordlist = require("../resources/big_chonk_list.json");
-
+const wordlist = require("../resources/words.json");
 const INSERT_MAX = 1;
 
 const words = wordlist.map((pair) => {
@@ -31,6 +30,6 @@ exports.seed = async function (knex) {
       errors += 1;
     }
   }
-  console.log({ chunk_size: INSERT_MAX, errors, inserts });
+  console.log({ seed: "words.json", errors, inserts });
   return true;
 };
