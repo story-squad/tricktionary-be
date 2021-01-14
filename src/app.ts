@@ -3,6 +3,7 @@ import * as bodyParser from "body-parser";
 import helmet from "helmet";
 import cors from "cors";
 import wordRoutes from "./api/words/routes";
+import reactionRoutes from "./api/reactions/routes";
 import definitionReactionRoutes from "./api/definitionReactions/routes";
 
 const app = express();
@@ -23,4 +24,5 @@ app.get("/", (req, res) =>
 );
 app.use("/api/words", wordRoutes);
 app.use("/api/definition-reactions", definitionReactionRoutes);
+app.use("/api/reactions", reactionRoutes);
 export { app };
