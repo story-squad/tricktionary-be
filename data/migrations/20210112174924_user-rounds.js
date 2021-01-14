@@ -9,6 +9,13 @@ exports.up = function (knex) {
       .references("Rounds.id")
       .onDelete("CASCADE")
       .onUpdate("CASCADE");
+    tbl
+      .integer("reaction_id")
+      .unsigned()
+      .notNullable()
+      .references("Reactions.id")
+      .onDelete("CASCADE")
+      .onUpdate("CASCADE");
   });
 };
 
