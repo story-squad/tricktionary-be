@@ -1,13 +1,17 @@
 import db from "../../dbConfig";
 
-export function add(content: string) {
+export default { add, getAll, getById };
+
+function add(content: string) {
   return db("Reactions").insert({ content }).returning("id");
 }
 
-export function getAll() {
-  return db("Reactions")
+function getAll() {
+  return db("Reactions").select("id", "content").then(records => {
+    return records
+  });
 }
 
-export function getById(id: number) {
+function getById(id: number) {
   return db("Reactions").where({ id }).first();
 }
