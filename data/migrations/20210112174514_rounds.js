@@ -11,6 +11,7 @@ exports.up = function (knex) {
     tbl.integer("number_players").notNullable();
     tbl.timestamp("created_at").defaultTo(knex.fn.now());
     tbl.timestamp("ended_at").defaultTo(null);
+    tbl.string("spoilers") // word's we wont include this round. Maybe a stringified Array will fit this use case.
   });
 };
 
