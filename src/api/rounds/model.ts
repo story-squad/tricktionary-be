@@ -1,7 +1,7 @@
 import db from "../../dbConfig";
 import { validateRound } from "./utils";
 
-export function add(gameState: any, wordId: number) {
+function add(gameState: any, wordId: number) {
   const newRound = validateRound({
     word_id: wordId,
     number_players: gameState.players.length
@@ -11,6 +11,9 @@ export function add(gameState: any, wordId: number) {
     : newRound.message;
 }
 
-export function roundFinished(roundId: number) {
+function roundFinished(roundId: number) {
+  // timestamp when this round finished.
   return db("Rounds").where({ id: roundId }).update({ ended_at: db.fn.now() });
 }
+
+export default { add, roundFinished };
