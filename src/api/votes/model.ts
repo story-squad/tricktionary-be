@@ -12,3 +12,5 @@ export function add(userID: string, definitionID: any, roundID: number) {
   }
   return db("Votes").insert(result.value);
 }
+
+export default { add };
