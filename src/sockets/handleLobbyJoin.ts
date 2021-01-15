@@ -14,7 +14,7 @@ function handleLobbyJoin(
   socket.join(lobbyCode);
 
   if (lobbies[lobbyCode] && lobbies[lobbyCode].players) {
-    lobbyCode[lobbyCode] = {
+    lobbies[lobbyCode] = {
       ...lobbies[lobbyCode],
       player: [
         ...lobbies[lobbyCode].players,
