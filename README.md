@@ -30,3 +30,11 @@ TypeScript Express API
     npm run start
 
 Clean, lint, transpile, and start the server.
+
+#
+
+**Environment**
+
+    PORT=5000
+    DATABASE_URL=postgresql://user:pass@localhost:5432/
+
