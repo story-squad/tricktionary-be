@@ -8,7 +8,9 @@ import cors from "cors";
 import wordRoutes from "./api/words/routes";
 import reactionRoutes from "./api/reactions/routes";
 import definitionReactionRoutes from "./api/definitionReactions/routes";
-import voteRoutes from "./api/votes/router";
+import voteRoutes from "./api/votes/routes";
+import roundRoutes from "./api/rounds/routes";
+import userRoundRoutes from "./api/userRounds/routes";
 const api = express();
 const JSON_SIZE_LIMIT = "5mb";
 const lobbies = {};
@@ -35,6 +37,8 @@ api.use("/api/words", wordRoutes);
 api.use("/api/definition-reactions", definitionReactionRoutes);
 api.use("/api/reactions", reactionRoutes);
 api.use("/api/votes", voteRoutes);
+api.use("/api/round", roundRoutes);
+api.use("/api/user-rounds", userRoundRoutes);
 // web sockets
 const socketApp = createServer(api);
 const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
@@ -58,17 +62,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join lobby", (username:string, lobbyCode:string) => {
-    console.log('todo')
     gameSocketHandler.handleLobbyJoin(io, socket, username, lobbyCode, lobbies);
   });
 
   socket.on("start game", (lobbyCode:string) => {
-    console.log('todo')
     gameSocketHandler.handleStartGame(io, socket, lobbyCode, lobbies);
   });
 
   socket.on("definition submitted", (definition:string, lobbyCode:string) => {
-    console.log('todo')
     gameSocketHandler.handleSubmitDefinition(
       io,
       socket,
@@ -79,12 +80,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("guess", (lobbyCode:string, guess:any) => {
-    console.log('todo')
     gameSocketHandler.handleGuess(io, socket, lobbyCode, guess, lobbies);
   });
 
   socket.on("play again", (lobbyCode:string) => {
-    console.log('todo')
     gameSocketHandler.handlePlayAgain(io, socket, lobbyCode, lobbies);
   });
 
