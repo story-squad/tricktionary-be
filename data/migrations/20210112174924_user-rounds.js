@@ -12,7 +12,6 @@ exports.up = function (knex) {
     tbl
       .integer("reaction_id")
       .unsigned()
-      .notNullable()
       .references("Reactions.id")
       .onDelete("CASCADE")
       .onUpdate("CASCADE");
