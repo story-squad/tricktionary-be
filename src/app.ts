@@ -9,35 +9,35 @@ import wordRoutes from "./api/words/routes";
 import reactionRoutes from "./api/reactions/routes";
 import definitionReactionRoutes from "./api/definitionReactions/routes";
 import voteRoutes from "./api/votes/router";
-const app = express();
+const api = express();
 const JSON_SIZE_LIMIT = "5mb";
 const lobbies = {};
 
-app.use(
+api.use(
   bodyParser.json({
     limit: JSON_SIZE_LIMIT
   })
 );
 
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
+api.use(helmet());
+api.use(cors());
+api.use(express.json());
 
 // CRUD routes
-app.get("/", (req, res) =>
-  res.status(200).json({ app: "running", timestamp: Date.now() })
+api.get("/", (req, res) =>
+  res.status(200).json({ api: "running", timestamp: Date.now() })
 );
-app.get("/api", (req, res) =>
+api.get("/api", (req, res) =>
   res.status(200).json({ api: "𝜋", timestamp: Date.now() })
 );
 
-app.use("/api/words", wordRoutes);
-app.use("/api/definition-reactions", definitionReactionRoutes);
-app.use("/api/reactions", reactionRoutes);
-app.use("/api/votes", voteRoutes);
+api.use("/api/words", wordRoutes);
+api.use("/api/definition-reactions", definitionReactionRoutes);
+api.use("/api/reactions", reactionRoutes);
+api.use("/api/votes", voteRoutes);
 // web sockets
-const wsApp = createServer(app);
-const io = new socketIO.Server(wsApp, { cors: { origin: "*" } });
+const socketApp = createServer(api);
+const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
   console.log("New client connected", socket.id);
@@ -90,4 +90,4 @@ io.on("connection", (socket) => {
 
 })
 
-export { app };
+export { socketApp };
