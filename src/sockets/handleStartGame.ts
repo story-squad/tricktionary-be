@@ -6,7 +6,7 @@ async function handleStartGame(
   lobbyCode: any,
   lobbies: any
 ) {
-  const phase: string = "WRTITING";
+  const phase: string = "WRITING";
   // get random word
   let word: any;
   let output: any;
