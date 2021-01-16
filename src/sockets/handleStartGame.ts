@@ -31,7 +31,7 @@ async function handleStartGame(
     });
     roundId = newRound.data?.roundId;
   } catch (err) {
-    console.log('error!')
+    console.log('error trying to start new round!')
     // console.log(err);
   }
   console.log("ROUND ID:", roundId)
@@ -56,12 +56,10 @@ async function handleStartGame(
     // console.log(err);
   }
   if (result?.status === 201) {
-    // console.log("game update...");
     // pub-sub update
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
   } else {
     console.log("error updating game");
-    // console.log(result);
   }
 }
 

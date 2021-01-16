@@ -4,10 +4,16 @@ import Votes from "./model";
 const router = Router();
 
 router.post("/", async (req, res) => {
-  const {userID, definitionID, roundID} = req.body;
-  const result = await Votes.add(userID, definitionID, roundID)
-  // do some typechecking here.
-  res.status(200).json({ ok: true });
+  const vote = req.body;
+  const userID:string = vote?.userID;
+  const definitionID:any = vote?.definitionID;
+  const roundID:number = vote?.roundID;
+  try {
+    const result = await Votes.add(userID, definitionID, roundID)
+    res.status(200).json({ ok: true, voteID: result });
+  } catch (err) {
+    res.status(200).json({ ok: false, error: err });
+  }
 });
 
 export default router;
