@@ -20,6 +20,6 @@ function handleLobbyCreate(
     roundId: null
   };
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
-  console.log(lobbies[lobbyCode]);
+  // console.log(lobbies[lobbyCode]);
 }
 export default handleLobbyCreate;
