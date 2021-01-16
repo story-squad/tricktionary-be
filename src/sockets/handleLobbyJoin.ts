@@ -16,7 +16,7 @@ function handleLobbyJoin(
   if (lobbies[lobbyCode] && lobbies[lobbyCode].players) {
     lobbies[lobbyCode] = {
       ...lobbies[lobbyCode],
-      player: [
+      players: [
         ...lobbies[lobbyCode].players,
         { id: socket.id, username, definition: "", points: 0 }
       ]
