@@ -1,4 +1,4 @@
-import axios from "axios";
+import { localAxios } from "./common";
 
 async function handleSubmitDefinition(
   io: any,
@@ -7,15 +7,23 @@ async function handleSubmitDefinition(
   lobbyCode: any,
   lobbies: any
 ) {
-  const newPlayer = lobbyCode[lobbyCode].players.find((player:any) => player.id === socket.id);
+  const newPlayer = lobbies[lobbyCode].players.find((player:any) => player.id === socket.id);
   let numSubmitted:number = 0;
   // add new definition.
-  const newDef:any = await axios.post("api/definitions/new",  { playerId: newPlayer.id, definition, roundId: lobbies[lobbyCode].roundId });
+  let newDef:any;
+  try {
+    console.log(newPlayer)
+    newDef = await localAxios.post("/api/definitions/new",  { playerId: newPlayer.id, definition, roundId: lobbies[lobbyCode].roundId });
+  } catch(err){
+
+    console.log("errror! handleSubmitDefinitions:17")
+  }
   // then ...
+  console.log(newDef.data)
   const definitionId = newDef?.data?.definitionId;
 
   // update & count number of player submissions
-  lobbyCode[lobbyCode].players = lobbyCode[lobbyCode].players.map((player:any) =>{
+  lobbies[lobbyCode].players = lobbies[lobbyCode].players.map((player:any) =>{
     if (player.definition) {
       numSubmitted++;
     }
@@ -26,7 +34,7 @@ async function handleSubmitDefinition(
     // data should contain an error message
     console.log(newDef);
   }
-  if (numSubmitted === lobbyCode[lobbyCode].players.length - 1) {
+  if (numSubmitted === lobbies[lobbyCode].players.length - 1) {
     lobbies[lobbyCode] = {
       ...lobbies[lobbyCode],
       phase: "GUESSING",
