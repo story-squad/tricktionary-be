@@ -2,7 +2,7 @@ import { socketApp } from "./app";
 import { AddressInfo } from "net";
 import * as dotenv from "dotenv";
 
-dotenv.config({ path: `${__dirname}/../.env` });
+dotenv.config();
 
 const PORT: any = process.env.PORT;
 const portNumber: number = Number(PORT || 8000);
