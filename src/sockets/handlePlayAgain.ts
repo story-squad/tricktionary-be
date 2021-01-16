@@ -16,7 +16,7 @@ function handlePlayAgain(io: any, socket: any, lobbyCode: any, lobbies: any) {
 
   io.to(lobbyCode).emit("play again", lobbies[lobbyCode]);
 
-  console.log(lobbies[lobbyCode]);
+  // console.log(lobbies[lobbyCode]);
 }
 
 export default handlePlayAgain
