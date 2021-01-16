@@ -8,8 +8,7 @@ TypeScript Express API
 **Requirements**
 
 - NodeJS
-- PostGreSQL
-- Socket.io account for websocket routing.
+- a PostGreSQL server
 
 #
 
@@ -21,7 +20,6 @@ TypeScript Express API
     cd tricktionary
 
     npm install
-
 
 #
 
@@ -37,4 +35,4 @@ Clean, lint, transpile, and start the server.
 
     PORT=5000
     DATABASE_URL=postgresql://user:pass@localhost:5432/
-
+    BASE_URL=http://0.0.0.0
