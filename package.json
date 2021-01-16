@@ -8,7 +8,6 @@
   "description": "",
   "main": "build/src/index.js",
   "scripts": {
-    "prebuild": "rm -rf build/* && tslint -c tslint.json -p tsconfig.json --fix",
     "build": "mkdir -p build && tsc && cp package.json build/package.json && cp knexfile.js build/knexfile.js",
     "prestart": "npm run build",
     "start": "ts-node .",
