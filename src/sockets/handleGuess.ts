@@ -1,6 +1,6 @@
 // const Rounds = require("../rounds/roundsModel");
 // const Votes = require("../votes/votesModel");
-import axios from "axios";
+import { localAxios } from "./common";
 
 // module.exports = handleGuess;
 
@@ -13,7 +13,7 @@ async function handleGuess(
 ) {
   if (guess === "0") {
     // add vote
-    const result: any = await axios.post("api/votes", {
+    const result: any = await localAxios.post("/api/votes", {
       userID: socket.id,
       definitionID: 0,
       roundID: lobbies[lobbyCode].roundId
@@ -27,7 +27,7 @@ async function handleGuess(
       (player: any) => player.id === guess
     );
     // add vote
-    const result: any = await axios.post("api/votes", {
+    const result: any = await localAxios.post("/api/votes", {
       userID: playerWhoVoted.id,
       definitionID: playerWhoWasVotedFor.definitionId,
       roundID: lobbies[lobbyCode].roundId
@@ -43,7 +43,7 @@ async function handleGuess(
   if (lobbies[lobbyCode].players.length <= lobbies[lobbyCode].guesses.length) {
     const roundId = lobbies[lobbyCode].roundId;
     // RESTful update
-    const newRound: any = await axios.post("api/rounds/finish", { roundId });
+    const newRound: any = await localAxios.post("/api/rounds/finish", { roundId });
     if (newRound.status === 200) {
       console.log("round ended");
     }
