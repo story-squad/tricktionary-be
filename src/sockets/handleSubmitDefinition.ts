@@ -13,14 +13,16 @@ async function handleSubmitDefinition(
   let newDef:any;
   try {
     console.log(newPlayer)
+    newPlayer.definition = definition
+    numSubmitted++;
     newDef = await localAxios.post("/api/definitions/new",  { playerId: newPlayer.id, definition, roundId: lobbies[lobbyCode].roundId });
   } catch(err){
 
     console.log("errror! handleSubmitDefinitions:17")
   }
   // then ...
-  console.log(newDef.data)
   const definitionId = newDef?.data?.definitionId;
+  // console.log(`ok, definition id: ${definitionId}`)
 
   // update & count number of player submissions
   lobbies[lobbyCode].players = lobbies[lobbyCode].players.map((player:any) =>{
