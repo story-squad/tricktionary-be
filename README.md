@@ -66,7 +66,7 @@ Create a release .zip archive:
 
 #
 **Web Sockets**
-| Resource | Desctiption |
+| Resource | Description |
 |--------| ------------|
 |[sockets](src/sockets/README.md)| overview of event handlers |
 
