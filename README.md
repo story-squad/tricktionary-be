@@ -13,7 +13,7 @@ TypeScript Express API
 #
 
 **Install**
-
+![install](install.gif)
 
     git clone https://github.com/story-squad/tricktionary-be
 
