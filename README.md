@@ -11,13 +11,20 @@ TypeScript Express API
 - a PostGreSQL server
 
 #
+**Environment**
 
+    PORT=5000
+    DATABASE_URL=postgresql://user:pass@localhost:5432/
+    BASE_URL=http://0.0.0.0
+
+#
 **Install**
+
 ![install](install.gif)
 
     git clone https://github.com/story-squad/tricktionary-be
 
-    cd tricktionary
+    cd tricktionary-be
 
     npm install
 
@@ -45,14 +52,8 @@ Create a release .zip archive:
 - time-stamped filename
 - *requires .env file
 #
+![zip](zip.gif)
 
-**Environment**
-
-    PORT=5000
-    DATABASE_URL=postgresql://user:pass@localhost:5432/
-    BASE_URL=http://0.0.0.0
-
-#
 **Endpoints**
 | Path | Resource |
 |------| ------------|
