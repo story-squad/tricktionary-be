@@ -9,22 +9,25 @@
   "main": "build/src/index.js",
   "scripts": {
     "prebuild": "rm -rf build/* && npx tslint -c tslint.json -p tsconfig.json --fix",
-    "build": "tsc && cp package.json build/package.json && cp knexfile.js build/knexfile.js && npm run sed",
+    "build": "tsc && cp package.json build/package.json && cp knexfile.js build/knexfile.js",
     "start": "node build/src/index.js",
-    "sed": "sed '/^    \"prebuild\"/d' package.json -- | sed '/^    \"build\"/d' -- | sed '/^    \"prestart\"/d' -- | sed '/^    \"develop\"/d' -- | sed '/^    \"sed\"/d' > build/package.json",
+    "package": "cp .env build && cp -r data build && npm run sed && npm run zip",
+    "zip": "mkdir -p release && cd build && zip -r ../release/tricktionary-api-$(date +\"%Y-%m-%d-%H-%M-%S\").zip *",
+    "develop": "npm run build && npm run start",
+    "sed": "sed '/^    \"prebuild\"/d' package.json -- | sed '/^    \"build\"/d' -- | sed '/^    \"prestart\"/d' -- | sed '/^    \"develop\"/d' -- | sed '/^    \"sed\"/d' -- | sed 's+build/src/index.js+src/index.js+g' > build/package.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ss-mvp/tricktionary-be.git"
+    "url": "git+https://github.com/story-squad/tricktionary-be.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ss-mvp/tricktionary-be/issues"
+    "url": "https://github.com/story-squad/tricktionary-be/issues"
   },
-  "homepage": "https://github.com/ss-mvp/tricktionary-be#readme",
+  "homepage": "https://github.com/story-squad/tricktionary-be#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",

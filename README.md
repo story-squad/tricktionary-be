@@ -25,9 +25,23 @@ TypeScript Express API
 
 **Commands**
 
-    npm run start
+    npm run-script develop
 
-Clean, lint, transpile, and start the server.
+- Build; then start the app. (used primarily during development)
+#
+    npm run-script build
+
+- Clean, lint, & transpile TS -> JS.
+#
+    npm start
+
+- start the app.
+#
+    npm run-script package
+
+- add knex data/ to build/
+- patch package.json for a stand-alone release
+- create a timestamped archive.
 
 #
 
