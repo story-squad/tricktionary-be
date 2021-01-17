@@ -57,17 +57,17 @@ Create a release .zip archive:
 **Endpoints**
 | Path | Resource |
 |------| ------------|
-|[/api/words](src/api/words/README.md)| Words |
-|[/api/votes](src/api/votes/README.md)| Votes |
-|[/api/user-rounds/](src/api/userRounds/README.md)| User Rounds|
-|[/api/round/](src/api/rounds/README.md)| Rounds
-|[/api/reactions](src/api/reactions/README.md)| Reactions
-|[/api/definitions](src/api/definitions/README.md)| Definitions
-|[/api/definition-reactions](src/api/definitionReactions/README.md)|Definition Reactions
+|[/api/words](src/api/words)| Words |
+|[/api/votes](src/api/votes)| Votes |
+|[/api/user-rounds/](src/api/userRounds)| User Rounds|
+|[/api/round/](src/api/rounds)| Rounds
+|[/api/reactions](src/api/reactions)| Reactions
+|[/api/definitions](src/api/definitions)| Definitions
+|[/api/definition-reactions](src/api/definitionReactions)|Definition Reactions
 
 #
 **Web Sockets**
 | Resource | Description |
 |--------| ------------|
-|[sockets](src/sockets/README.md)| overview of event handlers |
+|[sockets](src/sockets)| event handlers |
 
