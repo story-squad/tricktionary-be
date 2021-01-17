@@ -39,10 +39,11 @@ TypeScript Express API
 #
     npm run-script package
 
-- add knex data/ to build/
+Create a release .zip archive:
+- include knex data/
 - patch package.json for a stand-alone release
-- create a timestamped archive.
-
+- include the .env file if present
+- time-stamped filename
 #
 
 **Environment**

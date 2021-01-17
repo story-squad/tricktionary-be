@@ -105,3 +105,4 @@ dist
 
 # Typescript output
 build
+release
