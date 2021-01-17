@@ -42,8 +42,8 @@ TypeScript Express API
 Create a release .zip archive:
 - include knex data/
 - patch package.json for a stand-alone release
-- include the .env file if present
 - time-stamped filename
+- *requires .env file
 #
 
 **Environment**
