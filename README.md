@@ -48,3 +48,10 @@ Clean, lint, transpile, and start the server.
 |[/api/reactions](src/api/reactions/README.md)| Reactions
 |[/api/definitions](src/api/definitions/README.md)| Definitions
 |[/api/definition-reactions](src/api/definitionReactions/README.md)|Definition Reactions
+
+#
+**Web Sockets**
+| Resource | Desctiption |
+|--------| ------------|
+|[sockets](src/sockets/README.md)| overview of event handlers |
+
