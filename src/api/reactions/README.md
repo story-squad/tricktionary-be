@@ -8,7 +8,7 @@
 
 #
 
-### GET /api/round/start
+### GET /api/reactions
 Returns:
 ```
 { "available": [
