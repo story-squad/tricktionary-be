@@ -15,7 +15,7 @@ TypeScript Express API
 **Install**
 
 
-    git clone https://github.com/ss-mvp/tricktionary-be
+    git clone https://github.com/story-squad/tricktionary-be
 
     cd tricktionary
 
