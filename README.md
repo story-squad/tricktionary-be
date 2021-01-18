@@ -71,3 +71,7 @@ Create a release .zip archive:
 |--------| ------------|
 |[sockets](src/sockets/README.md)| overview of event handlers |
 
+**Docker support**
+| Resource | Description |
+|--------| ------------|
+|[README](README-Docker.md)| containerized development |
