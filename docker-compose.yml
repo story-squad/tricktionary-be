@@ -1,0 +1,33 @@
+version: '3'
+
+networks:
+  backend:
+    
+services:
+  postgresql:
+    image: postgres
+    container_name: pg-docker
+    networks:
+      backend:
+        aliases: 
+          - database
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+    volumes:
+      - ./postgres.conf:/etc/postgresql/postgresql.conf
+      - ./pgdata:/var/lib/postgresql/data
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    restart: always
+  api:
+    image: storysquad/tricktionary-api
+    container_name: trixie
+    networks: 
+      - backend
+    environment:
+      - DATABASE_URL=postgresql://docker:docker@database:5432/
+    ports:
+      - "5000:5000"
+    

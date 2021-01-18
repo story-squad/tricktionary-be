@@ -13,6 +13,8 @@
     "start": "node build/src/index.js",
     "package": "[ -f \".env\" ] && cp .env build && cp -r data build && npm run sed && npm run zip",
     "zip": "mkdir -p release && cd build && zip -r ../release/tricktionary-api-$(date +\"%Y-%m-%d-%H-%M-%S\").zip .",
+    "zipcurrent": "mkdir -p release && cd build && zip -r ../release/current.zip .",
+    "dockerize": "npm run build && npm run package && npm run zipcurrent && docker build -t storysquad/tricktionary-api .",
     "develop": "npm run build && npm run start",
     "sed": "sed '/^    \"prebuild\"/d' package.json -- | sed '/^    \"build\"/d' -- | sed '/^    \"prestart\"/d' -- | sed '/^    \"develop\"/d' -- | sed '/^    \"sed\"/d' -- | sed 's+build/src/index.js+src/index.js+g' > build/package.json",
     "test": "echo \"Error: no test specified\" && exit 1"
