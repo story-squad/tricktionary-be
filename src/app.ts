@@ -12,6 +12,9 @@ import voteRoutes from "./api/votes/routes";
 import roundRoutes from "./api/rounds/routes";
 import userRoundRoutes from "./api/userRounds/routes";
 import definitionsRoutes from "./api/definitions/routes";
+// testing
+import cleverRoutes from "./api/clever/routes";
+
 const api = express();
 const JSON_SIZE_LIMIT = "5mb";
 const lobbies = {};
@@ -41,6 +44,10 @@ api.use("/api/votes", voteRoutes);
 api.use("/api/round", roundRoutes);
 api.use("/api/user-rounds", userRoundRoutes);
 api.use("/api/definitions", definitionsRoutes);
+
+// testing
+api.use("/api/clever", cleverRoutes);
+
 // web sockets
 const socketApp = createServer(api);
 const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
