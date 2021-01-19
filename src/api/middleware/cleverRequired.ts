@@ -39,7 +39,17 @@ const cleverBearer = (token: string) =>
 
 
 /**
- * verify your Clever student ID token
+ * verify your Clever student, teacher, or Admin
+ *
+ * WORKS with identites:
+ *
+ *   ilc_DEMO_STUDENT_TOKEN
+ *
+ *   ilc_DEMO_TEACHER_TOKEN
+ *
+ *   ilc_DEMO_SCHOOL_ADMIN_TOKEN
+ *
+ * reference: https://dev.clever.com/reference#clevercomoauthtokeninfo
  */
 const cleverStudentRequired = async (req: any, res: any, next: any) => {
   // console.log(`middleware for ${process.env.CLEVER_BASE_URL}`);
