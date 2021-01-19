@@ -1,18 +1,17 @@
-FROM node:12
+FROM node:12.7.0-alpine
 
 # Create app directory
-WORKDIR /opt/app
+WORKDIR /app
 
 # COPY build .
 COPY release/current.zip .
 RUN unzip current.zip
-RUN npm install
+# RUN npm install
 
 # If you are building your code for production
-# RUN npm ci --only=production
+RUN npm ci --only=production
 
 # expose the api
 EXPOSE 5000
-
 
 CMD ["node", "src/index.js"]
