@@ -7,8 +7,8 @@ const words = wordlist.map((pair) => {
   return {
     word,
     definition,
-    approved: true,
-    moderated: true
+    approved: false,
+    moderated: false
   };
 });
 
