@@ -88,8 +88,8 @@ io.on("connection", (socket) => {
     );
   });
 
-  socket.on("guess", (lobbyCode:string, guess:any) => {
-    gameSocketHandler.handleGuess(io, socket, lobbyCode, guess, lobbies);
+  socket.on("guess", (lobbyCode:string, guess:any, reactions:any[]) => {
+    gameSocketHandler.handleGuess(io, socket, lobbyCode, guess, reactions, lobbies);
   });
 
   socket.on("play again", (lobbyCode:string) => {
