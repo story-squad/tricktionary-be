@@ -26,7 +26,7 @@ async function handleGuess(
       (player: any) => player.id === socket.id
     );
     const playerWhoWasVotedFor = lobbies[lobbyCode].players.find(
-      (player: any) => player.id === guess
+      (player: any) => player.definitionId === Number(guess)
     );
     // add vote
     // console.log(lobbies[lobbyCode])

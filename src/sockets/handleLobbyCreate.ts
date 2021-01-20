@@ -19,6 +19,8 @@ function handleLobbyCreate(
     guesses: [],
     roundId: null
   };
+  const playerId = socket.id;
+  io.to(playerId).emit("welcome", playerId); // private message host with id
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
   // console.log(lobbies[lobbyCode]);
 }
