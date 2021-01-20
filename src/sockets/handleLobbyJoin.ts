@@ -11,6 +11,11 @@ function handleLobbyJoin(
     return;
   }
 
+  if (lobbies[lobbyCode].phase !== "PREGAME") {
+    // prevent players from joining mid-game.
+    return;
+  }
+
   socket.join(lobbyCode);
 
   if (lobbies[lobbyCode] && lobbies[lobbyCode].players) {
