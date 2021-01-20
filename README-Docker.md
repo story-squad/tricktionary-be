@@ -109,4 +109,28 @@ if, for example, you have another server running on port 5432 (postgres),
     docker image prune -a
     rm postgref.conf
     sudo rm -rf pgdata
+#
+## automate the re-build
 
+ **working on the backend ?** 
+
+ After initial setup, this simple script (with the help of a few others) attempts to automate re-building your local docker image.
+
+ 
+[makeLocal.sh](makeLocal.sh)
+```
+#!/bin/sh
+docker-compose down
+if [ -d pgdata ]; then
+   echo "moving pgdata to /tmp"
+   sudo mv pgdata /tmp/pgdata
+fi
+echo "creating local build..."
+npm run dockerize
+
+if [ -d /tmp/pgdata ]; then
+   echo "restoring pgdata from /tmp"
+   sudo mv /tmp/pgdata .
+fi
+docker-compose up -d
+```
