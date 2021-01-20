@@ -113,3 +113,5 @@ postgres.conf
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+.local-env
