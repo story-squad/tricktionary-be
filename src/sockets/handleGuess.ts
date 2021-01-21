@@ -1,11 +1,12 @@
 import { localAxios } from "./common";
+import handleErrorMessage from "./handleErrorMessage";
 
 async function handleGuess(
   io: any,
   socket: any,
   lobbyCode: any,
   guess: any,
-  reactions: any[],
+  reactions: any[] | undefined,
   lobbies: any
 ) {
   if (guess === "0") {
@@ -19,8 +20,8 @@ async function handleGuess(
       });
     } catch (err) {
       console.log("ERROR voting correctly.");
+      handleErrorMessage(io, socket, err);
     }
-    // console.log(result);
   } else {
     const playerWhoVoted = lobbies[lobbyCode].players.find(
       (player: any) => player.id === socket.id
@@ -29,8 +30,6 @@ async function handleGuess(
       (player: any) => player.definitionId === Number(guess)
     );
     // add vote
-    // console.log(lobbies[lobbyCode])
-    // console.log("player voted for player")
     try {
       await localAxios.post("/api/votes", {
         userID: playerWhoVoted.id,
@@ -39,10 +38,11 @@ async function handleGuess(
       });
     } catch (err) {
       console.log("error voting incorrectly.");
+      handleErrorMessage(io, socket, err);
     }
     // console.log(result);
   }
-  if (reactions.length > 0) {
+  if (reactions && reactions?.length > 0) {
     reactions.forEach(async (definition) => {
       try {
         await localAxios.post("/api/definition-reactions", {
@@ -54,6 +54,7 @@ async function handleGuess(
           });
       } catch (err) {
         console.log("error reacting to definition.");
+        handleErrorMessage(io, socket, err);
       }
     })
   }
@@ -76,6 +77,7 @@ async function handleGuess(
       }
     } catch (err) {
       console.log("error while ending round!");
+      handleErrorMessage(io, socket, err);
       // console.log(err, newRound)
     }
     lobbies[lobbyCode] = {

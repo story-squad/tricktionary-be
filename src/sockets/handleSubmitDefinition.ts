@@ -1,4 +1,5 @@
 import { localAxios } from "./common";
+import handleErrorMessage from "./handleErrorMessage";
 
 async function handleSubmitDefinition(
   io: any,
@@ -17,6 +18,7 @@ async function handleSubmitDefinition(
     newDef = await localAxios.post("/api/definitions/new",  { playerId: newPlayer.id, definition, roundId: lobbies[lobbyCode].roundId });
   } catch(err){
     console.log("errror! handleSubmitDefinitions:22")
+    handleErrorMessage(io, socket, err);
   }
   // then ...
   const definitionId = newDef?.data?.definitionId;

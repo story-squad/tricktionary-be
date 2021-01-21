@@ -1,4 +1,5 @@
 import { localAxios } from "./common";
+import handleErrorMessage from "./handleErrorMessage";
 
 async function handleStartGame(
   io: any,
@@ -16,6 +17,7 @@ async function handleStartGame(
     // console.log(word)
   } catch (err) {
     console.log(err);
+    handleErrorMessage(io, socket, err);
   }
 
   // guard
@@ -32,7 +34,7 @@ async function handleStartGame(
     roundId = newRound.data?.roundId;
   } catch (err) {
     console.log('error trying to start new round!')
-    // console.log(err);
+    handleErrorMessage(io, socket, err);
   }
   console.log("ROUND ID:", roundId)
   // if (!roundId) return false;
@@ -53,7 +55,7 @@ async function handleStartGame(
     });
   } catch (err) {
     console.log('error: handleStartGame:55')
-    // console.log(err);
+    handleErrorMessage(io, socket, err);
   }
   if (result?.status === 201) {
     // pub-sub update

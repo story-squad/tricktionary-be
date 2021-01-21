@@ -6,6 +6,8 @@ import handleSubmitDefinition from "./handleSubmitDefinition";
 import handlePlayAgain from "./handlePlayAgain";
 import handleGuess from "./handleGuess";
 import handleFortune from "./handleFortune";
+import handleErrorMessage from "./handleErrorMessage";
+
 export default {
   handleLobbyLeave,
   handleLobbyCreate,
@@ -14,5 +16,6 @@ export default {
   handleSubmitDefinition,
   handlePlayAgain,
   handleGuess,
-  handleFortune
+  handleFortune,
+  handleErrorMessage
 };
