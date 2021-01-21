@@ -1,4 +1,5 @@
 import { fortune } from "./common";
+import handleErrorMessage from "./handleErrorMessage";
 
 async function handleFortune(io: any, socket: any) {
   try {
@@ -7,6 +8,7 @@ async function handleFortune(io: any, socket: any) {
     io.to(pid).emit("fortune", result.fortune); // private message fortune to player
   } catch (err) {
     console.log({ error: err });
+    handleErrorMessage(io, socket, err);
   }
 }
 
