@@ -96,6 +96,10 @@ io.on("connection", (socket) => {
     gameSocketHandler.handlePlayAgain(io, socket, lobbyCode, lobbies);
   });
 
+  socket.on("fortune", () => {
+    gameSocketHandler.handleFortune(io, socket);
+  })
+
 })
 
 export { socketApp };
