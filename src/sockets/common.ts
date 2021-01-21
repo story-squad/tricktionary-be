@@ -21,14 +21,14 @@ async function fortune() {
 
 /**
  * send message to socket.id
- * 
+ *
  * @param io any (socketio)
  * @param socket any (socketio)
  * @param listener string
  * @param message string
- * 
+ *
  * helper function; not directly exposed to the public.
- * 
+ *
  * please handle all necessary authority role checks, prior to invocation.
  */
 async function privateMessage(io: any, socket: any, listener: string, message: string) {
