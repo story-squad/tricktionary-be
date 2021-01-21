@@ -16,7 +16,7 @@ const router = Router();
  * }
  *
  */
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const result = validateDefinitionReaction(req.body);
   if (result.ok) {
     // deconstruct KWARGS
@@ -28,14 +28,14 @@ router.post("/", (req, res) => {
       game_finished
     } = result.value;
     // send as ordinal ARGS
-    DefinitionReactions.add(
+    const drId = await DefinitionReactions.add(
       user_id,
       round_id,
       reaction_id,
       definition_id,
       game_finished
     );
-    res.status(201).json({ added: true });
+    res.status(201).json({ added: true, drId });
   } else {
     res.status(400).json({ message: result.message });
   }
