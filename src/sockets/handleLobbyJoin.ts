@@ -1,4 +1,5 @@
 import { LC_LENGTH } from "./common";
+import handleErrorMessage from "./handleErrorMessage";
 
 function handleLobbyJoin(
   io: any,
@@ -8,11 +9,13 @@ function handleLobbyJoin(
   lobbies: any
 ) {
   if (lobbyCode.length !== LC_LENGTH) {
+    handleErrorMessage(io, socket, "bad lobby code.")
     return;
   }
 
   if (lobbies[lobbyCode].phase !== "PREGAME") {
     // prevent players from joining mid-game.
+    handleErrorMessage(io, socket, "Game already in progress; cannot join.")
     return;
   }
 
