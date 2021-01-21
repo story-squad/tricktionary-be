@@ -12,10 +12,13 @@ function handleLobbyJoin(
     handleErrorMessage(io, socket, "bad lobby code.")
     return;
   }
-
+  if (Object.keys(lobbies).filter((lc) => lc === lobbyCode ).length === 0) {
+    handleErrorMessage(io, socket, "cool it, hackerman.");
+    return
+  }
   if (lobbies[lobbyCode].phase !== "PREGAME") {
     // prevent players from joining mid-game.
-    handleErrorMessage(io, socket, "Game already in progress; cannot join.")
+    handleErrorMessage(io, socket, "Game in progress; cannot join.")
     return;
   }
 
