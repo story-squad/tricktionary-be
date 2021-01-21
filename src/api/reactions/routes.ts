@@ -5,8 +5,13 @@ const router = Router();
 
 router.get("/", async (req, res) => {
   // return a list of available reactions.
-  const available = await Reactions.getAll();
-  res.status(200).json({ available });
+  let available;
+  try {
+    available = await Reactions.getAll();
+    res.status(200).json({ available });
+  } catch (err) {
+    res.status(401).json({ error: err });
+  }
 });
 
 export default router;
