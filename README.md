@@ -74,4 +74,4 @@ Create a release .zip archive:
 **Docker support**
 | Resource | Description |
 |--------| ------------|
-|[README](README-Docker.md)| containerized development |
+|[README](docker/README.md)| containerized development |

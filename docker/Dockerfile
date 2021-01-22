@@ -4,7 +4,7 @@ FROM node:12.7.0-alpine
 WORKDIR /app
 
 # COPY build .
-COPY release/current.zip .
+COPY ../release/current.zip .
 RUN unzip current.zip
 # RUN npm install
 
