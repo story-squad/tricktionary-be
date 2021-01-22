@@ -27,7 +27,7 @@ echo "compressing to current.zip"
 npm run zipcurrent
 
 echo "building docker image"
-docker build -t storysquad/aws-tricktionary-api .
+docker build -f docker/Dockerfile -t storysquad/aws-tricktionary-api .
 
 echo "tagging image"
 docker tag storysquad/aws-tricktionary-api trevorjmartin/storysquad-tricktionary-api
