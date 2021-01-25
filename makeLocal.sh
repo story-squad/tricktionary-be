@@ -11,7 +11,24 @@ if [ -n "$1" ]; then
       exit 0
    fi
 fi
+
+# check for storysquad nginx
+nginx=`docker image list|grep "storysquad/web"`
+
+if [ ! $nginx ]; then 
+   file="docker/Dockerfile.web"
+   if [ -f $file ]; then
+      tag="storysquad/web"
+      echo "building storysquad/web"
+      docker build -f $file -t $tag docker
+   fi
+fi
+
 #!/bin/sh
+if [ ! -f .local-env ]; then
+   echo "'.local-env' : No such file or directory"
+   exit 0
+fi
 
 if [ -d pgdata ]; then
    echo "moving pgdata to /tmp"
@@ -32,7 +49,7 @@ if [ -d data ]; then
 fi
 
 echo "clean package.json for docker image"
-sed '/^    \"prebuild\"/d' package.json -- | sed '/^    \"build\"/d' -- | sed '/^    \"prestart\"/d' -- | sed '/^    \"develop\"/d' -- | sed '/^    \"sed\"/d' -- | sed '/^    \"dockerize\"/d' -- |sed '/^    \"zip\"/d' -- | sed '/^    \"zipcurrent\"/d' -- |sed '/^    \"aws-docker\"/d' -- |sed '/^    \"package\"/d' --|sed '/^    \"@types/d' -- |sed 's+build/src/index.js+src/index.js+g' > build/package.json
+sed '/^    \"prebuild\"/d' package.json -- | sed '/^    \"build\"/d' -- | sed '/^    \"prestart\"/d' -- | sed '/^    \"develop\"/d' -- | sed '/^    \"sed\"/d' -- | sed '/^    \"dockerize\"/d' -- |sed '/^    \"zip\"/d' -- | sed '/^    \"zipcurrent\"/d' -- |sed '/^    \"package\"/d' --|sed '/^    \"@types/d' -- |sed 's+build/src/index.js+src/index.js+g' > build/package.json
 
 echo "generate clean package-lock"
 cd build && npm install && rm -rf node_modules && cd ..
