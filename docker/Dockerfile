@@ -4,12 +4,10 @@ FROM node:12.7.0-alpine
 WORKDIR /app
 
 # COPY build .
-COPY ../release/current.zip .
+COPY release/current.zip .
 RUN unzip current.zip
-# RUN npm install
 
-# If you are building your code for production
-RUN npm ci --only=production
+RUN npm install
 RUN apk add fortune
 # expose the api
 EXPOSE 5000
