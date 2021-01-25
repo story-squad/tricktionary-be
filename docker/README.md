@@ -30,7 +30,7 @@ If you don't use Docker, you can totally ignore this.
 
 2. **build this container**
    
-   *for detail, see package.json scripts
+   *for detail, see [package.json](../package.json) scripts
 
         npm run-script dockerize
 
@@ -46,7 +46,7 @@ If you don't use Docker, you can totally ignore this.
 
 4. **raise the docker images**
     
-        docker-compose up -d
+        docker-compose up -d postgres
 
 5. **grab a PostgreSQL configuration file for persisting the db settings.**
 
@@ -56,7 +56,7 @@ If you don't use Docker, you can totally ignore this.
 
 6. **restart the images**
 
-        docker-compose restart
+        docker-compose restart postgres api
 
 7. **login to psql & ready the db (password=docker)**
 
@@ -83,7 +83,7 @@ If you don't use Docker, you can totally ignore this.
 
 **Success**
 
-http://localhost:5000/api/words 
+http://localhost:5000/api/reactions
 
 
 ***frontend development,***
@@ -92,6 +92,42 @@ http://localhost:5000/api/words
 
     REACT_APP_API_URL=http://localhost:5000
 #
+
+10. **build the frontend**
+
+- Find the service named "web", described in the [docker-compose.yml](../docker-compose.yml).
+- Find "volumes", within that service.
+        
+        - ../tricktionary-fe/build:/usr/share/nginx/html
+- understand that it maps a:b; where a is your local machine and b is the container housing the service named "web".
+
+      - ../tricktionary-fe/build:/usr/share/nginx/html
+
+- the web service will serve data from an adjacent folder named "tricktionary-fe"; providing it contains a folder named "build" that includes a file named index.html.
+
+         ..
+         tricktionary-be/
+           docker-compose.yml
+         tricktionary-fe/
+           build/
+
+- *clone the frontend adjacent to this project and run the provided build script.
+
+11. **rebuilding with** [./makeLocal.sh](../makeLocal.sh) 
+
+- this script will automate the rebuild process and should work in most POSIX-compliant, BASH-friendly environments. 
+- ****steps 1 - 10 must to be completed first.***
+- ****create the local-env file prior to use.***
+        
+        cp .env .local-env
+
+- if you should find it necessary, you can safely alter the local environment variables within ***.local-env*** (this file is not used in production)
+
+
+12. **building for deployment with** [./makeAWS.sh](../makeAWS.sh) 
+
+- While almost identical to the rebuild script, this script will use the original .env file and a modified production-ready [Dockerfile](Dockerfile.production)
+
 
 **troubleshooting**
 
@@ -107,30 +143,6 @@ if, for example, you have another server running on port 5432 (postgres),
 
     docker-compose down
     docker image prune -a
-    rm postgref.conf
+    rm postgres.conf
     sudo rm -rf pgdata
 #
-## automate the re-build
-
- **working on the backend ?** 
-
- After initial setup, this simple script (with the help of a few others) attempts to automate re-building your local docker image.
-
- 
-[makeLocal.sh](makeLocal.sh)
-```
-#!/bin/sh
-docker-compose down
-if [ -d pgdata ]; then
-   echo "moving pgdata to /tmp"
-   sudo mv pgdata /tmp/pgdata
-fi
-echo "creating local build..."
-npm run dockerize
-
-if [ -d /tmp/pgdata ]; then
-   echo "restoring pgdata from /tmp"
-   sudo mv /tmp/pgdata .
-fi
-docker-compose up -d
-```

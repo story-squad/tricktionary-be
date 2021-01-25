@@ -7,7 +7,7 @@ WORKDIR /app
 COPY release/current.zip .
 RUN unzip current.zip
 
-RUN npm install
+RUN npm ci --only=production
 RUN apk add fortune
 # expose the api
 EXPOSE 5000
