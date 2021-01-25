@@ -23,7 +23,7 @@ if [ -d data ]; then
 fi
 
 echo "clean package.json for docker image"
-sed '/^    \"prebuild\"/d' package.json -- | sed '/^    \"build\"/d' -- | sed '/^    \"prestart\"/d' -- | sed '/^    \"develop\"/d' -- | sed '/^    \"sed\"/d' -- | sed '/^    \"dockerize\"/d' -- |sed '/^    \"zip\"/d' -- | sed '/^    \"zipcurrent\"/d' -- |sed '/^    \"aws-docker\"/d' -- |sed '/^    \"package\"/d' --|sed '/^    \"@types/d' -- |sed 's+build/src/index.js+src/index.js+g' > build/package.json
+sed '/^    \"prebuild\"/d' package.json -- | sed '/^    \"build\"/d' -- | sed '/^    \"prestart\"/d' -- | sed '/^    \"develop\"/d' -- | sed '/^    \"sed\"/d' -- | sed '/^    \"dockerize\"/d' -- |sed '/^    \"zip\"/d' -- | sed '/^    \"zipcurrent\"/d' -- |sed '/^    \"package\"/d' --|sed '/^    \"@types/d' -- |sed 's+build/src/index.js+src/index.js+g' > build/package.json
 
 echo "generate clean package-lock"
 cd build && npm install && rm -rf node_modules && cd ..
@@ -32,7 +32,7 @@ echo "compressing to current.zip"
 npm run zipcurrent
 
 echo "building docker image"
-docker build -f docker/Dockerfile -t storysquad/aws-tricktionary-api .
+docker build -f docker/Dockerfile.api -t storysquad/aws-tricktionary-api .
 
 echo "tagging image"
 docker tag storysquad/aws-tricktionary-api trevorjmartin/storysquad-tricktionary-api
