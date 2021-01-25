@@ -1,9 +1,14 @@
 #!/bin/sh
+if [ ! -f .local-env ]; then
+   echo "'.env' : No such file or directory"
+   exit 0
+fi
 
 if [ -d pgdata ]; then
    echo "moving pgdata to /tmp"
    sudo mv pgdata /tmp/pgdata
 fi
+
 echo "creating build..."
 npm run build
 
