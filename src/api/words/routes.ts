@@ -1,6 +1,6 @@
 import { Router } from "express";
 import Words from "./model";
-import { validateWord } from "./utils";
+import { validateWord, range } from "./utils";
 
 const router = Router();
 
@@ -46,6 +46,30 @@ router.get("/", (req, res) => {
     .then((possibleWords) => {
       const index = Math.floor(Math.random() * possibleWords.length);
       res.status(200).json({ word: possibleWords[index] });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
+});
+
+
+/**
+ * GET / returns a scoop of n-many random approved word
+ */
+router.get("/scoop/:count", (req, res) => {
+  const numberOfWords: string = req.params.count || "1";
+  const words:(object)[] = [];
+  Words.getApprovedWords()
+    .then((possibleWords) => {
+      const m = Math.min(Number(numberOfWords), possibleWords.length);
+      console.log(m);
+      let chosen:(number)[] = range(m);
+      for(let i=0; i < m; i++) {
+        const choice = chosen[Math.floor(Math.random() * chosen.length)];
+        words.push(possibleWords[choice]);
+        chosen = chosen.filter(n => n !== choice); // reduce the lot
+      }
+      res.status(200).json({ words })
     })
     .catch((err) => {
       res.status(500).json({ error: err.message });
