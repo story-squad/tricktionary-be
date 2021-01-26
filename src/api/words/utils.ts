@@ -31,9 +31,9 @@ export function range(n:number) {
 /**
  * is this a number ?
  * @param num string
- * 
+ *
  * this function exists because typeof(NaN) === "number"; wtfJS!?
- * 
+ *
  */
 export function validNumber(num:any) {
   const pattern = /[0-9]/g;
