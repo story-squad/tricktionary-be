@@ -5,6 +5,7 @@ exports.up = function (knex) {
     tbl.string("definition", 1000).notNullable();
     tbl.boolean("moderated").defaultTo(false);
     tbl.boolean("approved").defaultTo(false);
+    tbl.string("source", 1000).defaultTo("wordnic");
   });
 };
 
