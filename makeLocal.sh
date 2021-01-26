@@ -15,7 +15,7 @@ fi
 # check for storysquad nginx
 nginx=`docker image list|grep "storysquad/web"`
 
-if [ ! $nginx ]; then 
+if [ $nginx -le 0 ]; then 
    file="docker/Dockerfile.web"
    if [ -f $file ]; then
       tag="storysquad/web"
