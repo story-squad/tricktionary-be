@@ -92,16 +92,15 @@ router.get("/unmoderated", (req, res) => {
 });
 
 /**
- * PUT /:id
+ * GET /:id
  * update a word, by ID
  */
-router.put("/:id", (req, res) => {
-  const changes = req.body;
+router.get("/id/:id", (req, res) => {
   const id = Number(req.params.id);
   if (!id) res.status(400).json({ error: "id?" });
-  Words.update(id, changes)
+  Words.getById(id)
     .then((word) => {
-      res.status(200).json({ updated: word });
+      res.status(200).json({ word });
     })
     .catch((err) => {
       res.status(500).json({ error: err.message });
@@ -109,10 +108,10 @@ router.put("/:id", (req, res) => {
 });
 
 /**
- * PUT /:id/approve
+ * PUT /id/:id/approve
  * Approve a word, by ID
  */
-router.put("/:id/approve", (req, res) => {
+router.put("/id/:id/approve", (req, res) => {
   const id = Number(req.params.id);
   if (!id) res.status(400).json({ error: "id?" });
   Words.getById(id).then((wordObj) => {
@@ -133,10 +132,10 @@ router.put("/:id/approve", (req, res) => {
 });
 
 /**
- * put /:id/reject
+ * put /id/:id/reject
  * Reject a word, by ID
  */
-router.put("/:id/reject", (req, res) => {
+router.put("/id/:id/reject", (req, res) => {
   const id = Number(req.params.id);
   if (!id) res.status(400).json({ error: "id?" });
   Words.getById(id).then((wordObj) => {
