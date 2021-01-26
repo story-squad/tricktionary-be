@@ -1,50 +1,84 @@
 import { localAxios } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
-
+import { GameSettings } from "../GameSettings";
 async function handleStartGame(
   io: any,
   socket: any,
   lobbyCode: any,
-  lobbies: any
+  lobbies: any,
+  settings: any
 ) {
-  const phase: string = "WRITING";
-  // get random word
-  let word: any;
-  let output: any;
+  let lobbySettings;
   try {
-    output = await localAxios.get("/api/words");
-    word = output?.data?.word;
-    // console.log(word)
+    lobbySettings = GameSettings(settings);
   } catch (err) {
-    console.log(err);
     handleErrorMessage(io, socket, err);
+    return;
+  }
+  if (!lobbySettings.ok) {
+    handleErrorMessage(io, socket, lobbySettings.message);
+    return;
+  }
+  // lobbySettings are now verified.
+  console.log(`timer set to ${lobbySettings.value.seconds}`);
+  let { word } = lobbySettings.value;
+  if (word.id === 0) {
+    console.log("new word!");
+    // write word to user-word db table.
+  } else {
+    console.log(`word from ${lobbySettings.value.source}`);
+    // begin get word from source
+    let output: any;
+    // let word:string;
+    try {
+      // get word by id
+      output = await localAxios.get(`/api/words/id/${word.id}`);
+      word = output?.data?.word;
+      if (!word.word) {
+        handleErrorMessage(
+          io,
+          socket,
+          `error requesting word with id ${word.id} from ${lobbySettings.value.source}`
+        );
+        return;
+      }
+    } catch (err) {
+      console.log(err);
+      handleErrorMessage(io, socket, err);
+      return;
+    }
+    // end get word from source
   }
 
-  // guard
-  if (!word?.id) return false;
+  const phase: string = "WRITING";
   // start a new round
   let newRound: any;
   let roundId: any;
   try {
-    console.log('starting a new round...')
+    console.log("starting a new round...");
     newRound = await localAxios.post("/api/round/start", {
       lobby: lobbies[lobbyCode],
       wordId: word.id
     });
     roundId = newRound.data?.roundId;
   } catch (err) {
-    console.log('error trying to start new round!')
+    console.log("error trying to start new round!");
     handleErrorMessage(io, socket, err);
   }
-  console.log("ROUND ID:", roundId)
-  // if (!roundId) return false;
+  console.log("ROUND ID:", roundId);
+  const roundSettings: any = {
+    seconds: lobbySettings.value.seconds,
+    source: lobbySettings.value.source,
+    filter: lobbySettings.value.filter
+  };
   // set phasers to "WRITING" and update the game state
   lobbies[lobbyCode] = {
     ...lobbies[lobbyCode],
     phase,
     word: word.word,
     definition: word.definition,
-    roundId
+    roundId,
+    roundSettings
   };
   // REST-ful update
   let result: any;
@@ -54,7 +88,7 @@ async function handleStartGame(
       roundId
     });
   } catch (err) {
-    console.log('error: handleStartGame:55')
+    console.log("error: handleStartGame:55");
     handleErrorMessage(io, socket, err);
   }
   if (result?.status === 201) {
