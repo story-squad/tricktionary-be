@@ -1,5 +1,8 @@
+import { GameSettings } from "../GameSettings";
 
-function handlePlayAgain(io: any, socket: any, lobbyCode: any, lobbies: any) {
+function handlePlayAgain(io: any, socket: any, lobbyCode: any, lobbies: any, settings: any) {
+  let updated = GameSettings(settings);
+  // todo
   lobbies[lobbyCode] = {
     ...lobbies[lobbyCode],
     players: lobbies[lobbyCode].players.map((player:any) => {
@@ -12,10 +15,9 @@ function handlePlayAgain(io: any, socket: any, lobbyCode: any, lobbies: any) {
     word: "",
     definition: "",
     guesses: [],
+    settings: updated
   };
-
   io.to(lobbyCode).emit("play again", lobbies[lobbyCode]);
-
   // console.log(lobbies[lobbyCode]);
 }
 

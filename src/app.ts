@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
 
   // more events to come.
   socket.on("disconnecting", () => {
-    console.log("Client disconnecting...")
+    console.log("Client disconnecting...");
     gameSocketHandler.handleLobbyLeave(io, socket, lobbies);
   });
 
@@ -65,20 +65,20 @@ io.on("connection", (socket) => {
     console.log("Client disconnected", socket.id);
   });
 
-  socket.on("create lobby", (username:string) => {
-    console.log(`${username} is creating a lobby`)
+  socket.on("create lobby", (username: string) => {
+    console.log(`${username} is creating a lobby`);
     gameSocketHandler.handleLobbyCreate(io, socket, username, lobbies);
   });
 
-  socket.on("join lobby", (username:string, lobbyCode:string) => {
+  socket.on("join lobby", (username: string, lobbyCode: string) => {
     gameSocketHandler.handleLobbyJoin(io, socket, username, lobbyCode, lobbies);
   });
 
-  socket.on("start game", (lobbyCode:string) => {
-    gameSocketHandler.handleStartGame(io, socket, lobbyCode, lobbies);
+  socket.on("start game", (settings: any, lobbyCode: string) => {
+    gameSocketHandler.handleStartGame(io, socket, lobbyCode, lobbies, settings);
   });
 
-  socket.on("definition submitted", (definition:string, lobbyCode:string) => {
+  socket.on("definition submitted", (definition: string, lobbyCode: string) => {
     gameSocketHandler.handleSubmitDefinition(
       io,
       socket,
@@ -88,18 +88,24 @@ io.on("connection", (socket) => {
     );
   });
 
-  socket.on("guess", (lobbyCode:string, guess:any, reactions:any[]) => {
-    gameSocketHandler.handleGuess(io, socket, lobbyCode, guess, reactions, lobbies);
+  socket.on("guess", (lobbyCode: string, guess: any, reactions: any[]) => {
+    gameSocketHandler.handleGuess(
+      io,
+      socket,
+      lobbyCode,
+      guess,
+      reactions,
+      lobbies
+    );
   });
 
-  socket.on("play again", (lobbyCode:string) => {
-    gameSocketHandler.handlePlayAgain(io, socket, lobbyCode, lobbies);
+  socket.on("play again", (settings: any, lobbyCode: string)=> {
+    gameSocketHandler.handlePlayAgain(io, socket, lobbyCode, lobbies, settings);
   });
 
   socket.on("fortune", () => {
     gameSocketHandler.handleFortune(io, socket);
-  })
-
-})
+  });
+});
 
 export { socketApp };
