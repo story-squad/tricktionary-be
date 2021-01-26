@@ -131,6 +131,11 @@ http://localhost:5000/api/reactions
 
 **troubleshooting**
 
+should the script fail to detect the absence of the web container you may need to. 
+
+    ./makeLocal web
+
+
 fine-tune your docker-compose.yml
 
 if, for example, you have another server running on port 5432 (postgres), 

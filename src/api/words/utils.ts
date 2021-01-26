@@ -27,3 +27,17 @@ export function validateWord(wordObj: any): Result<ExpectedObj> {
 export function range(n:number) {
   return Array.from(Array(n).keys());
 }
+
+/**
+ * is this a number ?
+ * @param num string
+ *
+ * this function exists because typeof(NaN) === "number"; wtfJS!?
+ *
+ */
+export function validNumber(num:any) {
+  const pattern = /[0-9]/g;
+  const result = num.match(pattern)
+  const n:string = result?.length > 0 && result?.length === num?.length ? result.join("") : "";
+  return n.length > 0;
+}
