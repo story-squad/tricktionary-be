@@ -23,3 +23,7 @@ export function validateWord(wordObj: any): Result<ExpectedObj> {
 
   return { ok: true, value: wordObj };
 }
+
+export function range(n:number) {
+  return Array.from(Array(n).keys());
+}
