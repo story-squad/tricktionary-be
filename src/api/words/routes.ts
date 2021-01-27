@@ -38,6 +38,34 @@ router.post("/json", (req, res) => {
   res.status(201).json({ added, skipped });
 });
 
+router.post("/contribute", (req, res) => {
+  const result = validateWord(req.body);
+  let duplicate: any;
+  if (!result.ok) {
+    return res.status(400).json({ error: result.message });
+  }
+  Words.getByName(result.value.word).then((dup) => {
+    duplicate = dup?.id ? dup : false;
+    console.log(`duplicate: ${duplicate.word}`);
+    if (!duplicate) {
+      // add to database
+      Words.add(result.value)
+        .then(([id]) => {
+          // return id of new record
+          res.status(201).json({ id });
+        })
+        .catch((err) => {
+          // error adding to database
+          console.log("ERROR: /contribute");
+          res.status(400).json({ error: err });
+        });
+    } else {
+      // return id of existing record
+      res.status(200).json({ id: dup.id });
+    }
+  });
+});
+
 /**
  * GET / returns a random approved word
  */
@@ -52,26 +80,31 @@ router.get("/", (req, res) => {
     });
 });
 
-
+router.get("/by-name/:word", (req, res) => {
+  const word = req.params.word;
+  Words.getByName(word).then((value) => res.status(200).json(value));
+});
 /**
  * GET / returns a scoop of n-many random approved word
  */
 router.get("/scoop/:count", (req, res) => {
   const numberOfWords: any = req.params.count;
-  const nw =  validNumber(numberOfWords) ? Number(numberOfWords) : 1;
-  const scoops = validNumber(process.env.SCOOP_SIZE) ? Number(process.env.SCOOP_SIZE) : 0;
-  const hardLimit = scoops > 0 ? scoops:10; // set a hardlimit at 10 if no SCOOP_SIZE is provided.
-  const words:(object)[] = [];
+  const nw = validNumber(numberOfWords) ? Number(numberOfWords) : 1;
+  const scoops = validNumber(process.env.SCOOP_SIZE)
+    ? Number(process.env.SCOOP_SIZE)
+    : 0;
+  const hardLimit = scoops > 0 ? scoops : 10; // set a hardlimit at 10 if no SCOOP_SIZE is provided.
+  const words: object[] = [];
   Words.getApprovedWords()
     .then((possibleWords) => {
       const m = Math.min(nw, possibleWords.length, hardLimit);
-      let chosen:(number)[] = range(m);
-      for(let i=0; i < m; i++) {
+      let chosen: number[] = range(m);
+      for (let i = 0; i < m; i++) {
         const choice = chosen[Math.floor(Math.random() * chosen.length)];
         words.push(possibleWords[choice]);
-        chosen = chosen.filter(num => num !== choice); // reduce the lot
+        chosen = chosen.filter((num) => num !== choice); // reduce the lot
       }
-      res.status(200).json({ words })
+      res.status(200).json({ words });
     })
     .catch((err) => {
       res.status(500).json({ error: err.message });
@@ -142,7 +175,7 @@ router.put("/id/:id/reject", (req, res) => {
     wordObj = {
       ...wordObj,
       moderated: true,
-      approved: false,
+      approved: false
     };
 
     Words.update(id, wordObj)
@@ -154,7 +187,6 @@ router.put("/id/:id/reject", (req, res) => {
       });
   });
 });
-
 
 // module.exports = router;
 export default router;
