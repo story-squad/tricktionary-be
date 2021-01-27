@@ -9,9 +9,11 @@ async function handleStartGame(
   settings: any
 ) {
   let lobbySettings;
+
   try {
     lobbySettings = GameSettings(settings);
   } catch (err) {
+    console.log("settings error");
     handleErrorMessage(io, socket, err);
     return;
   }
@@ -22,9 +24,25 @@ async function handleStartGame(
   // lobbySettings are now verified.
   console.log(`timer set to ${lobbySettings.value.seconds}`);
   let { word } = lobbySettings.value;
+  const { source } = lobbySettings.value;
   if (word.id === 0) {
     console.log("new word!");
+
     // write word to user-word db table.
+    try {
+      const {data} = await localAxios.post("/api/words/contribute", {
+        word: word.word,
+        definition: word.definition,
+        source
+      });
+      console.log(data)
+      if (data?.id > 0) {
+        word.id = data.id;
+      }
+    } catch (err) {
+      console.log("error contributing.")
+      console.log(err);
+    }
   } else {
     console.log(`word from ${lobbySettings.value.source}`);
     // begin get word from source
