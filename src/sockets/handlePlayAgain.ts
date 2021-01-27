@@ -1,7 +1,7 @@
 import { GameSettings } from "../GameSettings";
 
 function handlePlayAgain(io: any, socket: any, lobbyCode: any, lobbies: any, settings: any) {
-  let updated = GameSettings(settings);
+  const updated = GameSettings(settings);
   // todo
   lobbies[lobbyCode] = {
     ...lobbies[lobbyCode],
