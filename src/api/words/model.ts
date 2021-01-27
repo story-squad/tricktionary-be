@@ -1,9 +1,13 @@
 import db from "../../dbConfig";
 
-export default { getById, add, getUnmoderatedWord, getApprovedWords, update };
+export default { getByName, getById, add, getUnmoderatedWord, getApprovedWords, update };
 
 function getById(id: number) {
   return db("Words").where({ id }).first();
+}
+
+function getByName(name: string) {
+  return db("Words").where({ word:name }).first();
 }
 
 function add(word: object) {
