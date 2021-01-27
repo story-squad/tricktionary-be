@@ -1,27 +1,33 @@
 type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 
-interface ExpectedObj {
+interface WordObject {
   word: string;
   definition: string;
+  source: string | undefined;
+  moderated: boolean | undefined;
+  approved: boolean | undefined;
 }
 
-export function validateWord(wordObj: any): Result<ExpectedObj> {
+export function validateWord(wordObj: any): Result<WordObject> {
   // word must be a string and cannot be empty
-  if (typeof wordObj.word !== "string") {
+  const skel = { word: undefined, definition: undefined, source: undefined, moderated: false, approved: false }
+  const value = { ...skel, ...wordObj}
+  // console.log(value)
+  if (typeof value.word !== "string") {
     return {
       ok: false,
-      message: `must be of type string, received ${typeof wordObj.word}`
+      message: `must be of type string, received ${typeof value.word}`
     };
   }
   // word must be a string and cannot be empty
-  if (typeof wordObj.definition !== "string") {
+  if (typeof value.definition !== "string") {
     return {
       ok: false,
-      message: `must be of type string, received ${typeof wordObj.definition}`
+      message: `must be of type string, received ${typeof value.definition}`
     };
   }
 
-  return { ok: true, value: wordObj };
+  return { ok: true, value };
 }
 
 export function range(n:number) {
