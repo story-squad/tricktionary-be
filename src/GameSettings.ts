@@ -30,7 +30,8 @@ export function GameSettings(settingsObj: any): Result<TricktionarySettings> {
   let source = settingsObj.source;
   let seconds = settingsObj.seconds;
   let filter = settingsObj.filter;
-  if (!word?.id) {
+  // console.log(settingsObj)
+  if (Object.keys(word).filter(n => n === "id").length === 0) {
     return { ok: false, message: `missing element word.id` };
   }
   if (!source && word.id > 0) {
@@ -68,5 +69,6 @@ export function GameSettings(settingsObj: any): Result<TricktionarySettings> {
     filter = {...filter, list: []}
   }
   seconds = timerSeconds(seconds);
-  return { ok: true, value: { word, seconds, filter, source } };
+  const value = { word, seconds, filter, source };
+  return { ok: true, value };
 }
