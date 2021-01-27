@@ -37,7 +37,7 @@ export function range(n:number) {
  */
 export function validNumber(num:any) {
   const pattern = /[0-9]/g;
-  const result = num.match(pattern)
+  const result = num?.match(pattern);
   const n:string = result?.length > 0 && result?.length === num?.length ? result.join("") : "";
   return n.length > 0;
 }
