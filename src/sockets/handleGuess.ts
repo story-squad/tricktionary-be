@@ -1,5 +1,51 @@
-import { localAxios } from "./common";
+import { localAxios, playerIsHost } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
+
+export async function handleArrayOfGuesses(
+  io: any,
+  socket: any,
+  lobbyCode: any,
+  lobbies: any,
+  guesses: any[]
+) {
+  const lobby = lobbies[lobbyCode];
+  const roundId = lobby.roundId;
+  console.log('vote & calculate scores');
+  guesses.forEach(async (g) => {
+    try {
+      localAxios.post("/api/votes", {
+        userID: g.player,
+        definitionID: g.guess,
+        roundID: roundId
+      })
+      .then(() => {
+        lobby.players.forEach((player: any) => {
+          if (g.guess === 0 && player.id === g.player) {
+            player.points++; // +1 if you voted for the provided definition.
+          } else if (g.guess === player.definitionId && g.player !== player.id) {
+            player.points++; // +1 if someone else voted for your definition.
+          }
+        });
+      })
+    } catch (err) {
+      console.log("error: handleArrayOfGuesses, ${err}");
+    }
+  });
+  try {
+    const newRound = await localAxios.post("/api/round/finish", { roundId });
+    if (newRound.status === 200) {
+      console.log(`* end of round ${roundId}`);
+    }
+  } catch (err) {
+    console.log("error while ending round!");
+    handleErrorMessage(io, socket, err);
+    return;
+  }
+  console.log('changing phase');
+  lobbies[lobbyCode].phase = "RESULTS";
+  // pub-sub update
+  io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
+}
 
 async function handleGuess(
   io: any,
@@ -9,40 +55,21 @@ async function handleGuess(
   reactions: any[] | undefined,
   lobbies: any
 ) {
-  if (guess === "0") {
-    // add vote
-    // console.log('player chose correctly!')
-    try {
-      await localAxios.post("/api/votes", {
-        userID: socket.id,
-        definitionID: Number(guess),
-        roundID: lobbies[lobbyCode].roundId
-      });
-    } catch (err) {
-      console.log("ERROR voting correctly.");
-      handleErrorMessage(io, socket, err);
-    }
-  } else {
-    const playerWhoVoted = lobbies[lobbyCode].players.find(
-      (player: any) => player.id === socket.id
-    );
-    const playerWhoWasVotedFor = lobbies[lobbyCode].players.find(
-      (player: any) => player.definitionId === Number(guess)
-    );
-    // add vote
-    try {
-      await localAxios.post("/api/votes", {
-        userID: playerWhoVoted.id,
-        definitionID: Number(playerWhoWasVotedFor.definitionId),
-        roundID: lobbies[lobbyCode].roundId
-      });
-    } catch (err) {
-      console.log("error voting incorrectly.");
-      handleErrorMessage(io, socket, err);
-    }
-    // console.log(result);
+  // prepare the object
+  const vote = {
+    userID: socket.id,
+    definitionID: Number(guess),
+    roundID: lobbies[lobbyCode].roundId
+  };
+  // try to POST it
+  try {
+    await localAxios.post("/api/votes", vote);
+  } catch (err) {
+    console.log("error voting. (handleGuess)");
+    handleErrorMessage(io, socket, err);
   }
   if (reactions && reactions?.length > 0) {
+    // try POST'ing reactions, if they exist.
     reactions.forEach(async (definition) => {
       try {
         await localAxios.post("/api/definition-reactions", {
@@ -51,25 +78,29 @@ async function handleGuess(
           reaction_id: Number(definition.reaction),
           definition_id: Number(definition.id),
           game_finished: false
-          });
+        });
       } catch (err) {
         console.log("error reacting to definition.");
         handleErrorMessage(io, socket, err);
       }
-    })
+    });
   }
-
+  const hostingThisRound = playerIsHost(socket, lobbyCode, lobbies).ok;
+  const votesCollected = `Guesses: ${lobbies[lobbyCode].guesses.length}/${lobbies[lobbyCode].players.length}`;
+  const guesses = hostingThisRound
+    ? [...lobbies[lobbyCode].guesses, { player: socket.id, guess }]
+    : [{ message: votesCollected }];
   lobbies[lobbyCode] = {
     ...lobbies[lobbyCode],
-    guesses: [...lobbies[lobbyCode].guesses, { player: socket.id, guess }]
+    guesses
   };
-  console.log(
-    `Guesses: ${lobbies[lobbyCode].guesses.length}/${lobbies[lobbyCode].players.length}`
-  );
+  console.log(votesCollected);
   if (lobbies[lobbyCode].players.length === lobbies[lobbyCode].guesses.length) {
+    // when all players have voted...
     const roundId = lobbies[lobbyCode].roundId;
     // RESTful update
     let newRound: any;
+    // end this round
     try {
       newRound = await localAxios.post("/api/round/finish", { roundId });
       if (newRound.status === 200) {
@@ -78,16 +109,15 @@ async function handleGuess(
     } catch (err) {
       console.log("error while ending round!");
       handleErrorMessage(io, socket, err);
-      // console.log(err, newRound)
     }
-    lobbies[lobbyCode] = {
-      ...calculatePoints(lobbies[lobbyCode]),
-      phase: "POSTGAME"
-    };
+    if (hostingThisRound) {
+      lobbies[lobbyCode] = calculatePoints(lobbies[lobbyCode]);
+    }
+    // change to next game phase.
+    lobbies[lobbyCode].phase = "RESULTS";
   }
   // pub-sub update
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
-  // console.log(lobbies[lobbyCode]);
 }
 
 function calculatePoints(lobby: any) {
