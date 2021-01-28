@@ -17,7 +17,7 @@ import cleverRoutes from "./api/clever/routes";
 
 const api = express();
 const JSON_SIZE_LIMIT = "5mb";
-const lobbies = {};
+const lobbies:any = {};
 
 api.use(
   bodyParser.json({
@@ -88,15 +88,16 @@ io.on("connection", (socket) => {
     );
   });
 
-  socket.on("guess", (lobbyCode: string, guess: any, reactions: any[]) => {
-    gameSocketHandler.handleGuess(
-      io,
-      socket,
-      lobbyCode,
-      guess,
-      reactions,
-      lobbies
-    );
+  socket.on("guess", (lobbyCode: string, guesses: any[]) => {
+    gameSocketHandler.handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses);
+    // gameSocketHandler.handleGuess(
+    //   io,
+    //   socket,
+    //   lobbyCode,
+    //   guess,
+    //   reactions,
+    //   lobbies
+    // );
   });
 
   socket.on("play again", (settings: any, lobbyCode: string)=> {
@@ -106,6 +107,10 @@ io.on("connection", (socket) => {
   socket.on("fortune", () => {
     gameSocketHandler.handleFortune(io, socket);
   });
+
+  socket.on("set phase", (phase: string, lobbyCode: string) => {
+    gameSocketHandler.handleSetPhase(io, socket, lobbyCode, lobbies, phase);
+  })
 });
 
 export { socketApp };
