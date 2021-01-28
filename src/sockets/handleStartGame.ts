@@ -96,7 +96,8 @@ async function handleStartGame(
     word: word.word,
     definition: word.definition,
     roundId,
-    roundSettings
+    roundSettings,
+    host: socket.id
   };
   // REST-ful update
   let result: any;
