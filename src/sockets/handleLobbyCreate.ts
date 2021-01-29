@@ -12,7 +12,7 @@ function handleLobbyCreate(
   lobbies[lobbyCode] = {
     lobbyCode,
     players: [{ id: socket.id, username, definition: "", points: 0 }],
-    host: { id: socket.id, username },
+    host: socket.id,
     phase: "PREGAME",
     word: "",
     definition: "",
