@@ -1,6 +1,6 @@
 import db from "../../dbConfig";
 
-export default { getByName, getById, add, getUnmoderatedWord, getApprovedWords, update };
+export default { getByName, getById, add, getUnmoderatedWord, getApprovedWords, update, getUnmoderatedWordIds, getApprovedWordIds };
 
 function getById(id: number) {
   return db("Words").where({ id }).first();
@@ -20,6 +20,14 @@ function getUnmoderatedWord() {
 
 function getApprovedWords() {
   return db("Words").where({ moderated: true, approved: true });
+}
+
+function getApprovedWordIds() {
+  return db("Words").select("id").where({ moderated: true, approved: true })
+}
+
+function getUnmoderatedWordIds() {
+  return db("Words").select("id").where({ moderated: false, approved: false })
 }
 
 async function update(id: number, changes: object) {

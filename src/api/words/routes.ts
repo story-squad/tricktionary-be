@@ -84,31 +84,28 @@ router.get("/by-name/:word", (req, res) => {
   const word = req.params.word;
   Words.getByName(word).then((value) => res.status(200).json(value));
 });
+
 /**
  * GET / returns a scoop of n-many random approved word
  */
-router.get("/scoop/:count", (req, res) => {
+router.get("/scoop/:count", async (req, res) => {
   const numberOfWords: any = req.params.count;
   const nw = validNumber(numberOfWords) ? Number(numberOfWords) : 1;
   const scoops = validNumber(process.env.SCOOP_SIZE)
     ? Number(process.env.SCOOP_SIZE)
     : 0;
-  const hardLimit = scoops > 0 ? scoops : 10; // set a hardlimit at 10 if no SCOOP_SIZE is provided.
   const words: object[] = [];
-  Words.getApprovedWords()
-    .then((possibleWords) => {
-      const m = Math.min(nw, possibleWords.length, hardLimit);
-      let chosen: number[] = range(m);
-      for (let i = 0; i < m; i++) {
-        const choice = chosen[Math.floor(Math.random() * chosen.length)];
-        words.push(possibleWords[choice]);
-        chosen = chosen.filter((num) => num !== choice); // reduce the lot
-      }
-      res.status(200).json({ words });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err.message });
-    });
+  const idObjs: any[] = await Words.getApprovedWordIds();
+  let ids: number[] = idObjs.map(({ id }) => id); // array of numbers
+  const hardLimit = scoops > 0 ? scoops : 10; // set a hardlimit at 10 if no SCOOP_SIZE is provided.
+  const m = Math.min(nw, ids.length, hardLimit);
+  for (let i = 0; i < m; i++) {
+    const randomId = ids[Math.floor(Math.random() * ids.length)];
+    const randomWord = await Words.getById(randomId);
+    words.push(randomWord);
+    ids = ids.filter((num) => num !== randomId); // reduce the lot
+  }
+  res.status(200).json({ words });
 });
 
 /**
