@@ -1,6 +1,6 @@
 import { Router } from "express";
 import Words from "./model";
-import { validateWord, validNumber, range } from "./utils";
+import { validateWord, validNumber } from "./utils";
 
 const router = Router();
 
@@ -185,5 +185,37 @@ router.put("/id/:id/reject", (req, res) => {
   });
 });
 
-// module.exports = router;
+/**
+ * put /id/:id
+ * modify a word, by ID
+ */
+router.put("/id/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) res.status(400).json({ error: "id?" });
+  const result = validateWord(req.body);
+  if (!result.ok) {
+    return res.status(400).json({ error: result.message });
+  }
+  const oldRecord:any = await Words.getById(id);
+  // if the spelling has changed, the db will consider this a different word.
+  if (result.value.word.toLowerCase() !== oldRecord.word.toLowerCase()) {
+    // make sure this word doesn't already exist under another id.
+    const dup: any = await Words.getByName(result.value.word);
+    if (dup?.id) {
+      // because if it does, we can't PUT it here.
+      return res.status(409).json({ error: `that word was already defined at id:${dup.id}`});
+    }
+  }
+  // at this point, we should be ok to update the database.
+  try {
+    const word:any = await Words.update(id, {
+      ...oldRecord,
+      ...result.value,
+    });
+    res.status(200).json({ word });
+  } catch(err) {
+    res.status(500).json({ error: err.message})
+  }
+});
+
 export default router;
