@@ -11,9 +11,13 @@ function add(gameState: any, wordId: number) {
     : newRound.message;
 }
 
+function get(roundId: number) {
+  return db("Rounds").where({ id: roundId }).first();
+}
+
 function roundFinished(roundId: number) {
   // timestamp when this round finished.
   return db("Rounds").where({ id: roundId }).update({ ended_at: db.fn.now() });
 }
 
-export default { add, roundFinished };
+export default { add, get, roundFinished };

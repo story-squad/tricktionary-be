@@ -12,6 +12,7 @@ import voteRoutes from "./api/votes/routes";
 import roundRoutes from "./api/rounds/routes";
 import userRoundRoutes from "./api/userRounds/routes";
 import definitionsRoutes from "./api/definitions/routes";
+import adminRoutes from "./api/admin/routes";
 // testing
 import cleverRoutes from "./api/clever/routes";
 
@@ -44,6 +45,7 @@ api.use("/api/votes", voteRoutes);
 api.use("/api/round", roundRoutes);
 api.use("/api/user-rounds", userRoundRoutes);
 api.use("/api/definitions", definitionsRoutes);
+api.use("/api/admin", adminRoutes);
 
 // testing
 api.use("/api/clever", cleverRoutes);
@@ -110,6 +112,9 @@ io.on("connection", (socket) => {
 
   socket.on("set phase", (phase: string, lobbyCode: string) => {
     gameSocketHandler.handleSetPhase(io, socket, lobbyCode, lobbies, phase);
+  })
+  socket.on("set host", (newHost: string, lobbyCode: string) => {
+    gameSocketHandler.handleSetNewHost(io, socket, lobbyCode, lobbies, newHost);
   })
 });
 
