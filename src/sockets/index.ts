@@ -8,6 +8,7 @@ import handleGuess, {handleArrayOfGuesses} from "./handleGuess";
 import handleFortune from "./handleFortune";
 import handleErrorMessage from "./handleErrorMessage";
 import handleSetPhase from "./handleSetPhase";
+import handleSetNewHost from "./handleSetNewHost"
 
 export default {
   handleLobbyLeave,
@@ -20,5 +21,6 @@ export default {
   handleArrayOfGuesses,
   handleFortune,
   handleErrorMessage,
-  handleSetPhase
+  handleSetPhase,
+  handleSetNewHost
 };
