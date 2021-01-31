@@ -20,7 +20,7 @@ TypeScript Express API
 #
 **Install**
 
-![install](install.gif)
+![install](gifs/install.gif)
 
     git clone https://github.com/story-squad/tricktionary-be
 
@@ -52,7 +52,7 @@ Create a release .zip archive:
 - time-stamped filename
 - *requires .env file
 #
-![zip](zip.gif)
+![zip](gifs/zip.gif)
 
 **Endpoints**
 | Path | Resource |
