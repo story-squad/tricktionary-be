@@ -5,6 +5,9 @@ TypeScript Express API
 
 #
 
+**UPDATED FOR AWS ELASTIC BEANSTALK...**
+[READ ABOUT IT HERE!](EB-README.md)
+
 **Requirements**
 
 - NodeJS
