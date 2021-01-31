@@ -1,9 +1,6 @@
 {
   "name": "tricktionary-be",
   "version": "1.0.1",
-  "engines": {
-    "node": "^12.16.2"
-  },
   "description": "",
   "main": "build/src/index.js",
   "scripts": {
