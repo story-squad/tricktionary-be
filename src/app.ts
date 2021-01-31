@@ -15,10 +15,11 @@ import definitionsRoutes from "./api/definitions/routes";
 import adminRoutes from "./api/admin/routes";
 // testing
 import cleverRoutes from "./api/clever/routes";
-
+import { log } from "./logger";
+log('Tricktionary');
 const api = express();
 const JSON_SIZE_LIMIT = "5mb";
-const lobbies:any = {};
+const lobbies: any = {};
 
 api.use(
   bodyParser.json({
@@ -91,7 +92,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("guess", (lobbyCode: string, guesses: any[]) => {
-    gameSocketHandler.handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses);
+    gameSocketHandler.handleArrayOfGuesses(
+      io,
+      socket,
+      lobbyCode,
+      lobbies,
+      guesses
+    );
     // gameSocketHandler.handleGuess(
     //   io,
     //   socket,
@@ -102,7 +109,7 @@ io.on("connection", (socket) => {
     // );
   });
 
-  socket.on("play again", (settings: any, lobbyCode: string)=> {
+  socket.on("play again", (settings: any, lobbyCode: string) => {
     gameSocketHandler.handlePlayAgain(io, socket, lobbyCode, lobbies, settings);
   });
 
@@ -112,10 +119,10 @@ io.on("connection", (socket) => {
 
   socket.on("set phase", (phase: string, lobbyCode: string) => {
     gameSocketHandler.handleSetPhase(io, socket, lobbyCode, lobbies, phase);
-  })
+  });
   socket.on("set host", (newHost: string, lobbyCode: string) => {
     gameSocketHandler.handleSetNewHost(io, socket, lobbyCode, lobbies, newHost);
-  })
+  });
 });
 
 export { socketApp };

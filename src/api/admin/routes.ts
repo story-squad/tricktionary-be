@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
 });
 
 /**
- * GET /round/:id   
+ * GET /round/:id
  * (Round round)
  * I get a round
  */
