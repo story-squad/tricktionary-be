@@ -35,11 +35,8 @@ TypeScript Express API
 
 **Commands**
 
-    npm run-script develop
-
-- Build; then start the app. (used primarily during development)
 #
-    npm run-script build
+    npm run build
 
 - Clean, lint, & transpile TS -> JS.
 #
@@ -47,15 +44,6 @@ TypeScript Express API
 
 - start the app.
 #
-    npm run-script package
-
-Create a release .zip archive:
-- include knex data/
-- patch package.json for a stand-alone release
-- time-stamped filename
-- *requires .env file
-#
-![zip](gifs/zip.gif)
 
 **Endpoints**
 | Path | Resource |
@@ -74,7 +62,3 @@ Create a release .zip archive:
 |--------| ------------|
 |[sockets](src/sockets)| event handlers |
 
-**Docker support**
-| Resource | Description |
-|--------| ------------|
-|[README](docker/README.md)| containerized development |

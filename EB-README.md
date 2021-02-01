@@ -24,7 +24,7 @@ To deploy this on elastic beanstalk, download and install the eb CLI.
 **initialize and create the environment**
 
 ```
-eb init --platform node.js --region us-east-1
+eb init
 
 
 eb create
@@ -42,5 +42,8 @@ npm run start
 #
 **Deploy via eb CLI**
 ```
+git add .
+git commit -m "updated application..."
 eb deploy
 ```
+
