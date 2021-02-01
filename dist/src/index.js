@@ -22,7 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = require("./app");
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-const server = app_1.socketApp.listen(3000, "127.0.0.1", () => {
+const server = app_1.socketApp.listen(8080, "127.0.0.1", () => {
     const { port, address } = server.address();
     console.log(`Server listening @ http://${address}${port ? `:${port}` : ""}`); // for devs convenience
 });
