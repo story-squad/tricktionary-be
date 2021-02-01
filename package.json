@@ -5,7 +5,8 @@
   "main": "build/src/index.js",
   "scripts": {
     "build": "sh ./scripts/makeElastic.sh",
-    "start": "node build/src/index.js"
+    "old": "node build/src/index.js",
+    "start": "node example-app"
   },
   "engines": {
     "node": "^12.20.1",
