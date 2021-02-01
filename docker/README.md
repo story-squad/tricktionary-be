@@ -3,7 +3,7 @@
 and wil require an additional option when run from another folder.
 
 ```
-docker-compose -f docker/docker-compose.yml
+docker-compose -f docker/docker-compose.yml COMMAND
 ```
 
 #
@@ -51,6 +51,7 @@ postgres=#
  ```
 #
 **knex**
+
 ```
 npm install -g knex
 ```
