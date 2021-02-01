@@ -12,10 +12,6 @@ a StorySquad API
 **Deployed by**
 - eb CLI
 
-**Extended with**
-- [node-settings](.ebextensions/node-settings.config)
-- [custom_nginx](.ebextensions/custom_nginx.config)
-- [logging](.ebextensions/logging.config)
 #
 
 To deploy this on elastic beanstalk, download and install the eb CLI.

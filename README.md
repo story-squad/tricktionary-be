@@ -14,10 +14,10 @@ TypeScript Express API
 - a PostGreSQL server
 
 #
-**Environment**
+**local environment**
 
-    PORT=5000
-    DATABASE_URL=postgresql://user:pass@localhost:5432/
+    PORT=8080
+    DATABASE_URL=postgresql://user:pass@database:5432/
     BASE_URL=http://0.0.0.0
 
 #
