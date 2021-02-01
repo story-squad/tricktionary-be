@@ -6,7 +6,6 @@
   "scripts": {
     "build": "sh ./scripts/makeElastic.sh",
     "deploy": "node build/src/index.js",
-    "start": "npm run build && npm run deploy"
   },
   "repository": {
     "type": "git",
