@@ -7,11 +7,6 @@ fi
 echo "transpiling..."
 tsc
 
-if [ -f .env ]; then
-   echo "copying .env to dist"
-   cp .env dist
-fi
-
 if [ -d data ]; then
    echo "copying data to dist"
     cp -r data dist
