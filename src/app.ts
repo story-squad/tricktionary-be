@@ -13,6 +13,7 @@ import roundRoutes from "./api/rounds/routes";
 import userRoundRoutes from "./api/userRounds/routes";
 import definitionsRoutes from "./api/definitions/routes";
 import adminRoutes from "./api/admin/routes";
+import authRoutes from "./api/auth/routes";
 // testing
 import cleverRoutes from "./api/clever/routes";
 import { log } from "./logger";
@@ -47,6 +48,7 @@ api.use("/api/round", roundRoutes);
 api.use("/api/user-rounds", userRoundRoutes);
 api.use("/api/definitions", definitionsRoutes);
 api.use("/api/admin", adminRoutes);
+api.use("/api/auth", authRoutes);
 
 // testing
 api.use("/api/clever", cleverRoutes);
@@ -57,6 +59,7 @@ const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
   console.log("New client connected", socket.id);
+  // LOGIN
 
   // more events to come.
   socket.on("disconnecting", () => {

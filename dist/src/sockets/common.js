@@ -33,8 +33,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.playerIsHost = exports.privateMessage = exports.fortune = exports.localAxios = exports.LC_LENGTH = void 0;
 // import * as dotenv from "dotenv";
-const util_1 = __importDefault(require("util"));
-const child_process_1 = require("child_process");
+// import util from "util";
+// import { exec as cmd } from "child_process";
 const axios_1 = __importDefault(require("axios"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
@@ -45,12 +45,13 @@ exports.localAxios = localAxios;
 localAxios.defaults.timeout = 10000;
 const LC_LENGTH = 4; // number of characters in lobbyCode
 exports.LC_LENGTH = LC_LENGTH;
-const exec = util_1.default.promisify(child_process_1.exec);
+// const exec = util.promisify(cmd);
 function fortune() {
     return __awaiter(this, void 0, void 0, function* () {
         // returns a promise
-        const { stdout, stderr } = yield exec("fortune");
-        return { fortune: stdout, error: stderr };
+        // const { stdout, stderr } = await exec("fortune");
+        // return { fortune: stdout, error: stderr };
+        return { fortune: "coming soon?" };
     });
 }
 exports.fortune = fortune;

@@ -38,8 +38,9 @@ const routes_5 = __importDefault(require("./api/rounds/routes"));
 const routes_6 = __importDefault(require("./api/userRounds/routes"));
 const routes_7 = __importDefault(require("./api/definitions/routes"));
 const routes_8 = __importDefault(require("./api/admin/routes"));
+const routes_9 = __importDefault(require("./api/auth/routes"));
 // testing
-const routes_9 = __importDefault(require("./api/clever/routes"));
+const routes_10 = __importDefault(require("./api/clever/routes"));
 const logger_1 = require("./logger");
 logger_1.log('Tricktionary');
 const api = express_1.default();
@@ -62,14 +63,16 @@ api.use("/api/round", routes_5.default);
 api.use("/api/user-rounds", routes_6.default);
 api.use("/api/definitions", routes_7.default);
 api.use("/api/admin", routes_8.default);
+api.use("/api/auth", routes_9.default);
 // testing
-api.use("/api/clever", routes_9.default);
+api.use("/api/clever", routes_10.default);
 // web sockets
 const socketApp = http_1.createServer(api);
 exports.socketApp = socketApp;
 const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
     console.log("New client connected", socket.id);
+    // LOGIN
     // more events to come.
     socket.on("disconnecting", () => {
         console.log("Client disconnecting...");
