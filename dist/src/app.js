@@ -71,8 +71,17 @@ const socketApp = http_1.createServer(api);
 exports.socketApp = socketApp;
 const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
-    console.log("New client connected", socket.id);
+    console.log("0 - New client connected", socket.id);
     // LOGIN
+    socket.on("login", (token) => {
+        if (token && token.length > 0) {
+            console.log('- returning player login');
+        }
+        else {
+            console.log('- new player login');
+        }
+        sockets_1.default.handleLoginAPI(io, socket, token);
+    });
     // more events to come.
     socket.on("disconnecting", () => {
         console.log("Client disconnecting...");
@@ -82,13 +91,16 @@ io.on("connection", (socket) => {
         console.log("Client disconnected", socket.id);
     });
     socket.on("create lobby", (username) => {
-        console.log(`${username} is creating a lobby`);
+        // first thing called by the Host.
+        console.log(`1 - ${username} is creating a lobby`);
         sockets_1.default.handleLobbyCreate(io, socket, username, lobbies);
     });
     socket.on("join lobby", (username, lobbyCode) => {
+        console.log('2.1 - PLAYER joins lobby');
         sockets_1.default.handleLobbyJoin(io, socket, username, lobbyCode, lobbies);
     });
     socket.on("start game", (settings, lobbyCode) => {
+        console.log('2.0 - HOST starts game');
         sockets_1.default.handleStartGame(io, socket, lobbyCode, lobbies, settings);
     });
     socket.on("definition submitted", (definition, lobbyCode) => {
