@@ -44,9 +44,9 @@ psql -h localhost -p 5432 -U docker postgres
 ```
 postgres=#
 ```
- CREATE user storysquad with encrypted password 'llama';
- CREATE database tricktionary;
- GRANT all privileges on database tricktionary to storysquad;
+  CREATE user storysquad with encrypted password 'llama';
+  CREATE database tricktionary;
+  GRANT all privileges on database tricktionary to storysquad;
  \q
  ```
 #

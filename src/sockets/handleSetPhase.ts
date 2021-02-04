@@ -15,6 +15,8 @@ async function handleSetPhase(io:any, socket: any, lobbyCode: any, lobbies: any,
   const checkIfHost = playerIsHost(socket, lobbyCode, lobbies);
   if (checkIfHost.ok) {
     console.log(`host is setting phase : ${phase}`);
+    // SWITCH STATEMENT WITH PHASE HANDLERS ?
+    // ***FINAL PHASE, TOP 3 PLAYERS WITH THEIR TOP 3 DEFINITIONS
     lobbies[lobbyCode].phase = phase;
     privateMessage(io, socket, "info", `ok, set phase: ${phase}`)
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);

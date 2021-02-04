@@ -34,6 +34,7 @@ function handleLobbyJoin(
     };
   }
   const playerId = socket.id;
+
   io.to(playerId).emit("welcome", playerId); // private message new player with id
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
   // console.log(lobbies[lobbyCode]);
