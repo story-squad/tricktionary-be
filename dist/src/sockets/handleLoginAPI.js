@@ -14,7 +14,7 @@ function handleLoginAPI(io, socket, token) {
     return __awaiter(this, void 0, void 0, function* () {
         const last_user_id = socket.id;
         let login;
-        let data = token ? { last_user_id, token } : { last_user_id };
+        let data = token ? { last_user_id, last_token: token } : { last_user_id };
         try {
             login = yield common_1.localAxios.post('/api/auth/login', data);
             data = login.data;
