@@ -41,8 +41,10 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
                  * the last_user_id. If so, we'll need to send
                  * this player over to that lobby.
                  */
-                totalRecall(player_id);
-                console.log("TODO: possible reconnect");
+                const existing = yield totalRecall(player_id);
+                if (existing.ok)
+                    player = existing.player;
+                console.log("TODO: possible reconnect", player);
             }
         }
         catch (err) {
@@ -107,7 +109,17 @@ function partialRecall(token) {
     };
 }
 function totalRecall(player_id) {
-    return { message: "todo: find the game being played" };
+    return __awaiter(this, void 0, void 0, function* () {
+        let result;
+        try {
+            const player = yield model_1.getPlayer(player_id);
+            result = { ok: true, player };
+        }
+        catch (err) {
+            result = { ok: false, message: err.message };
+        }
+        return result;
+    });
 }
 exports.default = router;
 //# sourceMappingURL=routes.js.map

@@ -44,7 +44,7 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings) {
                     definition: word.definition,
                     source
                 });
-                console.log(data);
+                // console.log(data)
                 if ((data === null || data === void 0 ? void 0 : data.id) > 0) {
                     word.id = data.id;
                 }
@@ -69,8 +69,8 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings) {
                 }
             }
             catch (err) {
-                console.log(err);
-                handleErrorMessage_1.default(io, socket, err);
+                console.log(err.message);
+                handleErrorMessage_1.default(io, socket, err.message);
                 return;
             }
             // end get word from source

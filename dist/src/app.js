@@ -71,7 +71,6 @@ const socketApp = http_1.createServer(api);
 exports.socketApp = socketApp;
 const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
-    console.log("0 - New client connected", socket.id);
     // LOGIN
     socket.on("login", (token) => {
         if (token && token.length > 0) {
@@ -91,16 +90,12 @@ io.on("connection", (socket) => {
         console.log("Client disconnected", socket.id);
     });
     socket.on("create lobby", (username) => {
-        // first thing called by the Host.
-        console.log(`1 - ${username} is creating a lobby`);
         sockets_1.default.handleLobbyCreate(io, socket, username, lobbies);
     });
     socket.on("join lobby", (username, lobbyCode) => {
-        console.log('2.1 - PLAYER joins lobby');
         sockets_1.default.handleLobbyJoin(io, socket, username, lobbyCode, lobbies);
     });
     socket.on("start game", (settings, lobbyCode) => {
-        console.log('2.0 - HOST starts game');
         sockets_1.default.handleStartGame(io, socket, lobbyCode, lobbies, settings);
     });
     socket.on("definition submitted", (definition, lobbyCode) => {

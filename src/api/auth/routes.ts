@@ -29,8 +29,9 @@ router.post("/login", async (req, res) => {
          * the last_user_id. If so, we'll need to send
          * this player over to that lobby.
          */
-        totalRecall(player_id);
-        console.log("TODO: possible reconnect");
+        const existing = await totalRecall(player_id);
+        if (existing.ok) player = existing.player;
+        console.log("TODO: possible reconnect", player);
       }
     } catch (err) {
       res.status(403).json({ message: err.message });
@@ -92,7 +93,17 @@ function partialRecall(token: string) {
   };
 }
 
-function totalRecall(player_id: string) {
-  return { message: "todo: find the game being played" };
+async function totalRecall(player_id: string) {
+  let result;
+  try {
+    const player = await getPlayer(player_id);
+    result = { ok: true, player };
+  } catch (err) {
+    result = { ok: false, message: err.message };
+  }
+  if (result.ok) {
+    // Check for existing game
+  }
+  return result;
 }
 export default router;

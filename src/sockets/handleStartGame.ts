@@ -35,7 +35,7 @@ async function handleStartGame(
         definition: word.definition,
         source
       });
-      console.log(data)
+      // console.log(data)
       if (data?.id > 0) {
         word.id = data.id;
       }
@@ -61,8 +61,8 @@ async function handleStartGame(
         return;
       }
     } catch (err) {
-      console.log(err);
-      handleErrorMessage(io, socket, err);
+      console.log(err.message);
+      handleErrorMessage(io, socket, err.message);
       return;
     }
     // end get word from source
