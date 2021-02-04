@@ -118,6 +118,9 @@ function totalRecall(player_id) {
         catch (err) {
             result = { ok: false, message: err.message };
         }
+        if (result.ok) {
+            // Check for existing game
+        }
         return result;
     });
 }

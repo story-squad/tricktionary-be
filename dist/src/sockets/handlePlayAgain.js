@@ -6,7 +6,7 @@ function handlePlayAgain(io, socket, lobbyCode, lobbies, settings) {
     // todo
     lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: lobbies[lobbyCode].players.map((player) => {
             return Object.assign(Object.assign({}, player), { definition: "" });
-        }), phase: "PREGAME", word: "", definition: "", guesses: [], roundSettings: updated });
+        }), phase: "PREGAME", word: "", definition: "", guesses: [], settings: updated });
     io.to(lobbyCode).emit("play again", lobbies[lobbyCode]);
     // console.log(lobbies[lobbyCode]);
 }

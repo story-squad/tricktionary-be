@@ -25,7 +25,7 @@ function handleSetPhase(io, socket, lobbyCode, lobbies, phase) {
         const checkIfHost = common_1.playerIsHost(socket, lobbyCode, lobbies);
         if (checkIfHost.ok) {
             console.log(`host is setting phase : ${phase}`);
-            // SWITCH STATEMENT WITH PHASE HANDLERS
+            // SWITCH STATEMENT WITH PHASE HANDLERS ?
             // ***FINAL PHASE, TOP 3 PLAYERS WITH THEIR TOP 3 DEFINITIONS
             lobbies[lobbyCode].phase = phase;
             common_1.privateMessage(io, socket, "info", `ok, set phase: ${phase}`);
