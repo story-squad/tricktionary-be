@@ -11,18 +11,25 @@ async function newPlayer(user_id: string) {
   }
   return { ok: true, player_id: uuId };
 }
-// update with "last_user_id"
-async function updatePlayer(player_id: string, update: any) {
-  const validUpdate = validatePlayerType({ id: player_id, ...update });
+async function updatePlayer(player_id: string, changes: any) {
+  const validUpdate = validatePlayerType({ id: player_id, ...changes });
   if (!validUpdate.ok) {
-    return validUpdate.message;
+    return { ok: false, message: validUpdate.message };
   }
-  const player = await getPlayer(player_id);
-  return player;
+  try {
+    const player = await db("Player")
+      .where({ id: player_id })
+      .update(changes)
+      .returning("*");
+    return player[0];
+  } catch (err) {
+    return { ok: false, message: err.messge };
+  }
 }
 
 async function getPlayer(player_id: string) {
-  return db("Player").where({ id: player_id }).first();
+  const player = await db("Player").where({ id: player_id }).first();
+  return player;
 }
 
 export { newPlayer, updatePlayer, getPlayer };

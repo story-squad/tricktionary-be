@@ -29,21 +29,29 @@ function newPlayer(user_id) {
     });
 }
 exports.newPlayer = newPlayer;
-// update with "last_user_id"
-function updatePlayer(player_id, update) {
+function updatePlayer(player_id, changes) {
     return __awaiter(this, void 0, void 0, function* () {
-        const validUpdate = utils_1.validatePlayerType(Object.assign({ id: player_id }, update));
+        const validUpdate = utils_1.validatePlayerType(Object.assign({ id: player_id }, changes));
         if (!validUpdate.ok) {
-            return validUpdate.message;
+            return { ok: false, message: validUpdate.message };
         }
-        const player = yield getPlayer(player_id);
-        return player;
+        try {
+            const player = yield dbConfig_1.default("Player")
+                .where({ id: player_id })
+                .update(changes)
+                .returning("*");
+            return player[0];
+        }
+        catch (err) {
+            return { ok: false, message: err.messge };
+        }
     });
 }
 exports.updatePlayer = updatePlayer;
 function getPlayer(player_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        return dbConfig_1.default("Player").where({ id: player_id }).first();
+        const player = yield dbConfig_1.default("Player").where({ id: player_id }).first();
+        return player;
     });
 }
 exports.getPlayer = getPlayer;

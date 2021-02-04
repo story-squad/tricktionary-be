@@ -58,9 +58,9 @@ router.post("/login", async (req, res) => {
   if (!payload.ok) {
     res.status(400).json({ message: payload.message });
   }
-  token = generateToken(last_user_id, player_id); // update the token
   try {
-    player = await updatePlayer(player_id, { token, last_user_id }); // update the user record
+    token = await generateToken(last_user_id, player_id); // generate new token
+    player = await updatePlayer(player_id, { token, last_user_id }); // update the player record
   } catch (err) {
     res.status(403).json({ message: err.message });
   }

@@ -73,9 +73,9 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     if (!payload.ok) {
         res.status(400).json({ message: payload.message });
     }
-    token = generateToken(last_user_id, player_id); // update the token
     try {
-        player = yield model_1.updatePlayer(player_id, { token, last_user_id }); // update the user record
+        token = yield generateToken(last_user_id, player_id); // generate new token
+        player = yield model_1.updatePlayer(player_id, { token, last_user_id }); // update the player record
     }
     catch (err) {
         res.status(403).json({ message: err.message });
