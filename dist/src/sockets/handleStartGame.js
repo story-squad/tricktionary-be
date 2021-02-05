@@ -83,7 +83,8 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings) {
             console.log("starting a new round...");
             newRound = yield common_1.localAxios.post("/api/round/start", {
                 lobby: lobbies[lobbyCode],
-                wordId: word.id
+                wordId: word.id,
+                lobbyCode
             });
             roundId = (_b = newRound.data) === null || _b === void 0 ? void 0 : _b.roundId;
         }
@@ -105,7 +106,8 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings) {
         try {
             result = yield common_1.localAxios.post("/api/user-rounds/add-players", {
                 players: lobbies[lobbyCode].players,
-                roundId
+                roundId,
+                game_id: lobbies[lobbyCode].game_id
             });
         }
         catch (err) {

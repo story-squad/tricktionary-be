@@ -14,6 +14,10 @@ import userRoundRoutes from "./api/userRounds/routes";
 import definitionsRoutes from "./api/definitions/routes";
 import adminRoutes from "./api/admin/routes";
 import authRoutes from "./api/auth/routes";
+import playerRoutes from "./api/player/routes";
+import gameRoutes from "./api/game/routes";
+
+
 // testing
 import cleverRoutes from "./api/clever/routes";
 import { log } from "./logger";
@@ -49,7 +53,8 @@ api.use("/api/user-rounds", userRoundRoutes);
 api.use("/api/definitions", definitionsRoutes);
 api.use("/api/admin", adminRoutes);
 api.use("/api/auth", authRoutes);
-
+api.use("/api/player", playerRoutes);
+api.use("/api/game", gameRoutes)
 // testing
 api.use("/api/clever", cleverRoutes);
 

@@ -17,11 +17,53 @@ const model_1 = __importDefault(require("./model"));
 const router = express_1.Router();
 router.post("/add-players", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // this route is called internally by sockets/handleStartGame
-    const { players, roundId } = req.body;
+    const { players, roundId, game_id } = req.body;
     if (!(players && roundId))
         res.status(400).json({ message: "missing required information" });
-    const result = yield model_1.default.addAllUserRounds(players, Number(roundId));
+    const result = yield model_1.default.addAllUserRounds(players, Number(roundId), game_id);
     res.status(result.ok ? 201 : 400).json({ message: result.message });
+}));
+router.get("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_id = req.params.id;
+    let possibilities;
+    if (!user_id) {
+        res.status(400).json({ ok: false, message: "/:id required" });
+    }
+    try {
+        possibilities = yield model_1.default.findPlayer(user_id);
+    }
+    catch (err) {
+        res.status(200).json({ ok: false, message: err.message });
+    }
+    res.status(200).json({ ok: true, possibilities });
+}));
+router.get("/user/:id/last", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_id = req.params.id;
+    let possibilities;
+    if (!user_id) {
+        res.status(400).json({ ok: false, message: "/:id required" });
+    }
+    try {
+        possibilities = yield model_1.default.findLastRound(user_id);
+    }
+    catch (err) {
+        res.status(200).json({ ok: false, message: err.message });
+    }
+    res.status(200).json({ ok: true, possibilities });
+}));
+router.get("/user/:id/first", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_id = req.params.id;
+    let possibilities;
+    if (!user_id) {
+        res.status(400).json({ ok: false, message: "/:id required" });
+    }
+    try {
+        possibilities = yield model_1.default.findFirstRound(user_id);
+    }
+    catch (err) {
+        res.status(200).json({ ok: false, message: err.message });
+    }
+    res.status(200).json({ ok: true, possibilities });
 }));
 exports.default = router;
 //# sourceMappingURL=routes.js.map

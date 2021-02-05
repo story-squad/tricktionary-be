@@ -17,6 +17,8 @@ const secrets_1 = __importDefault(require("./secrets"));
 const utils_1 = require("./utils");
 const express_1 = require("express");
 const model_1 = require("../player/model");
+const model_2 = __importDefault(require("../userRounds/model"));
+const model_3 = __importDefault(require("../rounds/model"));
 const router = express_1.Router();
 router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { last_user_id, player_id, last_token, jump_code } = req.body;
@@ -42,8 +44,12 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
                  * this player over to that lobby.
                  */
                 const existing = yield totalRecall(player_id);
-                if (existing.ok)
+                if (existing.ok) {
                     player = existing.player;
+                    if (existing.lobby) {
+                        console.log('redirect to lobby -', player.lobby);
+                    }
+                }
                 console.log("TODO: possible reconnect", player);
             }
         }
@@ -113,13 +119,25 @@ function totalRecall(player_id) {
         let result;
         try {
             const player = yield model_1.getPlayer(player_id);
-            result = { ok: true, player };
+            result = { ok: true, player, lobby: undefined };
         }
         catch (err) {
-            result = { ok: false, message: err.message };
+            result = { ok: false, message: err.message, lobby: undefined, player: undefined };
         }
         if (result.ok) {
             // Check for existing game
+            try {
+                const { round_id } = yield model_2.default.findLastRound(result.player.last_user_id);
+                const last_round = yield model_3.default.get(round_id);
+                const { spoilers } = last_round;
+                if (spoilers) {
+                    console.log("LOBBY: ", spoilers);
+                    return Object.assign(Object.assign({}, result), { lobby: spoilers });
+                }
+            }
+            catch (err) {
+                return { ok: false, message: err.message, lobby: undefined, player: undefined };
+            }
         }
         return result;
     });

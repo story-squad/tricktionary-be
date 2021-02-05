@@ -31,5 +31,9 @@ async function getPlayer(player_id: string) {
   const player = await db("Player").where({ id: player_id }).first();
   return player;
 }
+async function findPlayer(col_name: string, value: any) {
+  const player = await db("Player").where({ [col_name]: value }).first();
+  return player;
+}
 
-export { newPlayer, updatePlayer, getPlayer };
+export { newPlayer, updatePlayer, getPlayer, findPlayer };

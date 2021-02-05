@@ -14,6 +14,12 @@ function validateRound(roundObj) {
             message: `must be of type number, received ${typeof roundObj.word_id}`
         };
     }
+    if (roundObj.spoilers && typeof roundObj.spoilers !== "string") {
+        return {
+            ok: false,
+            message: `must be of type number, received ${typeof roundObj.word_id}`
+        };
+    }
     return { ok: true, value: roundObj };
 }
 exports.validateRound = validateRound;

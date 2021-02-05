@@ -3,7 +3,8 @@ import secrets from "./secrets";
 import { validatePayloadType } from "./utils";
 import { Router } from "express";
 import { newPlayer, updatePlayer, getPlayer } from "../player/model";
-
+import userRounds from "../userRounds/model";
+import Rounds from "../rounds/model";
 const router = Router();
 
 router.post("/login", async (req, res) => {
@@ -30,7 +31,12 @@ router.post("/login", async (req, res) => {
          * this player over to that lobby.
          */
         const existing = await totalRecall(player_id);
-        if (existing.ok) player = existing.player;
+        if (existing.ok) {
+          player = existing.player;
+          if (existing.lobby) {
+            console.log('redirect to lobby -', player.lobby)
+          }
+        }
         console.log("TODO: possible reconnect", player);
       }
     } catch (err) {
@@ -97,12 +103,25 @@ async function totalRecall(player_id: string) {
   let result;
   try {
     const player = await getPlayer(player_id);
-    result = { ok: true, player };
+    result = { ok: true, player, lobby: undefined };
   } catch (err) {
-    result = { ok: false, message: err.message };
+    result = { ok: false, message: err.message, lobby: undefined, player: undefined };
   }
   if (result.ok) {
     // Check for existing game
+    try {
+      const { round_id } = await userRounds.findLastRound(
+        result.player.last_user_id
+      );
+      const last_round = await Rounds.get(round_id);
+      const { spoilers } = last_round;
+      if (spoilers) {
+        console.log("LOBBY: ", spoilers)
+        return { ...result, lobby: spoilers };
+      }
+    } catch (err) {
+      return { ok: false, message: err.message, lobby: undefined, player: undefined };
+    }
   }
   return result;
 }

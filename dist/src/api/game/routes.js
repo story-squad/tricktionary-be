@@ -15,35 +15,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
 const router = express_1.Router();
-router.post("/start", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { lobby, wordId, lobbyCode } = req.body;
-    const result = yield model_1.default.add(lobby, wordId, lobbyCode);
-    res.status(201).json({ roundId: Array.from(result).pop() });
-}));
-router.post("/finish", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { roundId } = req.body;
+router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { og_host } = req.body;
+    let game_id;
     try {
-        const result = yield model_1.default.roundFinished(Number(roundId));
-        res.status(200).json({ result });
+        if (og_host) {
+            game_id = yield model_1.default.add(og_host);
+        }
     }
     catch (err) {
-        console.log(err);
-        res.status(400).json({ err });
+        res.status(400).json({ message: err.message });
     }
-}));
-router.get("/id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const round_id = Number(req.params.id);
-    let round;
-    if (!round_id) {
-        res.status(400).json({ error: "id?" });
-    }
-    try {
-        round = yield model_1.default.get(round_id);
-    }
-    catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-    res.status(200).json({ round });
+    res.status(200).json(game_id);
 }));
 exports.default = router;
 //# sourceMappingURL=routes.js.map

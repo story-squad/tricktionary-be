@@ -76,7 +76,8 @@ async function handleStartGame(
     console.log("starting a new round...");
     newRound = await localAxios.post("/api/round/start", {
       lobby: lobbies[lobbyCode],
-      wordId: word.id
+      wordId: word.id,
+      lobbyCode
     });
     roundId = newRound.data?.roundId;
   } catch (err) {
@@ -104,7 +105,8 @@ async function handleStartGame(
   try {
     result = await localAxios.post("/api/user-rounds/add-players", {
       players: lobbies[lobbyCode].players,
-      roundId
+      roundId,
+      game_id: lobbies[lobbyCode].game_id
     });
   } catch (err) {
     console.log("error: handleStartGame:55");
