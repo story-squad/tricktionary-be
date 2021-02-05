@@ -17,12 +17,3 @@ async function add(og_host: string) {
   return {ok: true, game_id: game_req[0]}
 }
 
-// function getAll() {
-//   return db("Reactions").select("id", "content").then(records => {
-//     return records
-//   });
-// }
-
-// function getById(id: number) {
-//   return db("Reactions").where({ id }).first();
-// }
