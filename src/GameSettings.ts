@@ -14,15 +14,12 @@ interface TricktionarySettings {
 }
 
 function timerSeconds(seconds: any) {
-  // default: put 60 seconds on the clock
   const test = String(seconds);
   const pattern = /[0-9]/g;
   const result = test.match(pattern) || [];
-  const n: string =
-    result.length > 0 && result.length === seconds.length
-      ? result.join("")
-      : "";
-  return n.length > 0 ? Number(n) : 60;
+  if (result.length === test.length) {
+    return result.join("")
+  }
 }
 
 export function GameSettings(settingsObj: any): Result<TricktionarySettings> {
