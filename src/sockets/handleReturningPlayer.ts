@@ -21,12 +21,10 @@ async function handleReturningPlayer(
   } catch (err) {
     return { ok: false, message: err.message };
   }
-  // console.log(player)
   privateMessage(io, socket, "token update", newtoken);
   if (player.last_played) {
     console.log("found existing lobbyCode: ", player.last_played);
     console.log("checking for on-going game");
-    // if (Object.keys(lobbies).find(key=> key === player.last_played)){}
     game = lobbies[player.last_played];
     if (game?.players) {
       console.log("found game, re-joining");
@@ -51,34 +49,23 @@ async function handleReturningPlayer(
           ]
         };
       }
-
       // update the player record with new socket.id
-      let test1 = await localAxios.put(`/api/player/id/${player.id}`, {
+      await localAxios.put(`/api/player/id/${player.id}`, {
         last_user_id: socket.id,
         last_played: player.last_played
       });
-      // let test2 = await localAxios.put(`/api/user/id/${player.id}`, {
-      //   last_user_id: socket.id,
-      //   last_played: player.last_played
-      // });
-  // REST-ful update
-      let test2: any;
       try {
-        test2 = await localAxios.post("/api/user-rounds/add-players", {
+        // should this update rather than add ?
+        await localAxios.post("/api/user-rounds/add-players", {
           players: lobbies[player.last_played].players,
           roundId: lobbies[player.last_played].roundId,
           game_id: lobbies[player.last_played].game_id
         });
       } catch (err) {
         console.log("error: handleStartGame:55");
-        // handleErrorMessage(io, socket, err);
-      }      
-
-      // console.log('updating with ', socket.id)
-      // console.log(test.data.player);
-      // update the 
-      io.to(socket.id).emit("welcome", socket.id); // private message new player with id
-      // privateMessage(io, socket, "welcome", playerId)
+        privateMessage(io, socket, "error", err.message)
+      }
+      privateMessage(io, socket, "welcome", socket.id)
       // update the lobby
       io.to(player.last_played).emit(
         "game update",

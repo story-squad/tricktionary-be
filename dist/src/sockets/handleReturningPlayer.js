@@ -28,12 +28,10 @@ function handleReturningPlayer(io, socket, token, lobbies) {
         catch (err) {
             return { ok: false, message: err.message };
         }
-        // console.log(player)
         common_1.privateMessage(io, socket, "token update", newtoken);
         if (player.last_played) {
             console.log("found existing lobbyCode: ", player.last_played);
             console.log("checking for on-going game");
-            // if (Object.keys(lobbies).find(key=> key === player.last_played)){}
             game = lobbies[player.last_played];
             if (game === null || game === void 0 ? void 0 : game.players) {
                 console.log("found game, re-joining");
@@ -56,18 +54,13 @@ function handleReturningPlayer(io, socket, token, lobbies) {
                         ] });
                 }
                 // update the player record with new socket.id
-                let test1 = yield common_1.localAxios.put(`/api/player/id/${player.id}`, {
+                yield common_1.localAxios.put(`/api/player/id/${player.id}`, {
                     last_user_id: socket.id,
                     last_played: player.last_played
                 });
-                // let test2 = await localAxios.put(`/api/user/id/${player.id}`, {
-                //   last_user_id: socket.id,
-                //   last_played: player.last_played
-                // });
-                // REST-ful update
-                let test2;
                 try {
-                    test2 = yield common_1.localAxios.post("/api/user-rounds/add-players", {
+                    // should this update rather than add ?
+                    yield common_1.localAxios.post("/api/user-rounds/add-players", {
                         players: lobbies[player.last_played].players,
                         roundId: lobbies[player.last_played].roundId,
                         game_id: lobbies[player.last_played].game_id
@@ -75,13 +68,9 @@ function handleReturningPlayer(io, socket, token, lobbies) {
                 }
                 catch (err) {
                     console.log("error: handleStartGame:55");
-                    // handleErrorMessage(io, socket, err);
+                    common_1.privateMessage(io, socket, "error", err.message);
                 }
-                // console.log('updating with ', socket.id)
-                // console.log(test.data.player);
-                // update the 
-                io.to(socket.id).emit("welcome", socket.id); // private message new player with id
-                // privateMessage(io, socket, "welcome", playerId)
+                common_1.privateMessage(io, socket, "welcome", socket.id);
                 // update the lobby
                 io.to(player.last_played).emit("game update", lobbies[player.last_played]); // ask room to update
             }

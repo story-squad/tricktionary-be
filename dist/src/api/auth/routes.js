@@ -40,8 +40,8 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
     else {
         const pid = String(created.player_id);
-        const token = yield utils_1.newToken(last_user_id, pid);
-        res.status(200).json(token);
+        const token = yield utils_1.newToken(last_user_id, pid, undefined);
+        res.status(token.status).json(token);
         // player_id = created.player_id;
     }
 }));
@@ -91,7 +91,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     let token;
     try {
-        let token_request = yield utils_1.newToken(last_user_id, player_id); // generate new token & update the player record
+        let token_request = yield utils_1.newToken(last_user_id, player_id, undefined); // generate new token & update the player record
         if (token_request.ok) {
             token = token_request.token;
         }
