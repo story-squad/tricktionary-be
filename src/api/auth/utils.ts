@@ -9,6 +9,7 @@ interface AuthorizedPlayer {
   pid: string; // player.id
   iat: number; // timestamp or 0
   exp: number | undefined; // timestamp
+  ext: string | undefined; // lobby code
 }
 
 export function validatePayloadType(payload: any): Result<AuthorizedPlayer> {
@@ -33,11 +34,12 @@ export function validatePayloadType(payload: any): Result<AuthorizedPlayer> {
   return { ok: true, value: payload }; // as-is
 }
 
-function generateToken(user_id: string, player_id: string) {
+function generateToken(user_id: string, player_id: string, extra:string|undefined) {
   const payload = {
     sub: user_id,
     pid: player_id,
-    iat: Date.now()
+    iat: Date.now(),
+    ext: extra
   };
   const options = {
     expiresIn: "1d"
@@ -51,18 +53,19 @@ function generateToken(user_id: string, player_id: string) {
  * @param last_user_id socket.id
  * @param player_id Player.id
  */
-export async function newToken(last_user_id: string, player_id: string) {
+export async function newToken(last_user_id: string, player_id: string, extra: string| undefined) {
   let token;
   const payload = validatePayloadType({
     sub: last_user_id,
     pid: player_id,
-    iat: 0
+    iat: 0,
+    ext: extra
   });
   if (!payload.ok) {
     return {ok: false, message: "bad payload", status: 400 };
   }
   try {
-    token = await generateToken(last_user_id, player_id); // generate new token
+    token = await generateToken(last_user_id, player_id, extra); // generate new token
     await updatePlayer(player_id, { token, last_user_id }); // update the player record
   } catch (err) {
     return { ok: false, message: err.message, status: 400 }

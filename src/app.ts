@@ -67,7 +67,7 @@ const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
   // LOGIN
   socket.on("login", (token:string|undefined) => {
-    if (token && token.length > 10) {
+    if (token && token.length > 0) {
       gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
     } else {
       gameSocketHandler.handleNewPlayer(io, socket);

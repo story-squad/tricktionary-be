@@ -27,8 +27,8 @@ router.post("/new-player", async (req, res) => {
     res.status(400).json({ message: created.message });
   } else {
     const pid: string = String(created.player_id);
-    const token = await newToken(last_user_id, pid);
-    res.status(200).json(token);
+    const token = await newToken(last_user_id, pid, undefined);
+    res.status(token.status).json(token);
     // player_id = created.player_id;
   }
 });
@@ -77,7 +77,7 @@ router.post("/login", async (req, res) => {
   }
   let token;
   try {
-    let token_request = await newToken(last_user_id, player_id); // generate new token & update the player record
+    let token_request = await newToken(last_user_id, player_id, undefined); // generate new token & update the player record
     if (token_request.ok) {
       token = token_request.token;
     }
@@ -106,7 +106,7 @@ async function totalRecall(player_id: string) {
   let lobby;
   let player;
   try {
-    console.log(player_id);
+    console.log(`player_id: ${player_id}`);
     player = await getPlayer(player_id);
     result = { ok: true, player, lobby: undefined };
   } catch (err) {
@@ -120,11 +120,11 @@ async function totalRecall(player_id: string) {
   if (result.ok) {
     // console.log("totalRecall - got player", result);
     // Check for existing game
-    let lobbyCode = result.player?.last_played;
-    if (lobbyCode) {
-      console.log("FOUND LOBBY CODE: ", lobbyCode);
-      // return { ok: true, player: result.player, spoilers: lobbyCode };
-    }
+    // let lobbyCode = result.player?.last_played;
+    // if (lobbyCode) {
+    //   console.log("FOUND LOBBY CODE: ", lobbyCode);
+    //   // return { ok: true, player: result.player, spoilers: lobbyCode };
+    // }
     try {
       const { round_id } = await userRounds.findLastRound(
         result.player.last_user_id
@@ -137,6 +137,7 @@ async function totalRecall(player_id: string) {
         return { ok: true, player: result.player, spoilers };
       }
     } catch (err) {
+      console.log(err.message)
       return {
         ok: false,
         message: err.message,

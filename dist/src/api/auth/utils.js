@@ -38,11 +38,12 @@ function validatePayloadType(payload) {
     return { ok: true, value: payload }; // as-is
 }
 exports.validatePayloadType = validatePayloadType;
-function generateToken(user_id, player_id) {
+function generateToken(user_id, player_id, extra) {
     const payload = {
         sub: user_id,
         pid: player_id,
-        iat: Date.now()
+        iat: Date.now(),
+        ext: extra
     };
     const options = {
         expiresIn: "1d"
@@ -55,19 +56,20 @@ function generateToken(user_id, player_id) {
  * @param last_user_id socket.id
  * @param player_id Player.id
  */
-function newToken(last_user_id, player_id) {
+function newToken(last_user_id, player_id, extra) {
     return __awaiter(this, void 0, void 0, function* () {
         let token;
         const payload = validatePayloadType({
             sub: last_user_id,
             pid: player_id,
-            iat: 0
+            iat: 0,
+            ext: extra
         });
         if (!payload.ok) {
             return { ok: false, message: "bad payload", status: 400 };
         }
         try {
-            token = yield generateToken(last_user_id, player_id); // generate new token
+            token = yield generateToken(last_user_id, player_id, extra); // generate new token
             yield model_1.updatePlayer(player_id, { token, last_user_id }); // update the player record
         }
         catch (err) {

@@ -116,13 +116,12 @@ function partialRecall(token) {
     };
 }
 function totalRecall(player_id) {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         let result;
         let lobby;
         let player;
         try {
-            console.log(player_id);
+            console.log(`player_id: ${player_id}`);
             player = yield model_1.getPlayer(player_id);
             result = { ok: true, player, lobby: undefined };
         }
@@ -137,11 +136,11 @@ function totalRecall(player_id) {
         if (result.ok) {
             // console.log("totalRecall - got player", result);
             // Check for existing game
-            let lobbyCode = (_a = result.player) === null || _a === void 0 ? void 0 : _a.last_played;
-            if (lobbyCode) {
-                console.log("FOUND LOBBY CODE: ", lobbyCode);
-                // return { ok: true, player: result.player, spoilers: lobbyCode };
-            }
+            // let lobbyCode = result.player?.last_played;
+            // if (lobbyCode) {
+            //   console.log("FOUND LOBBY CODE: ", lobbyCode);
+            //   // return { ok: true, player: result.player, spoilers: lobbyCode };
+            // }
             try {
                 const { round_id } = yield model_2.default.findLastRound(result.player.last_user_id);
                 console.log("User Round search ", round_id);
@@ -153,6 +152,7 @@ function totalRecall(player_id) {
                 }
             }
             catch (err) {
+                console.log(err.message);
                 return {
                     ok: false,
                     message: err.message,
