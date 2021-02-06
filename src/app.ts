@@ -14,6 +14,11 @@ import userRoundRoutes from "./api/userRounds/routes";
 import definitionsRoutes from "./api/definitions/routes";
 import adminRoutes from "./api/admin/routes";
 import authRoutes from "./api/auth/routes";
+import playerRoutes from "./api/player/routes";
+import gameRoutes from "./api/game/routes";
+import playedRoutes from "./api/played/routes";
+
+
 // testing
 import cleverRoutes from "./api/clever/routes";
 import { log } from "./logger";
@@ -49,7 +54,9 @@ api.use("/api/user-rounds", userRoundRoutes);
 api.use("/api/definitions", definitionsRoutes);
 api.use("/api/admin", adminRoutes);
 api.use("/api/auth", authRoutes);
-
+api.use("/api/player", playerRoutes);
+api.use("/api/game", gameRoutes)
+api.use("/api/played", playedRoutes);
 // testing
 api.use("/api/clever", cleverRoutes);
 
@@ -61,11 +68,10 @@ io.on("connection", (socket) => {
   // LOGIN
   socket.on("login", (token:string|undefined) => {
     if (token && token.length > 0) {
-      console.log('- returning player login')
+      gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
     } else {
-      console.log('- new player login')
+      gameSocketHandler.handleNewPlayer(io, socket);
     }
-    gameSocketHandler.handleLoginAPI(io, socket, token);
   });
   // more events to come.
   socket.on("disconnecting", () => {

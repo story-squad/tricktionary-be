@@ -31,7 +31,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.playerIsHost = exports.privateMessage = exports.fortune = exports.localAxios = exports.LC_LENGTH = void 0;
+exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.playerIsHost = exports.privateMessage = exports.fortune = exports.localAxios = exports.LC_LENGTH = void 0;
+const GameSettings_1 = require("../GameSettings");
 // import * as dotenv from "dotenv";
 // import util from "util";
 // import { exec as cmd } from "child_process";
@@ -90,4 +91,106 @@ function playerIsHost(socket, lobbyCode, lobbies) {
     }
 }
 exports.playerIsHost = playerIsHost;
+function checkSettings(settings) {
+    let lobbySettings;
+    try {
+        lobbySettings = GameSettings_1.GameSettings(settings);
+    }
+    catch (err) {
+        console.log("settings error");
+        return { ok: false, message: err.message, settings };
+    }
+    if (!lobbySettings.ok) {
+        return { ok: false, message: lobbySettings.message, settings };
+    }
+    return { ok: true, settings };
+}
+exports.checkSettings = checkSettings;
+function contributeWord(word, definition, source) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("new word!");
+        let newWord = { word, definition, source, id: 0 };
+        // write word to user-word db table.
+        try {
+            const { data } = yield localAxios.post("/api/words/contribute", {
+                word,
+                definition,
+                source
+            });
+            // console.log(data)
+            if ((data === null || data === void 0 ? void 0 : data.id) > 0) {
+                newWord.id = data.id;
+            }
+        }
+        catch (err) {
+            console.log("error contributing.");
+            console.log(err);
+        }
+        return newWord;
+    });
+}
+exports.contributeWord = contributeWord;
+function wordFromID(id) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        let word;
+        try {
+            let output = yield localAxios.get(`/api/words/id/${id}`);
+            word = (_a = output === null || output === void 0 ? void 0 : output.data) === null || _a === void 0 ? void 0 : _a.word;
+            if (!word.word) {
+                return { ok: false, message: "wordFromID: error" };
+            }
+        }
+        catch (err) {
+            return { ok: false, message: err.message };
+        }
+        return { ok: true, word };
+    });
+}
+exports.wordFromID = wordFromID;
+function startNewRound(host, word, lobbies, lobbyCode, lobbySettings) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const phase = "WRITING";
+        // start a new round
+        let newRound;
+        let roundId;
+        try {
+            console.log("starting a new round...");
+            newRound = yield localAxios.post("/api/round/start", {
+                lobby: lobbies[lobbyCode],
+                wordId: word.id,
+                lobbyCode
+            });
+            roundId = newRound.data.roundId;
+        }
+        catch (err) {
+            console.log("error trying to start new round!");
+            return { ok: false, message: err.message };
+        }
+        console.log("ROUND ID:", roundId);
+        const roundSettings = {
+            seconds: lobbySettings.seconds,
+            source: lobbySettings.source,
+            filter: lobbySettings.filter
+        };
+        // set phasers to "WRITING" and update the game state
+        lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { phase, word: word.word, definition: word.definition, roundId,
+            roundSettings,
+            host });
+        // REST-ful update
+        let result;
+        try {
+            result = yield localAxios.post("/api/user-rounds/add-players", {
+                players: lobbies[lobbyCode].players,
+                roundId,
+                game_id: lobbies[lobbyCode].game_id
+            });
+        }
+        catch (err) {
+            return { ok: false, result, lobbies };
+        }
+        return { ok: true, result, lobbies };
+    });
+}
+exports.startNewRound = startNewRound;
 //# sourceMappingURL=common.js.map

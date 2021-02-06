@@ -1,3 +1,5 @@
+import { GameSettings } from "../GameSettings";
+
 // import * as dotenv from "dotenv";
 // import util from "util";
 // import { exec as cmd } from "child_process";
@@ -11,7 +13,17 @@ const localAxios = axios.create({
 });
 localAxios.defaults.timeout = 10000;
 const LC_LENGTH: number = 4; // number of characters in lobbyCode
-export { LC_LENGTH, localAxios, fortune, privateMessage, playerIsHost };
+export {
+  LC_LENGTH,
+  localAxios,
+  fortune,
+  privateMessage,
+  playerIsHost,
+  checkSettings,
+  contributeWord,
+  wordFromID,
+  startNewRound
+};
 
 // const exec = util.promisify(cmd);
 
@@ -19,9 +31,8 @@ async function fortune() {
   // returns a promise
   // const { stdout, stderr } = await exec("fortune");
   // return { fortune: stdout, error: stderr };
-  return { fortune: "coming soon?"}
+  return { fortune: "coming soon?" };
 }
-
 
 /**
  * send message to socket.id
@@ -57,4 +68,104 @@ function playerIsHost(socket: any, lobbyCode: any, lobbies: any) {
   } catch (err) {
     return { ok: false, message: err };
   }
+}
+
+function checkSettings(settings: any) {
+  let lobbySettings;
+  try {
+    lobbySettings = GameSettings(settings);
+  } catch (err) {
+    console.log("settings error");
+    return { ok: false, message: err.message, settings };
+  }
+  if (!lobbySettings.ok) {
+    return { ok: false, message: lobbySettings.message, settings };
+  }
+  return { ok: true, settings };
+}
+
+async function contributeWord(
+  word: string,
+  definition: string,
+  source: string
+) {
+  console.log("new word!");
+  let newWord = { word, definition, source, id: 0 };
+  // write word to user-word db table.
+  try {
+    const { data } = await localAxios.post("/api/words/contribute", {
+      word,
+      definition,
+      source
+    });
+    // console.log(data)
+    if (data?.id > 0) {
+      newWord.id = data.id;
+    }
+  } catch (err) {
+    console.log("error contributing.");
+    console.log(err);
+  }
+  return newWord;
+}
+
+async function wordFromID(id: any) {
+  let word;
+  try {
+    let output = await localAxios.get(`/api/words/id/${id}`);
+    word = output?.data?.word;
+    if (!word.word) {
+      return { ok: false, message: "wordFromID: error" };
+    }
+  } catch (err) {
+    return { ok: false, message: err.message };
+  }
+  return { ok: true, word };
+}
+
+async function startNewRound(host: string, word: any, lobbies: any, lobbyCode: string, lobbySettings: any) {
+  const phase: string = "WRITING";
+  // start a new round
+  let newRound: any;
+  let roundId: any;
+  try {
+    console.log("starting a new round...");
+    newRound = await localAxios.post("/api/round/start", {
+      lobby: lobbies[lobbyCode],
+      wordId: word.id,
+      lobbyCode
+    });
+    roundId = newRound.data.roundId;
+  } catch (err) {
+    console.log("error trying to start new round!");
+    return {ok: false, message: err.message}
+  }
+  console.log("ROUND ID:", roundId);
+  const roundSettings: any = {
+    seconds: lobbySettings.seconds,
+    source: lobbySettings.source,
+    filter: lobbySettings.filter
+  };
+  // set phasers to "WRITING" and update the game state
+  lobbies[lobbyCode] = {
+    ...lobbies[lobbyCode],
+    phase,
+    word: word.word,
+    definition: word.definition,
+    roundId,
+    roundSettings,
+    host
+  };
+  // REST-ful update
+  let result: any;
+  try {
+    result = await localAxios.post("/api/user-rounds/add-players", {
+      players: lobbies[lobbyCode].players,
+      roundId,
+      game_id: lobbies[lobbyCode].game_id
+    });
+  } catch (err) {
+    return {ok: false, result, lobbies}
+  }
+  return {ok: true, result, lobbies};
 }

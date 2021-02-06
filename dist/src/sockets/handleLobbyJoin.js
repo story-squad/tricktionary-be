@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
 function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
+    console.log('joining...');
     if (lobbyCode.length !== common_1.LC_LENGTH) {
         handleErrorMessage_1.default(io, socket, "bad lobby code.");
         return;

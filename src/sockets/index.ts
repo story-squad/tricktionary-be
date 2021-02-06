@@ -9,7 +9,8 @@ import handleFortune from "./handleFortune";
 import handleErrorMessage from "./handleErrorMessage";
 import handleSetPhase from "./handleSetPhase";
 import handleSetNewHost from "./handleSetNewHost"
-import handleLoginAPI from "./handleLoginAPI";
+import handleNewPlayer from "./handleNewPlayer";
+import handleReturningPlayer from "./handleReturningPlayer";
 
 export default {
   handleLobbyLeave,
@@ -24,5 +25,6 @@ export default {
   handleErrorMessage,
   handleSetPhase,
   handleSetNewHost,
-  handleLoginAPI
+  handleNewPlayer,
+  handleReturningPlayer
 };

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPlayer = exports.updatePlayer = exports.newPlayer = void 0;
+exports.findPlayer = exports.getPlayer = exports.updatePlayer = exports.newPlayer = void 0;
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const utils_1 = require("./utils");
 const uuid_1 = require("uuid");
@@ -49,10 +49,14 @@ function updatePlayer(player_id, changes) {
 }
 exports.updatePlayer = updatePlayer;
 function getPlayer(player_id) {
+    return dbConfig_1.default("Player").where({ id: player_id }).first();
+}
+exports.getPlayer = getPlayer;
+function findPlayer(col_name, value) {
     return __awaiter(this, void 0, void 0, function* () {
-        const player = yield dbConfig_1.default("Player").where({ id: player_id }).first();
+        const player = yield dbConfig_1.default("Player").where({ [col_name]: value }).first();
         return player;
     });
 }
-exports.getPlayer = getPlayer;
+exports.findPlayer = findPlayer;
 //# sourceMappingURL=model.js.map

@@ -2,14 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameSettings = void 0;
 function timerSeconds(seconds) {
-    // default: put 60 seconds on the clock
     const test = String(seconds);
     const pattern = /[0-9]/g;
     const result = test.match(pattern) || [];
-    const n = result.length > 0 && result.length === seconds.length
-        ? result.join("")
-        : "";
-    return n.length > 0 ? Number(n) : 60;
+    if (result.length === test.length) {
+        return result.join("");
+    }
 }
 function GameSettings(settingsObj) {
     const { word } = settingsObj;

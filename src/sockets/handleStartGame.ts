@@ -1,6 +1,10 @@
-import { localAxios } from "./common";
+import {
+  checkSettings,
+  contributeWord,
+  wordFromID,
+  startNewRound
+} from "./common";
 import handleErrorMessage from "./handleErrorMessage";
-import { GameSettings } from "../GameSettings";
 async function handleStartGame(
   io: any,
   socket: any,
@@ -8,109 +12,30 @@ async function handleStartGame(
   lobbies: any,
   settings: any
 ) {
-  let lobbySettings;
-
-  try {
-    lobbySettings = GameSettings(settings);
-  } catch (err) {
-    console.log("settings error");
-    handleErrorMessage(io, socket, err);
+  let r = checkSettings(settings);
+  if (!r.ok) {
+    handleErrorMessage(io, socket, r?.message);
     return;
   }
-  if (!lobbySettings.ok) {
-    handleErrorMessage(io, socket, lobbySettings.message);
-    return;
-  }
-  // lobbySettings are now verified.
-  console.log(`timer set to ${lobbySettings.value.seconds}`);
-  let { word } = lobbySettings.value;
-  const { source } = lobbySettings.value;
+  console.log(r.settings);
+  let { word, source } = r.settings;
   if (word.id === 0) {
-    console.log("new word!");
-
-    // write word to user-word db table.
-    try {
-      const {data} = await localAxios.post("/api/words/contribute", {
-        word: word.word,
-        definition: word.definition,
-        source
-      });
-      // console.log(data)
-      if (data?.id > 0) {
-        word.id = data.id;
-      }
-    } catch (err) {
-      console.log("error contributing.")
-      console.log(err);
-    }
+    word = await contributeWord(word.word, word.definition, source);
   } else {
-    console.log(`word from ${lobbySettings.value.source}`);
-    // begin get word from source
-    let output: any;
-    // let word:string;
-    try {
-      // get word by id
-      output = await localAxios.get(`/api/words/id/${word.id}`);
-      word = output?.data?.word;
-      if (!word.word) {
-        handleErrorMessage(
-          io,
-          socket,
-          `error requesting word with id ${word.id} from ${lobbySettings.value.source}`
-        );
-        return;
-      }
-    } catch (err) {
-      console.log(err.message);
-      handleErrorMessage(io, socket, err.message);
-      return;
+    let r = await wordFromID(word.id);
+    if (r.ok) {
+      word = r.word;
     }
-    // end get word from source
   }
-
-  const phase: string = "WRITING";
-  // start a new round
-  let newRound: any;
-  let roundId: any;
-  try {
-    console.log("starting a new round...");
-    newRound = await localAxios.post("/api/round/start", {
-      lobby: lobbies[lobbyCode],
-      wordId: word.id
-    });
-    roundId = newRound.data?.roundId;
-  } catch (err) {
-    console.log("error trying to start new round!");
-    handleErrorMessage(io, socket, err);
-  }
-  console.log("ROUND ID:", roundId);
-  const roundSettings: any = {
-    seconds: lobbySettings.value.seconds,
-    source: lobbySettings.value.source,
-    filter: lobbySettings.value.filter
-  };
-  // set phasers to "WRITING" and update the game state
-  lobbies[lobbyCode] = {
-    ...lobbies[lobbyCode],
-    phase,
-    word: word.word,
-    definition: word.definition,
-    roundId,
-    roundSettings,
-    host: socket.id
-  };
-  // REST-ful update
-  let result: any;
-  try {
-    result = await localAxios.post("/api/user-rounds/add-players", {
-      players: lobbies[lobbyCode].players,
-      roundId
-    });
-  } catch (err) {
-    console.log("error: handleStartGame:55");
-    handleErrorMessage(io, socket, err);
-  }
-  if (result?.status === 201) {
+  let newRound = await startNewRound(
+    socket.id,
+    word,
+    lobbies,
+    lobbyCode,
+    r.settings
+  );
+  if (newRound.ok && newRound.result?.status === 201) {
+    lobbies = newRound.lobbies;
     // pub-sub update
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
   } else {

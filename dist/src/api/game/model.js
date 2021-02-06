@@ -8,22 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = require("./common");
-function handleLoginAPI(io, socket, token) {
+const dbConfig_1 = __importDefault(require("../../dbConfig"));
+const uuid_1 = require("uuid");
+exports.default = { add };
+function add(og_host) {
     return __awaiter(this, void 0, void 0, function* () {
-        const last_user_id = socket.id;
-        let login;
-        let data = token ? { last_user_id, last_token: token } : { last_user_id };
+        const uuId = uuid_1.v4();
+        let game_req;
         try {
-            login = yield common_1.localAxios.post('/api/auth/login', data);
-            data = login.data;
+            game_req = yield dbConfig_1.default("Game").insert({
+                id: uuId,
+                og_host
+            }).returning("id");
         }
         catch (err) {
-            return { ok: false, message: err.message };
+            return { ok: false, message: 'error' };
         }
-        common_1.privateMessage(io, socket, "token update", login.data);
+        return { ok: true, game_id: game_req[0] };
     });
 }
-exports.default = handleLoginAPI;
-//# sourceMappingURL=handleLoginAPI.js.map
+//# sourceMappingURL=model.js.map

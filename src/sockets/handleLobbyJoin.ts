@@ -8,6 +8,7 @@ function handleLobbyJoin(
   lobbyCode: any,
   lobbies: any
 ) {
+  console.log('joining...')
   if (lobbyCode.length !== LC_LENGTH) {
     handleErrorMessage(io, socket, "bad lobby code.")
     return;

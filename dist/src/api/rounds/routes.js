@@ -16,8 +16,8 @@ const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
 const router = express_1.Router();
 router.post("/start", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { lobby, wordId } = req.body;
-    const result = yield model_1.default.add(lobby, wordId);
+    const { lobby, wordId, lobbyCode } = req.body;
+    const result = yield model_1.default.add(lobby, wordId, lobbyCode);
     res.status(201).json({ roundId: Array.from(result).pop() });
 }));
 router.post("/finish", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -30,6 +30,20 @@ router.post("/finish", (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.log(err);
         res.status(400).json({ err });
     }
+}));
+router.get("/id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const round_id = Number(req.params.id);
+    let round;
+    if (!round_id) {
+        res.status(400).json({ error: "id?" });
+    }
+    try {
+        round = yield model_1.default.get(round_id);
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+    res.status(200).json({ round });
 }));
 exports.default = router;
 //# sourceMappingURL=routes.js.map

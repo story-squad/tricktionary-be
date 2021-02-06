@@ -3,6 +3,7 @@ type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 interface GameRound {
   word_id: number;
   number_players: number;
+  spoilers: string | undefined;
 }
 
 export function validateRound(roundObj: any): Result<GameRound> {
@@ -13,6 +14,12 @@ export function validateRound(roundObj: any): Result<GameRound> {
     };
   }
   if (typeof roundObj.number_players !== "number") {
+    return {
+      ok: false,
+      message: `must be of type number, received ${typeof roundObj.word_id}`
+    };
+  }
+  if (roundObj.spoilers && typeof roundObj.spoilers !== "string") {
     return {
       ok: false,
       message: `must be of type number, received ${typeof roundObj.word_id}`
