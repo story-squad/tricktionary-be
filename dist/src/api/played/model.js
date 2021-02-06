@@ -12,51 +12,49 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findPlayer = exports.getPlayer = exports.updatePlayer = exports.newPlayer = void 0;
+exports.getPlayers = exports.getGames = exports.played = void 0;
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
-const utils_1 = require("./utils");
 const uuid_1 = require("uuid");
-function newPlayer(user_id) {
+function played(player_id, game_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const uuId = uuid_1.v4();
         try {
-            yield dbConfig_1.default("Player").insert({ id: uuId, last_user_id: user_id });
+            yield dbConfig_1.default("Played").insert({ id: uuId, player_id, game_id });
         }
         catch (err) {
             return { ok: false, message: err.message };
         }
-        return { ok: true, player_id: uuId };
+        return { ok: true, played: uuId };
     });
 }
-exports.newPlayer = newPlayer;
-function updatePlayer(player_id, changes) {
+exports.played = played;
+function getGames(player_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const validUpdate = utils_1.validatePlayerType(Object.assign({ id: player_id }, changes));
-        if (!validUpdate.ok) {
-            return { ok: false, message: validUpdate.message };
-        }
+        //
+        let result;
         try {
-            const player = yield dbConfig_1.default("Player")
-                .where({ id: player_id })
-                .update(changes)
-                .returning("*");
-            return player[0];
+            result = yield dbConfig_1.default("Played").where({ player_id }).returning("game_id");
+            console.log(result);
         }
         catch (err) {
-            return { ok: false, message: err.messge };
+            result = { ok: false, message: err.message };
         }
+        return result;
     });
 }
-exports.updatePlayer = updatePlayer;
-function getPlayer(player_id) {
-    return dbConfig_1.default("Player").where({ id: player_id }).first();
-}
-exports.getPlayer = getPlayer;
-function findPlayer(col_name, value) {
+exports.getGames = getGames;
+function getPlayers(game_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const player = yield dbConfig_1.default("Player").where({ [col_name]: value }).first();
-        return player;
+        //
+        let result;
+        try {
+            result = yield dbConfig_1.default("Played").where({ game_id }).returning("player_id");
+        }
+        catch (err) {
+            result = { ok: false, message: err.message };
+        }
+        return result;
     });
 }
-exports.findPlayer = findPlayer;
+exports.getPlayers = getPlayers;
 //# sourceMappingURL=model.js.map

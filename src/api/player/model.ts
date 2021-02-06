@@ -27,9 +27,8 @@ async function updatePlayer(player_id: string, changes: any) {
   }
 }
 
-async function getPlayer(player_id: string) {
-  const player = await db("Player").where({ id: player_id }).first();
-  return player;
+function getPlayer(player_id: string) {
+  return db("Player").where({ id: player_id }).first();
 }
 async function findPlayer(col_name: string, value: any) {
   const player = await db("Player").where({ [col_name]: value }).first();

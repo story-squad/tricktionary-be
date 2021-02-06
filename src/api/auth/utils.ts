@@ -1,3 +1,7 @@
+import jwt from "jsonwebtoken";
+import { updatePlayer } from "../player/model";
+import secrets from "./secrets";
+
 type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 
 interface AuthorizedPlayer {
@@ -27,4 +31,41 @@ export function validatePayloadType(payload: any): Result<AuthorizedPlayer> {
     }
   }
   return { ok: true, value: payload }; // as-is
+}
+
+function generateToken(user_id: string, player_id: string) {
+  const payload = {
+    sub: user_id,
+    pid: player_id,
+    iat: Date.now()
+  };
+  const options = {
+    expiresIn: "1d"
+  };
+  return jwt.sign(payload, secrets.jwtSecret, options);
+}
+
+/**
+ * create a new token for the player.
+ * 
+ * @param last_user_id socket.id
+ * @param player_id Player.id
+ */
+export async function newToken(last_user_id: string, player_id: string) {
+  let token;
+  const payload = validatePayloadType({
+    sub: last_user_id,
+    pid: player_id,
+    iat: 0
+  });
+  if (!payload.ok) {
+    return {ok: false, message: "bad payload", status: 400 };
+  }
+  try {
+    token = await generateToken(last_user_id, player_id); // generate new token
+    await updatePlayer(player_id, { token, last_user_id }); // update the player record
+  } catch (err) {
+    return { ok: false, message: err.message, status: 400 }
+  }
+  return { ok: true, token, message: "token update", status: 200 }
 }

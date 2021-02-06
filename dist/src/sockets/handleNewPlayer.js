@@ -10,20 +10,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
-function handleLoginAPI(io, socket, token) {
+function handleNewPlayer(io, socket) {
     return __awaiter(this, void 0, void 0, function* () {
         const last_user_id = socket.id;
         let login;
-        let data = token ? { last_user_id, last_token: token } : { last_user_id };
+        let player;
+        let newtoken;
         try {
-            login = yield common_1.localAxios.post('/api/auth/login', data);
-            data = login.data;
+            login = yield common_1.localAxios.post('/api/auth/new-player', { last_user_id });
+            console.log(login.data);
+            newtoken = login.data.token;
+            player = login.data.player;
         }
         catch (err) {
             return { ok: false, message: err.message };
         }
-        common_1.privateMessage(io, socket, "token update", login.data);
+        common_1.privateMessage(io, socket, "token update", newtoken);
     });
 }
-exports.default = handleLoginAPI;
-//# sourceMappingURL=handleLoginAPI.js.map
+exports.default = handleNewPlayer;
+//# sourceMappingURL=handleNewPlayer.js.map

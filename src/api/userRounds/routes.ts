@@ -2,7 +2,6 @@ import { Router } from "express";
 import userRounds from "./model";
 
 const router = Router();
-
 router.post("/add-players", async (req, res) => {
   // this route is called internally by sockets/handleStartGame
   const { players, roundId, game_id } = req.body;
