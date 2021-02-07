@@ -10,7 +10,8 @@ a StorySquad API
 - SocketIO
 
 **Deployed by**
-- eb CLI
+- [eb CLI](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html)
+- [aws-elastic-beanstalk-cli](https://github.com/marketplace/actions/aws-elastic-beanstalk-cli)
 
 #
 
@@ -39,7 +40,7 @@ npm run build
 npm run start
 ```
 #
-**Deploy via eb CLI**
+**Deploymen via eb CLI**
 
 After writing a new feature or fixing a broken piece of legacy code.
 
