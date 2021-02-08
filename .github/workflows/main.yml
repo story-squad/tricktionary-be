@@ -37,7 +37,7 @@ jobs:
 
       # deploy to AWS Elastic Beanstalk
       - name: AWS Elastic Beanstalk cli
-        uses: story-squad/actions-aws-eb@v1.0.1-beta.1
+        uses: hmanzur/actions-aws-eb@v1.0.0
         with:
           command: 'deploy ${{ secrets.ENVIRONMENT_NAME }} --staged'
         env:
