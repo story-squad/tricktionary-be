@@ -128,13 +128,26 @@ io.on("connection", (socket) => {
     //   lobbies
     // );
   });
-  socket.on("player guess", (playerId: string, definitionKey: number) => {
-    gameSocketHandler.handleMessageHost(io, socket, lobbies, "player guess", {
-      playerId,
-      definitionKey
-    });
+  socket.on("msg host", (message: string) => {
+    gameSocketHandler.handleMessageHost(
+      io,
+      socket,
+      lobbies,
+      "msg host",
+      message
+    );
   });
 
+  socket.on("player guess", (playerId: string, definitionKey: number) => {
+    gameSocketHandler.handleMessagePlayer(
+      io,
+      socket,
+      lobbies,
+      playerId,
+      "player guess",
+      definitionKey
+    );
+  });
   socket.on("play again", (settings: any, lobbyCode: string) => {
     gameSocketHandler.handlePlayAgain(io, socket, lobbyCode, lobbies, settings);
   });

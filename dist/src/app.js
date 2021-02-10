@@ -124,11 +124,11 @@ io.on("connection", (socket) => {
         //   lobbies
         // );
     });
+    socket.on("msg host", (message) => {
+        sockets_1.default.handleMessageHost(io, socket, lobbies, "msg host", message);
+    });
     socket.on("player guess", (playerId, definitionKey) => {
-        sockets_1.default.handleMessageHost(io, socket, lobbies, "player guess", {
-            playerId,
-            definitionKey
-        });
+        sockets_1.default.handleMessagePlayer(io, socket, lobbies, playerId, "player guess", definitionKey);
     });
     socket.on("play again", (settings, lobbyCode) => {
         sockets_1.default.handlePlayAgain(io, socket, lobbyCode, lobbies, settings);
