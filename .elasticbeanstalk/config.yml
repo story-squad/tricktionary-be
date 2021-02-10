@@ -2,6 +2,8 @@ branch-defaults:
   main:
     environment: tricktionary-prod-env
     group_suffix: null
+  production:
+    environment: tricktionary-prod-env
 global:
   application_name: tricktionary-prod
   branch: null
