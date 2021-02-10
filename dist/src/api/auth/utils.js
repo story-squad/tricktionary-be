@@ -12,9 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.newToken = exports.validatePayloadType = void 0;
+exports.totalRecall = exports.partialRecall = exports.b64 = exports.newToken = exports.validatePayloadType = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const model_1 = require("../player/model");
+const model_1 = __importDefault(require("../player/model"));
+const model_2 = __importDefault(require("../userRounds/model"));
+const model_3 = __importDefault(require("../rounds/model"));
 const secrets_1 = __importDefault(require("./secrets"));
 function validatePayloadType(payload) {
     if (typeof payload.sub !== "string") {
@@ -58,7 +60,6 @@ function generateToken(user_id, player_id, extra) {
  */
 function newToken(last_user_id, player_id, extra) {
     return __awaiter(this, void 0, void 0, function* () {
-        let token;
         const payload = validatePayloadType({
             sub: last_user_id,
             pid: player_id,
@@ -69,14 +70,89 @@ function newToken(last_user_id, player_id, extra) {
             return { ok: false, message: "bad payload", status: 400 };
         }
         try {
-            token = yield generateToken(last_user_id, player_id, extra); // generate new token
-            yield model_1.updatePlayer(player_id, { token, last_user_id }); // update the player record
+            const token = yield generateToken(last_user_id, player_id, extra); // generate new token
+            yield model_1.default.updatePlayer(player_id, { token, last_user_id }); // update the player record
+            return { ok: true, token, message: "token update", status: 200 };
         }
         catch (err) {
             return { ok: false, message: err.message, status: 400 };
         }
-        return { ok: true, token, message: "token update", status: 200 };
     });
 }
 exports.newToken = newToken;
+// encode a string in Base64
+const encode64 = (str) => Buffer.from(str, "binary").toString("base64");
+// decode a string from Base64
+const decode64 = (str) => Buffer.from(str, "base64").toString("binary");
+exports.b64 = { encode: encode64, decode: decode64 };
+/**
+ * @returns player_id, last_user_id (from JWT)
+ * @param token JWT
+ *
+ */
+function partialRecall(token) {
+    // get player_id & last user_id from the JWT
+    const payload = validatePayloadType(jsonwebtoken_1.default.decode(token));
+    if (!payload.ok)
+        return { ok: false, message: payload.message };
+    let username;
+    let definition;
+    let points;
+    if (payload.value.ext) {
+        const extra = exports.b64.decode(payload.value.ext);
+        username = extra.username;
+        definition = extra.definition;
+        points = extra.points;
+    }
+    return {
+        ok: true,
+        last_user_id: payload.value.sub,
+        player_id: payload.value.pid,
+        username, definition, points
+    };
+}
+exports.partialRecall = partialRecall;
+function totalRecall(player_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let result;
+        let player;
+        try {
+            player = yield model_1.default.getPlayer(player_id);
+            result = { ok: true, player, lobby: undefined };
+        }
+        catch (err) {
+            result = {
+                ok: false,
+                message: err.message,
+                lobby: undefined,
+                player: undefined
+            };
+        }
+        if (result.ok) {
+            // ok, we found the user, now find their last lobby (if it exists)
+            try {
+                const { round_id } = yield model_2.default.findLastRound(result.player.last_user_id);
+                const last_round = yield model_3.default.get(round_id);
+                // note: My decision to store the lobby code here was convenient.
+                //   I created the spoilers field to store potentially unwanted words from each player.
+                //   we have not written that feature yet, so I placed the lobbycode there.
+                const { spoilers } = last_round;
+                if (spoilers) {
+                    return { ok: true, player: result.player, spoilers };
+                }
+            }
+            catch (err) {
+                console.log("cannot find a last_lobby of player.");
+                return {
+                    ok: true,
+                    message: err.message,
+                    spoilers: undefined,
+                    player
+                };
+            }
+        }
+        return result;
+    });
+}
+exports.totalRecall = totalRecall;
 //# sourceMappingURL=utils.js.map

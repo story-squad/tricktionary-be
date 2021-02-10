@@ -35,4 +35,4 @@ async function findPlayer(col_name: string, value: any) {
   return player;
 }
 
-export { newPlayer, updatePlayer, getPlayer, findPlayer };
+export default { newPlayer, updatePlayer, getPlayer, findPlayer };

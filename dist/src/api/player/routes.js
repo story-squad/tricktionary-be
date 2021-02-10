@@ -8,15 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const model_1 = require("./model");
+const model_1 = __importDefault(require("./model"));
 const express_1 = require("express");
 const router = express_1.Router();
 router.get("/id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const player_id = req.params.id;
     let player;
     try {
-        player = yield model_1.getPlayer(player_id);
+        player = yield model_1.default.getPlayer(player_id);
     }
     catch (err) {
         res.status(400).json({ error: err.message });
@@ -27,7 +30,7 @@ router.get("/last-user-id/:id", (req, res) => __awaiter(void 0, void 0, void 0, 
     const user_id = req.params.id;
     let player;
     try {
-        player = yield model_1.findPlayer("last_user_id", user_id);
+        player = yield model_1.default.findPlayer("last_user_id", user_id);
     }
     catch (err) {
         res.status(400).json({ error: err.message });
@@ -39,7 +42,7 @@ router.put("/id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const changes = req.body;
     let player;
     try {
-        player = yield model_1.updatePlayer(player_id, changes);
+        player = yield model_1.default.updatePlayer(player_id, changes);
     }
     catch (err) {
         res.status(400).json({ error: err.message });

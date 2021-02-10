@@ -19,12 +19,25 @@ const secrets_1 = __importDefault(require("./secrets"));
 //
 const utils_1 = require("./utils");
 //
-const model_1 = require("../player/model");
-const model_2 = __importDefault(require("../userRounds/model"));
-const model_3 = __importDefault(require("../rounds/model"));
+const model_1 = __importDefault(require("../player/model"));
 const router = express_1.Router();
+router.get("/find-player/:last_user_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const last_user_id = req.params.last_user_id;
+    let player;
+    let errorMessage = "unknown error";
+    if (!last_user_id) {
+        res.status(404).json({ message: "last_user_id required" });
+    }
+    try {
+        player = yield model_1.default.findPlayer("last_user_id", last_user_id);
+    }
+    catch (err) {
+        errorMessage = err.message;
+        res.status(400).json({ error: errorMessage });
+    }
+    res.status(200).json(player);
+}));
 router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("new player");
     let { last_user_id, jump_code } = req.body;
     if (!last_user_id) {
         res.status(403).json({ message: "last_user_id required" });
@@ -33,8 +46,7 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
         console.log("TODO: player is jumping from another device.");
     }
     // first game ? you will need a new player_id
-    const created = yield model_1.newPlayer(last_user_id);
-    console.log(created);
+    const created = yield model_1.default.newPlayer(last_user_id);
     if (!created.ok) {
         res.status(400).json({ message: created.message });
     }
@@ -42,7 +54,17 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
         const pid = String(created.player_id);
         const token = yield utils_1.newToken(last_user_id, pid, undefined);
         res.status(token.status).json(token);
-        // player_id = created.player_id;
+    }
+}));
+router.post("/update-token", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { s_id, p_id, name, definition, points } = req.body;
+    const extra = utils_1.b64.encode(JSON.stringify({ name, definition, points }));
+    try {
+        const token = yield utils_1.newToken(s_id, p_id, extra);
+        res.status(200).json({ token });
+    }
+    catch (err) {
+        res.send(400).json({ message: err.message });
     }
 }));
 router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -57,7 +79,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     let last_lobby;
     try {
         jsonwebtoken_1.default.verify(last_token, secrets_1.default.jwtSecret); // verify it's one of ours.
-        let mem = partialRecall(last_token);
+        let mem = utils_1.partialRecall(last_token);
         if (!mem.ok) {
             res.status(400).json({ message: mem.message });
         }
@@ -66,7 +88,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
             // same web socket session, update token and return.
             console.log("ok, same socket");
         }
-        const existing = yield totalRecall(player_id);
+        const existing = yield utils_1.totalRecall(player_id);
         if (existing.ok) {
             player = existing.player;
             last_lobby = existing.spoilers;
@@ -74,7 +96,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
         else {
             console.log("can't find this player in the db");
-            console.log(existing);
+            // console.log(existing);
         }
     }
     catch (err) {
@@ -102,67 +124,5 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     player = Object.assign(Object.assign({}, player), { last_played: last_lobby });
     res.status(200).json({ message: "welcome", player, token });
 }));
-/**
- * @param token JWT
- */
-function partialRecall(token) {
-    const payload = utils_1.validatePayloadType(jsonwebtoken_1.default.decode(token));
-    if (!payload.ok)
-        return { ok: false, message: payload.message };
-    return {
-        ok: true,
-        last_user_id: payload.value.sub,
-        player_id: payload.value.pid
-    };
-}
-function totalRecall(player_id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let result;
-        let lobby;
-        let player;
-        try {
-            console.log(`player_id: ${player_id}`);
-            player = yield model_1.getPlayer(player_id);
-            result = { ok: true, player, lobby: undefined };
-        }
-        catch (err) {
-            result = {
-                ok: false,
-                message: err.message,
-                lobby: undefined,
-                player: undefined
-            };
-        }
-        if (result.ok) {
-            // console.log("totalRecall - got player", result);
-            // Check for existing game
-            // let lobbyCode = result.player?.last_played;
-            // if (lobbyCode) {
-            //   console.log("FOUND LOBBY CODE: ", lobbyCode);
-            //   // return { ok: true, player: result.player, spoilers: lobbyCode };
-            // }
-            try {
-                const { round_id } = yield model_2.default.findLastRound(result.player.last_user_id);
-                console.log("User Round search ", round_id);
-                const last_round = yield model_3.default.get(round_id);
-                const { spoilers } = last_round;
-                if (spoilers) {
-                    console.log("FOUND LOBBY CODE: ", spoilers);
-                    return { ok: true, player: result.player, spoilers };
-                }
-            }
-            catch (err) {
-                console.log(err.message);
-                return {
-                    ok: false,
-                    message: err.message,
-                    spoilers: lobby,
-                    player
-                };
-            }
-        }
-        return result;
-    });
-}
 exports.default = router;
 //# sourceMappingURL=routes.js.map

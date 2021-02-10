@@ -18,14 +18,13 @@ import playerRoutes from "./api/player/routes";
 import gameRoutes from "./api/game/routes";
 import playedRoutes from "./api/played/routes";
 
-
 // testing
 import cleverRoutes from "./api/clever/routes";
 import { log } from "./logger";
-log('Tricktionary');
+log("Tricktionary");
 const api = express();
 const JSON_SIZE_LIMIT = "5mb";
-const lobbies: any = {};
+const lobbies: any = { DEADBEEF: [] };
 
 api.use(
   bodyParser.json({
@@ -55,7 +54,7 @@ api.use("/api/definitions", definitionsRoutes);
 api.use("/api/admin", adminRoutes);
 api.use("/api/auth", authRoutes);
 api.use("/api/player", playerRoutes);
-api.use("/api/game", gameRoutes)
+api.use("/api/game", gameRoutes);
 api.use("/api/played", playedRoutes);
 // testing
 api.use("/api/clever", cleverRoutes);
@@ -66,7 +65,7 @@ const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
   // LOGIN
-  socket.on("login", (token:string|undefined) => {
+  socket.on("login", (token: string | undefined) => {
     if (token && token.length > 0) {
       gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
     } else {
@@ -76,9 +75,16 @@ io.on("connection", (socket) => {
   // more events to come.
   socket.on("disconnecting", () => {
     console.log("Client disconnecting...");
-    gameSocketHandler.handleLobbyLeave(io, socket, lobbies);
+    // handler will broadcast ("remove player", player.id) to the lobby.
+    gameSocketHandler.handleDisconnection(io, socket, lobbies);
   });
 
+  socket.on("update username", (newUsername: string) => {
+    gameSocketHandler.handleUpdateUsername(io, socket, lobbies, newUsername);
+  });
+  socket.on("synchronize", (seconds: number) => {
+    gameSocketHandler.handleTimeSync(io, socket, lobbies, seconds);
+  });
   socket.on("disconnect", () => {
     console.log("Client disconnected", socket.id);
   });
@@ -122,13 +128,15 @@ io.on("connection", (socket) => {
     //   lobbies
     // );
   });
+  socket.on("player guess", (playerId: string, definitionKey: number) => {
+    gameSocketHandler.handleMessageHost(io, socket, lobbies, "player guess", {
+      playerId,
+      definitionKey
+    });
+  });
 
   socket.on("play again", (settings: any, lobbyCode: string) => {
     gameSocketHandler.handlePlayAgain(io, socket, lobbyCode, lobbies, settings);
-  });
-
-  socket.on("fortune", () => {
-    gameSocketHandler.handleFortune(io, socket);
   });
 
   socket.on("set phase", (phase: string, lobbyCode: string) => {

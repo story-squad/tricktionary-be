@@ -36,6 +36,8 @@ async function handleStartGame(
   );
   if (newRound.ok && newRound.result?.status === 201) {
     lobbies = newRound.lobbies;
+    // update the host token
+    
     // pub-sub update
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
   } else {

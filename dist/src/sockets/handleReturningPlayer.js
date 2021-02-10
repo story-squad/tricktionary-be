@@ -31,7 +31,7 @@ function handleReturningPlayer(io, socket, token, lobbies) {
         common_1.privateMessage(io, socket, "token update", newtoken);
         if (player.last_played) {
             console.log("found existing lobbyCode: ", player.last_played);
-            console.log("checking for on-going game");
+            console.log("checking for on-going game...");
             game = lobbies[player.last_played];
             if (game === null || game === void 0 ? void 0 : game.players) {
                 console.log("found game, re-joining");
@@ -73,6 +73,9 @@ function handleReturningPlayer(io, socket, token, lobbies) {
                 common_1.privateMessage(io, socket, "welcome", socket.id);
                 // update the lobby
                 io.to(player.last_played).emit("game update", lobbies[player.last_played]); // ask room to update
+            }
+            else {
+                console.log("...no active game was found.");
             }
         }
     });

@@ -36,6 +36,7 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings) {
         let newRound = yield common_1.startNewRound(socket.id, word, lobbies, lobbyCode, r.settings);
         if (newRound.ok && ((_a = newRound.result) === null || _a === void 0 ? void 0 : _a.status) === 201) {
             lobbies = newRound.lobbies;
+            // update the host token
             // pub-sub update
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         }

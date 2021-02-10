@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findPlayer = exports.getPlayer = exports.updatePlayer = exports.newPlayer = void 0;
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const utils_1 = require("./utils");
 const uuid_1 = require("uuid");
@@ -28,7 +27,6 @@ function newPlayer(user_id) {
         return { ok: true, player_id: uuId };
     });
 }
-exports.newPlayer = newPlayer;
 function updatePlayer(player_id, changes) {
     return __awaiter(this, void 0, void 0, function* () {
         const validUpdate = utils_1.validatePlayerType(Object.assign({ id: player_id }, changes));
@@ -47,16 +45,14 @@ function updatePlayer(player_id, changes) {
         }
     });
 }
-exports.updatePlayer = updatePlayer;
 function getPlayer(player_id) {
     return dbConfig_1.default("Player").where({ id: player_id }).first();
 }
-exports.getPlayer = getPlayer;
 function findPlayer(col_name, value) {
     return __awaiter(this, void 0, void 0, function* () {
         const player = yield dbConfig_1.default("Player").where({ [col_name]: value }).first();
         return player;
     });
 }
-exports.findPlayer = findPlayer;
+exports.default = { newPlayer, updatePlayer, getPlayer, findPlayer };
 //# sourceMappingURL=model.js.map

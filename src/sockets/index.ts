@@ -11,6 +11,10 @@ import handleSetPhase from "./handleSetPhase";
 import handleSetNewHost from "./handleSetNewHost"
 import handleNewPlayer from "./handleNewPlayer";
 import handleReturningPlayer from "./handleReturningPlayer";
+import handleDisconnection from "./handleDisconnection";
+import handleUpdateUsername from "./handleUpdateUsername";
+import handleTimeSync from "./handleTimeSync";
+import handleMessageHost from "./handleMessageHost";
 
 export default {
   handleLobbyLeave,
@@ -26,5 +30,9 @@ export default {
   handleSetPhase,
   handleSetNewHost,
   handleNewPlayer,
-  handleReturningPlayer
+  handleReturningPlayer,
+  handleDisconnection,
+  handleUpdateUsername,
+  handleTimeSync,
+  handleMessageHost
 };

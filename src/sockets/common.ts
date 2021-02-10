@@ -19,10 +19,13 @@ export {
   fortune,
   privateMessage,
   playerIsHost,
+  sendToHost,
   checkSettings,
   contributeWord,
   wordFromID,
-  startNewRound
+  startNewRound,
+  b64,
+  whereAmI
 };
 
 // const exec = util.promisify(cmd);
@@ -59,6 +62,18 @@ async function privateMessage(
   } catch (err) {
     console.log({ [listener]: message });
   }
+}
+
+async function sendToHost(io: any, socket: any, lobbies: any, category: string, message: any) {
+  try {
+    const lobbyCode = whereAmI(socket);
+    if (lobbyCode){
+      io.to(lobbies[lobbyCode].host).emit(category, message) 
+    }
+  } catch(err) {
+    return false
+  }
+  return true;
 }
 
 function playerIsHost(socket: any, lobbyCode: any, lobbies: any) {
@@ -123,7 +138,13 @@ async function wordFromID(id: any) {
   return { ok: true, word };
 }
 
-async function startNewRound(host: string, word: any, lobbies: any, lobbyCode: string, lobbySettings: any) {
+async function startNewRound(
+  host: string,
+  word: any,
+  lobbies: any,
+  lobbyCode: string,
+  lobbySettings: any
+) {
   const phase: string = "WRITING";
   // start a new round
   let newRound: any;
@@ -138,7 +159,7 @@ async function startNewRound(host: string, word: any, lobbies: any, lobbyCode: s
     roundId = newRound.data.roundId;
   } catch (err) {
     console.log("error trying to start new round!");
-    return {ok: false, message: err.message}
+    return { ok: false, message: err.message };
   }
   console.log("ROUND ID:", roundId);
   const roundSettings: any = {
@@ -165,7 +186,49 @@ async function startNewRound(host: string, word: any, lobbies: any, lobbyCode: s
       game_id: lobbies[lobbyCode].game_id
     });
   } catch (err) {
-    return {ok: false, result, lobbies}
+    return { ok: false, result, lobbies };
   }
-  return {ok: true, result, lobbies};
+  return { ok: true, result, lobbies };
+}
+
+type lobbyCode = string | null;
+/**
+ * @param socket (socket io)
+ * @returns the lobby code attached to this socket (string).
+ */
+function whereAmI(socket: any):lobbyCode {
+  return Array.from(socket.rooms).length > 1
+    ? String(Array.from(socket.rooms)[1])
+    : null;
+}
+
+// encode a string in Base64
+const encode64 = (str: string): string =>
+  Buffer.from(str, "binary").toString("base64");
+
+// decode a string from Base64
+const decode64 = (str: string): string =>
+  Buffer.from(str, "base64").toString("binary");
+
+const b64 = { encode: encode64, decode: decode64 };
+
+export function gameExists(lobbyCode: string, lobbies: any) {
+  return Object.keys(lobbies).filter((l) => l === lobbyCode).length > 0;
+}
+
+export async function newPlayerRecord(socket: any) {
+  let last_user_id = socket.id;
+  let token;
+  let player;
+  try {
+    const login = await localAxios.post("/api/auth/new-player", {
+      last_user_id
+    });
+    console.log(login.data);
+    token = login.data.token;
+    player = login.data.player;
+  } catch (err) {
+    return { ok: false, message: err.message };
+  }
+  return { ok: true, player, token };
 }

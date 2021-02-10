@@ -40,6 +40,7 @@ async function handleLobbyCreate(
     roundId: null
   };
   const playerId = socket.id;
+  // update the HOST's token with their username
   io.to(playerId).emit("welcome", playerId); // private message host with id
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
   // console.log(lobbies[lobbyCode]);
