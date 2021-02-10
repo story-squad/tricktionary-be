@@ -8,8 +8,8 @@ const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
 function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
     if (common_1.whereAmI(socket) === lobbyCode.trim()) {
         // console.log("I am already here");
-        io.to(lobbyCode).emit("player list", lobbies[lobbyCode].players);
-        // io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
+        // io.to(lobbyCode).emit("player list", lobbies[lobbyCode].players)
+        io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
         return;
     }
     if (lobbyCode.length !== common_1.LC_LENGTH) {
