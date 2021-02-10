@@ -1,4 +1,4 @@
-import { localAxios, privateMessage } from "./common";
+import { localAxios, privateMessage, gameExists } from "./common";
 
 async function handleReturningPlayer(
   io: any,
@@ -25,6 +25,10 @@ async function handleReturningPlayer(
   if (player.last_played) {
     console.log("found existing lobbyCode: ", player.last_played);
     console.log("checking for on-going game");
+    // 
+    if (gameExists(player.last_played, lobbies)) {
+      console.log("GAME EXISTS");
+    }
     game = lobbies[player.last_played];
     if (game?.players) {
       console.log("found game, re-joining");

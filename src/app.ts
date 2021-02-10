@@ -25,7 +25,7 @@ import { log } from "./logger";
 log('Tricktionary');
 const api = express();
 const JSON_SIZE_LIMIT = "5mb";
-const lobbies: any = {};
+const lobbies: any = {DEADBEEF: []};
 
 api.use(
   bodyParser.json({
@@ -76,9 +76,16 @@ io.on("connection", (socket) => {
   // more events to come.
   socket.on("disconnecting", () => {
     console.log("Client disconnecting...");
-    gameSocketHandler.handleLobbyLeave(io, socket, lobbies);
+    // handler will broadcast ("remove player", player.id) to the lobby.
+    gameSocketHandler.handleDisconnection(io, socket, lobbies);
   });
 
+  socket.on("update username", (newUsername: string) => {
+    gameSocketHandler.handleUpdateUsername(io, socket, lobbies, newUsername)
+  })
+  socket.on("synchronize", (seconds: number) => {
+    gameSocketHandler.handleTimeSync(io, socket, lobbies, seconds)
+  })
   socket.on("disconnect", () => {
     console.log("Client disconnected", socket.id);
   });
@@ -127,9 +134,9 @@ io.on("connection", (socket) => {
     gameSocketHandler.handlePlayAgain(io, socket, lobbyCode, lobbies, settings);
   });
 
-  socket.on("fortune", () => {
-    gameSocketHandler.handleFortune(io, socket);
-  });
+  // socket.on("fortune", () => {
+  //   gameSocketHandler.handleFortune(io, socket);
+  // });
 
   socket.on("set phase", (phase: string, lobbyCode: string) => {
     gameSocketHandler.handleSetPhase(io, socket, lobbyCode, lobbies, phase);

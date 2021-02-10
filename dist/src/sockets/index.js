@@ -35,6 +35,9 @@ const handleSetPhase_1 = __importDefault(require("./handleSetPhase"));
 const handleSetNewHost_1 = __importDefault(require("./handleSetNewHost"));
 const handleNewPlayer_1 = __importDefault(require("./handleNewPlayer"));
 const handleReturningPlayer_1 = __importDefault(require("./handleReturningPlayer"));
+const handleDisconnection_1 = __importDefault(require("./handleDisconnection"));
+const handleUpdateUsername_1 = __importDefault(require("./handleUpdateUsername"));
+const handleTimeSync_1 = __importDefault(require("./handleTimeSync"));
 exports.default = {
     handleLobbyLeave: handleLobbyLeave_1.default,
     handleLobbyCreate: handleLobbyCreate_1.default,
@@ -49,6 +52,9 @@ exports.default = {
     handleSetPhase: handleSetPhase_1.default,
     handleSetNewHost: handleSetNewHost_1.default,
     handleNewPlayer: handleNewPlayer_1.default,
-    handleReturningPlayer: handleReturningPlayer_1.default
+    handleReturningPlayer: handleReturningPlayer_1.default,
+    handleDisconnection: handleDisconnection_1.default,
+    handleUpdateUsername: handleUpdateUsername_1.default,
+    handleTimeSync: handleTimeSync_1.default
 };
 //# sourceMappingURL=index.js.map

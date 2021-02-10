@@ -32,6 +32,10 @@ function handleReturningPlayer(io, socket, token, lobbies) {
         if (player.last_played) {
             console.log("found existing lobbyCode: ", player.last_played);
             console.log("checking for on-going game");
+            // 
+            if (common_1.gameExists(player.last_played, lobbies)) {
+                console.log("GAME EXISTS");
+            }
             game = lobbies[player.last_played];
             if (game === null || game === void 0 ? void 0 : game.players) {
                 console.log("found game, re-joining");

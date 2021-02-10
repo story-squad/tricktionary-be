@@ -1,9 +1,10 @@
+import {whereAmI} from "./common"
 function handleDisconnection(io: any, socket: any, lobbies: any) {
-  if (Array.from(socket.rooms).length > 1) {
-    const lobbyCode: any = Array.from(socket.rooms)[1];
+  const lobbyCode = whereAmI(socket);
+  if (lobbyCode) {
     socket.leave(lobbyCode); // remove the lobbycode from this (dead?) socket
     const l = lobbies[lobbyCode];
-    if (l && l.players && !l.completed) {
+    if (l && l.players) {
       // *get the player,
       const oldPlayer = lobbies[lobbyCode].players.filter(
         (player: any) => player.id === socket.id
@@ -18,7 +19,7 @@ function handleDisconnection(io: any, socket: any, lobbies: any) {
         { lobbyCode, player: oldPlayer }
       ];
       // *notify other players in the room.
-      io.to(lobbyCode).emit("remove player", oldPlayer.id);
+      io.to(lobbyCode).emit("remove player", socket.id);
       // io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
     }
   }

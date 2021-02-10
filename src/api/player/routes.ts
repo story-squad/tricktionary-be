@@ -1,4 +1,4 @@
-import { newPlayer, updatePlayer, getPlayer, findPlayer } from "./model";
+import Player from "./model";
 
 import { Router } from "express";
 
@@ -8,7 +8,7 @@ router.get("/id/:id", async (req, res) => {
   const player_id = req.params.id;
   let player;
   try {
-    player = await getPlayer(player_id);
+    player = await Player.getPlayer(player_id);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -19,7 +19,7 @@ router.get("/last-user-id/:id", async (req, res) => {
   const user_id = req.params.id;
   let player;
   try {
-    player = await findPlayer("last_user_id", user_id);
+    player = await Player.findPlayer("last_user_id", user_id);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -31,7 +31,7 @@ router.put("/id/:id", async (req, res) => {
   const changes = req.body;
   let player;
   try {
-    player = await updatePlayer(player_id, changes);
+    player = await Player.updatePlayer(player_id, changes);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

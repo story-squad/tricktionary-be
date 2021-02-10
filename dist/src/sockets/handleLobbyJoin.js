@@ -6,7 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
 function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
-    console.log('joining...');
+    if (common_1.whereAmI(socket) === lobbyCode.trim()) {
+        console.log("I am already here");
+        io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
+        return;
+    }
     if (lobbyCode.length !== common_1.LC_LENGTH) {
         handleErrorMessage_1.default(io, socket, "bad lobby code.");
         return;
@@ -20,8 +24,14 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
         handleErrorMessage_1.default(io, socket, "Game in progress; cannot join.");
         return;
     }
-    socket.join(lobbyCode);
+    // // ghostbusting
+    // if (lobbies[lobbyCode].players.filter((p: any) => p.id === socket.id).length > 0) {
+    //   // no duplicates
+    //   return
+    // }
     if (lobbies[lobbyCode] && lobbies[lobbyCode].players) {
+        console.log("joining...");
+        socket.join(lobbyCode);
         lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
                 ...lobbies[lobbyCode].players,
                 { id: socket.id, username, definition: "", points: 0 }
@@ -30,7 +40,7 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
     const playerId = socket.id;
     io.to(playerId).emit("welcome", playerId); // private message new player with id
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
-    // console.log(lobbies[lobbyCode]);
+    console.log(lobbies[lobbyCode]);
 }
 exports.default = handleLobbyJoin;
 //# sourceMappingURL=handleLobbyJoin.js.map

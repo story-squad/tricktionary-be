@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.playerIsHost = exports.privateMessage = exports.fortune = exports.localAxios = exports.LC_LENGTH = void 0;
+exports.newPlayerRecord = exports.gameExists = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.playerIsHost = exports.privateMessage = exports.fortune = exports.localAxios = exports.LC_LENGTH = void 0;
 const GameSettings_1 = require("../GameSettings");
 // import * as dotenv from "dotenv";
 // import util from "util";
@@ -193,4 +193,44 @@ function startNewRound(host, word, lobbies, lobbyCode, lobbySettings) {
     });
 }
 exports.startNewRound = startNewRound;
+/**
+ * @param socket (socket io)
+ * @returns the lobby code attached to this socket (string).
+ */
+function whereAmI(socket) {
+    return Array.from(socket.rooms).length > 1
+        ? String(Array.from(socket.rooms)[1])
+        : null;
+}
+exports.whereAmI = whereAmI;
+// encode a string in Base64
+const encode64 = (str) => Buffer.from(str, "binary").toString("base64");
+// decode a string from Base64
+const decode64 = (str) => Buffer.from(str, "base64").toString("binary");
+const b64 = { encode: encode64, decode: decode64 };
+exports.b64 = b64;
+function gameExists(lobbyCode, lobbies) {
+    return Object.keys(lobbies).filter((l) => l === lobbyCode).length > 0;
+}
+exports.gameExists = gameExists;
+function newPlayerRecord(socket) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let last_user_id = socket.id;
+        let token;
+        let player;
+        try {
+            const login = yield localAxios.post("/api/auth/new-player", {
+                last_user_id
+            });
+            console.log(login.data);
+            token = login.data.token;
+            player = login.data.player;
+        }
+        catch (err) {
+            return { ok: false, message: err.message };
+        }
+        return { ok: true, player, token };
+    });
+}
+exports.newPlayerRecord = newPlayerRecord;
 //# sourceMappingURL=common.js.map
