@@ -95,10 +95,20 @@ function partialRecall(token) {
     const payload = validatePayloadType(jsonwebtoken_1.default.decode(token));
     if (!payload.ok)
         return { ok: false, message: payload.message };
+    let username;
+    let definition;
+    let points;
+    if (payload.value.ext) {
+        const extra = exports.b64.decode(payload.value.ext);
+        username = extra.username;
+        definition = extra.definition;
+        points = extra.points;
+    }
     return {
         ok: true,
         last_user_id: payload.value.sub,
-        player_id: payload.value.pid
+        player_id: payload.value.pid,
+        username, definition, points
     };
 }
 exports.partialRecall = partialRecall;

@@ -19,6 +19,7 @@ export {
   fortune,
   privateMessage,
   playerIsHost,
+  sendToHost,
   checkSettings,
   contributeWord,
   wordFromID,
@@ -61,6 +62,18 @@ async function privateMessage(
   } catch (err) {
     console.log({ [listener]: message });
   }
+}
+
+async function sendToHost(io: any, socket: any, lobbies: any, category: string, message: any) {
+  try {
+    const lobbyCode = whereAmI(socket);
+    if (lobbyCode){
+      io.to(lobbies[lobbyCode].host).emit(category, message) 
+    }
+  } catch(err) {
+    return false
+  }
+  return true;
 }
 
 function playerIsHost(socket: any, lobbyCode: any, lobbies: any) {

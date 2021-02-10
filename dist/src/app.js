@@ -45,7 +45,7 @@ const routes_12 = __importDefault(require("./api/played/routes"));
 // testing
 const routes_13 = __importDefault(require("./api/clever/routes"));
 const logger_1 = require("./logger");
-logger_1.log('Tricktionary');
+logger_1.log("Tricktionary");
 const api = express_1.default();
 const JSON_SIZE_LIMIT = "5mb";
 const lobbies = { DEADBEEF: [] };
@@ -124,12 +124,15 @@ io.on("connection", (socket) => {
         //   lobbies
         // );
     });
+    socket.on("player guess", (playerId, definitionKey) => {
+        sockets_1.default.handleMessageHost(io, socket, lobbies, "player guess", {
+            playerId,
+            definitionKey
+        });
+    });
     socket.on("play again", (settings, lobbyCode) => {
         sockets_1.default.handlePlayAgain(io, socket, lobbyCode, lobbies, settings);
     });
-    // socket.on("fortune", () => {
-    //   gameSocketHandler.handleFortune(io, socket);
-    // });
     socket.on("set phase", (phase, lobbyCode) => {
         sockets_1.default.handleSetPhase(io, socket, lobbyCode, lobbies, phase);
     });

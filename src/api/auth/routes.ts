@@ -76,6 +76,7 @@ router.post("/login", async (req, res) => {
     if (!mem.ok) {
       res.status(400).json({ message: mem.message });
     }
+    
     player_id = mem.player_id; // remember the player_id ?
     if (last_user_id === mem.last_user_id) {
       // same web socket session, update token and return.

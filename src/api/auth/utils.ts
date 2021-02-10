@@ -4,6 +4,7 @@ import UserRound from "../userRounds/model";
 import Rounds from "../rounds/model";
 
 import secrets from "./secrets";
+import { exit } from "process";
 
 type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 
@@ -97,15 +98,24 @@ export const b64 = { encode: encode64, decode: decode64 };
  * @param token JWT
  *
  */
-
 export function partialRecall(token: string) {
   // get player_id & last user_id from the JWT
   const payload = validatePayloadType(jwt.decode(token));
   if (!payload.ok) return { ok: false, message: payload.message };
+  let username;
+  let definition;
+  let points;
+  if (payload.value.ext) {
+    const extra: any = b64.decode(payload.value.ext);
+    username = extra.username;
+    definition = extra.definition;
+    points = extra.points;
+  }
   return {
     ok: true,
     last_user_id: payload.value.sub,
-    player_id: payload.value.pid
+    player_id: payload.value.pid,
+    username, definition, points
   };
 }
 export async function totalRecall(player_id: string) {
