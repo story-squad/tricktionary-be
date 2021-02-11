@@ -90,7 +90,7 @@ io.on("connection", (socket) => {
     socket.on("disconnecting", () => {
         console.log("Client disconnecting...");
         // handler will broadcast ("remove player", player.id) to the lobby.
-        sockets_1.default.handleDisconnection(io, socket, lobbies);
+        sockets_1.default.handleLobbyLeave(io, socket, lobbies);
     });
     socket.on("update username", (newUsername) => {
         sockets_1.default.handleUpdateUsername(io, socket, lobbies, newUsername);
