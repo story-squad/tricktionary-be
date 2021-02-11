@@ -66,11 +66,11 @@ const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
   // LOGIN
   socket.on("login", (token: string | undefined) => {
-    if (token && token.length > 0) {
-      gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
-    } else {
-      gameSocketHandler.handleNewPlayer(io, socket);
-    }
+    // if (token && token.length > 0) {
+    //   gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
+    // } else {
+    gameSocketHandler.handleNewPlayer(io, socket);
+    // }
   });
   // more events to come.
   socket.on("disconnecting", () => {
@@ -97,9 +97,19 @@ io.on("connection", (socket) => {
     gameSocketHandler.handleLobbyJoin(io, socket, username, lobbyCode, lobbies);
   });
 
-  socket.on("rejoin lobby", (username: string, password:string, lobbyCode: string) => {
-    gameSocketHandler.handleLobbyJoinWithPassword(io, socket, username, password, lobbyCode, lobbies);
-  });
+  socket.on(
+    "rejoin lobby",
+    (username: string, password: string, lobbyCode: string) => {
+      gameSocketHandler.handleLobbyJoinWithPassword(
+        io,
+        socket,
+        username,
+        password,
+        lobbyCode,
+        lobbies
+      );
+    }
+  );
 
   socket.on("start game", (settings: any, lobbyCode: string) => {
     gameSocketHandler.handleStartGame(io, socket, lobbyCode, lobbies, settings);
