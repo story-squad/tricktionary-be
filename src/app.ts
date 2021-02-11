@@ -66,11 +66,11 @@ const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
   // LOGIN
   socket.on("login", (token: string | undefined) => {
-    // if (token && token.length > 0) {
-    //   gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
-    // } else {
+    if (token && token.length > 0) {
+      gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
+    } else {
     gameSocketHandler.handleNewPlayer(io, socket);
-    // }
+    }
   });
   // more events to come.
   socket.on("disconnecting", () => {
