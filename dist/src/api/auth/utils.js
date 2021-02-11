@@ -119,7 +119,7 @@ function totalRecall(player_id) {
         let result;
         let player;
         try {
-            player = yield model_1.default.getPlayer(player_id);
+            player = yield model_1.default.getPlayer(String(player_id));
             result = { ok: true, player, lobby: undefined };
         }
         catch (err) {

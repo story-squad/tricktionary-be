@@ -122,9 +122,9 @@ export function partialRecall(token: string) {
 }
 export async function totalRecall(player_id: string | undefined) {
   let result;
-  let player;
+  let player:any;
   try {
-    player = await Player.getPlayer(player_id);
+    player = await Player.getPlayer(String(player_id));
     result = { ok: true, player, lobby: undefined };
   } catch (err) {
     result = {

@@ -62,12 +62,12 @@ function handleLobbyJoinWithPassword(
   };
   io.to(socket.id).emit("welcome", socket.id); // private message new player with id
   // ask others to add this player
-  io.to(lobbyCode).emit("add player", {
-    id: socket.id,
-    username,
-    definition: "",
-    points: 0
-  });
+  // io.to(lobbyCode).emit("add player", {
+  //   id: socket.id,
+  //   username,
+  //   definition: "",
+  //   points: 0
+  // });
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
 }
 export default handleLobbyJoinWithPassword;
