@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.totalRecall = exports.partialRecall = exports.b64 = exports.newToken = exports.validatePayloadType = void 0;
+exports.verifyTricktionaryToken = exports.totalRecall = exports.partialRecall = exports.b64 = exports.newToken = exports.validatePayloadType = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const model_1 = __importDefault(require("../player/model"));
 const model_2 = __importDefault(require("../userRounds/model"));
@@ -108,7 +108,9 @@ function partialRecall(token) {
         ok: true,
         last_user_id: payload.value.sub,
         player_id: payload.value.pid,
-        username, definition, points
+        username,
+        definition,
+        points
     };
 }
 exports.partialRecall = partialRecall;
@@ -155,4 +157,46 @@ function totalRecall(player_id) {
     });
 }
 exports.totalRecall = totalRecall;
+function verifyTricktionaryToken(last_token, last_user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let last_lobby;
+        let player_id;
+        let player;
+        try {
+            jsonwebtoken_1.default.verify(last_token, secrets_1.default.jwtSecret); // verify it's one of ours.
+            let mem = partialRecall(last_token);
+            if (!mem.ok) {
+                return { ok: false, status: 400, message: mem.message };
+                // res.status(400).json({ message: mem.message });
+            }
+            player_id = mem.player_id ? mem.player_id : ""; // remember the player_id ?
+            if (last_user_id === mem.last_user_id) {
+                // same web socket session, update token and return.
+                console.log("same socket");
+            }
+            const existing = yield totalRecall(mem.player_id);
+            if (existing.ok) {
+                player = existing.player;
+                last_lobby = existing.spoilers;
+                console.log("last lobby -", last_lobby);
+            }
+            else {
+                console.log("can't find this player in the db");
+                // console.log(existing);
+            }
+        }
+        catch (err) {
+            return { ok: false, status: 403, message: err.message };
+        }
+        return {
+            ok: true,
+            status: 200,
+            player,
+            last_lobby,
+            old_user_id: last_user_id,
+            player_id
+        };
+    });
+}
+exports.verifyTricktionaryToken = verifyTricktionaryToken;
 //# sourceMappingURL=utils.js.map

@@ -1,7 +1,8 @@
 import { Router } from "express";
-import jwt from "jsonwebtoken";
+import { verifyTricktionaryToken } from "./utils";
+// import jwt from "jsonwebtoken";
 //
-import secrets from "./secrets";
+// import secrets from "./secrets";
 //
 import {
   validatePayloadType,
@@ -61,42 +62,22 @@ router.post("/update-token", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  let { last_user_id, player_id, last_token, jump_code } = req.body;
-  if (!last_user_id) {
-    res.status(403).json({ message: "last_user_id required" });
+  const { user_id, last_token } = req.body;
+  if (!user_id || !last_token) {
+    res.status(403).json({ message: "missing required elements" });
   }
-  if (!last_token) {
-    res.status(403).json({ message: "last_token required" });
+  const valid = await verifyTricktionaryToken(last_token, user_id);
+  if (!valid.ok) {
+    res.status(valid.status).json({ message: valid.message });
   }
-  let player;
-  let last_lobby;
-  try {
-    jwt.verify(last_token, secrets.jwtSecret); // verify it's one of ours.
-    let mem = partialRecall(last_token);
-    if (!mem.ok) {
-      res.status(400).json({ message: mem.message });
-    }
-    
-    player_id = mem.player_id; // remember the player_id ?
-    if (last_user_id === mem.last_user_id) {
-      // same web socket session, update token and return.
-      console.log("ok, same socket");
-    }
-    const existing = await totalRecall(player_id);
-    if (existing.ok) {
-      player = existing.player;
-      last_lobby = existing.spoilers;
-      console.log("last lobby -", last_lobby);
-    } else {
-      console.log("can't find this player in the db");
-      // console.log(existing);
-    }
-  } catch (err) {
-    res.status(403).json({ message: err.message });
+  const { player, last_lobby } = valid;
+  if (!valid.player) {
+    res.status(403).json({ message: "token was missing player_id" });
   }
-  // validate last token
+  const player_id: string = String(valid.player_id);
+  // validate *new token payload
   const payload = validatePayloadType({
-    sub: last_user_id,
+    sub: user_id,
     pid: player_id,
     iat: 0
   });
@@ -104,16 +85,23 @@ router.post("/login", async (req, res) => {
     res.status(400).json({ message: payload.message });
   }
   let token;
+  let old_user_id;
   try {
-    let token_request = await newToken(last_user_id, player_id, undefined); // generate new token & update the player record
+    let token_request = await newToken(user_id, player_id, undefined); // generate new token & update the player record
     if (token_request.ok) {
       token = token_request.token;
     }
   } catch (err) {
     res.status(403).json({ message: err.message });
   }
-  player = { ...player, last_played: last_lobby };
-  res.status(200).json({ message: "welcome", player, token });
+  res
+    .status(200)
+    .json({
+      message: "welcome",
+      player: { ...player, last_played: last_lobby },
+      token,
+      old_user_id
+    });
 });
 
 export default router;

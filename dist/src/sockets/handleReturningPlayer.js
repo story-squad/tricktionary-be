@@ -12,72 +12,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 function handleReturningPlayer(io, socket, token, lobbies) {
     return __awaiter(this, void 0, void 0, function* () {
-        const last_user_id = socket.id;
+        const user_id = socket.id;
         let login;
         let newtoken;
         let player;
-        let game;
+        let old_user_id;
+        // try logging in with the old token
         try {
             login = yield common_1.localAxios.post("/api/auth/login", {
-                last_user_id,
+                user_id,
                 last_token: token
             });
             player = login.data.player;
             newtoken = login.data.token;
+            old_user_id = login.data.old_user_id;
         }
         catch (err) {
             return { ok: false, message: err.message };
         }
+        // send player their new token.
         common_1.privateMessage(io, socket, "token update", newtoken);
-        if (player.last_played) {
-            console.log("found existing lobbyCode: ", player.last_played);
-            console.log("checking for on-going game...");
-            game = lobbies[player.last_played];
-            if (game === null || game === void 0 ? void 0 : game.players) {
-                console.log("found game, re-joining");
-                socket.join(player.last_played);
-                let hosting = false;
-                if (lobbies[player.last_played].host === player.last_user_id) {
-                    // re-claim host role.
-                    lobbies[player.last_played].host = socket.id;
-                    hosting = true;
-                }
-                if (lobbies[player.last_played] && lobbies[player.last_played].players) {
-                    lobbies[player.last_played] = Object.assign(Object.assign({}, lobbies[player.last_played]), { players: [
-                            ...lobbies[player.last_played].players,
-                            {
-                                id: socket.id,
-                                username: hosting ? "Host" : (player.name || "re-joined"),
-                                definition: "",
-                                points: 0
-                            }
-                        ] });
-                }
-                // update the player record with new socket.id
-                yield common_1.localAxios.put(`/api/player/id/${player.id}`, {
-                    last_user_id: socket.id,
-                    last_played: player.last_played
-                });
-                try {
-                    // should this update rather than add ?
-                    yield common_1.localAxios.post("/api/user-rounds/add-players", {
-                        players: lobbies[player.last_played].players,
-                        roundId: lobbies[player.last_played].roundId,
-                        game_id: lobbies[player.last_played].game_id
-                    });
-                }
-                catch (err) {
-                    console.log("error: handleStartGame:55");
-                    common_1.privateMessage(io, socket, "error", err.message);
-                }
-                common_1.privateMessage(io, socket, "welcome", socket.id);
-                // update the lobby
-                io.to(player.last_played).emit("game update", lobbies[player.last_played]); // ask room to update
-            }
-            else {
-                console.log("...no active game was found.");
-            }
+        // check for last_played activity
+        if (!player.last_played || !common_1.gameExists(player.last_played, lobbies)) {
+            console.log("...no active game was found.");
+            return;
         }
+        // player has a game they may want to rejoin.
+        const rejoinable = { player, password: newtoken.slice(newtoken.length - 4), old_user_id };
+        if (lobbies[player.last_played].waiting) {
+            // if we have people waiting, join them
+            lobbies[player.last_played].waiting = [...lobbies[player.last_played].waiting, rejoinable];
+        }
+        else {
+            lobbies[player.last_played].waiting = [rejoinable];
+        }
+        // update lobby that player may be re-joining.
+        io.to(player.last_played).emit("game update", lobbies[player.last_played]);
+        // finally, we give player the option to rejoin.
+        common_1.privateMessage(io, socket, "ask rejoin", player.last_played);
     });
 }
 exports.default = handleReturningPlayer;

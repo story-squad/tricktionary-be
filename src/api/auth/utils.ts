@@ -115,10 +115,12 @@ export function partialRecall(token: string) {
     ok: true,
     last_user_id: payload.value.sub,
     player_id: payload.value.pid,
-    username, definition, points
+    username,
+    definition,
+    points
   };
 }
-export async function totalRecall(player_id: string) {
+export async function totalRecall(player_id: string | undefined) {
   let result;
   let player;
   try {
@@ -157,4 +159,45 @@ export async function totalRecall(player_id: string) {
     }
   }
   return result;
+}
+
+export async function verifyTricktionaryToken(
+  last_token: string,
+  last_user_id: string
+) {
+  let last_lobby;
+  let player_id: string| undefined;
+  let player;
+  try {
+    jwt.verify(last_token, secrets.jwtSecret); // verify it's one of ours.
+    let mem = partialRecall(last_token);
+    if (!mem.ok) {
+      return { ok: false, status: 400, message: mem.message };
+      // res.status(400).json({ message: mem.message });
+    }
+    player_id = mem.player_id ? mem.player_id : ""; // remember the player_id ?
+    if (last_user_id === mem.last_user_id) {
+      // same web socket session, update token and return.
+      console.log("same socket");
+    }
+    const existing = await totalRecall(mem.player_id);
+    if (existing.ok) {
+      player = existing.player;
+      last_lobby = existing.spoilers;
+      console.log("last lobby -", last_lobby);
+    } else {
+      console.log("can't find this player in the db");
+      // console.log(existing);
+    }
+  } catch (err) {
+    return { ok: false, status: 403, message: err.message };
+  }
+  return {
+    ok: true,
+    status: 200,
+    player,
+    last_lobby,
+    old_user_id: last_user_id,
+    player_id
+  };
 }
