@@ -17,8 +17,8 @@ function handleDisconnection(io, socket, lobbies) {
                 { lobbyCode, player: oldPlayer }
             ];
             // *notify other players in the room.
-            io.to(lobbyCode).emit("remove player", socket.id);
-            // io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
+            // io.to(lobbyCode).emit("remove player", socket.id);
+            io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         }
     }
 }
