@@ -28,13 +28,15 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
     if (lobbies[lobbyCode] && lobbies[lobbyCode].players) {
         console.log(`${username} joined ${lobbyCode}`);
         socket.join(lobbyCode);
-        lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
-                ...lobbies[lobbyCode].players,
-                { id: socket.id, username, definition: "", points: 0 }
-            ] });
+        if (!(lobbies[lobbyCode].players.filter((p) => p.id === socket.id).length > 0)) {
+            lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
+                    ...lobbies[lobbyCode].players,
+                    { id: socket.id, username, definition: "", points: 0 }
+                ] });
+        }
     }
     const playerId = socket.id;
-    io.to(playerId).emit("welcome", playerId); // private message new player with id  
+    io.to(playerId).emit("welcome", playerId); // private message new player with id
     // ask others to add this player
     // io.to(lobbyCode).emit("add player", { id: socket.id, username, definition: "", points: 0 })
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
