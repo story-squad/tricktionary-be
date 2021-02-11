@@ -18,6 +18,9 @@ function handleDisconnection(io: any, socket: any, lobbies: any) {
         ...lobbies["DEADBEEF"],
         { lobbyCode, player: oldPlayer }
       ];
+      if (lobbies[lobbyCode].players.length === 0) {
+        delete lobbies[lobbyCode]
+      }
       // *notify other players in the room.
       // io.to(lobbyCode).emit("remove player", socket.id);
       io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
