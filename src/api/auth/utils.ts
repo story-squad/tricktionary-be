@@ -50,7 +50,7 @@ function generateToken(
     ext: extra
   };
   const options = {
-    expiresIn: "1d"
+    expiresIn: "1h"
   };
   return jwt.sign(payload, secrets.jwtSecret, options);
 }
@@ -122,7 +122,7 @@ export function partialRecall(token: string) {
 }
 export async function totalRecall(player_id: string | undefined) {
   let result;
-  let player:any;
+  let player: any;
   try {
     player = await Player.getPlayer(String(player_id));
     result = { ok: true, player, lobby: undefined };
@@ -166,7 +166,7 @@ export async function verifyTricktionaryToken(
   last_user_id: string
 ) {
   let last_lobby;
-  let player_id: string| undefined;
+  let player_id: string | undefined;
   let player;
   try {
     jwt.verify(last_token, secrets.jwtSecret); // verify it's one of ours.

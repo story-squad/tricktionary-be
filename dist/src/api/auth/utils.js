@@ -48,7 +48,7 @@ function generateToken(user_id, player_id, extra) {
         ext: extra
     };
     const options = {
-        expiresIn: "1d"
+        expiresIn: "1h"
     };
     return jsonwebtoken_1.default.sign(payload, secrets_1.default.jwtSecret, options);
 }
