@@ -38,16 +38,19 @@ function handleReturningPlayer(io, socket, token, lobbies) {
             return;
         }
         // player has a game they may want to rejoin.
-        const rejoinable = { player, password: newtoken.slice(newtoken.length - 4), old_user_id };
-        if (lobbies[player.last_played].waiting) {
+        const rejoinable = {
+            lobbyCode: player.last_played,
+            player,
+            password: newtoken.slice(newtoken.length - 4),
+            old_user_id
+        };
+        if (lobbies["waiting"]) {
             // if we have people waiting, join them
-            lobbies[player.last_played].waiting = [...lobbies[player.last_played].waiting, rejoinable];
+            lobbies["waiting"] = [...lobbies["waiting"], rejoinable];
         }
         else {
-            lobbies[player.last_played].waiting = [rejoinable];
+            lobbies["waiting"] = [rejoinable];
         }
-        // update lobby that player may be re-joining.
-        io.to(player.last_played).emit("game update", lobbies[player.last_played]);
         // finally, we give player the option to rejoin.
         common_1.privateMessage(io, socket, "ask rejoin", player.last_played);
     });

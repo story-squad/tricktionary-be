@@ -26,7 +26,7 @@ function handleLobbyJoinWithPassword(
     return;
   }
 
-  if (!lobbies[lobbyCode].waiting) {
+  if (!lobbies["waiting"]) {
     handleErrorMessage(
       io,
       socket,
@@ -34,20 +34,17 @@ function handleLobbyJoinWithPassword(
     );
     return;
   }
-  const reservation = lobbies[lobbyCode].waiting.filter(
-    (r: any) => r.password === password
+  const reservation = lobbies["waiting"].filter(
+    (r: any) => r.lobbbyCode === lobbyCode && r.password == password
   );
   if (reservation.length === 0) {
-    handleErrorMessage(
-      io,
-      socket,
-      "I can't find your reservation."
-    );
+    handleErrorMessage(io, socket, "I can't find your reservation.");
     return;
   }
-  let hosting = false
-  if (reservation[0].old_user_id === lobbyCode[lobbyCode].host){
-    console.log('host is re-joining...');
+  
+  let hosting = false;
+  if (reservation[0].old_user_id === lobbyCode[lobbyCode].host) {
+    console.log("host is re-joining...");
     hosting = true;
   }
   console.log(`${username} joined ${lobbyCode}`);
@@ -58,7 +55,7 @@ function handleLobbyJoinWithPassword(
     players: [
       ...lobbies[lobbyCode].players,
       { id: socket.id, username, definition: "", points: 0 }
-    ],
+    ]
   };
   io.to(socket.id).emit("welcome", socket.id); // private message new player with id
   // ask others to add this player

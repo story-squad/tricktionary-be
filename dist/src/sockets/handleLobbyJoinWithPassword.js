@@ -22,18 +22,18 @@ function handleLobbyJoinWithPassword(io, socket, username, password, lobbyCode, 
         handleErrorMessage_1.default(io, socket, "cool it, hackerman.");
         return;
     }
-    if (!lobbies[lobbyCode].waiting) {
+    if (!lobbies["waiting"]) {
         handleErrorMessage_1.default(io, socket, "I don't see any reservations listed for this lobby.");
         return;
     }
-    const reservation = lobbies[lobbyCode].waiting.filter((r) => r.password === password);
+    const reservation = lobbies["waiting"].filter((r) => r.lobbbyCode === lobbyCode && r.password == password);
     if (reservation.length === 0) {
         handleErrorMessage_1.default(io, socket, "I can't find your reservation.");
         return;
     }
     let hosting = false;
     if (reservation[0].old_user_id === lobbyCode[lobbyCode].host) {
-        console.log('host is re-joining...');
+        console.log("host is re-joining...");
         hosting = true;
     }
     console.log(`${username} joined ${lobbyCode}`);

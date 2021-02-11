@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
   socket.on("disconnecting", () => {
     console.log("Client disconnecting...");
     // handler will broadcast ("remove player", player.id) to the lobby.
-    gameSocketHandler.handleLobbyLeave(io, socket, lobbies);
+    gameSocketHandler.handleDisconnection(io, socket, lobbies);
   });
 
   socket.on("update username", (newUsername: string) => {
