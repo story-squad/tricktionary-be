@@ -8,12 +8,12 @@ function handleLobbyJoin(
   lobbyCode: any,
   lobbies: any
 ) {
-  if (whereAmI(socket) === lobbyCode.trim()) {
-    // console.log("I am already here");
-    // io.to(lobbyCode).emit("player list", lobbies[lobbyCode].players)
-    io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
-    return;
-  }
+  // if (whereAmI(socket) === lobbyCode.trim()) {
+  //   // console.log("I am already here");
+  //   // io.to(lobbyCode).emit("player list", lobbies[lobbyCode].players)
+  //   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
+  //   return;
+  // }
   if (lobbyCode.length !== LC_LENGTH) {
     handleErrorMessage(io, socket, "bad lobby code.");
     return;
