@@ -10,7 +10,7 @@ function handleDisconnection(io, socket, lobbies) {
             // *get the player,
             const oldPlayer = lobbies[lobbyCode].players.filter((player) => player.id === socket.id)[0];
             // remove socket.id from player list
-            lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter((player) => player === oldPlayer);
+            lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter((player) => player !== oldPlayer);
             // *put this player in the DEADBEEF room
             lobbies["DEADBEEF"] = [
                 ...lobbies["DEADBEEF"],
