@@ -19,6 +19,7 @@ export {
   fortune,
   privateMessage,
   playerIsHost,
+  playerIdWasHost,
   sendToHost,
   checkSettings,
   contributeWord,
@@ -84,6 +85,16 @@ function playerIsHost(socket: any, lobbyCode: any, lobbies: any) {
     return { ok: false, message: err };
   }
 }
+
+function playerIdWasHost(playerId: string, lobbyCode: any, lobbies: any) {
+  try {
+    const ok = lobbies[lobbyCode].host === playerId;
+    return { ok };
+  } catch (err) {
+    return { ok: false, message: err };
+  }
+}
+
 
 function checkSettings(settings: any) {
   let lobbySettings;

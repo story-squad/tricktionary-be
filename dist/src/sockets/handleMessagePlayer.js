@@ -26,7 +26,7 @@ function handleMessagePlayer(io, socket, lobbies, playerId, category, message) {
         if (!checkPlayer.ok) {
             common_1.privateMessage(io, socket, "error", "only the host may directly message a player.");
         }
-        common_1.privateMessage(io, playerId, category, message);
+        io.to(playerId).emit(category, message); // private message player
     });
 }
 exports.default = handleMessagePlayer;

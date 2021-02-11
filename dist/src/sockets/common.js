@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.newPlayerRecord = exports.gameExists = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIsHost = exports.privateMessage = exports.fortune = exports.localAxios = exports.LC_LENGTH = void 0;
+exports.newPlayerRecord = exports.gameExists = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.fortune = exports.localAxios = exports.LC_LENGTH = void 0;
 const GameSettings_1 = require("../GameSettings");
 // import * as dotenv from "dotenv";
 // import util from "util";
@@ -106,6 +106,16 @@ function playerIsHost(socket, lobbyCode, lobbies) {
     }
 }
 exports.playerIsHost = playerIsHost;
+function playerIdWasHost(playerId, lobbyCode, lobbies) {
+    try {
+        const ok = lobbies[lobbyCode].host === playerId;
+        return { ok };
+    }
+    catch (err) {
+        return { ok: false, message: err };
+    }
+}
+exports.playerIdWasHost = playerIdWasHost;
 function checkSettings(settings) {
     let lobbySettings;
     try {

@@ -22,7 +22,7 @@ async function handleMessagePlayer(
   if (!checkPlayer.ok) {
     privateMessage(io, socket, "error", "only the host may directly message a player.");
   }
-  privateMessage(io, playerId, category, message);
+  io.to(playerId).emit(category, message); // private message player
 }
 
 export default handleMessagePlayer;
