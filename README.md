@@ -51,6 +51,7 @@ TypeScript Express API
 |[/api/words](src/api/words)| Words |
 |[/api/votes](src/api/votes)| Votes |
 |[/api/user-rounds/](src/api/userRounds)| User Rounds|
+|[/api/player/](src/api/player)| Player |
 |[/api/round/](src/api/rounds)| Rounds
 |[/api/reactions](src/api/reactions)| Reactions
 |[/api/definitions](src/api/definitions)| Definitions
