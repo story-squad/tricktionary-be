@@ -56,6 +56,7 @@ TypeScript Express API
 |[/api/reactions](src/api/reactions)| Reactions
 |[/api/definitions](src/api/definitions)| Definitions
 |[/api/definition-reactions](src/api/definitionReactions)|Definition Reactions
+|[/api/auth](src/api/auth)| Auth |
 
 #
 **Web Socket Handlers**
