@@ -47,8 +47,8 @@ router.post("/recordchoice", (req, res) => __awaiter(void 0, void 0, void 0, fun
         choice_id = result.pop();
     }
     catch (err) {
-        console.log('error', err);
-        // console.log("error recording the host choice");
+        // console.log('error', err)
+        console.log("error recording the host choice");
     }
     if (choice_id > -1) {
         res.status(201).json({ choice_id: choice_id });
@@ -56,6 +56,18 @@ router.post("/recordchoice", (req, res) => __awaiter(void 0, void 0, void 0, fun
     else {
         res.status(400).json({ error: "failed to get choice Id" });
     }
+}));
+router.get("/choice/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    if (!id)
+        res.status(400).json({ error: "id?" });
+    model_1.default.getHostChoiceById(id)
+        .then((choice) => {
+        res.status(200).json({ choice });
+    })
+        .catch((err) => {
+        res.status(500).json({ error: err.message });
+    });
 }));
 exports.default = router;
 //# sourceMappingURL=routes.js.map

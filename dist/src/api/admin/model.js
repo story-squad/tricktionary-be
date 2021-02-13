@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const utils_1 = require("./utils");
-exports.default = { getRound, addHostChoice };
+exports.default = { getRound, addHostChoice, getHostChoiceById };
 /**
  * Round round get around, I get around, yeah
  * (Get around round round I get around, ooh-ooh) I get around
@@ -51,6 +51,11 @@ function addHostChoice(word_id_one, word_id_two, round_id, times_shuffled) {
         return newHostChoice.ok
             ? dbConfig_1.default("host-choices").insert(newHostChoice.value).returning("id")
             : [-1, newHostChoice.message];
+    });
+}
+function getHostChoiceById(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return dbConfig_1.default("host-choices").where({ id }).first();
     });
 }
 //# sourceMappingURL=model.js.map

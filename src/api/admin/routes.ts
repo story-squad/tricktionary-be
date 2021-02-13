@@ -29,7 +29,7 @@ router.post("/recordchoice", async (req, res) => {
   const { word_id_one, word_id_two, round_id, times_shuffled } = req.body;
   let result: any;
   let choice_id: number = -1;
-  console.log(Super)
+  console.log(Super);
   try {
     result = await Super.addHostChoice(
       word_id_one,
@@ -47,6 +47,18 @@ router.post("/recordchoice", async (req, res) => {
   } else {
     res.status(400).json({ error: "failed to get choice Id" });
   }
+});
+
+router.get("/choice/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) res.status(400).json({ error: "id?" });
+  Super.getHostChoiceById(id)
+    .then((choice) => {
+      res.status(200).json({ choice });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
 });
 
 export default router;
