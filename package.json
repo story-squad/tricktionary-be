@@ -5,7 +5,11 @@
   "main": "dist/src/index.js",
   "scripts": {
     "build": "sh ./scripts/makeElastic.sh",
-    "start": "node dist/src/index.js"
+    "start": "node dist/src/index.js",
+    "pre-docs": "rm -rf docs",
+    "post-docs": "rm docs/README.md && mv docs/modules.md docs/README.md",
+    "gen-docs": "npx typedoc --theme minimal --plugin typedoc-plugin-markdown src/sockets",
+    "docs": "npm run pre-docs && npm run gen-docs && npm run post-docs"
   },
   "engines": {
     "node": "12.20.1",
