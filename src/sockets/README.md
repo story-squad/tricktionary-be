@@ -1,5 +1,5 @@
 ## io
-
+[table of contents](../../docs/README.md)
 ****socket . id  = current player . id***
 
 | Event   | Handler | Params | Description |
