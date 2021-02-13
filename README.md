@@ -57,8 +57,6 @@ TypeScript Express API
 |[/api/definition-reactions](src/api/definitionReactions)|Definition Reactions
 
 #
-**Web Sockets**
-| Resource | Description |
-|--------| ------------|
-|[sockets](src/sockets)| event handlers |
+**Web Socket Handlers**
 
+[table of contents](docs/README.md)
