@@ -13,7 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
-exports.default = { getRound };
+const utils_1 = require("./utils");
+exports.default = { getRound, addHostChoice };
 /**
  * Round round get around, I get around, yeah
  * (Get around round round I get around, ooh-ooh) I get around
@@ -39,6 +40,17 @@ function getRound(roundId) {
         // I'm a real cool head (get around round round I get around)
         // I'm makin' real good bread (get around round round I get around)
         return { word, round, players, definitions, definitionReactions, votes };
+    });
+}
+function addHostChoice(word_id_one, word_id_two, round_id, times_shuffled) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // validate object.property types
+        const newHostChoice = utils_1.validateHostChoice({
+            word_id_one, word_id_two, round_id, times_shuffled
+        });
+        return newHostChoice.ok
+            ? dbConfig_1.default("host-choices").insert(newHostChoice.value).returning("id")
+            : [-1, newHostChoice.message];
     });
 }
 //# sourceMappingURL=model.js.map

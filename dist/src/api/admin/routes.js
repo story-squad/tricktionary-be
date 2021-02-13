@@ -31,9 +31,30 @@ router.get("/round/:id", (req, res) => __awaiter(void 0, void 0, void 0, functio
             const result = yield model_1.default.getRound(Number(roundId)); // We always take my car 'cause it's never been beat
             res.status(200).json(result); // And we've never missed yet with the girls we meet
         }
-        catch (err) { // None of the guys go steady 'cause it wouldn't be right
+        catch (err) {
+            // None of the guys go steady 'cause it wouldn't be right
             res.status(400).json({ error: err }); // To leave their best girl home now on Saturday night
         }
+    }
+}));
+router.post("/recordchoice", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { word_id_one, word_id_two, round_id, times_shuffled } = req.body;
+    let result;
+    let choice_id = -1;
+    console.log(model_1.default);
+    try {
+        result = yield model_1.default.addHostChoice(word_id_one, word_id_two, round_id, times_shuffled);
+        choice_id = result.pop();
+    }
+    catch (err) {
+        console.log('error', err);
+        // console.log("error recording the host choice");
+    }
+    if (choice_id > -1) {
+        res.status(201).json({ choice_id: choice_id });
+    }
+    else {
+        res.status(400).json({ error: "failed to get choice Id" });
     }
 }));
 exports.default = router;
