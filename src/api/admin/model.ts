@@ -1,7 +1,12 @@
 import db from "../../dbConfig";
 import { validateHostChoice } from "./utils";
 
-export default { getRound, addHostChoice, getHostChoiceById };
+export default {
+  getRound,
+  addHostChoice,
+  getHostChoiceById,
+  getPassoversForWord,
+};
 
 /**
  * Round round get around, I get around, yeah
@@ -62,4 +67,16 @@ async function addHostChoice(
 
 async function getHostChoiceById(id: number) {
   return db("host-choices").where({ id }).first();
+}
+
+async function getPassoversForWord(word_id: number) {
+  let choices_with_word: Array<any> = [];
+  const choices_one: Array<any> = await db("host-choices").where({
+    word_id_one: word_id,
+  });
+  const choices_two: Array<any> = await db("host-choices").where({
+    word_id_two: word_id,
+  });
+  choices_with_word = [...choices_one, ...choices_two];
+  return choices_with_word;
 }

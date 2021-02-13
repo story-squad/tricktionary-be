@@ -69,5 +69,17 @@ router.get("/choice/:id", (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(500).json({ error: err.message });
     });
 }));
+router.get("/word/:word_id/passovers", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.word_id);
+    if (!id)
+        res.status(400).json({ error: "id?" });
+    model_1.default.getPassoversForWord(id)
+        .then((passovers) => {
+        res.status(200).json({ passovers });
+    })
+        .catch((err) => {
+        res.status(500).json({ error: err.message });
+    });
+}));
 exports.default = router;
 //# sourceMappingURL=routes.js.map
