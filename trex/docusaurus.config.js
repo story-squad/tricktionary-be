@@ -21,7 +21,7 @@ module.exports = {
   projectName: "docusaurus", // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: "Trixie",
+      title: "T. rex",
       logo: {
         alt: "Tricktionary",
         src: "img/logo.svg"

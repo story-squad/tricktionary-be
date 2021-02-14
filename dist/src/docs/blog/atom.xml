@@ -2,16 +2,16 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://dev.tricktionary.monster/blog</id>
     <title>Tricktionary Blog</title>
-    <updated>2021-02-13T00:00:00.000Z</updated>
+    <updated>2021-02-14T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://dev.tricktionary.monster/blog"/>
     <subtitle>Tricktionary Blog</subtitle>
     <icon>https://dev.tricktionary.monster/img/favicon.ico</icon>
     <entry>
-        <title type="html"><![CDATA[welcome]]></title>
-        <id>Welcome</id>
-        <link href="https://dev.tricktionary.monster/help/blog/Welcome"/>
-        <updated>2021-02-13T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Welcome to Tricktionary's Backend Documentation.]]></summary>
+        <title type="html"><![CDATA[hello Devs]]></title>
+        <id>Hello Devs</id>
+        <link href="https://dev.tricktionary.monster/help/blog/Hello Devs"/>
+        <updated>2021-02-14T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Happy Tricktionary Day!]]></summary>
     </entry>
 </feed>

@@ -4,15 +4,15 @@
         <title>Tricktionary Blog</title>
         <link>https://dev.tricktionary.monster/blog</link>
         <description>Tricktionary Blog</description>
-        <lastBuildDate>Sat, 13 Feb 2021 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 14 Feb 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
-            <title><![CDATA[welcome]]></title>
-            <link>https://dev.tricktionary.monster/help/blog/Welcome</link>
-            <guid>Welcome</guid>
-            <pubDate>Sat, 13 Feb 2021 00:00:00 GMT</pubDate>
-            <description><![CDATA[Welcome to Tricktionary's Backend Documentation.]]></description>
+            <title><![CDATA[hello Devs]]></title>
+            <link>https://dev.tricktionary.monster/help/blog/Hello Devs</link>
+            <guid>Hello Devs</guid>
+            <pubDate>Sun, 14 Feb 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Happy Tricktionary Day!]]></description>
         </item>
     </channel>
 </rss>
