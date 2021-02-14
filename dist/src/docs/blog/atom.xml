@@ -10,8 +10,8 @@
     <entry>
         <title type="html"><![CDATA[welcome]]></title>
         <id>Welcome</id>
-        <link href="https://dev.tricktionary.monster/docs/blog/Welcome"/>
+        <link href="https://dev.tricktionary.monster/help/blog/Welcome"/>
         <updated>2021-02-13T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Welcome to Tricktionary.]]></summary>
+        <summary type="html"><![CDATA[Welcome to Tricktionary's Backend Documentation.]]></summary>
     </entry>
 </feed>

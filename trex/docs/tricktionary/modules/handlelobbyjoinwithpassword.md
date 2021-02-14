@@ -27,4 +27,4 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [handleLobbyJoinWithPassword.ts:4](https://github.com/story-squad/tricktionary-be/blob/8038185/src/sockets/handleLobbyJoinWithPassword.ts#L4)
+Defined in: [handleLobbyJoinWithPassword.ts:4](https://github.com/story-squad/tricktionary-be/blob/ddb7440/src/sockets/handleLobbyJoinWithPassword.ts#L4)

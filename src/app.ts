@@ -37,7 +37,7 @@ api.use(helmet());
 api.use(cors());
 api.use(express.json());
 // api.use("/docs", express.static('docs'))
-api.use("/docs", express.static(path.join(__dirname, "docs")));
+api.use("/help", express.static(path.join(__dirname, "docs")));
 
 // CRUD routes
 api.get("/", (req, res) =>

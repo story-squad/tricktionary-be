@@ -13,7 +13,7 @@ module.exports = {
   title: "Tricktionary",
   tagline: "the fun docs",
   url: "https://dev.tricktionary.monster",
-  baseUrl: "/docs/",
+  baseUrl: "/help/",
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
@@ -104,8 +104,8 @@ module.exports = {
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          // editUrl:
-            // "https://github.com/story-squad/tricktionary-be/trex"
+          editUrl:
+            "https://github.com/story-squad/tricktionary-be/tree/main/trex"
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css")

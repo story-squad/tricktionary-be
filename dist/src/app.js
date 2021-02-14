@@ -57,7 +57,7 @@ api.use(helmet_1.default());
 api.use(cors_1.default());
 api.use(express_1.default.json());
 // api.use("/docs", express.static('docs'))
-api.use("/docs", express_1.default.static(path_1.default.join(__dirname, "docs")));
+api.use("/help", express_1.default.static(path_1.default.join(__dirname, "docs")));
 // CRUD routes
 api.get("/", (req, res) => res.status(200).json({ api: "running", timestamp: Date.now() }));
 api.get("/api", (req, res) => res.status(200).json({ api: "𝜋", timestamp: Date.now() }));
