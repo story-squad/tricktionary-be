@@ -24,6 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.socketApp = void 0;
 const express_1 = __importDefault(require("express"));
+const path_1 = __importDefault(require("path"));
 const http_1 = require("http");
 const socketIO = __importStar(require("socket.io"));
 const sockets_1 = __importDefault(require("./sockets"));
@@ -55,6 +56,8 @@ api.use(bodyParser.json({
 api.use(helmet_1.default());
 api.use(cors_1.default());
 api.use(express_1.default.json());
+// api.use("/docs", express.static('docs'))
+api.use("/docs", express_1.default.static(path_1.default.join(__dirname, "docs")));
 // CRUD routes
 api.get("/", (req, res) => res.status(200).json({ api: "running", timestamp: Date.now() }));
 api.get("/api", (req, res) => res.status(200).json({ api: "𝜋", timestamp: Date.now() }));

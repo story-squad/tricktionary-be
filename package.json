@@ -6,10 +6,11 @@
   "scripts": {
     "build": "sh ./scripts/makeElastic.sh",
     "start": "node dist/src/index.js",
-    "pre-docs": "rm -rf docs",
-    "post-docs": "rm docs/README.md && mv docs/modules.md docs/README.md",
+    "pre-docs": "rm -rf trex/docs/tricktionary",
+    "post-docs": "./scripts/copyMarkdown.sh && ./scripts/buildDocs.sh",
     "gen-docs": "npx typedoc --theme minimal --plugin typedoc-plugin-markdown src/sockets",
-    "docs": "npm run pre-docs && npm run gen-docs && npm run post-docs"
+    "docs": "npm run pre-docs && npm run gen-docs && npm run post-docs",
+    "develop": "npm run build && npm run docs && npm start"
   },
   "engines": {
     "node": "12.20.1",
@@ -46,19 +47,20 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/http-errors": "^1.8.0",
     "@types/axios": "^0.14.0",
     "@types/body-parser": "^1.19.0",
     "@types/cors": "^2.8.9",
     "@types/express": "^4.17.11",
     "@types/helmet": "^4.0.0",
+    "@types/http-errors": "^1.8.0",
     "@types/knex": "^0.16.1",
     "@types/node": "^14.14.20",
     "@types/randomatic": "^3.1.0",
     "@types/socket.io": "^2.1.12",
+    "docusaurus-plugin-typedoc": "^0.9.0",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.5",
     "typedoc": "^0.20.24",
-    "typedoc-plugin-markdown": "^3.4.5"
+    "typedoc-plugin-markdown": "^3.4.5",
+    "typescript": "^4.1.5"
   }
 }

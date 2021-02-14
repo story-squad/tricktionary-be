@@ -1,5 +1,5 @@
 {
   "entryPoints": ["src/index.ts"],
-  "out": "docs",
+  "out": "trex/docs/tricktionary",
   "exclude": "**/*+(dbConfig|logger|app|index|.spec|.e2e).ts"
 }
