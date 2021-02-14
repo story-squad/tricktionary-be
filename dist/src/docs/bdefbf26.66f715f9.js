@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[38],{108:function(a){a.exports=JSON.parse('{"allTagsPath":"/help/blog/tags","slug":"tricktionary","name":"tricktionary","count":1,"permalink":"/help/blog/tags/tricktionary"}')}}]);

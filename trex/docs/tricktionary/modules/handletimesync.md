@@ -27,4 +27,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleTimeSync.ts:13](https://github.com/story-squad/tricktionary-be/blob/a61d80d/src/sockets/handleTimeSync.ts#L13)
+Defined in: [handleTimeSync.ts:13](https://github.com/story-squad/tricktionary-be/blob/9ef6231/src/sockets/handleTimeSync.ts#L13)
