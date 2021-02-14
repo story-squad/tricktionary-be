@@ -13,12 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
-const utils_1 = require("./utils");
 exports.default = {
     getRound,
-    addHostChoice,
-    getHostChoiceById,
     getPassoversForWord,
+    getDefinitionDetails,
 };
 /**
  * Round round get around, I get around, yeah
@@ -60,25 +58,6 @@ function getRound(roundId) {
         };
     });
 }
-function addHostChoice(word_id_one, word_id_two, round_id, times_shuffled) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // validate object.property types
-        const newHostChoice = utils_1.validateHostChoice({
-            word_id_one,
-            word_id_two,
-            round_id,
-            times_shuffled,
-        });
-        return newHostChoice.ok
-            ? dbConfig_1.default("host-choices").insert(newHostChoice.value).returning("id")
-            : [-1, newHostChoice.message];
-    });
-}
-function getHostChoiceById(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return dbConfig_1.default("host-choices").where({ id }).first();
-    });
-}
 function getPassoversForWord(word_id) {
     return __awaiter(this, void 0, void 0, function* () {
         let choices_with_word = [];
@@ -90,6 +69,28 @@ function getPassoversForWord(word_id) {
         });
         choices_with_word = [...choices_one, ...choices_two];
         return choices_with_word;
+    });
+}
+function getDefinitionDetails(definition_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        //get definition by id
+        const definition = yield dbConfig_1.default("Definitions").where({ definition_id });
+        //get all votes by definition id
+        const votes = yield dbConfig_1.default("Votes").where({ definition_id });
+        //get num of players from round
+        const round = yield dbConfig_1.default("Rounds")
+            .where({ id: definition.round_id })
+            .first();
+        //get any reactions from the join table
+        const reactions = yield dbConfig_1.default("Definition-Reactions").where({
+            definition_id,
+        });
+        return {
+            definition: definition,
+            votes: votes,
+            num_players: round.number_players,
+            reactions: reactions,
+        };
     });
 }
 //# sourceMappingURL=model.js.map

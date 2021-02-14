@@ -1,11 +1,9 @@
 import db from "../../dbConfig";
-import { validateHostChoice } from "./utils";
 
 export default {
   getRound,
-  addHostChoice,
-  getHostChoiceById,
   getPassoversForWord,
+  getDefinitionDetails,
 };
 
 /**
@@ -47,28 +45,6 @@ async function getRound(roundId: number) {
   };
 }
 
-async function addHostChoice(
-  word_id_one: number,
-  word_id_two: number,
-  round_id: number,
-  times_shuffled: number
-) {
-  // validate object.property types
-  const newHostChoice = validateHostChoice({
-    word_id_one,
-    word_id_two,
-    round_id,
-    times_shuffled,
-  });
-  return newHostChoice.ok
-    ? db("host-choices").insert(newHostChoice.value).returning("id")
-    : [-1, newHostChoice.message];
-}
-
-async function getHostChoiceById(id: number) {
-  return db("host-choices").where({ id }).first();
-}
-
 async function getPassoversForWord(word_id: number) {
   let choices_with_word: Array<any> = [];
   const choices_one: Array<any> = await db("host-choices").where({
@@ -79,4 +55,25 @@ async function getPassoversForWord(word_id: number) {
   });
   choices_with_word = [...choices_one, ...choices_two];
   return choices_with_word;
+}
+
+async function getDefinitionDetails(definition_id: number) {
+  //get definition by id
+  const definition: any = await db("Definitions").where({ definition_id });
+  //get all votes by definition id
+  const votes: Array<any> = await db("Votes").where({ definition_id });
+  //get num of players from round
+  const round: any = await db("Rounds")
+    .where({ id: definition.round_id })
+    .first();
+  //get any reactions from the join table
+  const reactions: Array<any> = await db("Definition-Reactions").where({
+    definition_id,
+  });
+  return {
+    definition: definition,
+    votes: votes,
+    num_players: round.number_players,
+    reactions: reactions,
+  };
 }
