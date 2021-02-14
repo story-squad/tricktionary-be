@@ -25,12 +25,12 @@ router.get("/round/:id", async (req, res) => {
   }
 });
 
-router.get("/word/:word_id/passovers", async (req, res) => {
+router.get("/word/:word_id", async (req, res) => {
   const id = Number(req.params.word_id);
   if (!id) res.status(400).json({ error: "id?" });
-  Super.getPassoversForWord(id)
-    .then((passovers) => {
-      res.status(200).json({ passovers });
+  Super.getWordDetails(id)
+    .then((details) => {
+      res.status(200).json({ details });
     })
     .catch((err) => {
       res.status(500).json({ error: err.message });

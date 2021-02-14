@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
 const router = express_1.Router();
-router.post("/recordchoice", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { word_id_one, word_id_two, round_id, times_shuffled } = req.body;
     let result;
     let choice_id = -1;

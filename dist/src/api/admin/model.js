@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 exports.default = {
     getRound,
-    getPassoversForWord,
+    getWordDetails,
     getDefinitionDetails,
 };
 /**
@@ -58,8 +58,21 @@ function getRound(roundId) {
         };
     });
 }
-function getPassoversForWord(word_id) {
+function getWordDetails(word_id) {
     return __awaiter(this, void 0, void 0, function* () {
+        //get word
+        const word = yield dbConfig_1.default("Words").where({ id: word_id });
+        //get rounds with word
+        const rounds = yield dbConfig_1.default("Rounds").where({ word_id });
+        //get definitions for each round
+        let definitions = [];
+        rounds.forEach((round) => __awaiter(this, void 0, void 0, function* () {
+            let defs = yield dbConfig_1.default("Definitions").where({
+                round_id: round.id,
+            });
+            definitions = [definitions, ...defs];
+        }));
+        //get passovers for word
         let choices_with_word = [];
         const choices_one = yield dbConfig_1.default("host-choices").where({
             word_id_one: word_id,
@@ -68,7 +81,12 @@ function getPassoversForWord(word_id) {
             word_id_two: word_id,
         });
         choices_with_word = [...choices_one, ...choices_two];
-        return choices_with_word;
+        return {
+            word: word,
+            rounds_picked: rounds,
+            definitions: definitions,
+            passovers: choices_with_word,
+        };
     });
 }
 function getDefinitionDetails(definition_id) {

@@ -2,7 +2,7 @@ import db from "../../dbConfig";
 
 export default {
   getRound,
-  getPassoversForWord,
+  getWordDetails,
   getDefinitionDetails,
 };
 
@@ -45,7 +45,20 @@ async function getRound(roundId: number) {
   };
 }
 
-async function getPassoversForWord(word_id: number) {
+async function getWordDetails(word_id: number) {
+  //get word
+  const word: any = await db("Words").where({ id: word_id });
+  //get rounds with word
+  const rounds: Array<any> = await db("Rounds").where({ word_id });
+  //get definitions for each round
+  let definitions: Array<any> = [];
+  rounds.forEach(async (round) => {
+    let defs: Array<any> = await db("Definitions").where({
+      round_id: round.id,
+    });
+    definitions = [definitions, ...defs];
+  });
+  //get passovers for word
   let choices_with_word: Array<any> = [];
   const choices_one: Array<any> = await db("host-choices").where({
     word_id_one: word_id,
@@ -54,7 +67,13 @@ async function getPassoversForWord(word_id: number) {
     word_id_two: word_id,
   });
   choices_with_word = [...choices_one, ...choices_two];
-  return choices_with_word;
+
+  return {
+    word: word,
+    rounds_picked: rounds,
+    definitions: definitions,
+    passovers: choices_with_word,
+  };
 }
 
 async function getDefinitionDetails(definition_id: number) {

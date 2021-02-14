@@ -37,13 +37,13 @@ router.get("/round/:id", (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
     }
 }));
-router.get("/word/:word_id/passovers", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/word/:word_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = Number(req.params.word_id);
     if (!id)
         res.status(400).json({ error: "id?" });
-    model_1.default.getPassoversForWord(id)
-        .then((passovers) => {
-        res.status(200).json({ passovers });
+    model_1.default.getWordDetails(id)
+        .then((details) => {
+        res.status(200).json({ details });
     })
         .catch((err) => {
         res.status(500).json({ error: err.message });
