@@ -9,10 +9,10 @@
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
             <title><![CDATA[welcome]]></title>
-            <link>https://dev.tricktionary.monster/docs/blog/Welcome</link>
+            <link>https://dev.tricktionary.monster/help/blog/Welcome</link>
             <guid>Welcome</guid>
             <pubDate>Sat, 13 Feb 2021 00:00:00 GMT</pubDate>
-            <description><![CDATA[Welcome to Tricktionary.]]></description>
+            <description><![CDATA[Welcome to Tricktionary's Backend Documentation.]]></description>
         </item>
     </channel>
 </rss>

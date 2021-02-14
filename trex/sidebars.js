@@ -1,7 +1,9 @@
 module.exports = {
   someSidebar: {
-    Tricktionary: ['tricktionary/README'],
-    Docusaurus: ['doc1', 'doc2', 'doc3'],
-    Features: ['mdx'],
+    About: ['tricktionary/about'],
+    Installation: ['start-here'],
+    API: ['api'],
+    WebSockets:['sockets'],
+    Deployment: ['eb1'],
   },
 };

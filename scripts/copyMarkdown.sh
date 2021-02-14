@@ -8,14 +8,16 @@ for foo in $(ls src/api/*/README.md); do
 # update the markdown links in our README file
 content=$(cat README.md|sed 's#src/api/#src-api-#g');
 header="---
-id: README
-title: Getting Started
-sidebar_label: Getting Started
+id: about
+title: About Tricktionary
+sidebar_label: Tricktionary
 slug: /tricktionary/README
 ---
 "
 echo "$header" > trex/docs/tricktionary/README.md
 echo "$content" >> trex/docs/tricktionary/README.md
+
+
 cp EB-README.md trex/docs/tricktionary
 cp -rp gifs trex/docs/tricktionary
 rm -rf trex/docs/api
