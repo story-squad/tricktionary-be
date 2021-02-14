@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import { createServer } from "http";
 import * as socketIO from "socket.io";
 import gameSocketHandler from "./sockets";
@@ -35,6 +36,8 @@ api.use(
 api.use(helmet());
 api.use(cors());
 api.use(express.json());
+// api.use("/docs", express.static('docs'))
+api.use("/docs", express.static(path.join(__dirname, "docs")));
 
 // CRUD routes
 api.get("/", (req, res) =>
@@ -69,7 +72,7 @@ io.on("connection", (socket) => {
     if (token && token.length > 0) {
       gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
     } else {
-    gameSocketHandler.handleNewPlayer(io, socket);
+      gameSocketHandler.handleNewPlayer(io, socket);
     }
   });
   // more events to come.
