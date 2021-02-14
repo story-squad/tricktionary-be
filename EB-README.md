@@ -52,7 +52,3 @@ eb deploy
 #
 
 *To simplify the deployment process, all transpiled code is committed.
-
-<img src="gifs/Node.js_logo_2015.svg" width="42%" />
-
-***Node.js 12 running on 64bit Amazon Linux 2/5.2.5***
