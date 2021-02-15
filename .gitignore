@@ -115,3 +115,5 @@ postgres.conf
 # !.elasticbeanstalk/*.global.yml
 
 .local-env
+
+trex/yarn*
