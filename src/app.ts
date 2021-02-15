@@ -113,8 +113,8 @@ io.on("connection", (socket) => {
     }
   );
 
-  socket.on("start game", (settings: any, lobbyCode: string) => {
-    gameSocketHandler.handleStartGame(io, socket, lobbyCode, lobbies, settings);
+  socket.on("start game", (settings: any, lobbyCode: string, hostChoice: any) => {
+    gameSocketHandler.handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice);
   });
 
   socket.on("definition submitted", (definition: string, lobbyCode: string) => {

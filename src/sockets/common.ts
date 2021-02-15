@@ -199,7 +199,7 @@ async function startNewRound(
   } catch (err) {
     return { ok: false, result, lobbies };
   }
-  return { ok: true, result, lobbies };
+  return { ok: true, result, lobbies, roundId };
 }
 
 type lobbyCode = string | null;

@@ -4,6 +4,7 @@ const router = Router();
 
 router.post("/", async (req, res) => {
   const { word_id_one, word_id_two, round_id, times_shuffled } = req.body;
+  console.log('req', req.body)
   let result: any;
   let choice_id: number = -1;
   try {
@@ -13,6 +14,7 @@ router.post("/", async (req, res) => {
       round_id,
       times_shuffled
     );
+    console.log('result', result)
     choice_id = result.pop();
   } catch (err) {
     // console.log('error', err)
@@ -21,11 +23,11 @@ router.post("/", async (req, res) => {
   if (choice_id > -1) {
     res.status(201).json({ choice_id: choice_id });
   } else {
-    res.status(400).json({ error: "failed to get choice Id" });
+    res.status(404).json({ error: "failed to get choice Id" });
   }
 });
 
-router.get("/choice/:id", async (req, res) => {
+router.get("/id/:id", async (req, res) => {
   const id = Number(req.params.id);
   if (!id) res.status(400).json({ error: "id?" });
   choiceModel

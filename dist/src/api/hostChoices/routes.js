@@ -17,10 +17,12 @@ const model_1 = __importDefault(require("./model"));
 const router = express_1.Router();
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { word_id_one, word_id_two, round_id, times_shuffled } = req.body;
+    console.log('req', req.body);
     let result;
     let choice_id = -1;
     try {
         result = yield model_1.default.addHostChoice(word_id_one, word_id_two, round_id, times_shuffled);
+        console.log('result', result);
         choice_id = result.pop();
     }
     catch (err) {
@@ -31,10 +33,10 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(201).json({ choice_id: choice_id });
     }
     else {
-        res.status(400).json({ error: "failed to get choice Id" });
+        res.status(404).json({ error: "failed to get choice Id" });
     }
 }));
-router.get("/choice/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = Number(req.params.id);
     if (!id)
         res.status(400).json({ error: "id?" });
