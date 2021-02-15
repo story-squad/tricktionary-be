@@ -1,5 +1,5 @@
 ---
-slug: dragon
+slug: dragons
 title: Futuristic Dragon
 author: T. Rex
 author_title: Your Tricktionary Docusaurus
