@@ -23,4 +23,4 @@ Name | Type |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleFortune.ts:3](https://github.com/story-squad/tricktionary-be/blob/9ef6231/src/sockets/handleFortune.ts#L3)
+Defined in: [handleFortune.ts:3](https://github.com/story-squad/tricktionary-be/blob/08ca45d/src/sockets/handleFortune.ts#L3)
