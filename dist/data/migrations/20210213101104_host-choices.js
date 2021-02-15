@@ -19,10 +19,10 @@ exports.up = function (knex) {
             .integer("round_id")
             .unsigned()
             .notNullable()
-            //These are commented out bc there are no round seeds. Need to add back on production
-            // .references("Rounds.id")
-            // .onDelete("RESTRICT")
-            // .onUpdate("CASCADE");
+            // These are commented out bc there are no round seeds. Need to add back on production
+            .references("Rounds.id")
+            .onDelete("RESTRICT")
+            .onUpdate("CASCADE");
         tbl.integer("times_shuffled").notNullable()
     });
 };
