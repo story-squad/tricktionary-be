@@ -19,7 +19,7 @@ async function handleTimeSync(
   const lobbyCode = whereAmI(socket);
   const checkIfHost = playerIsHost(socket, lobbyCode, lobbies);
   if (checkIfHost.ok) {
-    console.log(`synchronize timers: ${seconds}`);
+    // console.log(`synchronize timers: ${seconds}`);
     io.to(lobbyCode).emit("synchronize", seconds);
   } else {
     console.log(`NOT HOST: ${socket.id}`);

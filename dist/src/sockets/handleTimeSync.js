@@ -25,7 +25,7 @@ function handleTimeSync(io, socket, lobbies, seconds) {
         const lobbyCode = common_1.whereAmI(socket);
         const checkIfHost = common_1.playerIsHost(socket, lobbyCode, lobbies);
         if (checkIfHost.ok) {
-            console.log(`synchronize timers: ${seconds}`);
+            // console.log(`synchronize timers: ${seconds}`);
             io.to(lobbyCode).emit("synchronize", seconds);
         }
         else {

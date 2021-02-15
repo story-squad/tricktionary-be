@@ -31,10 +31,35 @@ router.get("/round/:id", (req, res) => __awaiter(void 0, void 0, void 0, functio
             const result = yield model_1.default.getRound(Number(roundId)); // We always take my car 'cause it's never been beat
             res.status(200).json(result); // And we've never missed yet with the girls we meet
         }
-        catch (err) { // None of the guys go steady 'cause it wouldn't be right
+        catch (err) {
+            // None of the guys go steady 'cause it wouldn't be right
             res.status(400).json({ error: err }); // To leave their best girl home now on Saturday night
         }
     }
 }));
+router.get("/word/:word_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.word_id);
+    if (!id)
+        res.status(400).json({ error: "id?" });
+    model_1.default.getWordDetails(id)
+        .then((details) => {
+        res.status(200).json({ details });
+    })
+        .catch((err) => {
+        res.status(500).json({ error: err.message });
+    });
+}));
+//I'm pretty sure this works but don't have any definitions to test with
+// router.get("definition/:id", async (req, res) => {
+//   const id = Number(req.params.id);
+//   if (!id) res.status(400).json({ error: "id?" });
+//   Super.getDefinitionDetails(id)
+//     .then((details) => {
+//       res.status(200).json({ details });
+//     })
+//     .catch((err) => {
+//       res.status(500).json({ error: err.message });
+//     });
+// });
 exports.default = router;
 //# sourceMappingURL=routes.js.map

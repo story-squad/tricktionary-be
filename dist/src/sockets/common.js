@@ -214,7 +214,7 @@ function startNewRound(host, word, lobbies, lobbyCode, lobbySettings) {
         catch (err) {
             return { ok: false, result, lobbies };
         }
-        return { ok: true, result, lobbies };
+        return { ok: true, result, lobbies, roundId };
     });
 }
 exports.startNewRound = startNewRound;

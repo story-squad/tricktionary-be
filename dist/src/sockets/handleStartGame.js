@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
-function handleStartGame(io, socket, lobbyCode, lobbies, settings) {
+function handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         let r = common_1.checkSettings(settings);
@@ -37,6 +37,13 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings) {
         if (newRound.ok && ((_a = newRound.result) === null || _a === void 0 ? void 0 : _a.status) === 201) {
             lobbies = newRound.lobbies;
             // update the host token
+            try {
+                yield common_1.localAxios.post("/api/choice", Object.assign(Object.assign({}, hostChoice), { round_id: newRound.roundId }));
+            }
+            catch (err) {
+                console.log("error recording the host's choices");
+                console.log(err.message);
+            }
             // pub-sub update
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         }

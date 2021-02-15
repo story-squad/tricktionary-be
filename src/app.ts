@@ -18,6 +18,7 @@ import authRoutes from "./api/auth/routes";
 import playerRoutes from "./api/player/routes";
 import gameRoutes from "./api/game/routes";
 import playedRoutes from "./api/played/routes";
+import choiceRoutes from "./api/hostChoices/routes"
 
 // testing
 import cleverRoutes from "./api/clever/routes";
@@ -59,6 +60,7 @@ api.use("/api/auth", authRoutes);
 api.use("/api/player", playerRoutes);
 api.use("/api/game", gameRoutes);
 api.use("/api/played", playedRoutes);
+api.use("/api/choice", choiceRoutes)
 // testing
 api.use("/api/clever", cleverRoutes);
 
@@ -114,8 +116,8 @@ io.on("connection", (socket) => {
     }
   );
 
-  socket.on("start game", (settings: any, lobbyCode: string) => {
-    gameSocketHandler.handleStartGame(io, socket, lobbyCode, lobbies, settings);
+  socket.on("start game", (settings: any, lobbyCode: string, hostChoice: any) => {
+    gameSocketHandler.handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice);
   });
 
   socket.on("definition submitted", (definition: string, lobbyCode: string) => {
