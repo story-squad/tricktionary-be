@@ -36,7 +36,7 @@ function handleLobbyJoin(
         ...lobbies[lobbyCode],
         players: [
           ...lobbies[lobbyCode].players,
-          { id: socket.id, username, definition: "", points: 0 }
+          { id: socket.id, username, definition: "", points: 0, connected: true }
         ]
       };
     }

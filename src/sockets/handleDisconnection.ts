@@ -1,4 +1,4 @@
-import {whereAmI} from "./common"
+import { whereAmI } from "./common";
 function handleDisconnection(io: any, socket: any, lobbies: any) {
   const lobbyCode = whereAmI(socket);
   if (lobbyCode) {
@@ -13,13 +13,18 @@ function handleDisconnection(io: any, socket: any, lobbies: any) {
       lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter(
         (player: any) => player !== oldPlayer
       );
-      // *put this player in the DEADBEEF room
-      lobbies["DEADBEEF"] = [
-        ...lobbies["DEADBEEF"],
-        { lobbyCode, player: oldPlayer }
+      lobbies[lobbyCode].players = [
+        ...lobbies[lobbyCode].players,
+        { ...oldPlayer, connected: false }
       ];
-      if (lobbies[lobbyCode].players.length === 0) {
-        delete lobbies[lobbyCode]
+
+      if (
+        lobbies[lobbyCode].players.filter((player: any) => player.connected)
+          .length === 0
+      ) {
+        // instead of deleting the players, we'll mark them as player.connected= false
+        console.log('deleting lobby, ', lobbyCode);
+        delete lobbies[lobbyCode];
       }
       // *notify other players in the room.
       // io.to(lobbyCode).emit("remove player", socket.id);

@@ -70,6 +70,8 @@ router.post("/login", async (req, res) => {
   if (!valid.ok) {
     res.status(valid.status).json({ message: valid.message });
   }
+  console.log("OK TOKEN!")
+
   const { player, last_lobby } = valid;
   if (!valid.player) {
     res.status(403).json({ message: "token was missing player_id" });

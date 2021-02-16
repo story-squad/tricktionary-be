@@ -12,7 +12,7 @@
 
 ### default
 
-▸ **default**(`io`: *any*, `socket`: *any*, `lobbyCode`: *any*, `lobbies`: *any*, `settings`: *any*): *Promise*<*void*\>
+▸ **default**(`io`: *any*, `socket`: *any*, `lobbyCode`: *any*, `lobbies`: *any*, `settings`: *any*, `hostChoice`: *any*): *Promise*<*void*\>
 
 #### Parameters:
 
@@ -23,7 +23,8 @@ Name | Type |
 `lobbyCode` | *any* |
 `lobbies` | *any* |
 `settings` | *any* |
+`hostChoice` | *any* |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleStartGame.ts:8](https://github.com/story-squad/tricktionary-be/blob/08ca45d/src/sockets/handleStartGame.ts#L8)
+Defined in: [handleStartGame.ts:9](https://github.com/story-squad/tricktionary-be/blob/30467a6/src/sockets/handleStartGame.ts#L9)

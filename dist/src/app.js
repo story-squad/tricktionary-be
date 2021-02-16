@@ -84,6 +84,7 @@ const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
     // LOGIN
     socket.on("login", (token) => {
+        console.log(socket.rooms);
         if (token && token.length > 0) {
             sockets_1.default.handleReturningPlayer(io, socket, token, lobbies);
         }

@@ -10,7 +10,7 @@ async function handleReturningPlayer(
   let login;
   let newtoken;
   let player;
-  let old_user_id;
+  let old_user_id: string = "";
   // try logging in with the old token
   try {
     login = await localAxios.post("/api/auth/login", {
@@ -27,24 +27,21 @@ async function handleReturningPlayer(
   privateMessage(io, socket, "token update", newtoken);
   // check for last_played activity
   if (!player.last_played || !gameExists(player.last_played, lobbies)) {
-    console.log("...no active game was found.");
+    console.log(player.last_played, " game not found.");
     return;
   }
-  // player has a game they may want to rejoin.
-  const rejoinable = {
-    lobbyCode: player.last_played,
-    player,
-    password: newtoken.slice(newtoken.length - 4),
-    old_user_id
-  };
-  if (lobbies["waiting"]) {
-    // if we have people waiting, join them
-    lobbies["waiting"] = [...lobbies["waiting"], rejoinable];
-  } else {
-    lobbies["waiting"] = [rejoinable];
-  }
+  lobbies[player.last_played].players = lobbies[player.last_played].players.map(
+    (player: any) => {
+      if (player.id === old_user_id) {
+        return { ...player, id: socket.id, connected: true };
+      }
+      return player;
+    }
+  );
+  console.log("updating from returning player...");
+  io.to(player.last_played).emit("game update", lobbies[player.last_played]); // ask room to update
   // finally, we give player the option to rejoin.
-  privateMessage(io, socket, "ask rejoin", player.last_played);
+  // privateMessage(io, socket, "ask rejoin", player.last_played);
 }
 
 export default handleReturningPlayer;
