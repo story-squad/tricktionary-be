@@ -9,6 +9,7 @@ function handleLobbyJoinWithPassword(
   lobbyCode: any,
   lobbies: any
 ) {
+  console.log('LOBBY-JOIN-WITH-PASSWORD')
   if (!password) {
     console.log("password ?");
     return;

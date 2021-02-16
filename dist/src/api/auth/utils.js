@@ -40,11 +40,12 @@ function validatePayloadType(payload) {
     return { ok: true, value: payload }; // as-is
 }
 exports.validatePayloadType = validatePayloadType;
-function generateToken(user_id, player_id, extra) {
+function generateToken(user_id, player_id, extra, lobbyCode) {
     const payload = {
         sub: user_id,
         pid: player_id,
         iat: Date.now(),
+        lob: lobbyCode,
         ext: extra
     };
     const options = {
@@ -58,19 +59,21 @@ function generateToken(user_id, player_id, extra) {
  * @param last_user_id socket.id
  * @param player_id Player.id
  */
-function newToken(last_user_id, player_id, extra) {
+function newToken(last_user_id, player_id, extra, lobbyCode) {
     return __awaiter(this, void 0, void 0, function* () {
         const payload = validatePayloadType({
             sub: last_user_id,
             pid: player_id,
             iat: 0,
+            lob: lobbyCode,
             ext: extra
         });
+        console.log(payload);
         if (!payload.ok) {
             return { ok: false, message: "bad payload", status: 400 };
         }
         try {
-            const token = yield generateToken(last_user_id, player_id, extra); // generate new token
+            const token = yield generateToken(last_user_id, player_id, extra, lobbyCode); // generate new token
             yield model_1.default.updatePlayer(player_id, { token, last_user_id }); // update the player record
             return { ok: true, token, message: "token update", status: 200 };
         }
@@ -98,13 +101,15 @@ function partialRecall(token) {
     let username;
     let definition;
     let points;
-    let lobbyCode;
+    let last_lobby;
     if (payload.value.ext) {
         const extra = exports.b64.decode(payload.value.ext);
         username = extra.username;
         definition = extra.definition;
         points = extra.points;
-        lobbyCode = extra === null || extra === void 0 ? void 0 : extra.lobbyCode;
+    }
+    if (payload.value.lob) {
+        last_lobby = payload.value.lob;
     }
     return {
         ok: true,
@@ -113,7 +118,7 @@ function partialRecall(token) {
         username,
         definition,
         points,
-        lobbyCode
+        last_lobby
     };
 }
 exports.partialRecall = partialRecall;
@@ -164,7 +169,7 @@ function verifyTricktionaryToken(last_token, last_user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         let last_lobby;
         let player_id;
-        let player;
+        let player = {};
         try {
             jsonwebtoken_1.default.verify(last_token, secrets_1.default.jwtSecret); // verify it's one of ours.
             let mem = partialRecall(last_token);
@@ -172,24 +177,31 @@ function verifyTricktionaryToken(last_token, last_user_id) {
                 return { ok: false, status: 400, message: mem.message };
                 // res.status(400).json({ message: mem.message });
             }
+            // player = mem.player;
             player_id = mem.player_id ? mem.player_id : ""; // remember the player_id ?
             if (last_user_id === mem.last_user_id) {
                 // same web socket session, update token and return.
                 console.log("same socket");
             }
-            if (mem.lobbyCode) {
-                console.log("Found old lobby code, ", mem.lobbyCode);
-            }
-            const existing = yield totalRecall(mem.player_id);
-            if (existing.ok) {
-                player = existing.player;
-                last_lobby = existing.spoilers;
-                console.log("last lobby -", last_lobby);
+            if (mem.last_user_id) {
+                console.log("partialRecall - last lobby -", mem.last_lobby);
+                last_lobby = mem.last_lobby;
+                // return { ...mem, status: 200 };
             }
             else {
-                console.log("can't find this player in the db");
-                // console.log(existing);
+                // search db for player_id
+                const existing = yield totalRecall(mem.player_id);
+                if (existing.ok) {
+                    player = existing.player;
+                    last_lobby = existing.spoilers;
+                    console.log("totalRecall - last lobby -", last_lobby);
+                }
+                else {
+                    console.log("can't find this player in the db");
+                    // console.log(existing);
+                }
             }
+            // NOTE: don't need to lookup player by id if we already have the last lobby from JWT
         }
         catch (err) {
             return { ok: false, status: 403, message: err.message };
@@ -197,10 +209,10 @@ function verifyTricktionaryToken(last_token, last_user_id) {
         return {
             ok: true,
             status: 200,
-            player,
             last_lobby,
             old_user_id: last_user_id,
-            player_id
+            player_id,
+            player
         };
     });
 }

@@ -1,4 +1,9 @@
-import { localAxios, privateMessage, gameExists } from "./common";
+import {
+  localAxios,
+  privateMessage,
+  gameExists,
+  playerIdWasHost
+} from "./common";
 
 async function handleReturningPlayer(
   io: any,
@@ -17,6 +22,7 @@ async function handleReturningPlayer(
       user_id,
       last_token: token
     });
+    console.log("DATA", login.data);
     player = login.data.player;
     newtoken = login.data.token;
     old_user_id = login.data.old_user_id;
@@ -30,14 +36,22 @@ async function handleReturningPlayer(
     console.log(player.last_played, " game not found.");
     return;
   }
-  lobbies[player.last_played].players = lobbies[player.last_played].players.map(
-    (player: any) => {
-      if (player.id === old_user_id) {
-        return { ...player, id: socket.id, connected: true };
+  socket.join(player.last_played);
+  if (lobbies[player.last_played].players.filter((p: any) => p.id === socket.id).length === 0) {
+    lobbies[player.last_played].players = lobbies[player.last_played].players.map(
+      (player: any) => {
+        if (player.id === old_user_id) {
+          return { ...player, id: socket.id, connected: true };
+        }
+        return player;
       }
-      return player;
-    }
-  );
+    );
+  }
+  if (lobbies[player.last_played].host === old_user_id) {
+    // update host
+    lobbies[player.last_played].host = socket.id;
+    privateMessage(io, socket, "info", `ok, set host: ${socket.id}`);
+  }
   console.log("updating from returning player...");
   io.to(player.last_played).emit("game update", lobbies[player.last_played]); // ask room to update
   // finally, we give player the option to rejoin.

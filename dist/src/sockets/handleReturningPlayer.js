@@ -23,6 +23,7 @@ function handleReturningPlayer(io, socket, token, lobbies) {
                 user_id,
                 last_token: token
             });
+            console.log("DATA", login.data);
             player = login.data.player;
             newtoken = login.data.token;
             old_user_id = login.data.old_user_id;
@@ -37,12 +38,20 @@ function handleReturningPlayer(io, socket, token, lobbies) {
             console.log(player.last_played, " game not found.");
             return;
         }
-        lobbies[player.last_played].players = lobbies[player.last_played].players.map((player) => {
-            if (player.id === old_user_id) {
-                return Object.assign(Object.assign({}, player), { id: socket.id, connected: true });
-            }
-            return player;
-        });
+        socket.join(player.last_played);
+        if (lobbies[player.last_played].players.filter((p) => p.id === socket.id).length === 0) {
+            lobbies[player.last_played].players = lobbies[player.last_played].players.map((player) => {
+                if (player.id === old_user_id) {
+                    return Object.assign(Object.assign({}, player), { id: socket.id, connected: true });
+                }
+                return player;
+            });
+        }
+        if (lobbies[player.last_played].host === old_user_id) {
+            // update host
+            lobbies[player.last_played].host = socket.id;
+            common_1.privateMessage(io, socket, "info", `ok, set host: ${socket.id}`);
+        }
         console.log("updating from returning player...");
         io.to(player.last_played).emit("game update", lobbies[player.last_played]); // ask room to update
         // finally, we give player the option to rejoin.

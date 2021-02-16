@@ -26,7 +26,8 @@ export {
   wordFromID,
   startNewRound,
   b64,
-  whereAmI
+  whereAmI,
+  updatePlayerToken
 };
 
 // const exec = util.promisify(cmd);
@@ -65,14 +66,20 @@ async function privateMessage(
   }
 }
 
-async function sendToHost(io: any, socket: any, lobbies: any, category: string, message: any) {
+async function sendToHost(
+  io: any,
+  socket: any,
+  lobbies: any,
+  category: string,
+  message: any
+) {
   try {
     const lobbyCode = whereAmI(socket);
-    if (lobbyCode){
-      io.to(lobbies[lobbyCode].host).emit(category, message) 
+    if (lobbyCode) {
+      io.to(lobbies[lobbyCode].host).emit(category, message);
     }
-  } catch(err) {
-    return false
+  } catch (err) {
+    return false;
   }
   return true;
 }
@@ -94,7 +101,6 @@ function playerIdWasHost(playerId: string, lobbyCode: any, lobbies: any) {
     return { ok: false, message: err };
   }
 }
-
 
 function checkSettings(settings: any) {
   let lobbySettings;
@@ -207,7 +213,7 @@ type lobbyCode = string | null;
  * @param socket (socket io)
  * @returns the lobby code attached to this socket (string).
  */
-function whereAmI(socket: any):lobbyCode {
+function whereAmI(socket: any): lobbyCode {
   return Array.from(socket.rooms).length > 1
     ? String(Array.from(socket.rooms)[1])
     : null;
@@ -242,4 +248,55 @@ export async function newPlayerRecord(socket: any) {
     return { ok: false, message: err.message };
   }
   return { ok: true, player, token };
+}
+
+/**
+ * 
+ * @param io (socket io)
+ * @param socket (socket io)
+ * @param p_id Player UUID
+ * @param name Player's username
+ * @param definition Player's definition
+ * @param points Player's points
+ * @param lobbyCode Players current game code
+ */
+async function updatePlayerToken(
+  io: any,
+  socket: any,
+  p_id: string,
+  name: string,
+  definition: string | undefined,
+  points: number | undefined,
+  lobbyCode: string
+) {
+  let token;
+  try {
+    // update the HOST's token with lobbyCode
+    const payload = {
+      s_id: socket.id,
+      p_id,
+      name,
+      definition: definition || "",
+      points: points || 0,
+      lobbyCode
+    };
+    const { data } = await localAxios.post("/api/auth/update-token", payload);
+    if (data.ok) {
+      // update player (HOST) with new token
+      privateMessage(io, socket, "token update", data.token);
+      // update the database
+      token = data.token;
+      await localAxios.put(`/api/player/id/${p_id}`, {
+        token,
+        last_played: lobbyCode
+      });
+    } else {
+      console.log(data.message);
+      return data;
+    }
+  } catch (err) {
+    console.log(err.message);
+    return { ok: false, message: err.message };
+  }
+  return { ok: true, token };
 }

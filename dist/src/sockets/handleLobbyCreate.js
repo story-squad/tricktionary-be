@@ -23,6 +23,7 @@ function handleLobbyCreate(io, socket, username, lobbies) {
         let game_id;
         try {
             const last_player = yield common_1.localAxios.get(`/api/player/last-user-id/${socket.id}`);
+            console.log(last_player.data);
             if (last_player.data.player && last_player.data.player.id) {
                 // create the Game
                 og_host = last_player.data.player.id;
@@ -37,11 +38,12 @@ function handleLobbyCreate(io, socket, username, lobbies) {
         }
         console.log("LOBBY CREATED BY: ", og_host);
         console.log("GAME : ", game_id);
-        common_1.localAxios.put(`/api/player/id/${og_host}`, {});
         lobbies[lobbyCode] = {
             game_id,
             lobbyCode,
-            players: [{ id: socket.id, username, definition: "", points: 0, connected: true }],
+            players: [
+                { id: socket.id, username, definition: "", points: 0, connected: true }
+            ],
             host: socket.id,
             phase: "PREGAME",
             word: "",
@@ -49,11 +51,14 @@ function handleLobbyCreate(io, socket, username, lobbies) {
             guesses: [],
             roundId: null
         };
-        const playerId = socket.id;
-        // update the HOST's token with their username
-        io.to(playerId).emit("welcome", playerId); // private message host with id
+        try {
+            yield common_1.updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode);
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+        common_1.privateMessage(io, socket, "welcome", socket.id);
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
-        // console.log(lobbies[lobbyCode]);
     });
 }
 exports.default = handleLobbyCreate;

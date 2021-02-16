@@ -4,16 +4,24 @@ import { verifyTricktionaryToken } from "./utils";
 //
 // import secrets from "./secrets";
 //
-import {
-  validatePayloadType,
-  newToken,
-  b64,
-  partialRecall,
-  totalRecall
-} from "./utils";
+import { validatePayloadType, newToken, b64, partialRecall } from "./utils";
 //
 import Player from "../player/model";
+import { HttpError } from "http-errors";
 const router = Router();
+
+router.post("/recall", (req, res) => {
+  const { token } = req.body;
+  if (!token) {
+    res.status(400).json({ error: "token required" });
+  }
+  // we have a token,
+  const result = partialRecall(token);
+  if (!result.ok) {
+    res.status(400).json(result);
+  }
+  res.status(200).json(result);
+});
 
 router.get("/find-player/:last_user_id", async (req, res) => {
   const last_user_id = req.params.last_user_id;
@@ -45,17 +53,17 @@ router.post("/new-player", async (req, res) => {
     res.status(400).json({ message: created.message });
   } else {
     const pid: string = String(created.player_id);
-    const token = await newToken(last_user_id, pid, undefined);
+    const token = await newToken(last_user_id, pid, undefined, undefined);
     res.status(token.status).json(token);
   }
 });
 
 router.post("/update-token", async (req, res) => {
-  const { s_id, p_id, name, definition, points } = req.body;
+  const { s_id, p_id, name, definition, points, lobbyCode } = req.body;
   const extra = b64.encode(JSON.stringify({ name, definition, points }));
   try {
-    const token = await newToken(s_id, p_id, extra);
-    res.status(200).json({ token });
+    const token = await newToken(s_id, p_id, extra, lobbyCode);
+    res.status(200).json(token);
   } catch (err) {
     res.send(400).json({ message: err.message });
   }
@@ -66,44 +74,47 @@ router.post("/login", async (req, res) => {
   if (!user_id || !last_token) {
     res.status(403).json({ message: "missing required elements" });
   }
-  const valid = await verifyTricktionaryToken(last_token, user_id);
-  if (!valid.ok) {
-    res.status(valid.status).json({ message: valid.message });
-  }
-  console.log("OK TOKEN!")
-
-  const { player, last_lobby } = valid;
-  if (!valid.player) {
-    res.status(403).json({ message: "token was missing player_id" });
-  }
-  const player_id: string = String(valid.player_id);
-  // validate *new token payload
-  const payload = validatePayloadType({
-    sub: user_id,
-    pid: player_id,
-    iat: 0
-  });
-  if (!payload.ok) {
-    res.status(400).json({ message: payload.message });
+  let last_user_id:string = "";
+  let last_lobby:string = "";
+  let player;
+  let player_id:string = "";
+  let result;
+  try {
+    result = partialRecall(last_token);
+    if (!result.ok) {
+      res.status(400).json(result);
+    }
+    player_id = result.player_id || "";
+    last_user_id = result.last_user_id || "";
+    last_lobby = result.last_lobby || "";
+    player = await Player.getPlayer(player_id);
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: err.message });
   }
   let token;
-  let old_user_id;
+  let old_user_id = last_user_id;
   try {
-    let token_request = await newToken(user_id, player_id, undefined); // generate new token & update the player record
+    let token_request = await newToken(
+      user_id,
+      player_id,
+      undefined,
+      last_lobby
+    ); // generate new token & update the player record
     if (token_request.ok) {
       token = token_request.token;
     }
   } catch (err) {
     res.status(403).json({ message: err.message });
   }
-  res
-    .status(200)
-    .json({
-      message: "welcome",
-      player: { ...player, last_played: last_lobby },
-      token,
-      old_user_id
-    });
+  // last_lobby will be returned, if it exists, as player.last_lobby
+  res.status(200).json({
+    message: "welcome",
+    player: { ...player, last_lobby },
+    token,
+    old_user_id
+  });
 });
+
 
 export default router;

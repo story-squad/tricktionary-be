@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
 function handleLobbyJoinWithPassword(io, socket, username, password, lobbyCode, lobbies) {
+    console.log('LOBBY-JOIN-WITH-PASSWORD');
     if (!password) {
         console.log("password ?");
         return;
