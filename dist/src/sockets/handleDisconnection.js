@@ -11,12 +11,14 @@ function handleDisconnection(io, socket, lobbies) {
             const oldPlayer = lobbies[lobbyCode].players.filter((player) => player.id === socket.id)[0];
             // remove socket.id from player list
             lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter((player) => player !== oldPlayer);
-            // *put this player in the DEADBEEF room
-            lobbies["DEADBEEF"] = [
-                ...lobbies["DEADBEEF"],
-                { lobbyCode, player: oldPlayer }
+            lobbies[lobbyCode].players = [
+                ...lobbies[lobbyCode].players,
+                Object.assign(Object.assign({}, oldPlayer), { connected: false })
             ];
-            if (lobbies[lobbyCode].players.length === 0) {
+            if (lobbies[lobbyCode].players.filter((player) => player.connected)
+                .length === 0) {
+                // instead of deleting the players, we'll mark them as player.connected= false
+                console.log('deleting lobby, ', lobbyCode);
                 delete lobbies[lobbyCode];
             }
             // *notify other players in the room.

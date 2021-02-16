@@ -31,7 +31,7 @@ async function handleLobbyCreate(
   lobbies[lobbyCode] = {
     game_id,
     lobbyCode,
-    players: [{ id: socket.id, username, definition: "", points: 0 }],
+    players: [{ id: socket.id, username, definition: "", points: 0, connected: true }],
     host: socket.id,
     phase: "PREGAME",
     word: "",

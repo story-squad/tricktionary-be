@@ -31,7 +31,7 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
         if (!(lobbies[lobbyCode].players.filter((p) => p.id === socket.id).length > 0)) {
             lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
                     ...lobbies[lobbyCode].players,
-                    { id: socket.id, username, definition: "", points: 0 }
+                    { id: socket.id, username, definition: "", points: 0, connected: true }
                 ] });
         }
     }

@@ -24,4 +24,4 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [handleLobbyLeave.ts:1](https://github.com/story-squad/tricktionary-be/blob/08ca45d/src/sockets/handleLobbyLeave.ts#L1)
+Defined in: [handleLobbyLeave.ts:1](https://github.com/story-squad/tricktionary-be/blob/30467a6/src/sockets/handleLobbyLeave.ts#L1)

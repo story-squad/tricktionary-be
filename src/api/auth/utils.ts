@@ -105,11 +105,13 @@ export function partialRecall(token: string) {
   let username;
   let definition;
   let points;
+  let lobbyCode;
   if (payload.value.ext) {
     const extra: any = b64.decode(payload.value.ext);
     username = extra.username;
     definition = extra.definition;
     points = extra.points;
+    lobbyCode = extra?.lobbyCode
   }
   return {
     ok: true,
@@ -117,7 +119,8 @@ export function partialRecall(token: string) {
     player_id: payload.value.pid,
     username,
     definition,
-    points
+    points,
+    lobbyCode
   };
 }
 export async function totalRecall(player_id: string | undefined) {
@@ -179,6 +182,9 @@ export async function verifyTricktionaryToken(
     if (last_user_id === mem.last_user_id) {
       // same web socket session, update token and return.
       console.log("same socket");
+    }
+    if(mem.lobbyCode) {
+      console.log("Found old lobby code, ", mem.lobbyCode);
     }
     const existing = await totalRecall(mem.player_id);
     if (existing.ok) {

@@ -71,6 +71,7 @@ const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
   // LOGIN
   socket.on("login", (token: string | undefined) => {
+    console.log(socket.rooms)
     if (token && token.length > 0) {
       gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
     } else {
