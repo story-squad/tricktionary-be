@@ -1,5 +1,10 @@
 import randomizer from "randomatic";
-import { LC_LENGTH, localAxios } from "./common";
+import {
+  LC_LENGTH,
+  localAxios,
+  privateMessage,
+  updatePlayerToken
+} from "./common";
 
 async function handleLobbyCreate(
   io: any,
@@ -13,7 +18,10 @@ async function handleLobbyCreate(
   let request_game;
   let game_id;
   try {
-    const last_player = await localAxios.get(`/api/player/last-user-id/${socket.id}`);
+    const last_player = await localAxios.get(
+      `/api/player/last-user-id/${socket.id}`
+    );
+    console.log(last_player.data);
     if (last_player.data.player && last_player.data.player.id) {
       // create the Game
       og_host = last_player.data.player.id;
@@ -26,12 +34,13 @@ async function handleLobbyCreate(
     console.log({ message: err.message });
   }
   console.log("LOBBY CREATED BY: ", og_host);
-  console.log("GAME : ", game_id)
-  localAxios.put(`/api/player/id/${og_host}`, {});
+  console.log("GAME : ", game_id);
   lobbies[lobbyCode] = {
     game_id,
     lobbyCode,
-    players: [{ id: socket.id, username, definition: "", points: 0, connected: true }],
+    players: [
+      { id: socket.id, username, definition: "", points: 0, connected: true }
+    ],
     host: socket.id,
     phase: "PREGAME",
     word: "",
@@ -39,10 +48,12 @@ async function handleLobbyCreate(
     guesses: [],
     roundId: null
   };
-  const playerId = socket.id;
-  // update the HOST's token with their username
-  io.to(playerId).emit("welcome", playerId); // private message host with id
+  try {
+    await updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode);
+  } catch (err) {
+    console.log(err.message);
+  }
+  privateMessage(io, socket, "welcome", socket.id);
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
-  // console.log(lobbies[lobbyCode]);
 }
 export default handleLobbyCreate;

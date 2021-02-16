@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.newPlayerRecord = exports.gameExists = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.fortune = exports.localAxios = exports.LC_LENGTH = void 0;
+exports.newPlayerRecord = exports.gameExists = exports.updatePlayerToken = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.fortune = exports.localAxios = exports.LC_LENGTH = void 0;
 const GameSettings_1 = require("../GameSettings");
 // import * as dotenv from "dotenv";
 // import util from "util";
@@ -258,4 +258,51 @@ function newPlayerRecord(socket) {
     });
 }
 exports.newPlayerRecord = newPlayerRecord;
+/**
+ *
+ * @param io (socket io)
+ * @param socket (socket io)
+ * @param p_id Player UUID
+ * @param name Player's username
+ * @param definition Player's definition
+ * @param points Player's points
+ * @param lobbyCode Players current game code
+ */
+function updatePlayerToken(io, socket, p_id, name, definition, points, lobbyCode) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let token;
+        try {
+            // update the HOST's token with lobbyCode
+            const payload = {
+                s_id: socket.id,
+                p_id,
+                name,
+                definition: definition || "",
+                points: points || 0,
+                lobbyCode
+            };
+            const { data } = yield localAxios.post("/api/auth/update-token", payload);
+            if (data.ok) {
+                // update player (HOST) with new token
+                privateMessage(io, socket, "token update", data.token);
+                // update the database
+                token = data.token;
+                yield localAxios.put(`/api/player/id/${p_id}`, {
+                    token,
+                    last_played: lobbyCode
+                });
+            }
+            else {
+                console.log(data.message);
+                return data;
+            }
+        }
+        catch (err) {
+            console.log(err.message);
+            return { ok: false, message: err.message };
+        }
+        return { ok: true, token };
+    });
+}
+exports.updatePlayerToken = updatePlayerToken;
 //# sourceMappingURL=common.js.map

@@ -94,3 +94,27 @@ Returns:
     "token": NEW TOKEN,
   }
 ```
+| Method | URL                  | Description                |
+| ------ | -------------------- | -------------------------- |
+| POST   | /api/auth/recall     | decode a player token      |
+
+Request body:
+
+```
+  {
+    "token": TOKEN
+  }
+```
+
+Returns:
+```
+  {
+    ok: BOOLEAN,
+    last_user_id: STRING,
+    player_id: UUID,
+    username: STRING,
+    definition: STRING,
+    points: NUMBER,
+    last_lobby: STRING
+  }
+```

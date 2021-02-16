@@ -13,15 +13,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const utils_1 = require("./utils");
 // import jwt from "jsonwebtoken";
 //
 // import secrets from "./secrets";
 //
-const utils_2 = require("./utils");
+const utils_1 = require("./utils");
 //
 const model_1 = __importDefault(require("../player/model"));
 const router = express_1.Router();
+router.post("/recall", (req, res) => {
+    const { token } = req.body;
+    if (!token) {
+        res.status(400).json({ error: "token required" });
+    }
+    // we have a token,
+    const result = utils_1.partialRecall(token);
+    if (!result.ok) {
+        res.status(400).json(result);
+    }
+    res.status(200).json(result);
+});
 router.get("/find-player/:last_user_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const last_user_id = req.params.last_user_id;
     let player;
@@ -53,16 +64,16 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
     else {
         const pid = String(created.player_id);
-        const token = yield utils_2.newToken(last_user_id, pid, undefined);
+        const token = yield utils_1.newToken(last_user_id, pid, undefined, undefined);
         res.status(token.status).json(token);
     }
 }));
 router.post("/update-token", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { s_id, p_id, name, definition, points } = req.body;
-    const extra = utils_2.b64.encode(JSON.stringify({ name, definition, points }));
+    const { s_id, p_id, name, definition, points, lobbyCode } = req.body;
+    const extra = utils_1.b64.encode(JSON.stringify({ name, definition, points }));
     try {
-        const token = yield utils_2.newToken(s_id, p_id, extra);
-        res.status(200).json({ token });
+        const token = yield utils_1.newToken(s_id, p_id, extra, lobbyCode);
+        res.status(200).json(token);
     }
     catch (err) {
         res.send(400).json({ message: err.message });
@@ -73,29 +84,29 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     if (!user_id || !last_token) {
         res.status(403).json({ message: "missing required elements" });
     }
-    const valid = yield utils_1.verifyTricktionaryToken(last_token, user_id);
-    if (!valid.ok) {
-        res.status(valid.status).json({ message: valid.message });
+    let last_user_id = "";
+    let last_lobby = "";
+    let player;
+    let player_id = "";
+    let result;
+    try {
+        result = utils_1.partialRecall(last_token);
+        if (!result.ok) {
+            res.status(400).json(result);
+        }
+        player_id = result.player_id || "";
+        last_user_id = result.last_user_id || "";
+        last_lobby = result.last_lobby || "";
+        player = yield model_1.default.getPlayer(player_id);
     }
-    console.log("OK TOKEN!");
-    const { player, last_lobby } = valid;
-    if (!valid.player) {
-        res.status(403).json({ message: "token was missing player_id" });
-    }
-    const player_id = String(valid.player_id);
-    // validate *new token payload
-    const payload = utils_2.validatePayloadType({
-        sub: user_id,
-        pid: player_id,
-        iat: 0
-    });
-    if (!payload.ok) {
-        res.status(400).json({ message: payload.message });
+    catch (err) {
+        console.log(err.message);
+        res.status(400).json({ message: err.message });
     }
     let token;
-    let old_user_id;
+    let old_user_id = last_user_id;
     try {
-        let token_request = yield utils_2.newToken(user_id, player_id, undefined); // generate new token & update the player record
+        let token_request = yield utils_1.newToken(user_id, player_id, undefined, last_lobby); // generate new token & update the player record
         if (token_request.ok) {
             token = token_request.token;
         }
@@ -103,11 +114,10 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     catch (err) {
         res.status(403).json({ message: err.message });
     }
-    res
-        .status(200)
-        .json({
+    // last_lobby will be returned, if it exists, as player.last_lobby
+    res.status(200).json({
         message: "welcome",
-        player: Object.assign(Object.assign({}, player), { last_played: last_lobby }),
+        player: Object.assign(Object.assign({}, player), { last_lobby }),
         token,
         old_user_id
     });
