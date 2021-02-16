@@ -14,16 +14,18 @@
 
 ▸ **default**(`io`: *any*, `socket`: *any*, `username`: *string*, `lobbyCode`: *any*, `lobbies`: *any*): *Promise*<*void*\>
 
+Connects the player with the active game being played.
+
 #### Parameters:
 
-Name | Type |
------- | ------ |
-`io` | *any* |
-`socket` | *any* |
-`username` | *string* |
-`lobbyCode` | *any* |
-`lobbies` | *any* |
+Name | Type | Description |
+------ | ------ | ------ |
+`io` | *any* | (socket io)   |
+`socket` | *any* | (socket io)   |
+`username` | *string* | Player's name   |
+`lobbyCode` | *any* | Player's join code   |
+`lobbies` | *any* | game-state    |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleLobbyJoin.ts:4](https://github.com/story-squad/tricktionary-be/blob/f17c3de/src/sockets/handleLobbyJoin.ts#L4)
+Defined in: [handleLobbyJoin.ts:19](https://github.com/story-squad/tricktionary-be/blob/8c9d49b/src/sockets/handleLobbyJoin.ts#L19)

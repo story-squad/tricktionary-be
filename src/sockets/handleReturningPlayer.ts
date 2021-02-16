@@ -2,9 +2,20 @@ import {
   localAxios,
   privateMessage,
   gameExists,
-  playerIdWasHost
 } from "./common";
+import handleLobbyJoin from "./handleLobbyJoin";
 
+/**
+ * Determine whether or not the player should auto re-join an existing game.
+ * 
+ * In the case of a rejoin; It calls **handleLobbyJoin**
+ * _after marking the old player with the incoming socket.id_
+ * 
+ * @param io (socket io)
+ * @param socket (socket io)
+ * @param token JWT
+ * @param lobbies game-state
+ */
 async function handleReturningPlayer(
   io: any,
   socket: any,
@@ -16,6 +27,7 @@ async function handleReturningPlayer(
   let newtoken;
   let player;
   let old_user_id: string = "";
+  let old_user_name:string = "";
   // try logging in with the old token
   try {
     login = await localAxios.post("/api/auth/login", {
@@ -26,6 +38,7 @@ async function handleReturningPlayer(
     player = login.data.player;
     newtoken = login.data.token;
     old_user_id = login.data.old_user_id;
+    old_user_name = login.data.old_user_name
   } catch (err) {
     return { ok: false, message: err.message };
   }
@@ -36,26 +49,24 @@ async function handleReturningPlayer(
     console.log(player.last_played, " game not found.");
     return;
   }
-  socket.join(player.last_played);
+  // if we're not already in the room,
   if (lobbies[player.last_played].players.filter((p: any) => p.id === socket.id).length === 0) {
+    // if this is a re-join, make it known.
     lobbies[player.last_played].players = lobbies[player.last_played].players.map(
       (player: any) => {
         if (player.id === old_user_id) {
-          return { ...player, id: socket.id, connected: true };
+          return { ...player, rejoinedAs: socket.id };
         }
         return player;
       }
     );
   }
   if (lobbies[player.last_played].host === old_user_id) {
-    // update host
+    // if they were the host, give them back their powers.
     lobbies[player.last_played].host = socket.id;
-    privateMessage(io, socket, "info", `ok, set host: ${socket.id}`);
   }
-  console.log("updating from returning player...");
-  io.to(player.last_played).emit("game update", lobbies[player.last_played]); // ask room to update
-  // finally, we give player the option to rejoin.
-  // privateMessage(io, socket, "ask rejoin", player.last_played);
+  // move the player forward.
+  handleLobbyJoin(io, socket, old_user_name, player.last_played, lobbies);
 }
 
 export default handleReturningPlayer;

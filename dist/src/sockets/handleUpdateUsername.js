@@ -35,7 +35,8 @@ function handleUpdateUsername(io, socket, lobbies, newUsername) {
                 p_id: data.id,
                 name: updatedPlayer.username,
                 definition: updatedPlayer.definition,
-                points: updatedPlayer.points
+                points: updatedPlayer.points,
+                lobbyCode
             });
             // *notify other players if the change.
             io.to(lobbyCode).emit("updated username", updatedPlayer.id, updatedPlayer.username);

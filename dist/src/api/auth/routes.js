@@ -89,6 +89,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     let player;
     let player_id = "";
     let result;
+    let last_username = "";
     try {
         result = utils_1.partialRecall(last_token);
         if (!result.ok) {
@@ -97,6 +98,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         player_id = result.player_id || "";
         last_user_id = result.last_user_id || "";
         last_lobby = result.last_lobby || "";
+        last_username = result.username || "";
         player = yield model_1.default.getPlayer(player_id);
     }
     catch (err) {
@@ -105,6 +107,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     let token;
     let old_user_id = last_user_id;
+    let old_user_name = last_username;
     try {
         let token_request = yield utils_1.newToken(user_id, player_id, undefined, last_lobby); // generate new token & update the player record
         if (token_request.ok) {
@@ -119,7 +122,8 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         message: "welcome",
         player: Object.assign(Object.assign({}, player), { last_lobby }),
         token,
-        old_user_id
+        old_user_id,
+        old_user_name
     });
 }));
 exports.default = router;

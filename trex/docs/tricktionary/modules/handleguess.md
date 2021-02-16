@@ -28,7 +28,7 @@ Name | Type |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleGuess.ts:50](https://github.com/story-squad/tricktionary-be/blob/f17c3de/src/sockets/handleGuess.ts#L50)
+Defined in: [handleGuess.ts:50](https://github.com/story-squad/tricktionary-be/blob/8c9d49b/src/sockets/handleGuess.ts#L50)
 
 ___
 
@@ -48,4 +48,4 @@ Name | Type |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleGuess.ts:4](https://github.com/story-squad/tricktionary-be/blob/f17c3de/src/sockets/handleGuess.ts#L4)
+Defined in: [handleGuess.ts:4](https://github.com/story-squad/tricktionary-be/blob/8c9d49b/src/sockets/handleGuess.ts#L4)
