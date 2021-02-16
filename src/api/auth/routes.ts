@@ -79,6 +79,7 @@ router.post("/login", async (req, res) => {
   let player;
   let player_id:string = "";
   let result;
+  let last_username:string = "";
   try {
     result = partialRecall(last_token);
     if (!result.ok) {
@@ -87,6 +88,7 @@ router.post("/login", async (req, res) => {
     player_id = result.player_id || "";
     last_user_id = result.last_user_id || "";
     last_lobby = result.last_lobby || "";
+    last_username = result.username || "";
     player = await Player.getPlayer(player_id);
   } catch (err) {
     console.log(err.message);
@@ -94,6 +96,7 @@ router.post("/login", async (req, res) => {
   }
   let token;
   let old_user_id = last_user_id;
+  let old_user_name = last_username;
   try {
     let token_request = await newToken(
       user_id,
@@ -112,7 +115,8 @@ router.post("/login", async (req, res) => {
     message: "welcome",
     player: { ...player, last_lobby },
     token,
-    old_user_id
+    old_user_id,
+    old_user_name
   });
 });
 

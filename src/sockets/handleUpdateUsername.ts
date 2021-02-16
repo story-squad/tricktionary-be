@@ -36,7 +36,8 @@ async function handleUpdateUsername(
       p_id: data.id,
       name: updatedPlayer.username,
       definition: updatedPlayer.definition,
-      points: updatedPlayer.points
+      points: updatedPlayer.points,
+      lobbyCode
     });
     // *notify other players if the change.
     io.to(lobbyCode).emit(

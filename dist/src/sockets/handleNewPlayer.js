@@ -10,17 +10,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
+/**
+ * Create a new Player record for this user
+ *
+ * @param io (socket io)
+ * @param socket (socket io)
+ */
 function handleNewPlayer(io, socket) {
     return __awaiter(this, void 0, void 0, function* () {
         const last_user_id = socket.id;
         let login;
-        let player;
+        // let player;
         let newtoken;
         try {
             login = yield common_1.localAxios.post('/api/auth/new-player', { last_user_id });
             console.log(login.data);
             newtoken = login.data.token;
-            player = login.data.player;
+            // player = login.data.player;
         }
         catch (err) {
             return { ok: false, message: err.message };

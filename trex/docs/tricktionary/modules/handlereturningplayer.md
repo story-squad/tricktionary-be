@@ -14,15 +14,20 @@
 
 ▸ **default**(`io`: *any*, `socket`: *any*, `token`: *string* \| *undefined*, `lobbies`: *any*): *Promise*<*undefined* \| { `message`: *any* ; `ok`: *boolean* = false }\>
 
+Determine whether or not the player should auto re-join an existing game.
+
+In the case of a rejoin; It calls **handleLobbyJoin**
+_after marking the old player with the incoming socket.id_
+
 #### Parameters:
 
-Name | Type |
------- | ------ |
-`io` | *any* |
-`socket` | *any* |
-`token` | *string* \| *undefined* |
-`lobbies` | *any* |
+Name | Type | Description |
+------ | ------ | ------ |
+`io` | *any* | (socket io)   |
+`socket` | *any* | (socket io)   |
+`token` | *string* \| *undefined* | JWT   |
+`lobbies` | *any* | game-state    |
 
 **Returns:** *Promise*<*undefined* \| { `message`: *any* ; `ok`: *boolean* = false }\>
 
-Defined in: [handleReturningPlayer.ts:8](https://github.com/story-squad/tricktionary-be/blob/f17c3de/src/sockets/handleReturningPlayer.ts#L8)
+Defined in: [handleReturningPlayer.ts:19](https://github.com/story-squad/tricktionary-be/blob/8c9d49b/src/sockets/handleReturningPlayer.ts#L19)

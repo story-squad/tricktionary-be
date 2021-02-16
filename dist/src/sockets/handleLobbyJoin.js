@@ -14,15 +14,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
+/**
+ * Connects the player with the active game being played.
+ *
+ * @param io (socket io)
+ * @param socket (socket io)
+ * @param username Player's name
+ * @param lobbyCode Player's join code
+ * @param lobbies game-state
+ */
 function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("LOBBY-JOIN");
-        // if (whereAmI(socket) === lobbyCode.trim()) {
-        //   // console.log("I am already here");
-        //   // io.to(lobbyCode).emit("player list", lobbies[lobbyCode].players)
-        //   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
-        //   return;
-        // }
+        if (common_1.whereAmI(socket) === lobbyCode.trim()) {
+            console.log("I am already here");
+            // io.to(lobbyCode).emit("player list", lobbies[lobbyCode].players)
+            io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
+            return;
+        }
         if (lobbyCode.length !== common_1.LC_LENGTH) {
             handleErrorMessage_1.default(io, socket, "bad lobby code.");
             return;
@@ -39,35 +47,45 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
         catch (err) {
             console.log(err.message);
         }
-        if (lobbies[lobbyCode].phase !== "PREGAME") {
-            // prevent players from joining mid-game.
-            handleErrorMessage_1.default(io, socket, "Game in progress; cannot join.");
-            return;
-        }
         if (lobbies[lobbyCode] && lobbies[lobbyCode].players) {
-            console.log(`${username} joined ${lobbyCode}`);
-            socket.join(lobbyCode);
+            let rejoined = lobbies[lobbyCode].players.filter((p) => (p === null || p === void 0 ? void 0 : p.rejoinedAs) && p.rejoinedAs === socket.id).length > 0;
+            if (lobbies[lobbyCode].phase !== "PREGAME" && !rejoined) {
+                // prevent *new players from joining mid-game.
+                handleErrorMessage_1.default(io, socket, "Game in progress; cannot join.");
+                return;
+            }
+            console.log(`${username} ${rejoined ? "re-joined" : "joined"} ${lobbyCode}`);
             if (!(lobbies[lobbyCode].players.filter((p) => p.id === socket.id)
                 .length > 0)) {
-                lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
-                        ...lobbies[lobbyCode].players,
-                        {
-                            id: socket.id,
-                            username,
-                            definition: "",
-                            points: 0,
-                            connected: true
-                        }
-                    ] });
+                if (!rejoined) {
+                    // this player is new
+                    lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
+                            ...lobbies[lobbyCode].players,
+                            {
+                                id: socket.id,
+                                username,
+                                definition: "",
+                                points: 0,
+                                connected: true
+                            }
+                        ] });
+                }
+                else {
+                    // this player has returned
+                    lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
+                            ...lobbies[lobbyCode].players.map((p) => {
+                                if ((p === null || p === void 0 ? void 0 : p.rejoinedAs) && p.rejoinedAs === socket.id) {
+                                    return Object.assign(Object.assign({}, p), { id: socket.id, connected: true });
+                                }
+                                return p;
+                            })
+                        ] });
+                }
+                socket.join(lobbyCode);
             }
         }
         common_1.privateMessage(io, socket, "welcome", socket.id);
-        // ask others to add this player
-        // io.to(lobbyCode).emit("add player", { id: socket.id, username, definition: "", points: 0 })
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
-        // right now, sending just the player list knocks everyone out of the room. sending the "game update" works.
-        // io.to(lobbyCode).emit("player list", lobbies[lobbyCode].players); // send player list
-        console.log(lobbies[lobbyCode]);
     });
 }
 exports.default = handleLobbyJoin;
