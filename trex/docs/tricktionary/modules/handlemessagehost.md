@@ -26,4 +26,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleMessageHost.ts:11](https://github.com/story-squad/tricktionary-be/blob/30467a6/src/sockets/handleMessageHost.ts#L11)
+Defined in: [handleMessageHost.ts:11](https://github.com/story-squad/tricktionary-be/blob/f7b04cb/src/sockets/handleMessageHost.ts#L11)

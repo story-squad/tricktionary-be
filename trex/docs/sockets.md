@@ -14,6 +14,10 @@ The web socket handlers provide us with a realtime engine to:
 - handle server-side game logic
 - make calls to the API, persisting data
 
+:::caution
+
 The following documentation was automatically generated and may not feel as friendly as this warning.
+
+:::
 
 [HERE BE MODULES](tricktionary/modules.md)
