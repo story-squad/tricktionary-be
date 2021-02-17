@@ -68,7 +68,7 @@ function newToken(last_user_id, player_id, extra, lobbyCode) {
             lob: lobbyCode,
             ext: extra
         });
-        console.log(payload);
+        // console.log(payload);
         if (!payload.ok) {
             return { ok: false, message: "bad payload", status: 400 };
         }

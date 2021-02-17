@@ -16,7 +16,7 @@ async function getGames(player_id: string) {
   let result;
   try {
     result = await db("Played").where({ player_id }).returning("game_id");
-    console.log(result);
+    // console.log(result);
   } catch (err) {
     result = { ok: false, message: err.message };
   }

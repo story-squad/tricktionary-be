@@ -77,7 +77,7 @@ export async function newToken(
     lob: lobbyCode,
     ext: extra
   });
-  console.log(payload);
+  // console.log(payload);
   if (!payload.ok) {
     return { ok: false, message: "bad payload", status: 400 };
   }

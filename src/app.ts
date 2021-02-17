@@ -71,7 +71,6 @@ const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
   // LOGIN
   socket.on("login", (token: string | undefined) => {
-    console.log(socket.rooms)
     if (token && token.length > 0) {
       gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
     } else {
@@ -80,8 +79,6 @@ io.on("connection", (socket) => {
   });
   // more events to come.
   socket.on("disconnecting", () => {
-    console.log("Client disconnecting...");
-    // handler will broadcast ("remove player", player.id) to the lobby.
     gameSocketHandler.handleDisconnection(io, socket, lobbies);
   });
 
@@ -175,8 +172,8 @@ io.on("connection", (socket) => {
   socket.on("set phase", (phase: string, lobbyCode: string) => {
     gameSocketHandler.handleSetPhase(io, socket, lobbyCode, lobbies, phase);
   });
-  socket.on("set host", (newHost: string, lobbyCode: string) => {
-    gameSocketHandler.handleSetNewHost(io, socket, lobbyCode, lobbies, newHost);
+  socket.on("set host", (newHost: string, lobbyCode: string, guesses: any[]) => {
+    gameSocketHandler.handleSetNewHost(io, socket, lobbyCode, lobbies, newHost, guesses);
   });
 });
 

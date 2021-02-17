@@ -19,13 +19,15 @@ const common_1 = require("./common");
  * @param lobbyCode key-string
  * @param lobbies memo-object
  * @param newHost playerID-string
+ * @param guesses the hosts' list of the other player's guesses
  */
-function handleSetNewHost(io, socket, lobbyCode, lobbies, newHost) {
+function handleSetNewHost(io, socket, lobbyCode, lobbies, newHost, guesses) {
     return __awaiter(this, void 0, void 0, function* () {
         const checkIfHost = common_1.playerIsHost(socket, lobbyCode, lobbies);
         if (checkIfHost.ok) {
             console.log(`we have a new Host : ${newHost}`);
             lobbies[lobbyCode].host = newHost;
+            io.to(newHost).emit('welcome host', guesses);
             common_1.privateMessage(io, socket, "info", `ok, set host: ${newHost}`);
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         }

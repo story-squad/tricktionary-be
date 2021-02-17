@@ -34,7 +34,7 @@ function getGames(player_id) {
         let result;
         try {
             result = yield dbConfig_1.default("Played").where({ player_id }).returning("game_id");
-            console.log(result);
+            // console.log(result);
         }
         catch (err) {
             result = { ok: false, message: err.message };

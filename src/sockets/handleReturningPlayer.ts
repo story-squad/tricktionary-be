@@ -34,7 +34,7 @@ async function handleReturningPlayer(
       user_id,
       last_token: token
     });
-    console.log("DATA", login.data);
+    // console.log("DATA", login.data);
     player = login.data.player;
     newtoken = login.data.token;
     old_user_id = login.data.old_user_id;
