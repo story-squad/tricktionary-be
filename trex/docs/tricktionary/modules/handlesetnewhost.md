@@ -12,7 +12,7 @@
 
 ### default
 
-▸ **default**(`io`: *any*, `socket`: *any*, `lobbyCode`: *any*, `lobbies`: *any*, `newHost`: *string*): *Promise*<*void*\>
+▸ **default**(`io`: *any*, `socket`: *any*, `lobbyCode`: *any*, `lobbies`: *any*, `newHost`: *string*, `guesses`: *any*[]): *Promise*<*void*\>
 
 Allow the current host to trade roles with a player. *experimental feature
 
@@ -24,8 +24,9 @@ Name | Type | Description |
 `socket` | *any* | (socketio)   |
 `lobbyCode` | *any* | key-string   |
 `lobbies` | *any* | memo-object   |
-`newHost` | *string* | playerID-string    |
+`newHost` | *string* | playerID-string   |
+`guesses` | *any*[] | the hosts' list of the other player's guesses    |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleSetNewHost.ts:14](https://github.com/story-squad/tricktionary-be/blob/8c9d49b/src/sockets/handleSetNewHost.ts#L14)
+Defined in: [handleSetNewHost.ts:15](https://github.com/story-squad/tricktionary-be/blob/7cc47ef/src/sockets/handleSetNewHost.ts#L15)

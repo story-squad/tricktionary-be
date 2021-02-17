@@ -84,7 +84,6 @@ const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
     // LOGIN
     socket.on("login", (token) => {
-        console.log(socket.rooms);
         if (token && token.length > 0) {
             sockets_1.default.handleReturningPlayer(io, socket, token, lobbies);
         }
@@ -94,8 +93,6 @@ io.on("connection", (socket) => {
     });
     // more events to come.
     socket.on("disconnecting", () => {
-        console.log("Client disconnecting...");
-        // handler will broadcast ("remove player", player.id) to the lobby.
         sockets_1.default.handleDisconnection(io, socket, lobbies);
     });
     socket.on("update username", (newUsername) => {
@@ -145,8 +142,8 @@ io.on("connection", (socket) => {
     socket.on("set phase", (phase, lobbyCode) => {
         sockets_1.default.handleSetPhase(io, socket, lobbyCode, lobbies, phase);
     });
-    socket.on("set host", (newHost, lobbyCode) => {
-        sockets_1.default.handleSetNewHost(io, socket, lobbyCode, lobbies, newHost);
+    socket.on("set host", (newHost, lobbyCode, guesses) => {
+        sockets_1.default.handleSetNewHost(io, socket, lobbyCode, lobbies, newHost, guesses);
     });
 });
 //# sourceMappingURL=app.js.map

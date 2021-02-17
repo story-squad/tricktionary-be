@@ -23,7 +23,7 @@ function handleLobbyCreate(io, socket, username, lobbies) {
         let game_id;
         try {
             const last_player = yield common_1.localAxios.get(`/api/player/last-user-id/${socket.id}`);
-            console.log(last_player.data);
+            // console.log(last_player.data);
             if (last_player.data.player && last_player.data.player.id) {
                 // create the Game
                 og_host = last_player.data.player.id;

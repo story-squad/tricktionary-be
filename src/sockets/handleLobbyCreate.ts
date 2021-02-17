@@ -21,7 +21,7 @@ async function handleLobbyCreate(
     const last_player = await localAxios.get(
       `/api/player/last-user-id/${socket.id}`
     );
-    console.log(last_player.data);
+    // console.log(last_player.data);
     if (last_player.data.player && last_player.data.player.id) {
       // create the Game
       og_host = last_player.data.player.id;
