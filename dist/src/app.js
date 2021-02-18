@@ -57,7 +57,6 @@ api.use(bodyParser.json({
 api.use(helmet_1.default());
 api.use(cors_1.default());
 api.use(express_1.default.json());
-// api.use("/docs", express.static('docs'))
 api.use("/help", express_1.default.static(path_1.default.join(__dirname, "docs")));
 // CRUD routes
 api.get("/", (req, res) => res.status(200).json({ api: "running", timestamp: Date.now() }));
@@ -121,14 +120,6 @@ io.on("connection", (socket) => {
     });
     socket.on("guess", (lobbyCode, guesses) => {
         sockets_1.default.handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses);
-        // gameSocketHandler.handleGuess(
-        //   io,
-        //   socket,
-        //   lobbyCode,
-        //   guess,
-        //   reactions,
-        //   lobbies
-        // );
     });
     socket.on("msg host", (message) => {
         sockets_1.default.handleMessageHost(io, socket, lobbies, "msg host", message);

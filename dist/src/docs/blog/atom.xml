@@ -15,13 +15,6 @@
         <summary type="html"><![CDATA[Happy Tricktionary Day!]]></summary>
     </entry>
     <entry>
-        <title type="html"><![CDATA[Cosmic Dancer]]></title>
-        <id>Welcome</id>
-        <link href="https://dev.tricktionary.monster/help/blog/Welcome"/>
-        <updated>2021-02-14T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Happy Tricktionary Day!]]></summary>
-    </entry>
-    <entry>
         <title type="html"><![CDATA[Take on me]]></title>
         <id>aha</id>
         <link href="https://dev.tricktionary.monster/help/blog/aha"/>
@@ -32,6 +25,13 @@
         <title type="html"><![CDATA[Don't You (Forget About Me)]]></title>
         <id>simple</id>
         <link href="https://dev.tricktionary.monster/help/blog/simple"/>
+        <updated>2021-02-14T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Happy Tricktionary Day!]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Cosmic Dancer]]></title>
+        <id>Welcome</id>
+        <link href="https://dev.tricktionary.monster/help/blog/Welcome"/>
         <updated>2021-02-14T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Happy Tricktionary Day!]]></summary>
     </entry>

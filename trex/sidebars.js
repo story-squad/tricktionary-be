@@ -5,5 +5,6 @@ module.exports = {
     API: ['api'],
     WebSockets:['sockets'],
     Deployment: ['eb1'],
+    Design: ['dataflow', 'database']
   },
 };

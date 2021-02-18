@@ -4,11 +4,10 @@ import handleLobbyJoin from "./handleLobbyJoin";
 import handleStartGame from "./handleStartGame";
 import handleSubmitDefinition from "./handleSubmitDefinition";
 import handlePlayAgain from "./handlePlayAgain";
-import handleGuess, {handleArrayOfGuesses} from "./handleGuess";
-import handleFortune from "./handleFortune";
+import { handleArrayOfGuesses } from "./handleGuess";
 import handleErrorMessage from "./handleErrorMessage";
 import handleSetPhase from "./handleSetPhase";
-import handleSetNewHost from "./handleSetNewHost"
+import handleSetNewHost from "./handleSetNewHost";
 import handleNewPlayer from "./handleNewPlayer";
 import handleReturningPlayer from "./handleReturningPlayer";
 import handleDisconnection from "./handleDisconnection";
@@ -25,9 +24,7 @@ export default {
   handleStartGame,
   handleSubmitDefinition,
   handlePlayAgain,
-  handleGuess,
   handleArrayOfGuesses,
-  handleFortune,
   handleErrorMessage,
   handleSetPhase,
   handleSetNewHost,

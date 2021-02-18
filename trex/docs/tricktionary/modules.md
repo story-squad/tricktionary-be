@@ -9,7 +9,6 @@
 - [common](modules/common.md)
 - [handleDisconnection](modules/handledisconnection.md)
 - [handleErrorMessage](modules/handleerrormessage.md)
-- [handleFortune](modules/handlefortune.md)
 - [handleGuess](modules/handleguess.md)
 - [handleLobbyCreate](modules/handlelobbycreate.md)
 - [handleLobbyJoin](modules/handlelobbyjoin.md)
