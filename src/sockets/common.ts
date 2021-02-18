@@ -1,8 +1,4 @@
 import { GameSettings } from "../GameSettings";
-
-// import * as dotenv from "dotenv";
-// import util from "util";
-// import { exec as cmd } from "child_process";
 import axios from "axios";
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -12,11 +8,33 @@ const localAxios = axios.create({
   }`
 });
 localAxios.defaults.timeout = 10000;
-const LC_LENGTH: number = 4; // number of characters in lobbyCode
+
+/**
+ * Number of characters in lobbyCode
+ */
+const LC_LENGTH: number = process.env.LC_LENGTH
+  ? Number(process.env.LC_LENGTH)
+  : 4; 
+
+/**
+ * POINTS AWARDED when you choose correctly
+ */
+const VALUE_OF_TRUTH: number = process.env.VALUE_OF_TRUTH
+  ? Number(process.env.VALUE_OF_TRUTH)
+  : 2; 
+  
+/**
+ * POINTS AWARDED when others choose your definition
+ */
+const VALUE_OF_BLUFF: number = process.env.VALUE_OF_BLUFF
+  ? Number(process.env.VALUE_OF_BLUFF)
+  : 1;
+
 export {
+  VALUE_OF_BLUFF,
+  VALUE_OF_TRUTH,
   LC_LENGTH,
   localAxios,
-  fortune,
   privateMessage,
   playerIsHost,
   playerIdWasHost,
@@ -29,15 +47,6 @@ export {
   whereAmI,
   updatePlayerToken
 };
-
-// const exec = util.promisify(cmd);
-
-async function fortune() {
-  // returns a promise
-  // const { stdout, stderr } = await exec("fortune");
-  // return { fortune: stdout, error: stderr };
-  return { fortune: "coming soon?" };
-}
 
 /**
  * send message to socket.id
@@ -219,39 +228,37 @@ function whereAmI(socket: any): lobbyCode {
     : null;
 }
 
-// encode a string in Base64
+/**
+ * encode a string in Base64
+ * @param str string
+ */
 const encode64 = (str: string): string =>
   Buffer.from(str, "binary").toString("base64");
 
-// decode a string from Base64
+/**
+ * decode a string from Base64
+ * @param str string
+ */
 const decode64 = (str: string): string =>
   Buffer.from(str, "base64").toString("binary");
 
+/**
+ * Base64 string operatoins
+ */
 const b64 = { encode: encode64, decode: decode64 };
 
+/**
+ * returns true if LobbyCode can be found in Lobbies
+ * 
+ * @param lobbyCode LobbyCode of game
+ * @param lobbies socket-handler games
+ */
 export function gameExists(lobbyCode: string, lobbies: any) {
   return Object.keys(lobbies).filter((l) => l === lobbyCode).length > 0;
 }
 
-export async function newPlayerRecord(socket: any) {
-  let last_user_id = socket.id;
-  let token;
-  let player;
-  try {
-    const login = await localAxios.post("/api/auth/new-player", {
-      last_user_id
-    });
-    console.log(login.data);
-    token = login.data.token;
-    player = login.data.player;
-  } catch (err) {
-    return { ok: false, message: err.message };
-  }
-  return { ok: true, player, token };
-}
-
 /**
- * 
+ *
  * @param io (socket io)
  * @param socket (socket io)
  * @param p_id Player UUID

@@ -31,11 +31,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.newPlayerRecord = exports.gameExists = exports.updatePlayerToken = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.fortune = exports.localAxios = exports.LC_LENGTH = void 0;
+exports.gameExists = exports.updatePlayerToken = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.localAxios = exports.LC_LENGTH = exports.VALUE_OF_TRUTH = exports.VALUE_OF_BLUFF = void 0;
 const GameSettings_1 = require("../GameSettings");
-// import * as dotenv from "dotenv";
-// import util from "util";
-// import { exec as cmd } from "child_process";
 const axios_1 = __importDefault(require("axios"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
@@ -44,18 +41,27 @@ const localAxios = axios_1.default.create({
 });
 exports.localAxios = localAxios;
 localAxios.defaults.timeout = 10000;
-const LC_LENGTH = 4; // number of characters in lobbyCode
+/**
+ * Number of characters in lobbyCode
+ */
+const LC_LENGTH = process.env.LC_LENGTH
+    ? Number(process.env.LC_LENGTH)
+    : 4;
 exports.LC_LENGTH = LC_LENGTH;
-// const exec = util.promisify(cmd);
-function fortune() {
-    return __awaiter(this, void 0, void 0, function* () {
-        // returns a promise
-        // const { stdout, stderr } = await exec("fortune");
-        // return { fortune: stdout, error: stderr };
-        return { fortune: "coming soon?" };
-    });
-}
-exports.fortune = fortune;
+/**
+ * POINTS AWARDED when you choose correctly
+ */
+const VALUE_OF_TRUTH = process.env.VALUE_OF_TRUTH
+    ? Number(process.env.VALUE_OF_TRUTH)
+    : 2;
+exports.VALUE_OF_TRUTH = VALUE_OF_TRUTH;
+/**
+ * POINTS AWARDED when others choose your definition
+ */
+const VALUE_OF_BLUFF = process.env.VALUE_OF_BLUFF
+    ? Number(process.env.VALUE_OF_BLUFF)
+    : 1;
+exports.VALUE_OF_BLUFF = VALUE_OF_BLUFF;
 /**
  * send message to socket.id
  *
@@ -228,36 +234,31 @@ function whereAmI(socket) {
         : null;
 }
 exports.whereAmI = whereAmI;
-// encode a string in Base64
+/**
+ * encode a string in Base64
+ * @param str string
+ */
 const encode64 = (str) => Buffer.from(str, "binary").toString("base64");
-// decode a string from Base64
+/**
+ * decode a string from Base64
+ * @param str string
+ */
 const decode64 = (str) => Buffer.from(str, "base64").toString("binary");
+/**
+ * Base64 string operatoins
+ */
 const b64 = { encode: encode64, decode: decode64 };
 exports.b64 = b64;
+/**
+ * returns true if LobbyCode can be found in Lobbies
+ *
+ * @param lobbyCode LobbyCode of game
+ * @param lobbies socket-handler games
+ */
 function gameExists(lobbyCode, lobbies) {
     return Object.keys(lobbies).filter((l) => l === lobbyCode).length > 0;
 }
 exports.gameExists = gameExists;
-function newPlayerRecord(socket) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let last_user_id = socket.id;
-        let token;
-        let player;
-        try {
-            const login = yield localAxios.post("/api/auth/new-player", {
-                last_user_id
-            });
-            console.log(login.data);
-            token = login.data.token;
-            player = login.data.player;
-        }
-        catch (err) {
-            return { ok: false, message: err.message };
-        }
-        return { ok: true, player, token };
-    });
-}
-exports.newPlayerRecord = newPlayerRecord;
 /**
  *
  * @param io (socket io)
