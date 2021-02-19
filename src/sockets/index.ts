@@ -17,6 +17,7 @@ import handleMessageHost from "./handleMessageHost";
 import handleMessagePlayer from "./handleMessagePlayer";
 import handleLobbyJoinWithPassword from "./handleLobbyJoinWithPassword";
 import handleRevealResults from "./handleRevealResults";
+import handleSetFinale from "./handleSetFinale";
 
 export default {
   handleLobbyLeave,
@@ -37,5 +38,6 @@ export default {
   handleMessageHost,
   handleMessagePlayer,
   handleLobbyJoinWithPassword,
-  handleRevealResults
+  handleRevealResults,
+  handleSetFinale
 };

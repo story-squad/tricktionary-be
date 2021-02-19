@@ -175,6 +175,7 @@ io.on("connection", (socket) => {
   socket.on("set phase", (phase: string, lobbyCode: string) => {
     gameSocketHandler.handleSetPhase(io, socket, lobbyCode, lobbies, phase);
   });
+
   socket.on(
     "set host",
     (newHost: string, lobbyCode: string, guesses: any[]) => {
@@ -196,6 +197,10 @@ io.on("connection", (socket) => {
       lobbies,
       guesses
     );
+  });
+
+  socket.on("set finale", (lobbyCode: string) => {
+    gameSocketHandler.handleSetFinale(io, socket, lobbyCode, lobbies);
   });
 });
 

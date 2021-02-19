@@ -139,5 +139,8 @@ io.on("connection", (socket) => {
     socket.on("reveal results", (lobbyCode, guesses) => {
         sockets_1.default.handleRevealResults(io, socket, lobbyCode, lobbies, guesses);
     });
+    socket.on("set finale", (lobbyCode) => {
+        sockets_1.default.handleSetFinale(io, socket, lobbyCode, lobbies);
+    });
 });
 //# sourceMappingURL=app.js.map

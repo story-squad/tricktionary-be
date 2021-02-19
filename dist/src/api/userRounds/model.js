@@ -52,5 +52,8 @@ function findFirstRound(user_id) {
         .orderBy("round_id", "asc")
         .first();
 }
-exports.default = { addAllUserRounds, findPlayer, findLastRound, findFirstRound };
+function findAll(user_id, game_id) {
+    return dbConfig_1.default("User-Rounds").where({ user_id, game_id });
+}
+exports.default = { addAllUserRounds, findPlayer, findLastRound, findFirstRound, findAll };
 //# sourceMappingURL=model.js.map
