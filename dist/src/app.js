@@ -136,5 +136,8 @@ io.on("connection", (socket) => {
     socket.on("set host", (newHost, lobbyCode, guesses) => {
         sockets_1.default.handleSetNewHost(io, socket, lobbyCode, lobbies, newHost, guesses);
     });
+    socket.on("reveal results", (lobbyCode, guesses) => {
+        sockets_1.default.handleRevealResults(io, socket, lobbyCode, lobbies, guesses);
+    });
 });
 //# sourceMappingURL=app.js.map

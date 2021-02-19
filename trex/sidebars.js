@@ -3,7 +3,7 @@ module.exports = {
     About: ['tricktionary/about'],
     Installation: ['start-here'],
     API: ['api'],
-    WebSockets:['sockets'],
+    WebSockets:['sockets', 'tricktionary/modules'],
     Deployment: ['eb1'],
     Design: ['dataflow', 'database']
   },

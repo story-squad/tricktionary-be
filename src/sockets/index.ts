@@ -16,6 +16,7 @@ import handleTimeSync from "./handleTimeSync";
 import handleMessageHost from "./handleMessageHost";
 import handleMessagePlayer from "./handleMessagePlayer";
 import handleLobbyJoinWithPassword from "./handleLobbyJoinWithPassword";
+import handleRevealResults from "./handleRevealResults";
 
 export default {
   handleLobbyLeave,
@@ -35,5 +36,6 @@ export default {
   handleTimeSync,
   handleMessageHost,
   handleMessagePlayer,
-  handleLobbyJoinWithPassword
+  handleLobbyJoinWithPassword,
+  handleRevealResults
 };
