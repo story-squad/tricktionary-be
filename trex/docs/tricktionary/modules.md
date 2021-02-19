@@ -19,6 +19,7 @@
 - [handleNewPlayer](modules/handlenewplayer.md)
 - [handlePlayAgain](modules/handleplayagain.md)
 - [handleReturningPlayer](modules/handlereturningplayer.md)
+- [handleRevealResults](modules/handlerevealresults.md)
 - [handleSetNewHost](modules/handlesetnewhost.md)
 - [handleSetPhase](modules/handlesetphase.md)
 - [handleStartGame](modules/handlestartgame.md)

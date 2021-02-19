@@ -188,6 +188,15 @@ io.on("connection", (socket) => {
       );
     }
   );
+  socket.on("reveal results", (lobbyCode: string, guesses: any[]) => {
+    gameSocketHandler.handleRevealResults(
+      io,
+      socket,
+      lobbyCode,
+      lobbies,
+      guesses
+    );
+  });
 });
 
 export { socketApp };
