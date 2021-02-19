@@ -99,7 +99,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
             console.log(err.message);
         }
         lobbies[lobbyCode].topThree = results;
-        console.log(results);
+        // console.log(results);
         lobbies[lobbyCode].phase = "FINALE";
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode], results);
     });
