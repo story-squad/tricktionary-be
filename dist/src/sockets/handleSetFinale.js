@@ -36,40 +36,39 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
         if (!authorized.ok) {
             handleErrorMessage_1.default(io, socket, "please don't provoke the saber tooth kittens");
         }
-        // 1) three top scoring users
         const game_id = lobbies[lobbyCode].game_id;
+        // get the first 3 players, sorted by points in descending order.
         const topThree = lobbies[lobbyCode].players
             .sort(function (a, b) {
             return b.points - a.points;
         })
             .slice(0, 3);
+        // 1) assign the resulting player(s) to constant placeholder values,
         const firstPlace = topThree[0];
         const secondPlace = topThree[1] || undefined;
         const thirdPlace = topThree[2] || undefined;
+        // 2) await, at the top level, the result of asynchronous operations
         let mostVotedRound;
         let mvd;
-        // let round;
-        // let wrd;
-        let result = {
-            first: undefined,
-            second: undefined,
-            third: undefined
-        };
+        const results = [];
+        function finalFormat(defRecord) {
+            const { user_id, definition } = defRecord;
+            return { user_id, definition };
+        }
+        // get most voted definition, firstPlace
         try {
             let fp = yield common_1.localAxios.get(`/api/user-rounds/user/${firstPlace.id}/game/${game_id}`);
             firstPlace["user_rounds"] = fp.data.user_rounds;
-            // console.log(fp.data.user_rounds);
             mostVotedRound = firstPlace.user_rounds.sort(function (a, b) {
                 return b.votes - a.votes;
             })[0].round_id;
             mvd = yield common_1.localAxios.get(`/api/definitions/user/${firstPlace.id}/round/${mostVotedRound}`);
-            // round = await localAxios.get(`/api/round/id/${mvd.data.round_id}`);
-            // wrd = await localAxios.get(`/api/words/id/${round.data.word_id}`);
-            result.first = mvd.data.definition;
+            results.push(finalFormat(mvd.data.definition));
         }
         catch (err) {
             console.log(err.message);
         }
+        // get most voted definition, secondPlace
         try {
             if (secondPlace) {
                 let sp = yield common_1.localAxios.get(`/api/user-rounds/user/${secondPlace.id}/game/${game_id}`);
@@ -78,14 +77,13 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                     return b.votes - a.votes;
                 })[0].round_id;
                 mvd = yield common_1.localAxios.get(`/api/definitions/user/${secondPlace.id}/round/${mostVotedRound}`);
-                // round = await localAxios.get(`/api/round/id/${mvd.data.round_id}`);
-                // wrd = await localAxios.get(`/api/words/id/${round.data.word_id}`);
-                result.second = mvd.data.definition;
+                results.push(finalFormat(mvd.data.definition));
             }
         }
         catch (err) {
             console.log(err.message);
         }
+        // get most voted definition, thirdPlace
         try {
             if (thirdPlace) {
                 let tp = yield common_1.localAxios.get(`/api/user-rounds/user/${thirdPlace.id}/game/${game_id}`);
@@ -94,19 +92,16 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                     return b.votes - a.votes;
                 })[0].round_id;
                 mvd = yield common_1.localAxios.get(`/api/definitions/user/${thirdPlace.id}/round/${mostVotedRound}`);
-                // round = await localAxios.get(`/api/round/id/${mvd.data.round_id}`);
-                // wrd = await localAxios.get(`/api/words/id/${round.data.word_id}`);
-                result.third = mvd.data.definition;
+                results.push(finalFormat(mvd.data.definition));
             }
         }
         catch (err) {
             console.log(err.message);
         }
-        //
-        // console.log(result);
-        lobbies[lobbyCode].topThree = result;
+        lobbies[lobbyCode].topThree = results;
+        console.log(results);
         lobbies[lobbyCode].phase = "FINALE";
-        io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
+        io.to(lobbyCode).emit("game update", lobbies[lobbyCode], results);
     });
 }
 exports.default = handleSetFinale;
