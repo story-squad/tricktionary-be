@@ -38,4 +38,8 @@ function findFirstRound(user_id: string) {
     .first();
 }
 
-export default { addAllUserRounds, findPlayer, findLastRound, findFirstRound };
+function findAll(user_id: string, game_id: string) {
+  return db("User-Rounds").where({ user_id, game_id });
+}
+
+export default { addAllUserRounds, findPlayer, findLastRound, findFirstRound, findAll };

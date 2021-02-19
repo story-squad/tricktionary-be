@@ -65,5 +65,17 @@ router.get("/user/:id/first", (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
     res.status(200).json({ ok: true, possibilities });
 }));
+router.get("/user/:uid/game/:gid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_id = req.params.uid;
+    const game_id = req.params.gid;
+    let thisGame;
+    try {
+        thisGame = yield model_1.default.findAll(user_id, game_id);
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+    res.status(200).json({ user_rounds: thisGame });
+}));
 exports.default = router;
 //# sourceMappingURL=routes.js.map

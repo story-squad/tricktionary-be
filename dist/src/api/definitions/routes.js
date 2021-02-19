@@ -24,7 +24,7 @@ router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         defId = result.pop();
     }
     catch (err) {
-        console.log('error! definitions router');
+        console.log("error! definitions router");
     }
     if (defId > -1) {
         res.status(201).json({ definitionId: defId });
@@ -32,6 +32,22 @@ router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     else {
         res.status(400).json({ error: "failed to get definition Id" });
     }
+}));
+router.get("/user/:uid/round/:rid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_id = req.params.uid;
+    const round_id = Number(req.params.rid);
+    let definition;
+    try {
+        definition = yield model_1.default.byUserInRound(user_id, round_id);
+    }
+    catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+    res.status(200).json({
+        user_id,
+        round_id,
+        definition
+    });
 }));
 exports.default = router;
 //# sourceMappingURL=routes.js.map

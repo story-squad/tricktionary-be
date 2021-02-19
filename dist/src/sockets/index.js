@@ -22,6 +22,7 @@ const handleMessageHost_1 = __importDefault(require("./handleMessageHost"));
 const handleMessagePlayer_1 = __importDefault(require("./handleMessagePlayer"));
 const handleLobbyJoinWithPassword_1 = __importDefault(require("./handleLobbyJoinWithPassword"));
 const handleRevealResults_1 = __importDefault(require("./handleRevealResults"));
+const handleSetFinale_1 = __importDefault(require("./handleSetFinale"));
 exports.default = {
     handleLobbyLeave: handleLobbyLeave_1.default,
     handleLobbyCreate: handleLobbyCreate_1.default,
@@ -41,6 +42,7 @@ exports.default = {
     handleMessageHost: handleMessageHost_1.default,
     handleMessagePlayer: handleMessagePlayer_1.default,
     handleLobbyJoinWithPassword: handleLobbyJoinWithPassword_1.default,
-    handleRevealResults: handleRevealResults_1.default
+    handleRevealResults: handleRevealResults_1.default,
+    handleSetFinale: handleSetFinale_1.default
 };
 //# sourceMappingURL=index.js.map

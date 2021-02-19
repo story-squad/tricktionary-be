@@ -52,4 +52,17 @@ router.get("/user/:id/first", async (req, res) => {
   }
   res.status(200).json({ ok: true, possibilities });
 });
+
+router.get("/user/:uid/game/:gid", async (req, res) => {
+  const user_id = req.params.uid;
+  const game_id = req.params.gid;
+  let thisGame;
+  try {
+    thisGame = await userRounds.findAll(user_id, game_id);
+  } catch (err) {
+    res.status(400).json({error: err.message})
+  }
+  res.status(200).json({ user_rounds: thisGame })
+})
+
 export default router;

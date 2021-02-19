@@ -29,4 +29,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleSetNewHost.ts:15](https://github.com/story-squad/tricktionary-be/blob/dee3a3a/src/sockets/handleSetNewHost.ts#L15)
+Defined in: [handleSetNewHost.ts:15](https://github.com/story-squad/tricktionary-be/blob/a7dfe80/src/sockets/handleSetNewHost.ts#L15)

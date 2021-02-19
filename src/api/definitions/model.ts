@@ -10,7 +10,11 @@ function add(userID: string, definition: string | null, roundID: number) {
   });
   return newDefinition.ok
     ? db("Definitions").insert(newDefinition.value).returning("id")
-    : [ -1, newDefinition.message ];
+    : [-1, newDefinition.message];
 }
 
-export default {add}
+function byUserInRound(user_id: string, round_id: number) {
+  return db("Definitions").where({ user_id, round_id }).first();
+}
+
+export default { add, byUserInRound };

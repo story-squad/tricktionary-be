@@ -16,5 +16,8 @@ function add(userID, definition, roundID) {
         ? dbConfig_1.default("Definitions").insert(newDefinition.value).returning("id")
         : [-1, newDefinition.message];
 }
-exports.default = { add };
+function byUserInRound(user_id, round_id) {
+    return dbConfig_1.default("Definitions").where({ user_id, round_id }).first();
+}
+exports.default = { add, byUserInRound };
 //# sourceMappingURL=model.js.map
