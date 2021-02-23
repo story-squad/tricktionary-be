@@ -1,4 +1,5 @@
 import {
+  MAX_PLAYERS,
   LC_LENGTH,
   localAxios,
   whereAmI,
@@ -35,6 +36,10 @@ async function handleLobbyJoin(
   }
   if (Object.keys(lobbies).filter((lc) => lc === lobbyCode).length === 0) {
     handleErrorMessage(io, socket, "cool it, hackerman.");
+    return;
+  }
+  if (lobbies[lobbyCode].players.length > MAX_PLAYERS) {
+    handleErrorMessage(io, socket, `${lobbyCode} has reached the maximum player limit of ${MAX_PLAYERS}`);
     return;
   }
   try {

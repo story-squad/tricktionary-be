@@ -39,6 +39,10 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
             handleErrorMessage_1.default(io, socket, "cool it, hackerman.");
             return;
         }
+        if (lobbies[lobbyCode].players.length > common_1.MAX_PLAYERS) {
+            handleErrorMessage_1.default(io, socket, `${lobbyCode} has reached the maximum player limit of ${common_1.MAX_PLAYERS}`);
+            return;
+        }
         try {
             const last_player = yield common_1.localAxios.get(`/api/player/last-user-id/${socket.id}`);
             const p_id = last_player.data.player.id;

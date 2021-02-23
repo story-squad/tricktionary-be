@@ -12,7 +12,6 @@
 - [handleGuess](modules/handleguess.md)
 - [handleLobbyCreate](modules/handlelobbycreate.md)
 - [handleLobbyJoin](modules/handlelobbyjoin.md)
-- [handleLobbyJoinWithPassword](modules/handlelobbyjoinwithpassword.md)
 - [handleLobbyLeave](modules/handlelobbyleave.md)
 - [handleMessageHost](modules/handlemessagehost.md)
 - [handleMessagePlayer](modules/handlemessageplayer.md)

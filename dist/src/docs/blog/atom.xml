@@ -8,13 +8,6 @@
     <subtitle>Tricktionary Blog</subtitle>
     <icon>https://dev.tricktionary.monster/img/favicon.ico</icon>
     <entry>
-        <title type="html"><![CDATA[Take on me]]></title>
-        <id>aha</id>
-        <link href="https://dev.tricktionary.monster/help/blog/aha"/>
-        <updated>2021-02-14T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Happy Tricktionary Day!]]></summary>
-    </entry>
-    <entry>
         <title type="html"><![CDATA[Futuristic Dragon]]></title>
         <id>dragons</id>
         <link href="https://dev.tricktionary.monster/help/blog/dragons"/>
@@ -25,6 +18,13 @@
         <title type="html"><![CDATA[Cosmic Dancer]]></title>
         <id>Welcome</id>
         <link href="https://dev.tricktionary.monster/help/blog/Welcome"/>
+        <updated>2021-02-14T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Happy Tricktionary Day!]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Take on me]]></title>
+        <id>aha</id>
+        <link href="https://dev.tricktionary.monster/help/blog/aha"/>
         <updated>2021-02-14T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Happy Tricktionary Day!]]></summary>
     </entry>

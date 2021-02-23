@@ -20,7 +20,6 @@ const handleUpdateUsername_1 = __importDefault(require("./handleUpdateUsername")
 const handleTimeSync_1 = __importDefault(require("./handleTimeSync"));
 const handleMessageHost_1 = __importDefault(require("./handleMessageHost"));
 const handleMessagePlayer_1 = __importDefault(require("./handleMessagePlayer"));
-const handleLobbyJoinWithPassword_1 = __importDefault(require("./handleLobbyJoinWithPassword"));
 const handleRevealResults_1 = __importDefault(require("./handleRevealResults"));
 const handleSetFinale_1 = __importDefault(require("./handleSetFinale"));
 exports.default = {
@@ -41,7 +40,6 @@ exports.default = {
     handleTimeSync: handleTimeSync_1.default,
     handleMessageHost: handleMessageHost_1.default,
     handleMessagePlayer: handleMessagePlayer_1.default,
-    handleLobbyJoinWithPassword: handleLobbyJoinWithPassword_1.default,
     handleRevealResults: handleRevealResults_1.default,
     handleSetFinale: handleSetFinale_1.default
 };
