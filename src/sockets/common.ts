@@ -10,6 +10,11 @@ const localAxios = axios.create({
 localAxios.defaults.timeout = 10000;
 
 /**
+ * maximum number of players per lobby
+ */
+const MAX_PLAYERS = process.env.MAX_PLAYERS || 30;
+
+/**
  * Number of characters in lobbyCode
  */
 const LC_LENGTH: number = process.env.LC_LENGTH
@@ -31,6 +36,7 @@ const VALUE_OF_BLUFF: number = process.env.VALUE_OF_BLUFF
   : 1;
 
 export {
+  MAX_PLAYERS,
   VALUE_OF_BLUFF,
   VALUE_OF_TRUTH,
   LC_LENGTH,
