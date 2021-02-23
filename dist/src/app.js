@@ -109,9 +109,6 @@ io.on("connection", (socket) => {
     socket.on("join lobby", (username, lobbyCode) => {
         sockets_1.default.handleLobbyJoin(io, socket, username, lobbyCode, lobbies);
     });
-    socket.on("rejoin lobby", (username, password, lobbyCode) => {
-        sockets_1.default.handleLobbyJoinWithPassword(io, socket, username, password, lobbyCode, lobbies);
-    });
     socket.on("start game", (settings, lobbyCode, hostChoice) => {
         sockets_1.default.handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice);
     });

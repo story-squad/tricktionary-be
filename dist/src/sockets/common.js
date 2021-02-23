@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.gameExists = exports.updatePlayerToken = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.localAxios = exports.LC_LENGTH = exports.VALUE_OF_TRUTH = exports.VALUE_OF_BLUFF = void 0;
+exports.gameExists = exports.updatePlayerToken = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.localAxios = exports.LC_LENGTH = exports.VALUE_OF_TRUTH = exports.VALUE_OF_BLUFF = exports.MAX_PLAYERS = void 0;
 const GameSettings_1 = require("../GameSettings");
 const axios_1 = __importDefault(require("axios"));
 const dotenv = __importStar(require("dotenv"));
@@ -41,6 +41,11 @@ const localAxios = axios_1.default.create({
 });
 exports.localAxios = localAxios;
 localAxios.defaults.timeout = 10000;
+/**
+ * maximum number of players per lobby
+ */
+const MAX_PLAYERS = process.env.MAX_PLAYERS || 30;
+exports.MAX_PLAYERS = MAX_PLAYERS;
 /**
  * Number of characters in lobbyCode
  */
