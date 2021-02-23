@@ -660,9 +660,9 @@
       "integrity": "sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A=="
     },
     "docusaurus-plugin-typedoc": {
-      "version": "0.9.0",
-      "resolved": "https://registry.npmjs.org/docusaurus-plugin-typedoc/-/docusaurus-plugin-typedoc-0.9.0.tgz",
-      "integrity": "sha512-6quTdU9fsJEASGMDoxmaascFZyF2/s+GXx6odYMa7rDoDPTOfgqEQqZwXFWGNH5OuBKrdu1xz4E+irr+qlDBRQ==",
+      "version": "0.10.0",
+      "resolved": "https://registry.npmjs.org/docusaurus-plugin-typedoc/-/docusaurus-plugin-typedoc-0.10.0.tgz",
+      "integrity": "sha512-cztkkhJeiZLrGmO4/lI3wLsOqDgJkRwK5WOO+eRko59UP9N3CqTcQoNRDr4ADUO0GZm8jvRT2NBTON5Q1+RVEw==",
       "dev": true
     },
     "dotenv": {
