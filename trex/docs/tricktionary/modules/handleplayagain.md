@@ -26,4 +26,4 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [handlePlayAgain.ts:3](https://github.com/story-squad/tricktionary-be/blob/2d7399d/src/sockets/handlePlayAgain.ts#L3)
+Defined in: [handlePlayAgain.ts:3](https://github.com/story-squad/tricktionary-be/blob/2272039/src/sockets/handlePlayAgain.ts#L3)
