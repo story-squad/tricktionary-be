@@ -26,4 +26,4 @@ Name | Type |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleGuess.ts:4](https://github.com/story-squad/tricktionary-be/blob/542a53b/src/sockets/handleGuess.ts#L4)
+Defined in: [handleGuess.ts:4](https://github.com/story-squad/tricktionary-be/blob/5c4097c/src/sockets/handleGuess.ts#L4)
