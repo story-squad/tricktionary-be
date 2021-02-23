@@ -76,7 +76,7 @@ router.post("/update-token", (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(200).json(token);
     }
     catch (err) {
-        res.send(400).json({ message: err.message });
+        res.status(400).json({ message: err.message });
     }
 }));
 router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

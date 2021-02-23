@@ -28,4 +28,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<*void*\>
 
-Defined in: [handleLobbyJoin.ts:19](https://github.com/story-squad/tricktionary-be/blob/542a53b/src/sockets/handleLobbyJoin.ts#L19)
+Defined in: [handleLobbyJoin.ts:19](https://github.com/story-squad/tricktionary-be/blob/5c4097c/src/sockets/handleLobbyJoin.ts#L19)
