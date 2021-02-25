@@ -12,17 +12,17 @@
 
 ### default
 
-▸ **default**(`io`: *any*, `socket`: *any*, `username`: *string*, `lobbies`: *any*): *Promise*<*void*\>
+▸ **default**(`io`: *any*, `socket`: *any*, `username`: *string*, `lobbies`: *any*): *Promise*<void\>
 
 #### Parameters:
 
 Name | Type |
------- | ------ |
+:------ | :------ |
 `io` | *any* |
 `socket` | *any* |
 `username` | *string* |
 `lobbies` | *any* |
 
-**Returns:** *Promise*<*void*\>
+**Returns:** *Promise*<void\>
 
-Defined in: [handleLobbyCreate.ts:9](https://github.com/story-squad/tricktionary-be/blob/2272039/src/sockets/handleLobbyCreate.ts#L9)
+Defined in: [handleLobbyCreate.ts:9](https://github.com/story-squad/tricktionary-be/blob/bb71827/src/sockets/handleLobbyCreate.ts#L9)

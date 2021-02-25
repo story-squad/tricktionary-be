@@ -70,7 +70,7 @@ function handleReturningPlayer(io, socket, token, lobbies) {
             lobbies[player.last_played].host = socket.id;
         }
         // move the player forward.
-        handleLobbyJoin_1.default(io, socket, old_user_name, player.last_played, lobbies);
+        handleLobbyJoin_1.default(io, socket, old_user_name, player.last_played, lobbies, true);
     });
 }
 exports.default = handleReturningPlayer;

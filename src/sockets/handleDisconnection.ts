@@ -15,7 +15,7 @@ function handleDisconnection(io: any, socket: any, lobbies: any) {
       );
       lobbies[lobbyCode].players = [
         ...lobbies[lobbyCode].players,
-        { ...oldPlayer, connected: false }
+        { ...oldPlayer, connected: false, pulseCheck: true }
       ];
 
       if (
