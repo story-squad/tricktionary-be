@@ -1,8 +1,8 @@
 import {
   localAxios,
   privateMessage,
-  gameExists,
 } from "./common";
+
 import handleLobbyJoin from "./handleLobbyJoin";
 
 /**
@@ -45,7 +45,7 @@ async function handleReturningPlayer(
   // send player their new token.
   privateMessage(io, socket, "token update", newtoken);
   // check for last_played activity
-  if (!player.last_played || !gameExists(player.last_played, lobbies)) {
+  if (!player.last_played || !lobbies[player.last_played]){
     console.log(player.last_played, " game not found.");
     return;
   }
@@ -66,7 +66,7 @@ async function handleReturningPlayer(
     lobbies[player.last_played].host = socket.id;
   }
   // move the player forward.
-  handleLobbyJoin(io, socket, old_user_name, player.last_played, lobbies);
+  handleLobbyJoin(io, socket, old_user_name, player.last_played, lobbies, true);
 }
 
 export default handleReturningPlayer;

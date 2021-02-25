@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
+const crontab_1 = require("../crontab");
 /**
  * Connects the player with the active game being played.
  *
@@ -23,7 +24,7 @@ const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
  * @param lobbyCode Player's join code
  * @param lobbies game-state
  */
-function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
+function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse) {
     return __awaiter(this, void 0, void 0, function* () {
         if (common_1.whereAmI(socket) === lobbyCode.trim()) {
             console.log("I am already here");
@@ -90,6 +91,15 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies) {
         }
         common_1.privateMessage(io, socket, "welcome", socket.id);
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
+        if (doCheckPulse) {
+            console.log("PULSE CHECK");
+            try {
+                crontab_1.schedulePulseCheck(io, lobbies, lobbyCode, 5);
+            }
+            catch (err) {
+                console.log("ERROR scheduling pulse check");
+            }
+        }
     });
 }
 exports.default = handleLobbyJoin;

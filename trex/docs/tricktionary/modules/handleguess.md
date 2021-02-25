@@ -12,18 +12,18 @@
 
 ### handleArrayOfGuesses
 
-▸ **handleArrayOfGuesses**(`io`: *any*, `socket`: *any*, `lobbyCode`: *any*, `lobbies`: *any*, `guesses`: *any*[]): *Promise*<*void*\>
+▸ **handleArrayOfGuesses**(`io`: *any*, `socket`: *any*, `lobbyCode`: *any*, `lobbies`: *any*, `guesses`: *any*[]): *Promise*<void\>
 
 #### Parameters:
 
 Name | Type |
------- | ------ |
+:------ | :------ |
 `io` | *any* |
 `socket` | *any* |
 `lobbyCode` | *any* |
 `lobbies` | *any* |
 `guesses` | *any*[] |
 
-**Returns:** *Promise*<*void*\>
+**Returns:** *Promise*<void\>
 
-Defined in: [handleGuess.ts:4](https://github.com/story-squad/tricktionary-be/blob/2272039/src/sockets/handleGuess.ts#L4)
+Defined in: [handleGuess.ts:4](https://github.com/story-squad/tricktionary-be/blob/c746891/src/sockets/handleGuess.ts#L4)

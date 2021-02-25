@@ -8,6 +8,9 @@ import {
 } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
 
+import { schedulePulseCheck } from "../crontab";
+
+
 /**
  * Connects the player with the active game being played.
  * 
@@ -22,7 +25,8 @@ async function handleLobbyJoin(
   socket: any,
   username: string,
   lobbyCode: any,
-  lobbies: any
+  lobbies: any,
+  doCheckPulse: boolean | undefined
 ) {
   if (whereAmI(socket) === lobbyCode.trim()) {
     console.log("I am already here");
@@ -105,5 +109,13 @@ async function handleLobbyJoin(
   }
   privateMessage(io, socket, "welcome", socket.id);
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
+  if (doCheckPulse){
+    console.log("PULSE CHECK")
+    try {
+      schedulePulseCheck(io, lobbies, lobbyCode, 5);
+    } catch (err) {
+      console.log("ERROR scheduling pulse check");
+    }
+  }
 }
 export default handleLobbyJoin;

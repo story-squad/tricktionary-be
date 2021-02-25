@@ -12,12 +12,12 @@
 
 ### default
 
-▸ **default**(`io`: *any*, `socket`: *any*, `lobbies`: *any*, `playerId`: *string*, `category`: *string*, `message`: *any*): *Promise*<*void*\>
+▸ **default**(`io`: *any*, `socket`: *any*, `lobbies`: *any*, `playerId`: *string*, `category`: *string*, `message`: *any*): *Promise*<void\>
 
 #### Parameters:
 
 Name | Type | Description |
------- | ------ | ------ |
+:------ | :------ | :------ |
 `io` | *any* | (socket io)   |
 `socket` | *any* | (socket io)   |
 `lobbies` | *any* | game-state   |
@@ -25,6 +25,6 @@ Name | Type | Description |
 `category` | *string* | recipient listener event   |
 `message` | *any* | information being sent to the recipient    |
 
-**Returns:** *Promise*<*void*\>
+**Returns:** *Promise*<void\>
 
-Defined in: [handleMessagePlayer.ts:12](https://github.com/story-squad/tricktionary-be/blob/2272039/src/sockets/handleMessagePlayer.ts#L12)
+Defined in: [handleMessagePlayer.ts:12](https://github.com/story-squad/tricktionary-be/blob/c746891/src/sockets/handleMessagePlayer.ts#L12)

@@ -12,18 +12,18 @@
 
 ### default
 
-▸ **default**(`io`: *any*, `socket`: *any*, `definition`: *string*, `lobbyCode`: *any*, `lobbies`: *any*): *Promise*<*void*\>
+▸ **default**(`io`: *any*, `socket`: *any*, `definition`: *string*, `lobbyCode`: *any*, `lobbies`: *any*): *Promise*<void\>
 
 #### Parameters:
 
 Name | Type |
------- | ------ |
+:------ | :------ |
 `io` | *any* |
 `socket` | *any* |
 `definition` | *string* |
 `lobbyCode` | *any* |
 `lobbies` | *any* |
 
-**Returns:** *Promise*<*void*\>
+**Returns:** *Promise*<void\>
 
-Defined in: [handleSubmitDefinition.ts:4](https://github.com/story-squad/tricktionary-be/blob/2272039/src/sockets/handleSubmitDefinition.ts#L4)
+Defined in: [handleSubmitDefinition.ts:4](https://github.com/story-squad/tricktionary-be/blob/c746891/src/sockets/handleSubmitDefinition.ts#L4)

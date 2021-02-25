@@ -12,17 +12,17 @@
 
 ### default
 
-▸ **default**(`io`: *any*, `socket`: *any*): *Promise*<*undefined* \| { `message`: *any* ; `ok`: *boolean* = false }\>
+▸ **default**(`io`: *any*, `socket`: *any*): *Promise*<undefined \| { `message`: *any* ; `ok`: *boolean* = false }\>
 
 Create a new Player record for this user
 
 #### Parameters:
 
 Name | Type | Description |
------- | ------ | ------ |
+:------ | :------ | :------ |
 `io` | *any* | (socket io)   |
 `socket` | *any* | (socket io)    |
 
-**Returns:** *Promise*<*undefined* \| { `message`: *any* ; `ok`: *boolean* = false }\>
+**Returns:** *Promise*<undefined \| { `message`: *any* ; `ok`: *boolean* = false }\>
 
-Defined in: [handleNewPlayer.ts:9](https://github.com/story-squad/tricktionary-be/blob/2272039/src/sockets/handleNewPlayer.ts#L9)
+Defined in: [handleNewPlayer.ts:9](https://github.com/story-squad/tricktionary-be/blob/c746891/src/sockets/handleNewPlayer.ts#L9)

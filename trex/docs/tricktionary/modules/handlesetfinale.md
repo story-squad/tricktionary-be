@@ -12,7 +12,7 @@
 
 ### default
 
-▸ **default**(`io`: *any*, `socket`: *any*, `lobbyCode`: *any*, `lobbies`: *any*): *Promise*<*void*\>
+▸ **default**(`io`: *any*, `socket`: *any*, `lobbyCode`: *any*, `lobbies`: *any*): *Promise*<void\>
 
 Allows the host to store and retrieve
 
@@ -22,12 +22,12 @@ Allows the host to store and retrieve
 #### Parameters:
 
 Name | Type | Description |
------- | ------ | ------ |
+:------ | :------ | :------ |
 `io` | *any* | (socketio)   |
 `socket` | *any* | (socketio)   |
 `lobbyCode` | *any* | key-string   |
 `lobbies` | *any* | memo-object    |
 
-**Returns:** *Promise*<*void*\>
+**Returns:** *Promise*<void\>
 
-Defined in: [handleSetFinale.ts:22](https://github.com/story-squad/tricktionary-be/blob/2272039/src/sockets/handleSetFinale.ts#L22)
+Defined in: [handleSetFinale.ts:22](https://github.com/story-squad/tricktionary-be/blob/c746891/src/sockets/handleSetFinale.ts#L22)
