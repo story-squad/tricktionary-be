@@ -13,7 +13,7 @@ function handleDisconnection(io, socket, lobbies) {
             lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter((player) => player !== oldPlayer);
             lobbies[lobbyCode].players = [
                 ...lobbies[lobbyCode].players,
-                Object.assign(Object.assign({}, oldPlayer), { connected: false })
+                Object.assign(Object.assign({}, oldPlayer), { connected: false, pulseCheck: true })
             ];
             if (lobbies[lobbyCode].players.filter((player) => player.connected)
                 .length === 0) {

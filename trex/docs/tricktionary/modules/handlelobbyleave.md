@@ -17,11 +17,11 @@
 #### Parameters:
 
 Name | Type |
------- | ------ |
+:------ | :------ |
 `io` | *any* |
 `socket` | *any* |
 `lobbies` | *any* |
 
 **Returns:** *void*
 
-Defined in: [handleLobbyLeave.ts:1](https://github.com/story-squad/tricktionary-be/blob/2272039/src/sockets/handleLobbyLeave.ts#L1)
+Defined in: [handleLobbyLeave.ts:1](https://github.com/story-squad/tricktionary-be/blob/bb71827/src/sockets/handleLobbyLeave.ts#L1)

@@ -18,6 +18,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -82,14 +91,14 @@ exports.socketApp = socketApp;
 const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 io.on("connection", (socket) => {
     // LOGIN
-    socket.on("login", (token) => {
+    socket.on("login", (token) => __awaiter(void 0, void 0, void 0, function* () {
         if (token && token.length > 0) {
             sockets_1.default.handleReturningPlayer(io, socket, token, lobbies);
         }
         else {
             sockets_1.default.handleNewPlayer(io, socket);
         }
-    });
+    }));
     // more events to come.
     socket.on("disconnecting", () => {
         sockets_1.default.handleDisconnection(io, socket, lobbies);
@@ -107,7 +116,7 @@ io.on("connection", (socket) => {
         sockets_1.default.handleLobbyCreate(io, socket, username, lobbies);
     });
     socket.on("join lobby", (username, lobbyCode) => {
-        sockets_1.default.handleLobbyJoin(io, socket, username, lobbyCode, lobbies);
+        sockets_1.default.handleLobbyJoin(io, socket, username, lobbyCode, lobbies, false);
     });
     socket.on("start game", (settings, lobbyCode, hostChoice) => {
         sockets_1.default.handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice);
