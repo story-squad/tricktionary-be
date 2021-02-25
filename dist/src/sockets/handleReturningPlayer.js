@@ -51,7 +51,7 @@ function handleReturningPlayer(io, socket, token, lobbies) {
         // send player their new token.
         common_1.privateMessage(io, socket, "token update", newtoken);
         // check for last_played activity
-        if (!player.last_played || !common_1.gameExists(player.last_played, lobbies)) {
+        if (!player.last_played || !lobbies[player.last_played]) {
             console.log(player.last_played, " game not found.");
             return;
         }
