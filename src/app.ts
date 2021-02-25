@@ -70,7 +70,7 @@ const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
   // LOGIN
-  socket.on("login", (token: string | undefined) => {
+  socket.on("login", async (token: string | undefined) => {
     if (token && token.length > 0) {
       gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
     } else {
@@ -97,7 +97,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join lobby", (username: string, lobbyCode: string) => {
-    gameSocketHandler.handleLobbyJoin(io, socket, username, lobbyCode, lobbies);
+    gameSocketHandler.handleLobbyJoin(io, socket, username, lobbyCode, lobbies, false);
   });
 
   socket.on(

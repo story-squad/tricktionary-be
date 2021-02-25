@@ -3,6 +3,7 @@ import {
   privateMessage,
   gameExists,
 } from "./common";
+
 import handleLobbyJoin from "./handleLobbyJoin";
 
 /**
@@ -66,7 +67,7 @@ async function handleReturningPlayer(
     lobbies[player.last_played].host = socket.id;
   }
   // move the player forward.
-  handleLobbyJoin(io, socket, old_user_name, player.last_played, lobbies);
+  handleLobbyJoin(io, socket, old_user_name, player.last_played, lobbies, true);
 }
 
 export default handleReturningPlayer;

@@ -145,6 +145,15 @@
       "resolved": "https://registry.npmjs.org/@types/node/-/node-14.14.31.tgz",
       "integrity": "sha512-vFHy/ezP5qI0rFgJ7aQnjDXwAMrG0KqqIH7tQG5PPv3BWBayOPIQNBjVc/P6hhdZfMx51REc6tfDNXHUio893g=="
     },
+    "@types/node-cron": {
+      "version": "2.0.3",
+      "resolved": "https://registry.npmjs.org/@types/node-cron/-/node-cron-2.0.3.tgz",
+      "integrity": "sha512-gwBBGeY2XeYBLE0R01K9Sm2hvNcPGmoloL6aqthA3QmBB1GYXTHIJ42AGZL7bdXBRiwbRV8b6NB5iKpl20R3gw==",
+      "dev": true,
+      "requires": {
+        "@types/tz-offset": "*"
+      }
+    },
     "@types/qs": {
       "version": "6.9.5",
       "resolved": "https://registry.npmjs.org/@types/qs/-/qs-6.9.5.tgz",
@@ -192,6 +201,12 @@
       "requires": {
         "@types/node": "*"
       }
+    },
+    "@types/tz-offset": {
+      "version": "0.0.0",
+      "resolved": "https://registry.npmjs.org/@types/tz-offset/-/tz-offset-0.0.0.tgz",
+      "integrity": "sha512-XLD/llTSB6EBe3thkN+/I0L+yCTB6sjrcVovQdx2Cnl6N6bTzHmwe/J8mWnsXFgxLrj/emzdv8IR4evKYG2qxQ==",
+      "dev": true
     },
     "@types/uuid": {
       "version": "8.3.0",
@@ -1729,6 +1744,15 @@
       "integrity": "sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==",
       "dev": true
     },
+    "node-cron": {
+      "version": "2.0.3",
+      "resolved": "https://registry.npmjs.org/node-cron/-/node-cron-2.0.3.tgz",
+      "integrity": "sha512-eJI+QitXlwcgiZwNNSRbqsjeZMp5shyajMR81RZCqeW0ZDEj4zU9tpd4nTh/1JsBiKbF8d08FCewiipDmVIYjg==",
+      "requires": {
+        "opencollective-postinstall": "^2.0.0",
+        "tz-offset": "0.0.1"
+      }
+    },
     "object-assign": {
       "version": "4.1.1",
       "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz",
@@ -1822,6 +1846,11 @@
       "requires": {
         "lru-cache": "^5.1.1"
       }
+    },
+    "opencollective-postinstall": {
+      "version": "2.0.3",
+      "resolved": "https://registry.npmjs.org/opencollective-postinstall/-/opencollective-postinstall-2.0.3.tgz",
+      "integrity": "sha512-8AV/sCtuzUeTo8gQK5qDZzARrulB3egtLzFgteqB2tcT4Mw7B8Kt7JcDHmltjz6FOAHsvTevk70gZEbhM4ZS9Q=="
     },
     "packet-reader": {
       "version": "1.0.0",
@@ -2676,6 +2705,11 @@
       "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.1.5.tgz",
       "integrity": "sha512-6OSu9PTIzmn9TCDiovULTnET6BgXtDYL4Gg4szY+cGsc3JP1dQL8qvE8kShTRx1NIw4Q9IBHlwODjkjWEtMUyA==",
       "dev": true
+    },
+    "tz-offset": {
+      "version": "0.0.1",
+      "resolved": "https://registry.npmjs.org/tz-offset/-/tz-offset-0.0.1.tgz",
+      "integrity": "sha512-kMBmblijHJXyOpKzgDhKx9INYU4u4E1RPMB0HqmKSgWG8vEcf3exEfLh4FFfzd3xdQOw9EuIy/cP0akY6rHopQ=="
     },
     "uglify-js": {
       "version": "3.12.8",
