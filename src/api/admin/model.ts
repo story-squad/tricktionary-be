@@ -1,9 +1,11 @@
+import { idText } from "typescript";
 import db from "../../dbConfig";
 
 export default {
   getRound,
   getWordDetails,
   getDefinitionDetails,
+  getTopVotedDefinitions,
 };
 
 /**
@@ -56,7 +58,7 @@ async function getWordDetails(word_id: number) {
     let defs: Array<any> = await db("Definitions").where({
       round_id: round.id,
     });
-    definitions = [definitions, ...defs];
+    definitions = [...definitions, ...defs];
   });
   //get passovers for word
   let choices_with_word: Array<any> = [];
@@ -78,7 +80,9 @@ async function getWordDetails(word_id: number) {
 
 async function getDefinitionDetails(definition_id: number) {
   //get definition by id
-  const definition: any = await db("Definitions").where({ definition_id });
+  const definition: any = await db("Definitions")
+    .where({ id: definition_id })
+    .first();
   //get all votes by definition id
   const votes: Array<any> = await db("Votes").where({ definition_id });
   //get num of players from round
@@ -95,4 +99,33 @@ async function getDefinitionDetails(definition_id: number) {
     num_players: round.number_players,
     reactions: reactions,
   };
+}
+
+//function that loops over all the definitions, and returns all of them sorted by most votes
+
+async function getAllDefinitions() {
+  const allDefs: Array<any> = await db("Definitions");
+  let allDefDeets: Array<any> = [];
+  for (let def of allDefs) {
+    const defDeets: any = await getDefinitionDetails(def.id);
+    allDefDeets.push(defDeets);
+  }
+  return allDefDeets;
+}
+
+async function getTopVotedDefinitions() {
+  const defs = await getAllDefinitions();
+  let res: Array<any> = [];
+  for (let def of defs) {
+    if (def.votes.length >= 1) {
+      res.push(def);
+    }
+  }
+  res.sort((a, b) => {
+    if (a.votes.length < b.votes.length) return 1;
+    if (b.votes.length < a.votes.length) return -1;
+    return 0;
+  });
+  res.slice(0, 49);
+  return res;
 }

@@ -19,14 +19,15 @@ export default async function handleRevealResults(
 ) {
   const present = lobbyCode && whereAmI(socket) === lobbyCode;
   if (!present) {
-    handleErrorMessage(io, socket, "use your own letter box");
+    handleErrorMessage(io, socket,2004, "You are not in the requested game", );
   }
   const authorized = playerIsHost(socket, lobbyCode, lobbies);
   if (!authorized.ok) {
     handleErrorMessage(
       io,
       socket,
-      "please don't provoke the saber tooth kittens"
+      2005,
+      "You are not the host of the requested game"
     );
   }
   io.to(lobbyCode).emit("reveal results", guesses);

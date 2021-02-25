@@ -9,17 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = require("./common");
 /**
  * emit "error" message to player at socket.id
  * @param io any (socketio)
  * @param socket any (socketio)
  * @param error string
  */
-function handleErrorMessage(io, socket, error) {
+function handleErrorMessage(io, socket, code, error) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            common_1.privateMessage(io, socket, "error", error);
+            // privateMessage(io, socket, "error", error);
+            io.to(socket.id).emit("error", code, error);
         }
         catch (err) {
             console.log({ error: err });

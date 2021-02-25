@@ -38,7 +38,7 @@ export async function handleArrayOfGuesses(
     }
   } catch (err) {
     console.log("error while ending round!");
-    handleErrorMessage(io, socket, err);
+    handleErrorMessage(io, socket, 2003, 'there was a server error while ending the round');
     return;
   }
   console.log('changing phase');

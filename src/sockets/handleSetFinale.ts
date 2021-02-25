@@ -27,14 +27,15 @@ async function handleSetFinale(
 ) {
   const present = lobbyCode && whereAmI(socket) === lobbyCode;
   if (!present) {
-    handleErrorMessage(io, socket, "use your own letter box");
+    handleErrorMessage(io, socket, 2004, "You're not in the lobby");
   }
   const authorized = playerIsHost(socket, lobbyCode, lobbies);
   if (!authorized.ok) {
     handleErrorMessage(
       io,
       socket,
-      "please don't provoke the saber tooth kittens"
+      2005,
+      "You're not the host and can not end the game"
     );
   }
   const game_id = lobbies[lobbyCode].game_id;
@@ -44,7 +45,7 @@ async function handleSetFinale(
       return b.points - a.points;
     })
     .slice(0, 3);
-  
+
   // 1) assign the resulting player(s) to constant placeholder values,
   const firstPlace = topThree[0];
   const secondPlace = topThree[1] || undefined;

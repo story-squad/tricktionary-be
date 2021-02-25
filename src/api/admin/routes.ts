@@ -37,16 +37,26 @@ router.get("/word/:word_id", async (req, res) => {
     });
 });
 
-//I'm pretty sure this works but don't have any definitions to test with
-// router.get("definition/:id", async (req, res) => {
-//   const id = Number(req.params.id);
-//   if (!id) res.status(400).json({ error: "id?" });
-//   Super.getDefinitionDetails(id)
-//     .then((details) => {
-//       res.status(200).json({ details });
-//     })
-//     .catch((err) => {
-//       res.status(500).json({ error: err.message });
-//     });
-// });
+// I'm pretty sure this works but don't have any definitions to test with 
+router.get("/definition/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id) res.status(400).json({ error: "id?" });
+  Super.getDefinitionDetails(id)
+    .then((details) => {
+      res.status(200).json({ details });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
+});
+
+router.get("/topdefinitions", async (req, res) => {
+  Super.getTopVotedDefinitions()
+    .then((definitions) => {
+      res.status(200).json(definitions);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err.message });
+    });
+});
 export default router;

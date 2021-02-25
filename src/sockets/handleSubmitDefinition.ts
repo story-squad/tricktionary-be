@@ -18,7 +18,7 @@ async function handleSubmitDefinition(
     newDef = await localAxios.post("/api/definitions/new",  { playerId: newPlayer.id, definition, roundId: lobbies[lobbyCode].roundId });
   } catch(err){
     console.log("errror! handleSubmitDefinitions:22")
-    handleErrorMessage(io, socket, err);
+    handleErrorMessage(io, socket, 2003, 'There was a server error while submitting your definition.');
   }
   // then ...
   const definitionId = newDef?.data?.definitionId;
