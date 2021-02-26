@@ -50,7 +50,7 @@ function handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses) {
         }
         catch (err) {
             console.log("error while ending round!");
-            handleErrorMessage_1.default(io, socket, err);
+            handleErrorMessage_1.default(io, socket, 2003, 'there was a server error while ending the round');
             return;
         }
         console.log('changing phase');

@@ -30,11 +30,11 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
     return __awaiter(this, void 0, void 0, function* () {
         const present = lobbyCode && common_1.whereAmI(socket) === lobbyCode;
         if (!present) {
-            handleErrorMessage_1.default(io, socket, "use your own letter box");
+            handleErrorMessage_1.default(io, socket, 2004, "You're not in the lobby");
         }
         const authorized = common_1.playerIsHost(socket, lobbyCode, lobbies);
         if (!authorized.ok) {
-            handleErrorMessage_1.default(io, socket, "please don't provoke the saber tooth kittens");
+            handleErrorMessage_1.default(io, socket, 2005, "You're not the host and can not end the game");
         }
         const game_id = lobbies[lobbyCode].game_id;
         // get the first 3 players, sorted by points in descending order.

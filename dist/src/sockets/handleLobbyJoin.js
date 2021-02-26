@@ -33,15 +33,15 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
             return;
         }
         if (lobbyCode.length !== common_1.LC_LENGTH) {
-            handleErrorMessage_1.default(io, socket, "bad lobby code.");
+            handleErrorMessage_1.default(io, socket, 2000, "The lobby code you entered is not long enough");
             return;
         }
         if (Object.keys(lobbies).filter((lc) => lc === lobbyCode).length === 0) {
-            handleErrorMessage_1.default(io, socket, "cool it, hackerman.");
+            handleErrorMessage_1.default(io, socket, 2000, "The lobby code you entered does not correspond to an active room");
             return;
         }
         if (lobbies[lobbyCode].players.length > common_1.MAX_PLAYERS) {
-            handleErrorMessage_1.default(io, socket, `${lobbyCode} has reached the maximum player limit of ${common_1.MAX_PLAYERS}`);
+            handleErrorMessage_1.default(io, socket, 2001, `The lobby with code ${lobbyCode} has reached the maximum player limit of ${common_1.MAX_PLAYERS}`);
             return;
         }
         try {
@@ -56,7 +56,7 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
             let rejoined = lobbies[lobbyCode].players.filter((p) => (p === null || p === void 0 ? void 0 : p.rejoinedAs) && p.rejoinedAs === socket.id).length > 0;
             if (lobbies[lobbyCode].phase !== "PREGAME" && !rejoined) {
                 // prevent *new players from joining mid-game.
-                handleErrorMessage_1.default(io, socket, "Game in progress; cannot join.");
+                handleErrorMessage_1.default(io, socket, 2002, `Unfortunately, the lobby with code ${lobbyCode} has already begun their game`);
                 return;
             }
             console.log(`${username} ${rejoined ? "re-joined" : "joined"} ${lobbyCode}`);

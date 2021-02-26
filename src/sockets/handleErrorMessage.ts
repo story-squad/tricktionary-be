@@ -6,9 +6,10 @@ import { privateMessage } from "./common";
  * @param socket any (socketio)
  * @param error string
  */
-async function handleErrorMessage(io: any, socket: any, error: string) {
+async function handleErrorMessage(io: any, socket: any,  code: number, error: string | undefined) {
   try {
-    privateMessage(io, socket, "error", error);
+    // privateMessage(io, socket, "error", error);
+    io.to(socket.id).emit("error", code, error)
   } catch (err) {
     console.log({ error: err });
   }

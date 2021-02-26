@@ -17,6 +17,7 @@ exports.default = {
     getRound,
     getWordDetails,
     getDefinitionDetails,
+    getTopVotedDefinitions,
 };
 /**
  * Round round get around, I get around, yeah
@@ -70,7 +71,7 @@ function getWordDetails(word_id) {
             let defs = yield dbConfig_1.default("Definitions").where({
                 round_id: round.id,
             });
-            definitions = [definitions, ...defs];
+            definitions = [...definitions, ...defs];
         }));
         //get passovers for word
         let choices_with_word = [];
@@ -92,7 +93,9 @@ function getWordDetails(word_id) {
 function getDefinitionDetails(definition_id) {
     return __awaiter(this, void 0, void 0, function* () {
         //get definition by id
-        const definition = yield dbConfig_1.default("Definitions").where({ definition_id });
+        const definition = yield dbConfig_1.default("Definitions")
+            .where({ id: definition_id })
+            .first();
         //get all votes by definition id
         const votes = yield dbConfig_1.default("Votes").where({ definition_id });
         //get num of players from round
@@ -109,6 +112,38 @@ function getDefinitionDetails(definition_id) {
             num_players: round.number_players,
             reactions: reactions,
         };
+    });
+}
+//function that loops over all the definitions, and returns all of them sorted by most votes
+function getAllDefinitions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const allDefs = yield dbConfig_1.default("Definitions");
+        let allDefDeets = [];
+        for (let def of allDefs) {
+            const defDeets = yield getDefinitionDetails(def.id);
+            allDefDeets.push(defDeets);
+        }
+        return allDefDeets;
+    });
+}
+function getTopVotedDefinitions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const defs = yield getAllDefinitions();
+        let res = [];
+        for (let def of defs) {
+            if (def.votes.length >= 1) {
+                res.push(def);
+            }
+        }
+        res.sort((a, b) => {
+            if (a.votes.length < b.votes.length)
+                return 1;
+            if (b.votes.length < a.votes.length)
+                return -1;
+            return 0;
+        });
+        res.slice(0, 49);
+        return res;
     });
 }
 //# sourceMappingURL=model.js.map

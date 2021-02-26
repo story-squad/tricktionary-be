@@ -24,4 +24,4 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [handleDisconnection.ts:2](https://github.com/story-squad/tricktionary-be/blob/d49f06c/src/sockets/handleDisconnection.ts#L2)
+Defined in: [handleDisconnection.ts:2](https://github.com/story-squad/tricktionary-be/blob/c746891/src/sockets/handleDisconnection.ts#L2)

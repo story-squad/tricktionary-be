@@ -19,7 +19,7 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice) {
     return __awaiter(this, void 0, void 0, function* () {
         let r = common_1.checkSettings(settings);
         if (!r.ok) {
-            handleErrorMessage_1.default(io, socket, r === null || r === void 0 ? void 0 : r.message);
+            handleErrorMessage_1.default(io, socket, 2006, 'there was an error with starting your game');
             return;
         }
         console.log(r.settings);
@@ -48,7 +48,7 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice) {
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         }
         else {
-            console.log("error updating game");
+            console.log("there was a server error while starting the game");
         }
     });
 }

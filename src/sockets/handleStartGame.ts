@@ -16,7 +16,7 @@ async function handleStartGame(
 ) {
   let r = checkSettings(settings);
   if (!r.ok) {
-    handleErrorMessage(io, socket, r?.message);
+    handleErrorMessage(io, socket, 2006,'there was an error with starting your game');
     return;
   }
   console.log(r.settings);
@@ -52,7 +52,7 @@ async function handleStartGame(
     // pub-sub update
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
   } else {
-    console.log("error updating game");
+    console.log("there was a server error while starting the game");
   }
 }
 

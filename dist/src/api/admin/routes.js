@@ -49,17 +49,27 @@ router.get("/word/:word_id", (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(500).json({ error: err.message });
     });
 }));
-//I'm pretty sure this works but don't have any definitions to test with
-// router.get("definition/:id", async (req, res) => {
-//   const id = Number(req.params.id);
-//   if (!id) res.status(400).json({ error: "id?" });
-//   Super.getDefinitionDetails(id)
-//     .then((details) => {
-//       res.status(200).json({ details });
-//     })
-//     .catch((err) => {
-//       res.status(500).json({ error: err.message });
-//     });
-// });
+// I'm pretty sure this works but don't have any definitions to test with 
+router.get("/definition/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    if (!id)
+        res.status(400).json({ error: "id?" });
+    model_1.default.getDefinitionDetails(id)
+        .then((details) => {
+        res.status(200).json({ details });
+    })
+        .catch((err) => {
+        res.status(500).json({ error: err.message });
+    });
+}));
+router.get("/topdefinitions", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    model_1.default.getTopVotedDefinitions()
+        .then((definitions) => {
+        res.status(200).json(definitions);
+    })
+        .catch((err) => {
+        res.status(500).json({ error: err.message });
+    });
+}));
 exports.default = router;
 //# sourceMappingURL=routes.js.map

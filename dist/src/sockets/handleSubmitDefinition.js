@@ -28,7 +28,7 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
         }
         catch (err) {
             console.log("errror! handleSubmitDefinitions:22");
-            handleErrorMessage_1.default(io, socket, err);
+            handleErrorMessage_1.default(io, socket, 2003, 'There was a server error while submitting your definition.');
         }
         // then ...
         const definitionId = (_a = newDef === null || newDef === void 0 ? void 0 : newDef.data) === null || _a === void 0 ? void 0 : _a.definitionId;
