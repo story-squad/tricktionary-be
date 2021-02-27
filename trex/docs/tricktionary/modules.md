@@ -7,6 +7,7 @@
 ### Modules
 
 - [common](modules/common.md)
+- [crontab](modules/crontab.md)
 - [handleDisconnection](modules/handledisconnection.md)
 - [handleErrorMessage](modules/handleerrormessage.md)
 - [handleGuess](modules/handleguess.md)

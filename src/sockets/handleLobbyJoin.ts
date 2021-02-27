@@ -8,7 +8,7 @@ import {
 } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
 
-import { schedulePulseCheck } from "../crontab";
+import { schedulePulseCheck } from "./crontab";
 
 
 /**

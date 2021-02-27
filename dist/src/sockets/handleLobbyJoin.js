@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
-const crontab_1 = require("../crontab");
+const crontab_1 = require("./crontab");
 /**
  * Connects the player with the active game being played.
  *
