@@ -6,6 +6,18 @@ const DAY_OF_MONTH = "*";
 const MONTH = "*";
 const DAY_OF_WEEK = "*";
 
+/**
+ * a Tricktionary scheduled-task
+ * 
+ * @name - semantic name of this task; ie "pulse check"
+ * @lobbyCode - location code of game requiring this task
+ * @limit - maximum number of times to run this task
+ * @count - number of times this task has been run
+ * @created - timestamp when this task was created
+ * @last - timestamp when this task was last run
+ * @task - cron.ScheduledTask
+ *
+ */
 interface cronTask {
   name: string; // name of task
   lobbyCode: string; // lobbyCode
@@ -16,13 +28,20 @@ interface cronTask {
   task: cron.ScheduledTask;
 }
 
+/**
+ * Tricktionary cronTask memo; indexed by lobbyCode
+ */
 interface cronTaskIndex {
   [key: string]: cronTask;
 }
 
+
 const lobbyTasks: cronTaskIndex = {};
 /**
  * schedule a 'pulse check' for re-connected players in this game (lobbyCode)
+ *
+ * creates a Tricktionary scheduled-task
+ *
  */
 function schedulePulseCheck(
   io: any,
@@ -33,6 +52,7 @@ function schedulePulseCheck(
   // check to see if this task is already running.
   const pulseCheck = `*/2 * ${HOURS} ${DAY_OF_MONTH} ${MONTH} ${DAY_OF_WEEK}`;
   let scheduledTask: cronTask;
+
   if (lobbyTasks[lobbyCode]) {
     // we have a task running already, get it.
     scheduledTask = lobbyTasks[lobbyCode];
@@ -101,7 +121,10 @@ function startScheduledTask(lobbyCode: string) {
     console.log(err.message);
   }
 }
-
+/**
+ * @returns
+ * a Tricktionary scheduled-task
+ */
 function getScheduledTask(lobbyCode: string) {
   return lobbyTasks[lobbyCode];
 }
@@ -111,5 +134,8 @@ export {
   startScheduledTask,
   stopScheduledTask,
   destroyScheduledTask,
-  getScheduledTask
+  getScheduledTask,
+  cronTask,
+  cronTaskIndex,
+  lobbyTasks
 };
