@@ -4,9 +4,9 @@ import {
 } from "./common";
 
 /**
- *
- * Allow the current host to synchronize timers
- *
+ * 
+ * emit ("synchronize", seconds) to all *connected* players; excluding the current host
+ * 
  * @param io (socketio)
  * @param socket (socketio)
  * @param lobbyCode key-string

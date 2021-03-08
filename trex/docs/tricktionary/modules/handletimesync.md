@@ -14,7 +14,7 @@
 
 ▸ **default**(`io`: *any*, `socket`: *any*, `lobbies`: *any*, `seconds`: *number*): *Promise*<void\>
 
-Allow the current host to synchronize timers
+emit ("synchronize", seconds) to all *connected* players; excluding the current host
 
 #### Parameters:
 
@@ -27,4 +27,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleTimeSync.ts:13](https://github.com/story-squad/tricktionary-be/blob/9729e8f/src/sockets/handleTimeSync.ts#L13)
+Defined in: [handleTimeSync.ts:16](https://github.com/story-squad/tricktionary-be/blob/278c839/src/sockets/handleTimeSync.ts#L16)
