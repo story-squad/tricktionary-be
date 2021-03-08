@@ -1,6 +1,7 @@
 import { localAxios } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
 
+
 async function handleSubmitDefinition(
   io: any,
   socket: any,
@@ -8,6 +9,7 @@ async function handleSubmitDefinition(
   lobbyCode: any,
   lobbies: any
 ) {
+  const definitionEpoch = Date.now();// add a timestamp to the player for tie-breaking
   let newPlayer:any = await lobbies[lobbyCode].players.find((player:any) => player.id === socket.id);
   let numSubmitted:number = 0;
   // add new definition.
@@ -22,7 +24,7 @@ async function handleSubmitDefinition(
   }
   // then ...
   const definitionId = newDef?.data?.definitionId;
-  newPlayer = {...newPlayer, definitionId }; // store definition id
+  newPlayer = {...newPlayer, definitionId, definitionEpoch }; // store definition id
   // update & count number of player submissions
   lobbies[lobbyCode].players = lobbies[lobbyCode].players.map((player:any) =>{
     if (player.definition && player.id !== newPlayer.id) {
