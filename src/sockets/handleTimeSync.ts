@@ -1,9 +1,12 @@
-import { playerIsHost, privateMessage, whereAmI } from "./common";
+import {
+  playerIsHost,
+  whereAmI,
+} from "./common";
 
 /**
- *
- * Allow the current host to synchronize timers
- *
+ * 
+ * emit ("synchronize", seconds) to all *connected* players; excluding the current host
+ * 
  * @param io (socketio)
  * @param socket (socketio)
  * @param lobbyCode key-string
@@ -16,14 +19,19 @@ async function handleTimeSync(
   lobbies: any,
   seconds: number
 ) {
-  const lobbyCode = whereAmI(socket);
+  const lobbyCode: string = whereAmI(socket) || "";
   const checkIfHost = playerIsHost(socket, lobbyCode, lobbies);
   if (checkIfHost.ok) {
     // console.log(`synchronize timers: ${seconds}`);
-    io.to(lobbyCode).emit("synchronize", seconds);
+    const host = lobbies[lobbyCode].host;
+    lobbies[lobbyCode].players
+      .filter((p: any) => p.id !== host && p.connected)
+      .forEach((player: any) => {
+        // console.log(player.username);
+        io.to(player.id).emit("synchronize", seconds);
+      });
   } else {
-    console.log(`NOT HOST: ${socket.id}`);
-    privateMessage(io, socket, "error", "unauthorized call, punk!");
+    console.log('not host!') // what message should be sent?
   }
 }
 

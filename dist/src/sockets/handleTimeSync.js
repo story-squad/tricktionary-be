@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 /**
  *
- * Allow the current host to synchronize timers
+ * emit ("synchronize", seconds) to all *connected* players; excluding the current host
  *
  * @param io (socketio)
  * @param socket (socketio)
@@ -22,15 +22,20 @@ const common_1 = require("./common");
  */
 function handleTimeSync(io, socket, lobbies, seconds) {
     return __awaiter(this, void 0, void 0, function* () {
-        const lobbyCode = common_1.whereAmI(socket);
+        const lobbyCode = common_1.whereAmI(socket) || "";
         const checkIfHost = common_1.playerIsHost(socket, lobbyCode, lobbies);
         if (checkIfHost.ok) {
             // console.log(`synchronize timers: ${seconds}`);
-            io.to(lobbyCode).emit("synchronize", seconds);
+            const host = lobbies[lobbyCode].host;
+            lobbies[lobbyCode].players
+                .filter((p) => p.id !== host && p.connected)
+                .forEach((player) => {
+                // console.log(player.username);
+                io.to(player.id).emit("synchronize", seconds);
+            });
         }
         else {
-            console.log(`NOT HOST: ${socket.id}`);
-            common_1.privateMessage(io, socket, "error", "unauthorized call, punk!");
+            console.log('not host!'); // what message should be sent?
         }
     });
 }
