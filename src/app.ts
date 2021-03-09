@@ -51,6 +51,7 @@ api.use("/api/game", apiRoutes.game);
 api.use("/api/played", apiRoutes.played);
 api.use("/api/choice", apiRoutes.choice);
 api.use("/api/payments", apiRoutes.payment);
+api.use("/api/member", apiRoutes.member);
 
 // web sockets
 const socketApp = createServer(api);
