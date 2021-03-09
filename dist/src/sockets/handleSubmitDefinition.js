@@ -17,6 +17,7 @@ const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
 function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
+        const definitionEpoch = Date.now(); // add a timestamp to the player for tie-breaking
         let newPlayer = yield lobbies[lobbyCode].players.find((player) => player.id === socket.id);
         let numSubmitted = 0;
         // add new definition.
@@ -32,7 +33,7 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
         }
         // then ...
         const definitionId = (_a = newDef === null || newDef === void 0 ? void 0 : newDef.data) === null || _a === void 0 ? void 0 : _a.definitionId;
-        newPlayer = Object.assign(Object.assign({}, newPlayer), { definitionId }); // store definition id
+        newPlayer = Object.assign(Object.assign({}, newPlayer), { definitionId, definitionEpoch }); // store definition id
         // update & count number of player submissions
         lobbies[lobbyCode].players = lobbies[lobbyCode].players.map((player) => {
             if (player.definition && player.id !== newPlayer.id) {

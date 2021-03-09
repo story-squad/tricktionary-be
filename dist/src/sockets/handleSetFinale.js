@@ -37,8 +37,28 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
             handleErrorMessage_1.default(io, socket, 2005, "You're not the host and can not end the game");
         }
         const game_id = lobbies[lobbyCode].game_id;
-        // get the first 3 players, sorted by points in descending order.
-        const topThree = lobbies[lobbyCode].players
+        const finaleTime = Date.now();
+        /**
+         * extra points, for submitting early, are used to determine leaderboard stats
+         */
+        const withEpochPoints = lobbies[lobbyCode].players.map((p) => {
+            /**
+             * 1 + the difference between now and when the player submitted their definition
+             *
+             * *or*
+             *
+             * a random number between 0 and 2
+             */
+            const timeDelta = p.definitionEpoch
+                ? Math.ceil((finaleTime - p.definitionEpoch) / 1000) + 1
+                : Math.random() * 2;
+            /**
+             * player points + timeDelta
+             */
+            const points = p.points + timeDelta;
+            return Object.assign(Object.assign({}, p), { points });
+        });
+        const topThree = withEpochPoints
             .sort(function (a, b) {
             return b.points - a.points;
         })
@@ -63,7 +83,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                 return b.votes - a.votes;
             })[0].round_id;
             mvd = yield common_1.localAxios.get(`/api/definitions/user/${firstPlace.id}/round/${mostVotedRound}`);
-            results.push(finalFormat(mvd.data.definition));
+            results.push(finalFormat(Object.assign(Object.assign({}, mvd.data.definition), { user_id: firstPlace.id })));
         }
         catch (err) {
             console.log(err.message);
@@ -77,7 +97,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                     return b.votes - a.votes;
                 })[0].round_id;
                 mvd = yield common_1.localAxios.get(`/api/definitions/user/${secondPlace.id}/round/${mostVotedRound}`);
-                results.push(finalFormat(mvd.data.definition));
+                results.push(finalFormat(Object.assign(Object.assign({}, mvd.data.definition), { user_id: secondPlace.id })));
             }
         }
         catch (err) {
@@ -92,7 +112,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                     return b.votes - a.votes;
                 })[0].round_id;
                 mvd = yield common_1.localAxios.get(`/api/definitions/user/${thirdPlace.id}/round/${mostVotedRound}`);
-                results.push(finalFormat(mvd.data.definition));
+                results.push(finalFormat(Object.assign(Object.assign({}, mvd.data.definition), { user_id: thirdPlace.id })));
             }
         }
         catch (err) {
