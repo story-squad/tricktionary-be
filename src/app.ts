@@ -2,28 +2,17 @@ import express from "express";
 import path from "path";
 import { createServer } from "http";
 import * as socketIO from "socket.io";
-import gameSocketHandler from "./sockets";
 import * as bodyParser from "body-parser";
 import helmet from "helmet";
 import cors from "cors";
-import wordRoutes from "./api/words/routes";
-import reactionRoutes from "./api/reactions/routes";
-import definitionReactionRoutes from "./api/definitionReactions/routes";
-import voteRoutes from "./api/votes/routes";
-import roundRoutes from "./api/rounds/routes";
-import userRoundRoutes from "./api/userRounds/routes";
-import definitionsRoutes from "./api/definitions/routes";
-import adminRoutes from "./api/admin/routes";
-import authRoutes from "./api/auth/routes";
-import playerRoutes from "./api/player/routes";
-import gameRoutes from "./api/game/routes";
-import playedRoutes from "./api/played/routes";
-import choiceRoutes from "./api/hostChoices/routes";
 
-// testing
-import cleverRoutes from "./api/clever/routes";
+import gameSocketHandler from "./sockets";
+import apiRoutes from "./api";
+
 import { log } from "./logger";
+
 log("Tricktionary");
+
 const api = express();
 const JSON_SIZE_LIMIT = "5mb";
 const lobbies: any = { DEADBEEF: [] };
@@ -48,21 +37,21 @@ api.get("/api", (req, res) =>
   res.status(200).json({ api: "𝜋", timestamp: Date.now() })
 );
 
-api.use("/api/words", wordRoutes);
-api.use("/api/definition-reactions", definitionReactionRoutes);
-api.use("/api/reactions", reactionRoutes);
-api.use("/api/votes", voteRoutes);
-api.use("/api/round", roundRoutes);
-api.use("/api/user-rounds", userRoundRoutes);
-api.use("/api/definitions", definitionsRoutes);
-api.use("/api/admin", adminRoutes);
-api.use("/api/auth", authRoutes);
-api.use("/api/player", playerRoutes);
-api.use("/api/game", gameRoutes);
-api.use("/api/played", playedRoutes);
-api.use("/api/choice", choiceRoutes);
-// testing
-api.use("/api/clever", cleverRoutes);
+api.use("/api/words", apiRoutes.word);
+api.use("/api/definition-reactions", apiRoutes.definitionReaction);
+api.use("/api/reactions", apiRoutes.reaction);
+api.use("/api/votes", apiRoutes.vote);
+api.use("/api/round", apiRoutes.round);
+api.use("/api/user-rounds", apiRoutes.userRound);
+api.use("/api/definitions", apiRoutes.definitions);
+api.use("/api/admin", apiRoutes.admin);
+api.use("/api/auth", apiRoutes.auth);
+api.use("/api/player", apiRoutes.player);
+api.use("/api/game", apiRoutes.game);
+api.use("/api/played", apiRoutes.played);
+api.use("/api/choice", apiRoutes.choice);
+api.use("/api/payments", apiRoutes.payment);
+api.use("/api/member", apiRoutes.member);
 
 // web sockets
 const socketApp = createServer(api);
