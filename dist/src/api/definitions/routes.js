@@ -33,15 +33,24 @@ router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(400).json({ error: "failed to get definition Id" });
     }
 }));
+/**
+ * @returns { user_id, round_id, definition }
+ */
 router.get("/user/:uid/round/:rid", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user_id = req.params.uid;
     const round_id = Number(req.params.rid);
     let definition;
     try {
+        // player's definition this round
         definition = yield model_1.default.byUserInRound(user_id, round_id);
     }
     catch (err) {
-        res.status(400).json({ message: err.message });
+        // a blank definition object
+        definition = {
+            user_id,
+            round_id,
+            definition: ""
+        };
     }
     res.status(200).json({
         user_id,

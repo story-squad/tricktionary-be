@@ -1,5 +1,6 @@
 import { Router } from "express";
 import Definitions from "./model";
+import { DefinitionType } from "./utils";
 
 const router = Router();
 
@@ -20,14 +21,23 @@ router.post("/new", async (req, res) => {
   }
 });
 
+/**
+ * @returns { user_id, round_id, definition }
+ */
 router.get("/user/:uid/round/:rid", async (req, res) => {
   const user_id = req.params.uid;
   const round_id = Number(req.params.rid);
-  let definition;
+  let definition: DefinitionType;
   try {
+    // player's definition this round
     definition = await Definitions.byUserInRound(user_id, round_id);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    // a blank definition object
+    definition = {
+      user_id,
+      round_id,
+      definition: ""
+    };
   }
   res.status(200).json({
     user_id,
