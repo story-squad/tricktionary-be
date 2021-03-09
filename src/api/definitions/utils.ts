@@ -1,12 +1,18 @@
 type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 
-interface Definition {
+export interface DefinitionObject {
   user_id: string;
   definition: string | null;
   round_id: number;
 }
 
-export function validateDefinition(definitionObj: any): Result<Definition> {
+export type DefinitionType = {
+  user_id: string;
+  definition: string | null;
+  round_id: number;
+}
+
+export function validateDefinition(definitionObj: any): Result<DefinitionObject> {
   if (typeof definitionObj.user_id !== "string") {
     return {
       ok: false,
