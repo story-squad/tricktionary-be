@@ -39,8 +39,29 @@ async function handleSetFinale(
     );
   }
   const game_id = lobbies[lobbyCode].game_id;
-  // get the first 3 players, sorted by points in descending order.
-  const topThree = lobbies[lobbyCode].players
+  const finaleTime = Date.now();
+  /**
+   * extra points, for submitting early, are used to determine leaderboard stats
+   */
+  const withEpochPoints = lobbies[lobbyCode].players.map((p: any) => {
+    /**
+     * 1 + the difference between now and when the player submitted their definition
+     *
+     * *or*
+     *
+     * a random number between 0 and 2
+     */
+    const timeDelta = p.definitionEpoch
+      ? Math.ceil((finaleTime - p.definitionEpoch) / 1000) + 1
+      : Math.random() * 2;
+    /**
+     * player points + timeDelta
+     */
+    const points = p.points + timeDelta;
+    return { ...p, points };
+  });
+
+  const topThree = withEpochPoints
     .sort(function (a: any, b: any) {
       return b.points - a.points;
     })
@@ -50,6 +71,7 @@ async function handleSetFinale(
   const firstPlace = topThree[0];
   const secondPlace = topThree[1] || undefined;
   const thirdPlace = topThree[2] || undefined;
+
   // 2) await, at the top level, the result of asynchronous operations
   let mostVotedRound;
   let mvd;
@@ -70,7 +92,9 @@ async function handleSetFinale(
     mvd = await localAxios.get(
       `/api/definitions/user/${firstPlace.id}/round/${mostVotedRound}`
     );
-    results.push(finalFormat(mvd.data.definition));
+    results.push(
+      finalFormat({ ...mvd.data.definition, user_id: firstPlace.id })
+    );
   } catch (err) {
     console.log(err.message);
   }
@@ -87,7 +111,9 @@ async function handleSetFinale(
       mvd = await localAxios.get(
         `/api/definitions/user/${secondPlace.id}/round/${mostVotedRound}`
       );
-      results.push(finalFormat(mvd.data.definition));
+      results.push(
+        finalFormat({ ...mvd.data.definition, user_id: secondPlace.id })
+      );
     }
   } catch (err) {
     console.log(err.message);
@@ -105,7 +131,9 @@ async function handleSetFinale(
       mvd = await localAxios.get(
         `/api/definitions/user/${thirdPlace.id}/round/${mostVotedRound}`
       );
-      results.push(finalFormat(mvd.data.definition));
+      results.push(
+        finalFormat({ ...mvd.data.definition, user_id: thirdPlace.id })
+      );
     }
   } catch (err) {
     console.log(err.message);
