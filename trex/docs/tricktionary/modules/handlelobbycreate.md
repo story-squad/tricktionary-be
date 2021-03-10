@@ -25,4 +25,4 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleLobbyCreate.ts:9](https://github.com/story-squad/tricktionary-be/blob/018b981/src/sockets/handleLobbyCreate.ts#L9)
+Defined in: [handleLobbyCreate.ts:9](https://github.com/story-squad/tricktionary-be/blob/95be120/src/sockets/handleLobbyCreate.ts#L9)
