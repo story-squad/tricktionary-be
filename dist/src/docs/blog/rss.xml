@@ -8,13 +8,6 @@
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <item>
-            <title><![CDATA[Futuristic Dragon]]></title>
-            <link>https://dev.tricktionary.monster/help/blog/dragons</link>
-            <guid>dragons</guid>
-            <pubDate>Sun, 14 Feb 2021 00:00:00 GMT</pubDate>
-            <description><![CDATA[Happy Tricktionary Day!]]></description>
-        </item>
-        <item>
             <title><![CDATA[Cosmic Dancer]]></title>
             <link>https://dev.tricktionary.monster/help/blog/Welcome</link>
             <guid>Welcome</guid>
@@ -22,9 +15,9 @@
             <description><![CDATA[Happy Tricktionary Day!]]></description>
         </item>
         <item>
-            <title><![CDATA[Take on me]]></title>
-            <link>https://dev.tricktionary.monster/help/blog/aha</link>
-            <guid>aha</guid>
+            <title><![CDATA[Futuristic Dragon]]></title>
+            <link>https://dev.tricktionary.monster/help/blog/dragons</link>
+            <guid>dragons</guid>
             <pubDate>Sun, 14 Feb 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Happy Tricktionary Day!]]></description>
         </item>
@@ -32,6 +25,13 @@
             <title><![CDATA[Don't You (Forget About Me)]]></title>
             <link>https://dev.tricktionary.monster/help/blog/simple</link>
             <guid>simple</guid>
+            <pubDate>Sun, 14 Feb 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Happy Tricktionary Day!]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Take on me]]></title>
+            <link>https://dev.tricktionary.monster/help/blog/aha</link>
+            <guid>aha</guid>
             <pubDate>Sun, 14 Feb 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Happy Tricktionary Day!]]></description>
         </item>

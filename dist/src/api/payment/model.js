@@ -42,7 +42,7 @@ function update(payment_id, external) {
     return __awaiter(this, void 0, void 0, function* () {
         // update the payment with external payment provider detail
         try {
-            yield dbConfig_1.default("Payment").update({ external }).where({ payment_id });
+            yield dbConfig_1.default("Payment").update({ external }).where({ id: payment_id });
         }
         catch (err) {
             return { ok: false, message: err.message };

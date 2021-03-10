@@ -1,23 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -29,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const bodyParser = __importStar(require("body-parser"));
 const StripePayments_1 = require("./StripePayments");
 const model_1 = require("./model");
 const router = express_1.Router();
@@ -78,7 +58,7 @@ router.post("/checkout", (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.status(400).json({ error: result.message });
     }
     // payment record id indicates a valid member & a valid item.
-    payment_id = result.payment_id || "";
+    payment_id = result.payment_id ? result.payment_id[0] : "";
     if (payment_id.length === 0) {
         res.status(400).json({ error: "error while adding record" });
     }
@@ -120,8 +100,11 @@ function createPaymentIntent(payment_id, total) {
 // Configure your webhook in the stripe developer dashboard:
 // https://dashboard.stripe.com/test/webhooks
 // using body-parser to retrieve the raw body as a buffer.
-router.post("/webhook", bodyParser.raw({ type: "application/json" }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/webhook", 
+// bodyParser.raw({ type: "application/json" }),
+(req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const stripeBody = req.body;
+    // todo: fix 'Webhook signature verification failed'
     const stripeHeaders = req.headers["stripe-signature"] || "";
     const stripeSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
     // Retrieve the event by verifying the signature using the raw body and secret.
