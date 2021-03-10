@@ -25,7 +25,7 @@ async function add(member_id: string, amount: number) {
 async function update(payment_id: string, external: string) {
   // update the payment with external payment provider detail
   try {
-    await db("Payment").update({ external }).where({ payment_id });
+    await db("Payment").update({ external }).where({ id: payment_id });
   } catch (err) {
     return { ok: false, message: err.message };
   }

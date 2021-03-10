@@ -62,7 +62,7 @@ router.post("/checkout", async (req, res) => {
     res.status(400).json({ error: result.message });
   }
   // payment record id indicates a valid member & a valid item.
-  payment_id = result.payment_id || "";
+  payment_id = result.payment_id ? result.payment_id[0] : "";
   if (payment_id.length === 0) {
     res.status(400).json({ error: "error while adding record" });
   }
@@ -105,9 +105,10 @@ async function createPaymentIntent(payment_id: string, total: number) {
 // using body-parser to retrieve the raw body as a buffer.
 router.post(
   "/webhook",
-  bodyParser.raw({ type: "application/json" }),
+  // bodyParser.raw({ type: "application/json" }),
   async (req, res): Promise<void> => {
     const stripeBody = req.body;
+    // todo: fix 'Webhook signature verification failed'
     const stripeHeaders = req.headers["stripe-signature"] || "";
     const stripeSecret: string = process.env.STRIPE_WEBHOOK_SECRET || "";
     // Retrieve the event by verifying the signature using the raw body and secret.
