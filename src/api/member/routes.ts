@@ -24,4 +24,6 @@ router.post("/new", async (req, res) => {
 
 // todo: findby email, findby member_id
 
+// todo: integrate OktaProfile
+
 export default router;
