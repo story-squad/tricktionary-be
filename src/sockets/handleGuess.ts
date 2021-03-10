@@ -10,25 +10,23 @@ export async function handleArrayOfGuesses(
 ) {
   const lobby = lobbies[lobbyCode];
   const roundId = lobby.roundId;
-  console.log('vote & calculate scores');
+  console.log("vote & calculate scores");
   guesses.forEach(async (g) => {
     try {
-      localAxios.post("/api/votes", {
+      await localAxios.post("/api/votes", {
         userID: g.player,
         definitionID: g.guess,
         roundID: roundId
-      })
-      .then(() => {
-        lobby.players.forEach((player: any) => {
-          if (g.guess === 0 && player.id === g.player) {
-            player.points+=VALUE_OF_TRUTH; // +1 if you voted for the provided definition.
-          } else if (g.guess === player.definitionId && g.player !== player.id) {
-            player.points+=VALUE_OF_BLUFF; // +1 if someone else voted for your definition.
-          }
-        });
-      })
+      });
+      lobby.players.forEach((player: any) => {
+        if (g.guess === 0 && player.id === g.player) {
+          player.points += VALUE_OF_TRUTH; // +1 if you voted for the provided definition.
+        } else if (g.guess === player.definitionId && g.player !== player.id) {
+          player.points += VALUE_OF_BLUFF; // +1 if someone else voted for your definition.
+        }
+      });
     } catch (err) {
-      console.log("error: handleArrayOfGuesses, ${err}");
+      console.log(`error: handleArrayOfGuesses, ${err.message}`);
     }
   });
   try {
@@ -38,10 +36,15 @@ export async function handleArrayOfGuesses(
     }
   } catch (err) {
     console.log("error while ending round!");
-    handleErrorMessage(io, socket, 2003, 'there was a server error while ending the round');
+    handleErrorMessage(
+      io,
+      socket,
+      2003,
+      "there was a server error while ending the round"
+    );
     return;
   }
-  console.log('changing phase');
+  console.log("changing phase");
   lobbies[lobbyCode].phase = "RESULTS";
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
 }
