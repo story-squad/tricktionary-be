@@ -177,6 +177,10 @@ io.on("connection", (socket) => {
   socket.on("set finale", (lobbyCode: string) => {
     gameSocketHandler.handleSetFinale(io, socket, lobbyCode, lobbies);
   });
+
+  socket.on("send reaction", (definitionID: number, reactionID: number) => {
+    gameSocketHandler.handleEmojiSmash(io, socket, lobbies, definitionID, reactionID)
+  })
 });
 
 export { socketApp };
