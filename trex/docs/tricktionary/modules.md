@@ -9,6 +9,7 @@
 - [common](modules/common.md)
 - [crontab](modules/crontab.md)
 - [handleDisconnection](modules/handledisconnection.md)
+- [handleEmojiSmash](modules/handleemojismash.md)
 - [handleErrorMessage](modules/handleerrormessage.md)
 - [handleGuess](modules/handleguess.md)
 - [handleLobbyCreate](modules/handlelobbycreate.md)

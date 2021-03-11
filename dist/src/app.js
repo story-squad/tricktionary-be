@@ -134,5 +134,8 @@ io.on("connection", (socket) => {
     socket.on("set finale", (lobbyCode) => {
         sockets_1.default.handleSetFinale(io, socket, lobbyCode, lobbies);
     });
+    socket.on("send reaction", (definitionID, reactionID) => {
+        sockets_1.default.handleEmojiSmash(io, socket, lobbies, definitionID, reactionID);
+    });
 });
 //# sourceMappingURL=app.js.map
