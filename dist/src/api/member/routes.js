@@ -29,5 +29,6 @@ router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     res.status(200).json({ member_id: (createMember === null || createMember === void 0 ? void 0 : createMember.member_id) || member_id });
 }));
 // todo: findby email, findby member_id
+// todo: integrate OktaProfile
 exports.default = router;
 //# sourceMappingURL=routes.js.map
