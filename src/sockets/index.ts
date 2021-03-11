@@ -17,6 +17,7 @@ import handleMessageHost from "./handleMessageHost";
 import handleMessagePlayer from "./handleMessagePlayer";
 import handleRevealResults from "./handleRevealResults";
 import handleSetFinale from "./handleSetFinale";
+import handleEmojiSmash from "./handleEmojiSmash";
 
 export default {
   handleLobbyLeave,
@@ -37,5 +38,6 @@ export default {
   handleMessageHost,
   handleMessagePlayer,
   handleRevealResults,
-  handleSetFinale
+  handleSetFinale,
+  handleEmojiSmash
 };
