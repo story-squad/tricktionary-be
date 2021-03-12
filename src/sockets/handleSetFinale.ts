@@ -83,7 +83,8 @@ async function handleSetFinale(
   };
   function finalFormat(defRecord: any): topThreeListItem {
     const { user_id, definition, def_word } = defRecord;
-    const word = def_word.word.word;
+    const { word } = def_word;
+    console.log({ user_id, definition, word })
     return { user_id, definition, word };
   }
 
@@ -109,8 +110,8 @@ async function handleSetFinale(
         `/api/definitions/user/${result.id}/round/${mvr}`
       );
       r = await localAxios.get(`/api/round/id/${mvr}`);
-      wid = r.data.word_id;
-      rWord = await localAxios.get(`/api/word/id/${wid}`);
+      wid = r.data.round.word_id;
+      rWord = await localAxios.get(`/api/words/id/${wid}`);
       def_word = rWord.data.word;
     } catch (err) {
       console.log(err.message);
@@ -123,6 +124,7 @@ async function handleSetFinale(
     const firstPlaceResult = await getDef(firstPlace.id, game_id);
     results.push({ ...firstPlaceResult });
   } catch (err) {
+    console.log('error getting 1st place')
     console.log(err.message);
   }
   try {
@@ -131,12 +133,14 @@ async function handleSetFinale(
       results.push({ ...secondPlaceResult });
     }
   } catch (err) {
+    console.log('error getting second place')
     console.log(err.message);
   }
   try {
     const thirdPlaceResult = await getDef(thirdPlace.id, game_id);
     results.push({ ...thirdPlaceResult });
   } catch (err) {
+    console.log('error getting third place')
     console.log(err.message);
   }
   // add results to game-data
