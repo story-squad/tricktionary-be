@@ -76,71 +76,74 @@ async function handleSetFinale(
   let mostVotedRound;
   let mvd;
   const results = [];
-  function finalFormat(defRecord: any) {
-    const { user_id, definition } = defRecord;
-    return { user_id, definition };
+  type topThreeListItem = {
+    user_id: string;
+    definition: string;
+    word: string;
+  };
+  function finalFormat(defRecord: any): topThreeListItem {
+    const { user_id, definition, def_word } = defRecord;
+    const word = def_word.word.word;
+    return { user_id, definition, word };
   }
-  // get most voted definition, firstPlace
+
+  async function getDef(user_id: string, game_id: string) {
+    let result: any = { id: user_id, game: game_id };
+    let mvr: any[];
+    let mvd: any;
+    let r: any;
+    let wid: number;
+    let rWord: any;
+    let def_word: any;
+    try {
+      let p = await localAxios.get(
+        `/api/user-rounds/user/${result.id}/game/${result.game}`
+      );
+      result["user_rounds"] = p.data.user_rounds;
+      // most voted round
+      mvr = result.user_rounds.sort(function (a: any, b: any) {
+        return b.votes - a.votes;
+      })[0].round_id;
+      // most voted definition
+      mvd = await localAxios.get(
+        `/api/definitions/user/${result.id}/round/${mvr}`
+      );
+      r = await localAxios.get(`/api/round/id/${mvr}`);
+      wid = r.data.word_id;
+      rWord = await localAxios.get(`/api/word/id/${wid}`);
+      def_word = rWord.data.word;
+    } catch (err) {
+      console.log(err.message);
+      return;
+    }
+    return finalFormat({ ...mvd.data.definition, user_id, def_word });
+  }
+  // get most voted definition(s)
   try {
-    let fp = await localAxios.get(
-      `/api/user-rounds/user/${firstPlace.id}/game/${game_id}`
-    );
-    firstPlace["user_rounds"] = fp.data.user_rounds;
-    mostVotedRound = firstPlace.user_rounds.sort(function (a: any, b: any) {
-      return b.votes - a.votes;
-    })[0].round_id;
-    mvd = await localAxios.get(
-      `/api/definitions/user/${firstPlace.id}/round/${mostVotedRound}`
-    );
-    results.push(
-      finalFormat({ ...mvd.data.definition, user_id: firstPlace.id })
-    );
+    const firstPlaceResult = await getDef(firstPlace.id, game_id);
+    results.push({ ...firstPlaceResult });
   } catch (err) {
     console.log(err.message);
   }
-  // get most voted definition, secondPlace
   try {
     if (secondPlace) {
-      let sp = await localAxios.get(
-        `/api/user-rounds/user/${secondPlace.id}/game/${game_id}`
-      );
-      secondPlace["user_rounds"] = sp.data.user_rounds;
-      mostVotedRound = secondPlace.user_rounds.sort(function (a: any, b: any) {
-        return b.votes - a.votes;
-      })[0].round_id;
-      mvd = await localAxios.get(
-        `/api/definitions/user/${secondPlace.id}/round/${mostVotedRound}`
-      );
-      results.push(
-        finalFormat({ ...mvd.data.definition, user_id: secondPlace.id })
-      );
+      const secondPlaceResult = await getDef(secondPlace.id, game_id);
+      results.push({ ...secondPlaceResult });
     }
   } catch (err) {
     console.log(err.message);
   }
-  // get most voted definition, thirdPlace
   try {
-    if (thirdPlace) {
-      let tp = await localAxios.get(
-        `/api/user-rounds/user/${thirdPlace.id}/game/${game_id}`
-      );
-      thirdPlace["user_rounds"] = tp.data.user_rounds;
-      mostVotedRound = thirdPlace.user_rounds.sort(function (a: any, b: any) {
-        return b.votes - a.votes;
-      })[0].round_id;
-      mvd = await localAxios.get(
-        `/api/definitions/user/${thirdPlace.id}/round/${mostVotedRound}`
-      );
-      results.push(
-        finalFormat({ ...mvd.data.definition, user_id: thirdPlace.id })
-      );
-    }
+    const thirdPlaceResult = await getDef(thirdPlace.id, game_id);
+    results.push({ ...thirdPlaceResult });
   } catch (err) {
     console.log(err.message);
   }
+  // add results to game-data
   lobbies[lobbyCode].topThree = results;
-  // console.log(results);
+  // change phase
   lobbies[lobbyCode].phase = "FINALE";
+  // update players
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode], results);
 }
 
