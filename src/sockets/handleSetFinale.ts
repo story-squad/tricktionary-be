@@ -84,7 +84,7 @@ async function handleSetFinale(
   function finalFormat(defRecord: any): topThreeListItem {
     const { user_id, definition, def_word } = defRecord;
     const { word } = def_word;
-    console.log({ user_id, definition, word })
+    console.log({ user_id, definition, word });
     return { user_id, definition, word };
   }
 
@@ -124,24 +124,26 @@ async function handleSetFinale(
     const firstPlaceResult = await getDef(firstPlace.id, game_id);
     results.push({ ...firstPlaceResult });
   } catch (err) {
-    console.log('error getting 1st place')
+    console.log("error getting 1st place");
     console.log(err.message);
   }
-  try {
-    if (secondPlace) {
+  if (secondPlace) {
+    try {
       const secondPlaceResult = await getDef(secondPlace.id, game_id);
       results.push({ ...secondPlaceResult });
+    } catch (err) {
+      console.log("error getting second place");
+      console.log(err.message);
     }
-  } catch (err) {
-    console.log('error getting second place')
-    console.log(err.message);
   }
-  try {
-    const thirdPlaceResult = await getDef(thirdPlace.id, game_id);
-    results.push({ ...thirdPlaceResult });
-  } catch (err) {
-    console.log('error getting third place')
-    console.log(err.message);
+  if (thirdPlace) {
+    try {
+      const thirdPlaceResult = await getDef(thirdPlace.id, game_id);
+      results.push({ ...thirdPlaceResult });
+    } catch (err) {
+      console.log("error getting third place");
+      console.log(err.message);
+    }
   }
   // add results to game-data
   lobbies[lobbyCode].topThree = results;
