@@ -145,10 +145,12 @@ async function handleSetFinale(
       console.log(err.message);
     }
   }
-  // add results to game-data
-  lobbies[lobbyCode].topThree = results;
-  // change phase
-  lobbies[lobbyCode].phase = "FINALE";
+  // add results to game-data & change phase
+  lobbies[lobbyCode] = {
+    ...lobbies[lobbyCode],
+    topThree: results,
+    phase: "FINALE"
+  };
   // update players
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode], results);
 }
