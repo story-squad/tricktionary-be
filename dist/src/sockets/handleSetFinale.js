@@ -72,55 +72,73 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
         let mvd;
         const results = [];
         function finalFormat(defRecord) {
-            const { user_id, definition } = defRecord;
-            return { user_id, definition };
+            const { user_id, definition, def_word } = defRecord;
+            const { word } = def_word;
+            console.log({ user_id, definition, word });
+            return { user_id, definition, word };
         }
-        // get most voted definition, firstPlace
+        function getDef(user_id, game_id) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let result = { id: user_id, game: game_id };
+                let mvr;
+                let mvd;
+                let r;
+                let wid;
+                let rWord;
+                let def_word;
+                try {
+                    let p = yield common_1.localAxios.get(`/api/user-rounds/user/${result.id}/game/${result.game}`);
+                    result["user_rounds"] = p.data.user_rounds;
+                    // most voted round
+                    mvr = result.user_rounds.sort(function (a, b) {
+                        return b.votes - a.votes;
+                    })[0].round_id;
+                    // most voted definition
+                    mvd = yield common_1.localAxios.get(`/api/definitions/user/${result.id}/round/${mvr}`);
+                    r = yield common_1.localAxios.get(`/api/round/id/${mvr}`);
+                    wid = r.data.round.word_id;
+                    rWord = yield common_1.localAxios.get(`/api/words/id/${wid}`);
+                    def_word = rWord.data.word;
+                }
+                catch (err) {
+                    console.log(err.message);
+                    return;
+                }
+                return finalFormat(Object.assign(Object.assign({}, mvd.data.definition), { user_id, def_word }));
+            });
+        }
+        // get most voted definition(s)
         try {
-            let fp = yield common_1.localAxios.get(`/api/user-rounds/user/${firstPlace.id}/game/${game_id}`);
-            firstPlace["user_rounds"] = fp.data.user_rounds;
-            mostVotedRound = firstPlace.user_rounds.sort(function (a, b) {
-                return b.votes - a.votes;
-            })[0].round_id;
-            mvd = yield common_1.localAxios.get(`/api/definitions/user/${firstPlace.id}/round/${mostVotedRound}`);
-            results.push(finalFormat(Object.assign(Object.assign({}, mvd.data.definition), { user_id: firstPlace.id })));
+            const firstPlaceResult = yield getDef(firstPlace.id, game_id);
+            results.push(Object.assign({}, firstPlaceResult));
         }
         catch (err) {
+            console.log("error getting 1st place");
             console.log(err.message);
         }
-        // get most voted definition, secondPlace
-        try {
-            if (secondPlace) {
-                let sp = yield common_1.localAxios.get(`/api/user-rounds/user/${secondPlace.id}/game/${game_id}`);
-                secondPlace["user_rounds"] = sp.data.user_rounds;
-                mostVotedRound = secondPlace.user_rounds.sort(function (a, b) {
-                    return b.votes - a.votes;
-                })[0].round_id;
-                mvd = yield common_1.localAxios.get(`/api/definitions/user/${secondPlace.id}/round/${mostVotedRound}`);
-                results.push(finalFormat(Object.assign(Object.assign({}, mvd.data.definition), { user_id: secondPlace.id })));
+        if (secondPlace) {
+            try {
+                const secondPlaceResult = yield getDef(secondPlace.id, game_id);
+                results.push(Object.assign({}, secondPlaceResult));
+            }
+            catch (err) {
+                console.log("error getting second place");
+                console.log(err.message);
             }
         }
-        catch (err) {
-            console.log(err.message);
-        }
-        // get most voted definition, thirdPlace
-        try {
-            if (thirdPlace) {
-                let tp = yield common_1.localAxios.get(`/api/user-rounds/user/${thirdPlace.id}/game/${game_id}`);
-                thirdPlace["user_rounds"] = tp.data.user_rounds;
-                mostVotedRound = thirdPlace.user_rounds.sort(function (a, b) {
-                    return b.votes - a.votes;
-                })[0].round_id;
-                mvd = yield common_1.localAxios.get(`/api/definitions/user/${thirdPlace.id}/round/${mostVotedRound}`);
-                results.push(finalFormat(Object.assign(Object.assign({}, mvd.data.definition), { user_id: thirdPlace.id })));
+        if (thirdPlace) {
+            try {
+                const thirdPlaceResult = yield getDef(thirdPlace.id, game_id);
+                results.push(Object.assign({}, thirdPlaceResult));
+            }
+            catch (err) {
+                console.log("error getting third place");
+                console.log(err.message);
             }
         }
-        catch (err) {
-            console.log(err.message);
-        }
-        lobbies[lobbyCode].topThree = results;
-        // console.log(results);
-        lobbies[lobbyCode].phase = "FINALE";
+        // add results to game-data & change phase
+        lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { topThree: results, phase: "FINALE" });
+        // update players
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode], results);
     });
 }
