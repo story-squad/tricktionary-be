@@ -35,10 +35,15 @@ exports.socketApp = void 0;
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const http_1 = require("http");
-const socketIO = __importStar(require("socket.io"));
 const bodyParser = __importStar(require("body-parser"));
 const helmet_1 = __importDefault(require("helmet"));
 const cors_1 = __importDefault(require("cors"));
+// socket.io
+const socket_io_1 = require("socket.io");
+// redis
+const socket_io_redis_1 = require("socket.io-redis");
+const redis_1 = require("redis");
+// Tricktionary
 const sockets_1 = __importDefault(require("./sockets"));
 const api_1 = __importDefault(require("./api"));
 const logger_1 = require("./logger");
@@ -74,7 +79,27 @@ api.use("/api/member", api_1.default.member);
 // web sockets
 const socketApp = http_1.createServer(api);
 exports.socketApp = socketApp;
-const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
+const io = new socket_io_1.Server(socketApp, { cors: { origin: "*" } });
+const redisHost = process.env.REDIS_HOST || "";
+const redisPort = process.env.REDIS_PORT || "6379";
+// use Redis (cache) when available
+if (redisHost.length > 0) {
+    // create Redis adapter
+    console.log('found REDIS_HOST, creating adapter.');
+    try {
+        const pubClient = new redis_1.RedisClient({
+            host: redisHost,
+            port: Number(redisPort)
+        });
+        const subClient = pubClient.duplicate();
+        io.adapter(socket_io_redis_1.createAdapter({ pubClient, subClient }));
+    }
+    catch (err) {
+        console.log("[error connecting Redis adapter!]");
+        console.log(err.message);
+    }
+}
+// events
 io.on("connection", (socket) => {
     // LOGIN
     socket.on("login", (token) => __awaiter(void 0, void 0, void 0, function* () {

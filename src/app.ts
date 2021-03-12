@@ -1,11 +1,15 @@
 import express from "express";
 import path from "path";
 import { createServer } from "http";
-import * as socketIO from "socket.io";
 import * as bodyParser from "body-parser";
 import helmet from "helmet";
 import cors from "cors";
-
+// socket.io
+import { Server } from "socket.io";
+// redis
+import { createAdapter } from "socket.io-redis";
+import { RedisClient } from "redis";
+// Tricktionary
 import gameSocketHandler from "./sockets";
 import apiRoutes from "./api";
 
@@ -55,8 +59,29 @@ api.use("/api/member", apiRoutes.member);
 
 // web sockets
 const socketApp = createServer(api);
-const io = new socketIO.Server(socketApp, { cors: { origin: "*" } });
+const io = new Server(socketApp, { cors: { origin: "*" } });
 
+const redisHost: string = process.env.REDIS_HOST || "";
+const redisPort: string = process.env.REDIS_PORT || "6379";
+
+// use Redis (cache) when available
+if (redisHost.length > 0) {
+  // create Redis adapter
+  console.log('found REDIS_HOST, creating adapter.')
+  try {
+    const pubClient = new RedisClient({
+      host: redisHost,
+      port: Number(redisPort)
+    });
+    const subClient = pubClient.duplicate();
+    io.adapter(createAdapter({ pubClient, subClient }));
+  } catch (err) {
+    console.log("[error connecting Redis adapter!]");
+    console.log(err.message);
+  }
+}
+
+// events
 io.on("connection", (socket) => {
   // LOGIN
   socket.on("login", async (token: string | undefined) => {
@@ -86,7 +111,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join lobby", (username: string, lobbyCode: string) => {
-    gameSocketHandler.handleLobbyJoin(io, socket, username, lobbyCode, lobbies, false);
+    gameSocketHandler.handleLobbyJoin(
+      io,
+      socket,
+      username,
+      lobbyCode,
+      lobbies,
+      false
+    );
   });
 
   socket.on(
@@ -179,8 +211,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("send reaction", (definitionID: number, reactionID: number) => {
-    gameSocketHandler.handleEmojiSmash(io, socket, lobbies, definitionID, reactionID)
-  })
+    gameSocketHandler.handleEmojiSmash(
+      io,
+      socket,
+      lobbies,
+      definitionID,
+      reactionID
+    );
+  });
 });
 
 export { socketApp };
