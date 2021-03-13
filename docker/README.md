@@ -2,17 +2,17 @@
 
 # A
 
-**copy the postgres.conf from the official docker container to a temporary folder**
+**copy the postgres.conf from the official docker container to the parent folder of this project**
 ```
-docker run -i --rm postgres cat /usr/share/postgresql/postgresql.conf.sample > /tmp/postgres.conf
+docker run -i --rm postgres cat /usr/share/postgresql/postgresql.conf.sample > ../../postgres.conf
 ```
 
 # B
-**run the postgres container**
+**run the containers**
 
-raise the image described by the docker-compse.yml file
+raise the images described by the docker-compse.yml file
 ```
-docker-compose up -d postgres
+docker-compose up -d
 ```
 
 # C

@@ -15,7 +15,16 @@ services:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
     volumes:
-      - /tmp/pgdata:/var/lib/postgresql/data
-      - /tmp/postgres.conf:/etc/postgresql/postgresql.conf
+      - ../../pgdata:/var/lib/postgresql/data
+      - ../../postgres.conf:/etc/postgresql/postgresql.conf
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     restart: always
+  redis:
+    container_name: redis-cache
+    image: redis
+    ports:
+      - '6379:6379'
+    networks:
+      backend:
+        aliases: 
+          - redis
