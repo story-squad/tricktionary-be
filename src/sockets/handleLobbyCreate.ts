@@ -1,4 +1,6 @@
 import randomizer from "randomatic";
+import { log } from "../logger";
+
 import {
   LC_LENGTH,
   localAxios,
@@ -21,7 +23,6 @@ async function handleLobbyCreate(
     const last_player = await localAxios.get(
       `/api/player/last-user-id/${socket.id}`
     );
-    // console.log(last_player.data);
     if (last_player.data.player && last_player.data.player.id) {
       // create the Game
       og_host = last_player.data.player.id;
@@ -31,10 +32,10 @@ async function handleLobbyCreate(
       }
     }
   } catch (err) {
-    console.log({ message: err.message });
+    log(err.message);
   }
-  console.log("LOBBY CREATED BY: ", og_host);
-  console.log("GAME : ", game_id);
+  log("LOBBY CREATED BY: " + og_host);
+  log("GAME : " + game_id);
   lobbies[lobbyCode] = {
     game_id,
     lobbyCode,
@@ -51,7 +52,7 @@ async function handleLobbyCreate(
   try {
     await updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode);
   } catch (err) {
-    console.log(err.message);
+    log(err.message);
   }
   privateMessage(io, socket, "welcome", socket.id);
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);

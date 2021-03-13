@@ -1,5 +1,6 @@
 import { localAxios, VALUE_OF_TRUTH, VALUE_OF_BLUFF } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
+import { log } from "../logger";
 
 export async function handleArrayOfGuesses(
   io: any,
@@ -10,13 +11,13 @@ export async function handleArrayOfGuesses(
 ) {
   const lobby = lobbies[lobbyCode];
   const roundId = lobby.roundId;
-  console.log("vote & calculate scores");
+  log(`vote & calculate scores, ${lobbyCode}`);
   guesses.forEach(async (g) => {
     try {
       await localAxios.post("/api/votes", {
         userID: g.player,
         definitionID: g.guess,
-        roundID: roundId
+        roundID: roundId,
       });
       lobby.players.forEach((player: any) => {
         if (g.guess === 0 && player.id === g.player) {
@@ -26,16 +27,16 @@ export async function handleArrayOfGuesses(
         }
       });
     } catch (err) {
-      console.log(`error: handleArrayOfGuesses, ${err.message}`);
+      log(`error: handleArrayOfGuesses, ${err.message}`);
     }
   });
   try {
     const newRound = await localAxios.post("/api/round/finish", { roundId });
     if (newRound.status === 200) {
-      console.log(`* end of round ${roundId}`);
+      log(`* end of round ${roundId}`);
     }
   } catch (err) {
-    console.log("error while ending round!");
+    log(`error while ending round!, ${lobbyCode}`);
     handleErrorMessage(
       io,
       socket,
@@ -44,7 +45,7 @@ export async function handleArrayOfGuesses(
     );
     return;
   }
-  console.log("changing phase");
+  log(`changing phase, ${lobbyCode}`);
   lobbies[lobbyCode].phase = "RESULTS";
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
 }

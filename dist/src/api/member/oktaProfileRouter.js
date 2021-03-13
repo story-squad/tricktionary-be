@@ -15,18 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const oktaRequired_1 = __importDefault(require("../middleware/oktaRequired"));
 const oktaProfileModel_1 = __importDefault(require("./oktaProfileModel"));
+const logger_1 = require("../../logger");
 const router = express_1.Router();
-router.get('/', oktaRequired_1.default, function (req, res) {
+router.get("/", oktaRequired_1.default, function (req, res) {
     oktaProfileModel_1.default.findAll()
         .then((profiles) => {
         res.status(200).json(profiles);
     })
         .catch((err) => {
-        console.log(err);
+        logger_1.log(err);
         res.status(500).json({ message: err.message });
     });
 });
-router.get('/:id', oktaRequired_1.default, function (req, res) {
+router.get("/:id", oktaRequired_1.default, function (req, res) {
     const id = String(req.params.id);
     oktaProfileModel_1.default.findById(id)
         .then((profile) => {
@@ -34,14 +35,14 @@ router.get('/:id', oktaRequired_1.default, function (req, res) {
             res.status(200).json(profile);
         }
         else {
-            res.status(404).json({ error: 'ProfileNotFound' });
+            res.status(404).json({ error: "ProfileNotFound" });
         }
     })
         .catch((err) => {
         res.status(500).json({ error: err.message });
     });
 });
-router.post('/', oktaRequired_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/", oktaRequired_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const profile = req.body;
     if (profile) {
         const id = profile.id || 0;
@@ -51,10 +52,10 @@ router.post('/', oktaRequired_1.default, (req, res) => __awaiter(void 0, void 0,
                     //profile not found so lets insert it
                     yield oktaProfileModel_1.default.create(profile).then((profile) => res
                         .status(200)
-                        .json({ message: 'profile created', profile: profile[0] }));
+                        .json({ message: "profile created", profile: profile[0] }));
                 }
                 else {
-                    res.status(400).json({ message: 'profile already exists' });
+                    res.status(400).json({ message: "profile already exists" });
                 }
             }));
         }
@@ -64,17 +65,19 @@ router.post('/', oktaRequired_1.default, (req, res) => __awaiter(void 0, void 0,
         }
     }
     else {
-        res.status(404).json({ message: 'Profile missing' });
+        res.status(404).json({ message: "Profile missing" });
     }
 }));
-router.put('/', oktaRequired_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put("/", oktaRequired_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const profile = req.body;
     if (profile) {
         const id = profile.id || 0;
         try {
             yield oktaProfileModel_1.default.findById(id).then(() => __awaiter(void 0, void 0, void 0, function* () {
                 const updated = yield oktaProfileModel_1.default.update(id, profile);
-                res.status(200).json({ message: 'profile updated', profile: updated[0] });
+                res
+                    .status(200)
+                    .json({ message: "profile updated", profile: updated[0] });
             }));
         }
         catch (e) {
@@ -83,10 +86,10 @@ router.put('/', oktaRequired_1.default, (req, res) => __awaiter(void 0, void 0, 
         }
     }
     else {
-        res.status(404).json({ message: 'Profile missing' });
+        res.status(404).json({ message: "Profile missing" });
     }
 }));
-router.delete('/:id', (req, res) => {
+router.delete("/:id", (req, res) => {
     const id = req.params.id;
     try {
         oktaProfileModel_1.default.findById(id).then((profile) => {

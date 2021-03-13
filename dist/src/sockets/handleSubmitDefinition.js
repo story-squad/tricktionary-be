@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
+const logger_1 = require("../logger");
 function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
@@ -25,11 +26,15 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
         try {
             newPlayer.definition = definition;
             numSubmitted++;
-            newDef = yield common_1.localAxios.post("/api/definitions/new", { playerId: newPlayer.id, definition, roundId: lobbies[lobbyCode].roundId });
+            newDef = yield common_1.localAxios.post("/api/definitions/new", {
+                playerId: newPlayer.id,
+                definition,
+                roundId: lobbies[lobbyCode].roundId,
+            });
         }
         catch (err) {
-            console.log("errror! handleSubmitDefinitions:22");
-            handleErrorMessage_1.default(io, socket, 2003, 'There was a server error while submitting your definition.');
+            logger_1.log("errror! handleSubmitDefinitions:22");
+            handleErrorMessage_1.default(io, socket, 2003, "There was a server error while submitting your definition.");
         }
         // then ...
         const definitionId = (_a = newDef === null || newDef === void 0 ? void 0 : newDef.data) === null || _a === void 0 ? void 0 : _a.definitionId;
@@ -39,12 +44,12 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
             if (player.definition && player.id !== newPlayer.id) {
                 numSubmitted++;
             }
-            return (player.id === newPlayer.id) ? newPlayer : player;
+            return player.id === newPlayer.id ? newPlayer : player;
         });
         if (!definitionId) {
-            console.log(newDef);
+            logger_1.log(newDef);
         }
-        console.log(`Definitions: ${numSubmitted}/${lobbies[lobbyCode].players.length}`);
+        logger_1.log(`Definitions: ${numSubmitted}/${lobbies[lobbyCode].players.length}`);
         if (numSubmitted === lobbies[lobbyCode].players.length) {
             lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { phase: "GUESSING" });
         }

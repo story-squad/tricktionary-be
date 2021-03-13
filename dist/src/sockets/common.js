@@ -33,11 +33,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.gameExists = exports.updatePlayerToken = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.localAxios = exports.LC_LENGTH = exports.VALUE_OF_TRUTH = exports.VALUE_OF_BLUFF = exports.MAX_PLAYERS = void 0;
 const GameSettings_1 = require("../GameSettings");
+const logger_1 = require("../logger");
 const axios_1 = __importDefault(require("axios"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const localAxios = axios_1.default.create({
-    baseURL: `${process.env.BASE_URL || "http://0.0.0.0"}:${process.env.PORT || 5000}`
+    baseURL: `${process.env.BASE_URL || "http://0.0.0.0"}:${process.env.PORT || 5000}`,
 });
 exports.localAxios = localAxios;
 localAxios.defaults.timeout = 10000;
@@ -84,10 +85,10 @@ function privateMessage(io, socket, listener, message) {
         try {
             const pid = socket.id;
             io.to(pid).emit(listener, message); // private message player
-            console.log(`${listener} message -> ${socket.id}`);
+            logger_1.log(`${listener} message -> ${socket.id}`);
         }
         catch (err) {
-            console.log({ [listener]: message });
+            logger_1.log(`${listener}: ${message}`);
         }
     });
 }
@@ -133,7 +134,7 @@ function checkSettings(settings) {
         lobbySettings = GameSettings_1.GameSettings(settings);
     }
     catch (err) {
-        console.log("settings error");
+        logger_1.log("settings error");
         return { ok: false, message: err.message, settings };
     }
     if (!lobbySettings.ok) {
@@ -144,23 +145,23 @@ function checkSettings(settings) {
 exports.checkSettings = checkSettings;
 function contributeWord(word, definition, source) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("new word!");
+        logger_1.log("new word!");
         let newWord = { word, definition, source, id: 0 };
         // write word to user-word db table.
         try {
             const { data } = yield localAxios.post("/api/words/contribute", {
                 word,
                 definition,
-                source
+                source,
             });
-            // console.log(data)
+            // log(data)
             if ((data === null || data === void 0 ? void 0 : data.id) > 0) {
                 newWord.id = data.id;
             }
         }
         catch (err) {
-            console.log("error contributing.");
-            console.log(err);
+            logger_1.log("error contributing.");
+            logger_1.log(err);
         }
         return newWord;
     });
@@ -191,23 +192,23 @@ function startNewRound(host, word, lobbies, lobbyCode, lobbySettings) {
         let newRound;
         let roundId;
         try {
-            console.log("starting a new round...");
+            logger_1.log("starting a new round...");
             newRound = yield localAxios.post("/api/round/start", {
                 lobby: lobbies[lobbyCode],
                 wordId: word.id,
-                lobbyCode
+                lobbyCode,
             });
             roundId = newRound.data.roundId;
+            logger_1.log("ROUND ID: " + roundId);
         }
         catch (err) {
-            console.log("error trying to start new round!");
+            logger_1.log("error trying to start new round!");
             return { ok: false, message: err.message };
         }
-        console.log("ROUND ID:", roundId);
         const roundSettings = {
             seconds: lobbySettings.seconds,
             source: lobbySettings.source,
-            filter: lobbySettings.filter
+            filter: lobbySettings.filter,
         };
         // set phasers to "WRITING" and update the game state
         lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { phase, word: word.word, definition: word.definition, roundId,
@@ -219,7 +220,7 @@ function startNewRound(host, word, lobbies, lobbyCode, lobbySettings) {
             result = yield localAxios.post("/api/user-rounds/add-players", {
                 players: lobbies[lobbyCode].players,
                 roundId,
-                game_id: lobbies[lobbyCode].game_id
+                game_id: lobbies[lobbyCode].game_id,
             });
         }
         catch (err) {
@@ -285,7 +286,7 @@ function updatePlayerToken(io, socket, p_id, name, definition, points, lobbyCode
                 name,
                 definition: definition || "",
                 points: points || 0,
-                lobbyCode
+                lobbyCode,
             };
             const { data } = yield localAxios.post("/api/auth/update-token", payload);
             if (data.ok) {
@@ -295,16 +296,16 @@ function updatePlayerToken(io, socket, p_id, name, definition, points, lobbyCode
                 token = data.token;
                 yield localAxios.put(`/api/player/id/${p_id}`, {
                     token,
-                    last_played: lobbyCode
+                    last_played: lobbyCode,
                 });
             }
             else {
-                console.log(data.message);
+                logger_1.log(data.message);
                 return data;
             }
         }
         catch (err) {
-            console.log(err.message);
+            logger_1.log(err.message);
             return { ok: false, message: err.message };
         }
         return { ok: true, token };

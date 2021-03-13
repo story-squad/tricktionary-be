@@ -4,6 +4,7 @@ import * as bodyParser from "body-parser";
 import { stripe } from "./StripePayments";
 import { add, update } from "./model";
 import Stripe from "stripe";
+import { log } from "../../logger";
 
 const router = Router();
 
@@ -18,13 +19,13 @@ type priceList = {
 const membership: priceList = {
   month: 500,
   week: 125,
-  year: 6000
+  year: 6000,
 };
 
 const discounted: priceList = {
   month: membership.month,
   week: membership.week,
-  year: membership.year - 2 * membership.week
+  year: membership.year - 2 * membership.week,
 };
 
 /**
@@ -80,7 +81,7 @@ async function createPaymentIntent(payment_id: string, total: number) {
   const currency = "USD";
   const params: Stripe.PaymentIntentCreateParams = {
     amount: total,
-    currency
+    currency,
   };
   try {
     paymentIntent = await stripe.paymentIntents.create(params);
@@ -90,12 +91,12 @@ async function createPaymentIntent(payment_id: string, total: number) {
     return { error: err.message };
   }
   if (!updatedPayment.ok) {
-    console.log(updatedPayment.message);
+    log(updatedPayment.message);
     return { error: updatedPayment.message };
   }
   return {
     clientSecret: paymentIntent.client_secret,
-    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
   };
 }
 
@@ -121,7 +122,7 @@ router.post(
         stripeSecret
       );
     } catch (err) {
-      console.log(`⚠️  Webhook signature verification failed.`);
+      log(`⚠️  Webhook signature verification failed.`);
       res.sendStatus(400);
       return;
     }
@@ -136,13 +137,13 @@ router.post(
       // Funds have been captured
       // Fulfill any orders, e-mail receipts, etc
       // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds).
-      console.log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
-      console.log("💰 Payment captured!");
+      log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
+      log("💰 Payment captured!");
     } else if (eventType === "payment_intent.payment_failed") {
       // Cast the event into a PaymentIntent to make use of the types.
       const pi: Stripe.PaymentIntent = data.object as Stripe.PaymentIntent;
-      console.log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
-      console.log("❌ Payment failed.");
+      log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
+      log("❌ Payment failed.");
     }
     res.sendStatus(200);
   }

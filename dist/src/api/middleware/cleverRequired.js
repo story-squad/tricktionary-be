@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.decode64 = exports.encode64 = exports.cleverBearer = exports.cleverBasic = exports.cleverStudentRequired = void 0;
 const http_errors_1 = __importDefault(require("http-errors"));
 const axios_1 = __importDefault(require("axios"));
+const logger_1 = require("../../logger");
 // encode a string in Base64
 const encode64 = (str) => Buffer.from(str, "binary").toString("base64");
 exports.encode64 = encode64;
@@ -60,7 +61,7 @@ exports.cleverBearer = cleverBearer;
  * reference: https://dev.clever.com/reference#clevercomoauthtokeninfo
  */
 const cleverStudentRequired = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(`middleware for ${process.env.CLEVER_BASE_URL}`);
+    // log(`middleware for ${process.env.CLEVER_BASE_URL}`);
     try {
         // parse header
         const authHeader = req.headers.authorization || "";
@@ -69,13 +70,13 @@ const cleverStudentRequired = (req, res, next) => __awaiter(void 0, void 0, void
             throw new Error("Missing student id");
         const studentID = match[1];
         const result = yield cleverBearer(studentID.trim()).get("/oauth/tokeninfo");
-        console.log(`status : ${result.status}`);
+        logger_1.log(`status : ${result.status}`);
         // check status
         if (result.status !== 200)
             throw new Error("error verifying student");
         // attach result
         req.tokenInfo = result.data;
-        console.log('success!');
+        logger_1.log('success!');
         // continue
         next();
     }

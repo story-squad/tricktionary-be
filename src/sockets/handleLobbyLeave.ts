@@ -10,7 +10,6 @@ function handleLobbyLeave(io: any, socket: any, lobbies: any) {
       );
     }
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
-    // console.log(lobbies[lobbyCode]);
   }
 }
 export default handleLobbyLeave;

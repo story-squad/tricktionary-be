@@ -14,15 +14,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
+const logger_1 = require("../logger");
 function handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         let r = common_1.checkSettings(settings);
         if (!r.ok) {
-            handleErrorMessage_1.default(io, socket, 2006, 'there was an error with starting your game');
+            handleErrorMessage_1.default(io, socket, 2006, "there was an error with starting your game");
             return;
         }
-        console.log(r.settings);
         let { word, source } = r.settings;
         if (word.id === 0) {
             word = yield common_1.contributeWord(word.word, word.definition, source);
@@ -41,14 +41,14 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice) {
                 yield common_1.localAxios.post("/api/choice", Object.assign(Object.assign({}, hostChoice), { round_id: newRound.roundId }));
             }
             catch (err) {
-                console.log("error recording the host's choices");
-                console.log(err.message);
+                logger_1.log("error recording the host's choices");
+                logger_1.log(err.message);
             }
             // pub-sub update
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         }
         else {
-            console.log("there was a server error while starting the game");
+            logger_1.log("there was a server error while starting the game");
         }
     });
 }

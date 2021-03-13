@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const randomatic_1 = __importDefault(require("randomatic"));
+const logger_1 = require("../logger");
 const common_1 = require("./common");
 function handleLobbyCreate(io, socket, username, lobbies) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -23,7 +24,6 @@ function handleLobbyCreate(io, socket, username, lobbies) {
         let game_id;
         try {
             const last_player = yield common_1.localAxios.get(`/api/player/last-user-id/${socket.id}`);
-            // console.log(last_player.data);
             if (last_player.data.player && last_player.data.player.id) {
                 // create the Game
                 og_host = last_player.data.player.id;
@@ -34,10 +34,10 @@ function handleLobbyCreate(io, socket, username, lobbies) {
             }
         }
         catch (err) {
-            console.log({ message: err.message });
+            logger_1.log(err.message);
         }
-        console.log("LOBBY CREATED BY: ", og_host);
-        console.log("GAME : ", game_id);
+        logger_1.log("LOBBY CREATED BY: " + og_host);
+        logger_1.log("GAME : " + game_id);
         lobbies[lobbyCode] = {
             game_id,
             lobbyCode,
@@ -55,7 +55,7 @@ function handleLobbyCreate(io, socket, username, lobbies) {
             yield common_1.updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode);
         }
         catch (err) {
-            console.log(err.message);
+            logger_1.log(err.message);
         }
         common_1.privateMessage(io, socket, "welcome", socket.id);
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);

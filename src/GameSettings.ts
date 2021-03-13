@@ -27,7 +27,6 @@ export function GameSettings(settingsObj: any): Result<TricktionarySettings> {
   let source = settingsObj.source;
   let seconds = settingsObj.seconds;
   let filter = settingsObj.filter;
-  // console.log(settingsObj)
   if (Object.keys(word).filter(n => n === "id").length === 0) {
     return { ok: false, message: `missing element word.id` };
   }

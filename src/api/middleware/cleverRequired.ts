@@ -1,5 +1,7 @@
 import createHttpError from "http-errors";
 import axios from "axios";
+import { log } from "../../logger";
+
 
 // encode a string in Base64
 const encode64 = (str: string): string =>
@@ -52,7 +54,7 @@ const cleverBearer = (token: string) =>
  * reference: https://dev.clever.com/reference#clevercomoauthtokeninfo
  */
 const cleverStudentRequired = async (req: any, res: any, next: any) => {
-  // console.log(`middleware for ${process.env.CLEVER_BASE_URL}`);
+  // log(`middleware for ${process.env.CLEVER_BASE_URL}`);
   try {
     // parse header
     const authHeader = req.headers.authorization || "";
@@ -60,12 +62,12 @@ const cleverStudentRequired = async (req: any, res: any, next: any) => {
     if (!match) throw new Error("Missing student id");
     const studentID = match[1];
     const result = await cleverBearer(studentID.trim()).get("/oauth/tokeninfo");
-    console.log(`status : ${result.status}`)
+    log(`status : ${result.status}`)
     // check status
     if (result.status !== 200) throw new Error("error verifying student");
     // attach result
     req.tokenInfo = result.data;
-    console.log('success!');
+    log('success!');
     // continue
     next();
   } catch (err) {

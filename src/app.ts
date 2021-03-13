@@ -15,7 +15,7 @@ import apiRoutes from "./api";
 
 import { log } from "./logger";
 
-log("Tricktionary");
+log("[   Tricktionary API   ]");
 
 const api = express();
 const JSON_SIZE_LIMIT = "5mb";
@@ -67,7 +67,7 @@ const redisPort: string = process.env.REDIS_PORT || "6379";
 // use Redis (cache) when available
 if (redisHost.length > 0) {
   // create Redis adapter
-  console.log('found REDIS_HOST, creating adapter.')
+  log('found REDIS_HOST, creating adapter.')
   try {
     const pubClient = new RedisClient({
       host: redisHost,
@@ -76,8 +76,8 @@ if (redisHost.length > 0) {
     const subClient = pubClient.duplicate();
     io.adapter(createAdapter({ pubClient, subClient }));
   } catch (err) {
-    console.log("[error connecting Redis adapter!]");
-    console.log(err.message);
+    log("[error connecting Redis adapter!]");
+    log(err.message);
   }
 }
 
@@ -103,7 +103,7 @@ io.on("connection", (socket) => {
     gameSocketHandler.handleTimeSync(io, socket, lobbies, seconds);
   });
   socket.on("disconnect", () => {
-    console.log("Client disconnected", socket.id);
+    log(`Client disconnected, ${socket.id}`);
   });
 
   socket.on("create lobby", (username: string) => {

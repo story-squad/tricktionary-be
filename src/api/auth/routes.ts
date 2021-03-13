@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { verifyTricktionaryToken } from "./utils";
+import { log } from "../../logger";
+
 // import jwt from "jsonwebtoken";
 //
 // import secrets from "./secrets";
@@ -45,7 +47,7 @@ router.post("/new-player", async (req, res) => {
     res.status(403).json({ message: "last_user_id required" });
   }
   if (jump_code) {
-    console.log("TODO: player is jumping from another device.");
+    log("TODO: player is jumping from another device.");
   }
   // first game ? you will need a new player_id
   const created = await Player.newPlayer(last_user_id);
@@ -91,7 +93,7 @@ router.post("/login", async (req, res) => {
     last_username = result.username || "";
     player = await Player.getPlayer(player_id);
   } catch (err) {
-    console.log(err.message);
+    log(err.message);
     res.status(400).json({ message: err.message });
   }
   let token;

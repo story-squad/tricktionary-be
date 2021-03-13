@@ -20,13 +20,10 @@ function handleNewPlayer(io, socket) {
     return __awaiter(this, void 0, void 0, function* () {
         const last_user_id = socket.id;
         let login;
-        // let player;
         let newtoken;
         try {
             login = yield common_1.localAxios.post('/api/auth/new-player', { last_user_id });
-            console.log(login.data);
             newtoken = login.data.token;
-            // player = login.data.player;
         }
         catch (err) {
             return { ok: false, message: err.message };

@@ -5,7 +5,6 @@ function validateWord(wordObj) {
     // word must be a string and cannot be empty
     const skel = { word: undefined, definition: undefined, source: undefined, moderated: false, approved: false };
     const value = Object.assign(Object.assign({}, skel), wordObj);
-    // console.log(value)
     if (typeof value.word !== "string") {
         return {
             ok: false,

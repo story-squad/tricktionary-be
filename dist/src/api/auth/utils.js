@@ -18,23 +18,24 @@ const model_1 = __importDefault(require("../player/model"));
 const model_2 = __importDefault(require("../userRounds/model"));
 const model_3 = __importDefault(require("../rounds/model"));
 const secrets_1 = __importDefault(require("./secrets"));
+const logger_1 = require("../../logger");
 function validatePayloadType(payload) {
     if (typeof payload.sub !== "string") {
         return {
             ok: false,
-            message: `must be of type string, received ${typeof payload.sub}`
+            message: `must be of type string, received ${typeof payload.sub}`,
         };
     }
     if (typeof payload.pid !== "string") {
         return {
             ok: false,
-            message: `must be of type string, received ${typeof payload.pid}`
+            message: `must be of type string, received ${typeof payload.pid}`,
         };
     }
     if (typeof payload.iat !== "number") {
         return {
             ok: false,
-            message: `must be of type number, received ${typeof payload.iat}`
+            message: `must be of type number, received ${typeof payload.iat}`,
         };
     }
     return { ok: true, value: payload }; // as-is
@@ -46,10 +47,10 @@ function generateToken(user_id, player_id, extra, lobbyCode) {
         pid: player_id,
         iat: Date.now(),
         lob: lobbyCode,
-        ext: extra
+        ext: extra,
     };
     const options = {
-        expiresIn: "1h"
+        expiresIn: "1h",
     };
     return jsonwebtoken_1.default.sign(payload, secrets_1.default.jwtSecret, options);
 }
@@ -66,9 +67,8 @@ function newToken(last_user_id, player_id, extra, lobbyCode) {
             pid: player_id,
             iat: 0,
             lob: lobbyCode,
-            ext: extra
+            ext: extra,
         });
-        // console.log(payload);
         if (!payload.ok) {
             return { ok: false, message: "bad payload", status: 400 };
         }
@@ -118,7 +118,7 @@ function partialRecall(token) {
         username,
         definition,
         points,
-        last_lobby
+        last_lobby,
     };
 }
 exports.partialRecall = partialRecall;
@@ -135,7 +135,7 @@ function totalRecall(player_id) {
                 ok: false,
                 message: err.message,
                 lobby: undefined,
-                player: undefined
+                player: undefined,
             };
         }
         if (result.ok) {
@@ -152,12 +152,12 @@ function totalRecall(player_id) {
                 }
             }
             catch (err) {
-                console.log("cannot find a last_lobby of player.");
+                logger_1.log("cannot find a last_lobby of player.");
                 return {
                     ok: true,
                     message: err.message,
                     spoilers: undefined,
-                    player
+                    player,
                 };
             }
         }
@@ -181,10 +181,10 @@ function verifyTricktionaryToken(last_token, last_user_id) {
             player_id = mem.player_id ? mem.player_id : ""; // remember the player_id ?
             if (last_user_id === mem.last_user_id) {
                 // same web socket session, update token and return.
-                console.log("same socket");
+                logger_1.log(`same socket, ${last_user_id}`);
             }
             if (mem.last_user_id) {
-                console.log("partialRecall - last lobby -", mem.last_lobby);
+                logger_1.log(`partialRecall - last lobby -, ${mem.last_lobby}`);
                 last_lobby = mem.last_lobby;
                 // return { ...mem, status: 200 };
             }
@@ -194,11 +194,10 @@ function verifyTricktionaryToken(last_token, last_user_id) {
                 if (existing.ok) {
                     player = existing.player;
                     last_lobby = existing.spoilers;
-                    console.log("totalRecall - last lobby -", last_lobby);
+                    logger_1.log(`totalRecall - last lobby -, ${last_lobby}`);
                 }
                 else {
-                    console.log("can't find this player in the db");
-                    // console.log(existing);
+                    logger_1.log(`can't find this player in the db, ${mem.player_id}`);
                 }
             }
             // NOTE: don't need to lookup player by id if we already have the last lobby from JWT
@@ -212,7 +211,7 @@ function verifyTricktionaryToken(last_token, last_user_id) {
             last_lobby,
             old_user_id: last_user_id,
             player_id,
-            player
+            player,
         };
     });
 }

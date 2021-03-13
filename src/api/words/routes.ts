@@ -1,7 +1,7 @@
 import { Router } from "express";
 import Words from "./model";
 import { validateWord, validNumber } from "./utils";
-
+import {log} from "../../logger";
 const router = Router();
 
 /*
@@ -26,11 +26,11 @@ router.post("/json", (req, res) => {
       Words.add(result.value)
         .then(() => true)
         .catch((err) => {
-          console.log(result.value, err.message);
+          log(`${result.value}, ${err.message}`);
         });
       added++;
     } else {
-      console.log(result.message);
+      log(result.message);
       skipped++;
     }
   }); // end for-loop
@@ -46,7 +46,7 @@ router.post("/contribute", (req, res) => {
   }
   Words.getByName(result.value.word).then((dup) => {
     duplicate = dup?.id ? dup : false;
-    console.log(`duplicate: ${duplicate.word}`);
+    log(`duplicate: ${duplicate.word}`);
     if (!duplicate) {
       // add to database
       Words.add(result.value)
@@ -56,7 +56,7 @@ router.post("/contribute", (req, res) => {
         })
         .catch((err) => {
           // error adding to database
-          console.log("ERROR: /contribute");
+          log("ERROR: /contribute");
           res.status(400).json({ error: err });
         });
     } else {

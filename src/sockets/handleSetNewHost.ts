@@ -1,5 +1,5 @@
 import { privateMessage, playerIsHost } from "./common";
-
+import { log } from "../logger";
 
 /**
  *
@@ -12,18 +12,25 @@ import { privateMessage, playerIsHost } from "./common";
  * @param newHost playerID-string
  * @param guesses the hosts' list of the other player's guesses
  */
-async function handleSetNewHost(io:any, socket: any, lobbyCode: any, lobbies: any, newHost: string, guesses: any[]) {
+async function handleSetNewHost(
+  io: any,
+  socket: any,
+  lobbyCode: any,
+  lobbies: any,
+  newHost: string,
+  guesses: any[]
+) {
   const checkIfHost = playerIsHost(socket, lobbyCode, lobbies);
   if (checkIfHost.ok) {
-    console.log(`we have a new Host : ${newHost}`);
+    log(`${lobbyCode} has a new Host, ${newHost}`);
     lobbies[lobbyCode].host = newHost;
-    io.to(newHost).emit('welcome host', guesses);
-    privateMessage(io, socket, "info", `ok, set host: ${newHost}`)
+    io.to(newHost).emit("welcome host", guesses);
+    privateMessage(io, socket, "info", `ok, set host: ${newHost}`);
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
   } else {
-    console.log(`NOT HOST: ${socket.id}`);
-    privateMessage(io, socket, "error", "unauthorized call, punk!")
+    log(`NOT HOST: ${socket.id}, cannot assign a new host`);
+    privateMessage(io, socket, "error", "unauthorized call, punk!");
   }
 }
 
-export default handleSetNewHost
+export default handleSetNewHost;

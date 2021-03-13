@@ -26,7 +26,6 @@ const create = (profile) => __awaiter(void 0, void 0, void 0, function* () {
     return dbConfig_1.default('profiles').insert(profile).returning('*');
 });
 const update = (id, profile) => {
-    console.log(profile);
     return dbConfig_1.default('profiles')
         .where({ id: id })
         .first()

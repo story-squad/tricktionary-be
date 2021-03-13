@@ -1,4 +1,5 @@
 import cron from "node-cron";
+import { log } from "../logger";
 
 // const MINUTES = process.env.MINUTES || 5;
 const HOURS = "*";
@@ -8,7 +9,7 @@ const DAY_OF_WEEK = "*";
 
 /**
  * a Tricktionary scheduled-task
- * 
+ *
  * @name - semantic name of this task; ie "pulse check"
  * @lobbyCode - location code of game requiring this task
  * @limit - maximum number of times to run this task
@@ -35,8 +36,27 @@ interface cronTaskIndex {
   [key: string]: cronTask;
 }
 
-
 const lobbyTasks: cronTaskIndex = {};
+
+/**
+ * increase the task.count by 1,
+ * delete when we reach the task.limit
+ *
+ * note: a task limit of 0 will run forever
+ *
+ * @param k key-name of task within LobbyTasks
+ */
+function incrementTask(k: string) {
+  const t = lobbyTasks[k];
+  t.count += 1;
+  t.last = Date.now();
+  if (t.limit === t.count) {
+    log(`finished, ${t.name}`);
+    // if we've reached the limit for this task, delete it
+    deleteScheduledTask(t.name);
+  }
+}
+
 /**
  * schedule a 'pulse check' for re-connected players in this game (lobbyCode)
  *
@@ -57,7 +77,7 @@ function schedulePulseCheck(
     // we have a task running already, get it.
     scheduledTask = lobbyTasks[lobbyCode];
     const delta = Math.abs(Date.now() - scheduledTask.created) / 1000;
-    console.log(`started a 'pulse check' for ${lobbyCode} ${delta}s ago`);
+    log(`started a 'pulse check' for ${lobbyCode} ${delta}s ago`);
   } else {
     // create a task
     let now = Date.now();
@@ -68,7 +88,7 @@ function schedulePulseCheck(
       limit,
       count: 0,
       lobbyCode,
-      task: cron.schedule(pulseCheck, () => checkPulse(lobbies, lobbyCode, io))
+      task: cron.schedule(pulseCheck, () => checkPulse(lobbies, lobbyCode, io)),
     };
     lobbyTasks[lobbyCode] = scheduledTask; // add task to register
     startScheduledTask(lobbyCode); // start the task
@@ -79,46 +99,41 @@ function checkPulse(o: any, k: string, io: any) {
   const needsChecking = () =>
     o[k].players.filter((p: any) => p.pulseCheck && p.connected);
   const task = lobbyTasks[k]; // the first cron task for this room(k).
-  task.count += 1; // increase the count by 1
-  task.last = Date.now(); // note: if client emits back a ("pulse check", timestamp), we can measure lag
+  incrementTask(k);
   needsChecking().forEach((p: any) => {
-    console.log(`checking the pulse of ${p.username} @ ${k}`);
+    log(`checking the pulse of ${p.username} @ ${k}`);
     io.to(p.id).emit("pulse check", task.last);
   });
-  if (task.count === task.limit) {
-    // if we've reached the limit for this task, destroy it
-    destroyScheduledTask(k);
-  }
 }
 
 function stopScheduledTask(lobbyCode: string) {
   try {
-    console.log("stopping task for room", lobbyCode);
+    log(`stopping task, ${lobbyCode}`);
     const task = lobbyTasks[lobbyCode];
     task.task.stop();
   } catch (err) {
-    console.log(err.message);
+    log(err.message);
   }
 }
 
-function destroyScheduledTask(lobbyCode: string) {
+function deleteScheduledTask(taskName: string) {
   try {
-    const lt = lobbyTasks[lobbyCode];
-    console.log(`destroying ${lt.name} for room, ${lobbyCode}`);
-    lt.task.destroy();
-    delete lobbyTasks[lobbyCode]; // remove the cronTask from our list.
+    const task = lobbyTasks[taskName];
+    log(`deleting task: ${task.name}`);
+    task.task.stop();
+    delete lobbyTasks[taskName]; // remove the cronTask from our list.
   } catch (err) {
-    console.log(err.message);
+    log(err.message);
   }
 }
 
 function startScheduledTask(lobbyCode: string) {
   try {
     const lt = lobbyTasks[lobbyCode];
-    console.log(`starting ${lt.name} for room, ${lobbyCode}`);
+    log(`starting ${lt.name} for room, ${lobbyCode}`);
     lt.task.start();
   } catch (err) {
-    console.log(err.message);
+    log(err.message);
   }
 }
 /**
@@ -129,13 +144,48 @@ function getScheduledTask(lobbyCode: string) {
   return lobbyTasks[lobbyCode];
 }
 
+function echoTime(io: any, timerTask: string, lobbyCode: string) {
+  incrementTask(timerTask);
+  const t = lobbyTasks[timerTask];
+  io.to(lobbyCode).emit("synchronize", t.limit - t.count);
+}
+
+function scheduleTimer(io: any, lobbyCode: string, limit: number) {
+  // check to see if the timer is already running.
+  const utcTime = `* * ${HOURS} ${DAY_OF_MONTH} ${MONTH} ${DAY_OF_WEEK}`;
+  let scheduledTask: cronTask;
+  const timerTask = `${lobbyCode}-timer`;
+  if (lobbyTasks[timerTask]) {
+    // we have a timer running already, get it.
+    scheduledTask = lobbyTasks[timerTask];
+    const delta = Math.abs(Date.now() - scheduledTask.created) / 1000;
+    log(`timer was initialized ${timerTask} ${delta}s ago`);
+    return;
+  } else {
+    // create a task
+    let now = Date.now();
+    scheduledTask = {
+      name: timerTask,
+      created: now,
+      last: now,
+      limit,
+      count: 0,
+      lobbyCode,
+      task: cron.schedule(utcTime, () => echoTime(io, timerTask, lobbyCode)),
+    };
+    lobbyTasks[timerTask] = scheduledTask; // add task to register
+    startScheduledTask(timerTask); // start the task
+  }
+}
+
 export {
-  schedulePulseCheck,
   startScheduledTask,
   stopScheduledTask,
-  destroyScheduledTask,
+  deleteScheduledTask,
   getScheduledTask,
   cronTask,
   cronTaskIndex,
-  lobbyTasks
+  lobbyTasks,
+  schedulePulseCheck,
+  scheduleTimer,
 };

@@ -1,11 +1,12 @@
 import { GameSettings } from "../GameSettings";
+import { log } from "../logger";
 import axios from "axios";
 import * as dotenv from "dotenv";
 dotenv.config();
 const localAxios = axios.create({
   baseURL: `${process.env.BASE_URL || "http://0.0.0.0"}:${
     process.env.PORT || 5000
-  }`
+  }`,
 });
 localAxios.defaults.timeout = 10000;
 
@@ -19,15 +20,15 @@ const MAX_PLAYERS = process.env.MAX_PLAYERS || 30;
  */
 const LC_LENGTH: number = process.env.LC_LENGTH
   ? Number(process.env.LC_LENGTH)
-  : 4; 
+  : 4;
 
 /**
  * POINTS AWARDED when you choose correctly
  */
 const VALUE_OF_TRUTH: number = process.env.VALUE_OF_TRUTH
   ? Number(process.env.VALUE_OF_TRUTH)
-  : 2; 
-  
+  : 2;
+
 /**
  * POINTS AWARDED when others choose your definition
  */
@@ -51,7 +52,7 @@ export {
   startNewRound,
   b64,
   whereAmI,
-  updatePlayerToken
+  updatePlayerToken,
 };
 
 /**
@@ -75,9 +76,9 @@ async function privateMessage(
   try {
     const pid = socket.id;
     io.to(pid).emit(listener, message); // private message player
-    console.log(`${listener} message -> ${socket.id}`);
+    log(`${listener} message -> ${socket.id}`);
   } catch (err) {
-    console.log({ [listener]: message });
+    log(`${listener}: ${message}`);
   }
 }
 
@@ -122,7 +123,7 @@ function checkSettings(settings: any) {
   try {
     lobbySettings = GameSettings(settings);
   } catch (err) {
-    console.log("settings error");
+    log("settings error");
     return { ok: false, message: err.message, settings };
   }
   if (!lobbySettings.ok) {
@@ -136,22 +137,22 @@ async function contributeWord(
   definition: string,
   source: string
 ) {
-  console.log("new word!");
+  log("new word!");
   let newWord = { word, definition, source, id: 0 };
   // write word to user-word db table.
   try {
     const { data } = await localAxios.post("/api/words/contribute", {
       word,
       definition,
-      source
+      source,
     });
-    // console.log(data)
+    // log(data)
     if (data?.id > 0) {
       newWord.id = data.id;
     }
   } catch (err) {
-    console.log("error contributing.");
-    console.log(err);
+    log("error contributing.");
+    log(err);
   }
   return newWord;
 }
@@ -182,22 +183,22 @@ async function startNewRound(
   let newRound: any;
   let roundId: any;
   try {
-    console.log("starting a new round...");
+    log("starting a new round...");
     newRound = await localAxios.post("/api/round/start", {
       lobby: lobbies[lobbyCode],
       wordId: word.id,
-      lobbyCode
+      lobbyCode,
     });
     roundId = newRound.data.roundId;
+    log("ROUND ID: " + roundId);
   } catch (err) {
-    console.log("error trying to start new round!");
+    log("error trying to start new round!");
     return { ok: false, message: err.message };
   }
-  console.log("ROUND ID:", roundId);
   const roundSettings: any = {
     seconds: lobbySettings.seconds,
     source: lobbySettings.source,
-    filter: lobbySettings.filter
+    filter: lobbySettings.filter,
   };
   // set phasers to "WRITING" and update the game state
   lobbies[lobbyCode] = {
@@ -207,7 +208,7 @@ async function startNewRound(
     definition: word.definition,
     roundId,
     roundSettings,
-    host
+    host,
   };
   // REST-ful update
   let result: any;
@@ -215,7 +216,7 @@ async function startNewRound(
     result = await localAxios.post("/api/user-rounds/add-players", {
       players: lobbies[lobbyCode].players,
       roundId,
-      game_id: lobbies[lobbyCode].game_id
+      game_id: lobbies[lobbyCode].game_id,
     });
   } catch (err) {
     return { ok: false, result, lobbies };
@@ -255,7 +256,7 @@ const b64 = { encode: encode64, decode: decode64 };
 
 /**
  * returns true if LobbyCode can be found in Lobbies
- * 
+ *
  * @param lobbyCode LobbyCode of game
  * @param lobbies socket-handler games
  */
@@ -291,7 +292,7 @@ async function updatePlayerToken(
       name,
       definition: definition || "",
       points: points || 0,
-      lobbyCode
+      lobbyCode,
     };
     const { data } = await localAxios.post("/api/auth/update-token", payload);
     if (data.ok) {
@@ -301,14 +302,14 @@ async function updatePlayerToken(
       token = data.token;
       await localAxios.put(`/api/player/id/${p_id}`, {
         token,
-        last_played: lobbyCode
+        last_played: lobbyCode,
       });
     } else {
-      console.log(data.message);
+      log(data.message);
       return data;
     }
   } catch (err) {
-    console.log(err.message);
+    log(err.message);
     return { ok: false, message: err.message };
   }
   return { ok: true, token };

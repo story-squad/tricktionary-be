@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPlayers = exports.getGames = exports.played = void 0;
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const uuid_1 = require("uuid");
+// import { log } from "../../logger";
 function played(player_id, game_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const uuId = uuid_1.v4();
@@ -34,7 +35,6 @@ function getGames(player_id) {
         let result;
         try {
             result = yield dbConfig_1.default("Played").where({ player_id }).returning("game_id");
-            // console.log(result);
         }
         catch (err) {
             result = { ok: false, message: err.message };

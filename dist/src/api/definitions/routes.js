@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
+const logger_1 = require("../../logger");
 const router = express_1.Router();
 router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { playerId, definition, roundId } = req.body;
@@ -24,7 +25,8 @@ router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         defId = result.pop();
     }
     catch (err) {
-        console.log("error! definitions router");
+        logger_1.log("error! definitions router");
+        logger_1.log(err.message);
     }
     if (defId > -1) {
         res.status(201).json({ definitionId: defId });

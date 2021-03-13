@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
+const logger_1 = require("../logger");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
 const crontab_1 = require("./crontab");
 /**
@@ -27,8 +28,6 @@ const crontab_1 = require("./crontab");
 function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse) {
     return __awaiter(this, void 0, void 0, function* () {
         if (common_1.whereAmI(socket) === lobbyCode.trim()) {
-            console.log("I am already here");
-            // io.to(lobbyCode).emit("player list", lobbies[lobbyCode].players)
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
             return;
         }
@@ -50,7 +49,7 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
             yield common_1.updatePlayerToken(io, socket, p_id, username, "", 0, lobbyCode);
         }
         catch (err) {
-            console.log(err.message);
+            logger_1.log(err.message);
         }
         if (lobbies[lobbyCode] && lobbies[lobbyCode].players) {
             let rejoined = lobbies[lobbyCode].players.filter((p) => (p === null || p === void 0 ? void 0 : p.rejoinedAs) && p.rejoinedAs === socket.id).length > 0;
@@ -59,7 +58,7 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
                 handleErrorMessage_1.default(io, socket, 2002, `Unfortunately, the lobby with code ${lobbyCode} has already begun their game`);
                 return;
             }
-            console.log(`${username} ${rejoined ? "re-joined" : "joined"} ${lobbyCode}`);
+            logger_1.log(`${username} ${rejoined ? "re-joined" : "joined"} ${lobbyCode}`);
             if (!(lobbies[lobbyCode].players.filter((p) => p.id === socket.id)
                 .length > 0)) {
                 if (!rejoined) {
@@ -71,8 +70,8 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
                                 username,
                                 definition: "",
                                 points: 0,
-                                connected: true
-                            }
+                                connected: true,
+                            },
                         ] });
                 }
                 else {
@@ -83,7 +82,7 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
                                     return Object.assign(Object.assign({}, p), { id: socket.id, connected: true });
                                 }
                                 return p;
-                            })
+                            }),
                         ] });
                 }
                 socket.join(lobbyCode);
@@ -92,12 +91,12 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
         common_1.privateMessage(io, socket, "welcome", socket.id);
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
         if (doCheckPulse) {
-            console.log("PULSE CHECK");
+            logger_1.log("PULSE CHECK");
             try {
                 crontab_1.schedulePulseCheck(io, lobbies, lobbyCode, 5);
             }
             catch (err) {
-                console.log("ERROR scheduling pulse check");
+                logger_1.log("ERROR scheduling pulse check");
             }
         }
     });

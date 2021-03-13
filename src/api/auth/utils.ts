@@ -4,7 +4,7 @@ import UserRound from "../userRounds/model";
 import Rounds from "../rounds/model";
 
 import secrets from "./secrets";
-import { exit } from "process";
+import { log } from "../../logger";
 
 type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 
@@ -21,19 +21,19 @@ export function validatePayloadType(payload: any): Result<AuthorizedPlayer> {
   if (typeof payload.sub !== "string") {
     return {
       ok: false,
-      message: `must be of type string, received ${typeof payload.sub}`
+      message: `must be of type string, received ${typeof payload.sub}`,
     };
   }
   if (typeof payload.pid !== "string") {
     return {
       ok: false,
-      message: `must be of type string, received ${typeof payload.pid}`
+      message: `must be of type string, received ${typeof payload.pid}`,
     };
   }
   if (typeof payload.iat !== "number") {
     return {
       ok: false,
-      message: `must be of type number, received ${typeof payload.iat}`
+      message: `must be of type number, received ${typeof payload.iat}`,
     };
   }
   return { ok: true, value: payload }; // as-is
@@ -50,10 +50,10 @@ function generateToken(
     pid: player_id,
     iat: Date.now(),
     lob: lobbyCode,
-    ext: extra
+    ext: extra,
   };
   const options = {
-    expiresIn: "1h"
+    expiresIn: "1h",
   };
   return jwt.sign(payload, secrets.jwtSecret, options);
 }
@@ -75,9 +75,8 @@ export async function newToken(
     pid: player_id,
     iat: 0,
     lob: lobbyCode,
-    ext: extra
+    ext: extra,
   });
-  // console.log(payload);
   if (!payload.ok) {
     return { ok: false, message: "bad payload", status: 400 };
   }
@@ -134,10 +133,9 @@ export function partialRecall(token: string) {
     username,
     definition,
     points,
-    last_lobby
+    last_lobby,
   };
 }
-
 
 export async function totalRecall(player_id: string | undefined) {
   let result;
@@ -150,7 +148,7 @@ export async function totalRecall(player_id: string | undefined) {
       ok: false,
       message: err.message,
       lobby: undefined,
-      player: undefined
+      player: undefined,
     };
   }
   if (result.ok) {
@@ -168,12 +166,12 @@ export async function totalRecall(player_id: string | undefined) {
         return { ok: true, player: result.player, spoilers };
       }
     } catch (err) {
-      console.log("cannot find a last_lobby of player.");
+      log("cannot find a last_lobby of player.");
       return {
         ok: true,
         message: err.message,
         spoilers: undefined,
-        player
+        player,
       };
     }
   }
@@ -198,10 +196,10 @@ export async function verifyTricktionaryToken(
     player_id = mem.player_id ? mem.player_id : ""; // remember the player_id ?
     if (last_user_id === mem.last_user_id) {
       // same web socket session, update token and return.
-      console.log("same socket");
+      log(`same socket, ${last_user_id}`);
     }
     if (mem.last_user_id) {
-      console.log("partialRecall - last lobby -", mem.last_lobby);
+      log(`partialRecall - last lobby -, ${mem.last_lobby}`);
       last_lobby = mem.last_lobby;
       // return { ...mem, status: 200 };
     } else {
@@ -210,10 +208,9 @@ export async function verifyTricktionaryToken(
       if (existing.ok) {
         player = existing.player;
         last_lobby = existing.spoilers;
-        console.log("totalRecall - last lobby -", last_lobby);
+        log(`totalRecall - last lobby -, ${last_lobby}`);
       } else {
-        console.log("can't find this player in the db");
-        // console.log(existing);
+        log(`can't find this player in the db, ${mem.player_id}`);
       }
     }
     // NOTE: don't need to lookup player by id if we already have the last lobby from JWT
@@ -226,6 +223,6 @@ export async function verifyTricktionaryToken(
     last_lobby,
     old_user_id: last_user_id,
     player_id,
-    player
+    player,
   };
 }

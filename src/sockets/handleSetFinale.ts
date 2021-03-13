@@ -1,6 +1,6 @@
 import { whereAmI, playerIsHost, localAxios } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
-
+import { log } from "../logger";
 // type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 
 interface UserDefinitions {
@@ -84,7 +84,6 @@ async function handleSetFinale(
   function finalFormat(defRecord: any): topThreeListItem {
     const { user_id, definition, def_word } = defRecord;
     const { word } = def_word;
-    console.log({ user_id, definition, word });
     return { user_id, definition, word };
   }
 
@@ -114,7 +113,7 @@ async function handleSetFinale(
       rWord = await localAxios.get(`/api/words/id/${wid}`);
       def_word = rWord.data.word;
     } catch (err) {
-      console.log(err.message);
+      log(err.message);
       return;
     }
     return finalFormat({ ...mvd.data.definition, user_id, def_word });
@@ -124,16 +123,16 @@ async function handleSetFinale(
     const firstPlaceResult = await getDef(firstPlace.id, game_id);
     results.push({ ...firstPlaceResult });
   } catch (err) {
-    console.log("error getting 1st place");
-    console.log(err.message);
+    log("error getting 1st place");
+    log(err.message);
   }
   if (secondPlace) {
     try {
       const secondPlaceResult = await getDef(secondPlace.id, game_id);
       results.push({ ...secondPlaceResult });
     } catch (err) {
-      console.log("error getting second place");
-      console.log(err.message);
+      log("error getting second place");
+      log(err.message);
     }
   }
   if (thirdPlace) {
@@ -141,15 +140,15 @@ async function handleSetFinale(
       const thirdPlaceResult = await getDef(thirdPlace.id, game_id);
       results.push({ ...thirdPlaceResult });
     } catch (err) {
-      console.log("error getting third place");
-      console.log(err.message);
+      log("error getting third place");
+      log(err.message);
     }
   }
   // add results to game-data & change phase
   lobbies[lobbyCode] = {
     ...lobbies[lobbyCode],
     topThree: results,
-    phase: "FINALE"
+    phase: "FINALE",
   };
   // update players
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode], results);

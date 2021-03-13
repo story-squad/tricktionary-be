@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
+const logger_1 = require("../logger");
 /**
  *
  * emit ("synchronize", seconds) to all *connected* players; excluding the current host
@@ -25,17 +26,17 @@ function handleTimeSync(io, socket, lobbies, seconds) {
         const lobbyCode = common_1.whereAmI(socket) || "";
         const checkIfHost = common_1.playerIsHost(socket, lobbyCode, lobbies);
         if (checkIfHost.ok) {
-            // console.log(`synchronize timers: ${seconds}`);
+            // log(`synchronize timers: ${seconds}`);
             const host = lobbies[lobbyCode].host;
             lobbies[lobbyCode].players
                 .filter((p) => p.id !== host && p.connected)
                 .forEach((player) => {
-                // console.log(player.username);
+                // log(player.username);
                 io.to(player.id).emit("synchronize", seconds);
             });
         }
         else {
-            console.log('not host!'); // what message should be sent?
+            logger_1.log(`${socket.id} not hosting! cannot synchronize timers`);
         }
     });
 }

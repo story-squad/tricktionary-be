@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { getGames, getPlayers, played } from "./model";
 const router = Router();
+import { log } from "../../logger";
 
 router.post("/new", async (req, res) => {
   const { player_id, game_id } = req.body;
-  console.log("NEW PLAYED RECORD.")
+  log("NEW PLAYED RECORD.")
   if (!(player_id && game_id)) {
     res.status(400).json({message: "missing information"})
   }

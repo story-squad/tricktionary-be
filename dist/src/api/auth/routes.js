@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const logger_1 = require("../../logger");
 // import jwt from "jsonwebtoken";
 //
 // import secrets from "./secrets";
@@ -55,7 +56,7 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(403).json({ message: "last_user_id required" });
     }
     if (jump_code) {
-        console.log("TODO: player is jumping from another device.");
+        logger_1.log("TODO: player is jumping from another device.");
     }
     // first game ? you will need a new player_id
     const created = yield model_1.default.newPlayer(last_user_id);
@@ -102,7 +103,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         player = yield model_1.default.getPlayer(player_id);
     }
     catch (err) {
-        console.log(err.message);
+        logger_1.log(err.message);
         res.status(400).json({ message: err.message });
     }
     let token;

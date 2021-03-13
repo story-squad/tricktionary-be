@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
 const utils_1 = require("./utils");
+const logger_1 = require("../../logger");
 const router = express_1.Router();
 /*
  * This route is for adding words to the database in bulk. Expects a JSON array in the following format:
@@ -37,12 +38,12 @@ router.post("/json", (req, res) => {
             model_1.default.add(result.value)
                 .then(() => true)
                 .catch((err) => {
-                console.log(result.value, err.message);
+                logger_1.log(`${result.value}, ${err.message}`);
             });
             added++;
         }
         else {
-            console.log(result.message);
+            logger_1.log(result.message);
             skipped++;
         }
     }); // end for-loop
@@ -56,7 +57,7 @@ router.post("/contribute", (req, res) => {
     }
     model_1.default.getByName(result.value.word).then((dup) => {
         duplicate = (dup === null || dup === void 0 ? void 0 : dup.id) ? dup : false;
-        console.log(`duplicate: ${duplicate.word}`);
+        logger_1.log(`duplicate: ${duplicate.word}`);
         if (!duplicate) {
             // add to database
             model_1.default.add(result.value)
@@ -66,7 +67,7 @@ router.post("/contribute", (req, res) => {
             })
                 .catch((err) => {
                 // error adding to database
-                console.log("ERROR: /contribute");
+                logger_1.log("ERROR: /contribute");
                 res.status(400).json({ error: err });
             });
         }

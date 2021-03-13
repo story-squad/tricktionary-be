@@ -1,10 +1,10 @@
 import { Router } from "express";
 import choiceModel from "./model";
+import { log } from "../../logger";
 const router = Router();
 
 router.post("/", async (req, res) => {
   const { word_id_one, word_id_two, round_id, times_shuffled } = req.body;
-  console.log('req', req.body)
   let result: any;
   let choice_id: number = -1;
   try {
@@ -14,11 +14,10 @@ router.post("/", async (req, res) => {
       round_id,
       times_shuffled
     );
-    console.log('result', result)
     choice_id = result.pop();
   } catch (err) {
-    // console.log('error', err)
-    console.log("error recording the host choice");
+    log("error recording the host choice");
+    log(err.message);
   }
   if (choice_id > -1) {
     res.status(201).json({ choice_id: choice_id });
