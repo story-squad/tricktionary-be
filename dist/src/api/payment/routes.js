@@ -12,16 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const StripePayments_1 = require("./StripePayments");
 const model_1 = require("./model");
+const logger_1 = require("../../logger");
 const router = express_1.Router();
 const membership = {
     month: 500,
     week: 125,
-    year: 6000
+    year: 6000,
 };
 const discounted = {
     month: membership.month,
     week: membership.week,
-    year: membership.year - 2 * membership.week
+    year: membership.year - 2 * membership.week,
 };
 /**
  * returns the price of this item
@@ -76,7 +77,7 @@ function createPaymentIntent(payment_id, total) {
         const currency = "USD";
         const params = {
             amount: total,
-            currency
+            currency,
         };
         try {
             paymentIntent = yield StripePayments_1.stripe.paymentIntents.create(params);
@@ -87,12 +88,12 @@ function createPaymentIntent(payment_id, total) {
             return { error: err.message };
         }
         if (!updatedPayment.ok) {
-            console.log(updatedPayment.message);
+            logger_1.log(updatedPayment.message);
             return { error: updatedPayment.message };
         }
         return {
             clientSecret: paymentIntent.client_secret,
-            publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
+            publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
         };
     });
 }
@@ -113,7 +114,7 @@ router.post("/webhook",
         event = StripePayments_1.stripe.webhooks.constructEvent(stripeBody, stripeHeaders, stripeSecret);
     }
     catch (err) {
-        console.log(`⚠️  Webhook signature verification failed.`);
+        logger_1.log(`⚠️  Webhook signature verification failed.`);
         res.sendStatus(400);
         return;
     }
@@ -126,14 +127,14 @@ router.post("/webhook",
         // Funds have been captured
         // Fulfill any orders, e-mail receipts, etc
         // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds).
-        console.log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
-        console.log("💰 Payment captured!");
+        logger_1.log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
+        logger_1.log("💰 Payment captured!");
     }
     else if (eventType === "payment_intent.payment_failed") {
         // Cast the event into a PaymentIntent to make use of the types.
         const pi = data.object;
-        console.log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
-        console.log("❌ Payment failed.");
+        logger_1.log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
+        logger_1.log("❌ Payment failed.");
     }
     res.sendStatus(200);
 }));

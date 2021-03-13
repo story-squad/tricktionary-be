@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
+const logger_1 = require("../logger");
 /**
  *
  * Allow the current host to trade roles with a player. *experimental feature
@@ -25,14 +26,14 @@ function handleSetNewHost(io, socket, lobbyCode, lobbies, newHost, guesses) {
     return __awaiter(this, void 0, void 0, function* () {
         const checkIfHost = common_1.playerIsHost(socket, lobbyCode, lobbies);
         if (checkIfHost.ok) {
-            console.log(`we have a new Host : ${newHost}`);
+            logger_1.log(`${lobbyCode} has a new Host, ${newHost}`);
             lobbies[lobbyCode].host = newHost;
-            io.to(newHost).emit('welcome host', guesses);
+            io.to(newHost).emit("welcome host", guesses);
             common_1.privateMessage(io, socket, "info", `ok, set host: ${newHost}`);
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         }
         else {
-            console.log(`NOT HOST: ${socket.id}`);
+            logger_1.log(`NOT HOST: ${socket.id}, cannot assign a new host`);
             common_1.privateMessage(io, socket, "error", "unauthorized call, punk!");
         }
     });

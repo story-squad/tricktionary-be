@@ -47,7 +47,7 @@ const redis_1 = require("redis");
 const sockets_1 = __importDefault(require("./sockets"));
 const api_1 = __importDefault(require("./api"));
 const logger_1 = require("./logger");
-logger_1.log("Tricktionary");
+logger_1.log("[   Tricktionary API   ]");
 const api = express_1.default();
 const JSON_SIZE_LIMIT = "5mb";
 const lobbies = { DEADBEEF: [] };
@@ -85,7 +85,7 @@ const redisPort = process.env.REDIS_PORT || "6379";
 // use Redis (cache) when available
 if (redisHost.length > 0) {
     // create Redis adapter
-    console.log('found REDIS_HOST, creating adapter.');
+    logger_1.log('found REDIS_HOST, creating adapter.');
     try {
         const pubClient = new redis_1.RedisClient({
             host: redisHost,
@@ -95,8 +95,8 @@ if (redisHost.length > 0) {
         io.adapter(socket_io_redis_1.createAdapter({ pubClient, subClient }));
     }
     catch (err) {
-        console.log("[error connecting Redis adapter!]");
-        console.log(err.message);
+        logger_1.log("[error connecting Redis adapter!]");
+        logger_1.log(err.message);
     }
 }
 // events
@@ -121,7 +121,7 @@ io.on("connection", (socket) => {
         sockets_1.default.handleTimeSync(io, socket, lobbies, seconds);
     });
     socket.on("disconnect", () => {
-        console.log("Client disconnected", socket.id);
+        logger_1.log(`Client disconnected, ${socket.id}`);
     });
     socket.on("create lobby", (username) => {
         sockets_1.default.handleLobbyCreate(io, socket, username, lobbies);

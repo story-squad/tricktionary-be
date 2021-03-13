@@ -18,12 +18,28 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = require("./app");
 const dotenv = __importStar(require("dotenv"));
+const boxMyText_1 = require("./boxMyText");
 dotenv.config();
+const withRedis = (_a = process.env.REDIS_HOST) === null || _a === void 0 ? void 0 : _a.length;
+const withDB = (_b = process.env.DATABASE_URL) === null || _b === void 0 ? void 0 : _b.length;
+const redisDetail = "asynchronyous io";
+const dbDetail = "persistence";
+let title = withDB ? "😎 " : "😈 ";
+title += "Tricktionary API";
+title += withRedis ? " 😎" : "";
+const pad = 11;
+if (!withDB) {
+    console.log("warning: no DATABASE_URL was found.");
+}
 const server = app_1.socketApp.listen(8080, "127.0.0.1", () => {
     const { port, address } = server.address();
-    console.log(`Server listening @ http://${address}${port ? `:${port}` : ""}`); // for devs convenience
+    const localAddress = `listening @ http://${address}${port ? `:${port}` : ""}`;
+    let details = withRedis ? `w / ${redisDetail} & ` : "w / ";
+    details += withDB ? dbDetail : "";
+    console.log(boxMyText_1.boxMyText(["", title, "", localAddress, "", `${details}`, ""], localAddress.length + pad));
 });
 //# sourceMappingURL=index.js.map

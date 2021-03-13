@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const logger_1 = require("../logger");
 /**
  * emit "error" message to player at socket.id
  * @param io any (socketio)
@@ -18,11 +19,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function handleErrorMessage(io, socket, code, error) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // privateMessage(io, socket, "error", error);
             io.to(socket.id).emit("error", code, error);
         }
         catch (err) {
-            console.log({ error: err });
+            logger_1.log('catch (handleErrorMessage)');
+            logger_1.log(err.message);
         }
     });
 }

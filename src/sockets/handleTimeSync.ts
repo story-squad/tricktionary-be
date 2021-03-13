@@ -2,6 +2,7 @@ import {
   playerIsHost,
   whereAmI,
 } from "./common";
+import {log} from "../logger";
 
 /**
  * 
@@ -22,16 +23,16 @@ async function handleTimeSync(
   const lobbyCode: string = whereAmI(socket) || "";
   const checkIfHost = playerIsHost(socket, lobbyCode, lobbies);
   if (checkIfHost.ok) {
-    // console.log(`synchronize timers: ${seconds}`);
+    // log(`synchronize timers: ${seconds}`);
     const host = lobbies[lobbyCode].host;
     lobbies[lobbyCode].players
       .filter((p: any) => p.id !== host && p.connected)
       .forEach((player: any) => {
-        // console.log(player.username);
+        // log(player.username);
         io.to(player.id).emit("synchronize", seconds);
       });
   } else {
-    console.log('not host!') // what message should be sent?
+    log(`${socket.id} not hosting! cannot synchronize timers`);
   }
 }
 

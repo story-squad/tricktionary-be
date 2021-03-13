@@ -10,7 +10,6 @@ function handleLobbyLeave(io, socket, lobbies) {
             lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter((player) => !player.id === socket.id);
         }
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
-        // console.log(lobbies[lobbyCode]);
     }
 }
 exports.default = handleLobbyLeave;

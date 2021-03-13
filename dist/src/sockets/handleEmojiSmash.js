@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
+const logger_1 = require("../logger");
 /**
  * increase emoji (reactionID) smash counter for definitionID
  * @param io
@@ -12,7 +13,7 @@ function handleEmojiSmash(io, socket, lobbies, definitionID, reactionID) {
     var _a;
     const lobbyCode = common_1.whereAmI(socket) || "";
     if (!lobbyCode.length) {
-        console.log("could not find a lobbyCode for socket with id", socket.id);
+        logger_1.log(`could not find a lobbyCode for socket with id ${socket.id}`);
         return;
     }
     // 1. create reactions object in lobby data if it doesn't exist

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
+const logger_1 = require("../logger");
 function handleDisconnection(io, socket, lobbies) {
     const lobbyCode = common_1.whereAmI(socket);
     if (lobbyCode) {
@@ -13,12 +14,12 @@ function handleDisconnection(io, socket, lobbies) {
             lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter((player) => player !== oldPlayer);
             lobbies[lobbyCode].players = [
                 ...lobbies[lobbyCode].players,
-                Object.assign(Object.assign({}, oldPlayer), { connected: false, pulseCheck: true })
+                Object.assign(Object.assign({}, oldPlayer), { connected: false, pulseCheck: true }),
             ];
             if (lobbies[lobbyCode].players.filter((player) => player.connected)
                 .length === 0) {
                 // instead of deleting the players, we'll mark them as player.connected= false
-                console.log('deleting lobby, ', lobbyCode);
+                logger_1.log(`deleting lobby: ${lobbyCode}`);
                 delete lobbies[lobbyCode];
             }
             // *notify other players in the room.

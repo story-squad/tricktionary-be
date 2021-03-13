@@ -14,12 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const model_1 = require("../played/model");
+const logger_1 = require("../../logger");
 // variable name must be in lowerCamelCase, PascalCase or UPPER_CASE
 function add(userID, roundID, gameID) {
     return dbConfig_1.default("User-Rounds").insert({
         user_id: userID,
         round_id: roundID,
-        game_id: gameID
+        game_id: gameID,
     });
 }
 function addAllUserRounds(players, roundId, gameID) {
@@ -30,7 +31,7 @@ function addAllUserRounds(players, roundId, gameID) {
                 yield model_1.played(player.id, gameID);
             }
             catch (err) {
-                console.log(err.message);
+                logger_1.log(err.message);
                 return { ok: false, message: err.message };
             }
         }));
@@ -55,5 +56,11 @@ function findFirstRound(user_id) {
 function findAll(user_id, game_id) {
     return dbConfig_1.default("User-Rounds").where({ user_id, game_id });
 }
-exports.default = { addAllUserRounds, findPlayer, findLastRound, findFirstRound, findAll };
+exports.default = {
+    addAllUserRounds,
+    findPlayer,
+    findLastRound,
+    findFirstRound,
+    findAll,
+};
 //# sourceMappingURL=model.js.map

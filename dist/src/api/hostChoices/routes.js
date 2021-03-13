@@ -14,20 +14,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
+const logger_1 = require("../../logger");
 const router = express_1.Router();
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { word_id_one, word_id_two, round_id, times_shuffled } = req.body;
-    console.log('req', req.body);
     let result;
     let choice_id = -1;
     try {
         result = yield model_1.default.addHostChoice(word_id_one, word_id_two, round_id, times_shuffled);
-        console.log('result', result);
         choice_id = result.pop();
     }
     catch (err) {
-        // console.log('error', err)
-        console.log("error recording the host choice");
+        logger_1.log("error recording the host choice");
+        logger_1.log(err.message);
     }
     if (choice_id > -1) {
         res.status(201).json({ choice_id: choice_id });

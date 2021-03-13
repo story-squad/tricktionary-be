@@ -1,6 +1,6 @@
 import { Router } from "express";
 import Rounds from "./model";
-
+import { log } from "../../logger";
 const router = Router();
 
 router.post("/start", async (req, res) => {
@@ -15,7 +15,7 @@ router.post("/finish", async (req, res) => {
     const result: any = await Rounds.roundFinished(Number(roundId));
     res.status(200).json({ result });
   } catch (err) {
-    console.log(err);
+    log(err.message);
     res.status(400).json({ err });
   }
 });

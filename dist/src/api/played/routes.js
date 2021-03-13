@@ -12,9 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const model_1 = require("./model");
 const router = express_1.Router();
+const logger_1 = require("../../logger");
 router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { player_id, game_id } = req.body;
-    console.log("NEW PLAYED RECORD.");
+    logger_1.log("NEW PLAYED RECORD.");
     if (!(player_id && game_id)) {
         res.status(400).json({ message: "missing information" });
     }

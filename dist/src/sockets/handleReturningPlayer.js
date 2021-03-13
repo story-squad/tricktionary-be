@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
+const logger_1 = require("../logger");
 const handleLobbyJoin_1 = __importDefault(require("./handleLobbyJoin"));
 /**
  * Determine whether or not the player should auto re-join an existing game.
@@ -37,9 +38,8 @@ function handleReturningPlayer(io, socket, token, lobbies) {
         try {
             login = yield common_1.localAxios.post("/api/auth/login", {
                 user_id,
-                last_token: token
+                last_token: token,
             });
-            // console.log("DATA", login.data);
             player = login.data.player;
             newtoken = login.data.token;
             old_user_id = login.data.old_user_id;
@@ -52,11 +52,12 @@ function handleReturningPlayer(io, socket, token, lobbies) {
         common_1.privateMessage(io, socket, "token update", newtoken);
         // check for last_played activity
         if (!player.last_played || !lobbies[player.last_played]) {
-            console.log(player.last_played, " game not found.");
+            logger_1.log(`${player.last_played}, game not found.`);
             return;
         }
         // if we're not already in the room,
-        if (lobbies[player.last_played].players.filter((p) => p.id === socket.id).length === 0) {
+        if (lobbies[player.last_played].players.filter((p) => p.id === socket.id)
+            .length === 0) {
             // if this is a re-join, make it known.
             lobbies[player.last_played].players = lobbies[player.last_played].players.map((player) => {
                 if (player.id === old_user_id) {

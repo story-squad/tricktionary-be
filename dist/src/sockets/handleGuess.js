@@ -15,17 +15,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleArrayOfGuesses = void 0;
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
+const logger_1 = require("../logger");
 function handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses) {
     return __awaiter(this, void 0, void 0, function* () {
         const lobby = lobbies[lobbyCode];
         const roundId = lobby.roundId;
-        console.log("vote & calculate scores");
+        logger_1.log(`vote & calculate scores, ${lobbyCode}`);
         guesses.forEach((g) => __awaiter(this, void 0, void 0, function* () {
             try {
                 yield common_1.localAxios.post("/api/votes", {
                     userID: g.player,
                     definitionID: g.guess,
-                    roundID: roundId
+                    roundID: roundId,
                 });
                 lobby.players.forEach((player) => {
                     if (g.guess === 0 && player.id === g.player) {
@@ -37,21 +38,21 @@ function handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses) {
                 });
             }
             catch (err) {
-                console.log(`error: handleArrayOfGuesses, ${err.message}`);
+                logger_1.log(`error: handleArrayOfGuesses, ${err.message}`);
             }
         }));
         try {
             const newRound = yield common_1.localAxios.post("/api/round/finish", { roundId });
             if (newRound.status === 200) {
-                console.log(`* end of round ${roundId}`);
+                logger_1.log(`* end of round ${roundId}`);
             }
         }
         catch (err) {
-            console.log("error while ending round!");
+            logger_1.log(`error while ending round!, ${lobbyCode}`);
             handleErrorMessage_1.default(io, socket, 2003, "there was a server error while ending the round");
             return;
         }
-        console.log("changing phase");
+        logger_1.log(`changing phase, ${lobbyCode}`);
         lobbies[lobbyCode].phase = "RESULTS";
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
     });

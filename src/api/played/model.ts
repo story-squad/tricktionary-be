@@ -1,5 +1,6 @@
 import db from "../../dbConfig";
 import { v4 } from "uuid";
+// import { log } from "../../logger";
 
 async function played(player_id: string, game_id: string) {
   const uuId = v4();
@@ -16,7 +17,6 @@ async function getGames(player_id: string) {
   let result;
   try {
     result = await db("Played").where({ player_id }).returning("game_id");
-    // console.log(result);
   } catch (err) {
     result = { ok: false, message: err.message };
   }

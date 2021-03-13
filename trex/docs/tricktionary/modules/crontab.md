@@ -15,9 +15,10 @@
 
 ### Functions
 
-- [destroyScheduledTask](crontab.md#destroyscheduledtask)
+- [deleteScheduledTask](crontab.md#deletescheduledtask)
 - [getScheduledTask](crontab.md#getscheduledtask)
 - [schedulePulseCheck](crontab.md#schedulepulsecheck)
+- [scheduleTimer](crontab.md#scheduletimer)
 - [startScheduledTask](crontab.md#startscheduledtask)
 - [stopScheduledTask](crontab.md#stopscheduledtask)
 
@@ -27,23 +28,23 @@
 
 • `Const` **lobbyTasks**: [*cronTaskIndex*](../interfaces/crontab.crontaskindex.md)
 
-Defined in: [crontab.ts:39](https://github.com/story-squad/tricktionary-be/blob/d40d323/src/sockets/crontab.ts#L39)
+Defined in: [crontab.ts:39](https://github.com/story-squad/tricktionary-be/blob/f060393/src/sockets/crontab.ts#L39)
 
 ## Functions
 
-### destroyScheduledTask
+### deleteScheduledTask
 
-▸ **destroyScheduledTask**(`lobbyCode`: *string*): *void*
+▸ **deleteScheduledTask**(`taskName`: *string*): *void*
 
 #### Parameters:
 
 Name | Type |
 :------ | :------ |
-`lobbyCode` | *string* |
+`taskName` | *string* |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:104](https://github.com/story-squad/tricktionary-be/blob/d40d323/src/sockets/crontab.ts#L104)
+Defined in: [crontab.ts:119](https://github.com/story-squad/tricktionary-be/blob/f060393/src/sockets/crontab.ts#L119)
 
 ___
 
@@ -61,7 +62,7 @@ Name | Type |
 
 a Tricktionary scheduled-task
 
-Defined in: [crontab.ts:128](https://github.com/story-squad/tricktionary-be/blob/d40d323/src/sockets/crontab.ts#L128)
+Defined in: [crontab.ts:143](https://github.com/story-squad/tricktionary-be/blob/f060393/src/sockets/crontab.ts#L143)
 
 ___
 
@@ -84,7 +85,25 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:46](https://github.com/story-squad/tricktionary-be/blob/d40d323/src/sockets/crontab.ts#L46)
+Defined in: [crontab.ts:66](https://github.com/story-squad/tricktionary-be/blob/f060393/src/sockets/crontab.ts#L66)
+
+___
+
+### scheduleTimer
+
+▸ **scheduleTimer**(`io`: *any*, `lobbyCode`: *string*, `limit`: *number*): *void*
+
+#### Parameters:
+
+Name | Type |
+:------ | :------ |
+`io` | *any* |
+`lobbyCode` | *string* |
+`limit` | *number* |
+
+**Returns:** *void*
+
+Defined in: [crontab.ts:153](https://github.com/story-squad/tricktionary-be/blob/f060393/src/sockets/crontab.ts#L153)
 
 ___
 
@@ -100,7 +119,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:115](https://github.com/story-squad/tricktionary-be/blob/d40d323/src/sockets/crontab.ts#L115)
+Defined in: [crontab.ts:130](https://github.com/story-squad/tricktionary-be/blob/f060393/src/sockets/crontab.ts#L130)
 
 ___
 
@@ -116,4 +135,4 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:94](https://github.com/story-squad/tricktionary-be/blob/d40d323/src/sockets/crontab.ts#L94)
+Defined in: [crontab.ts:109](https://github.com/story-squad/tricktionary-be/blob/f060393/src/sockets/crontab.ts#L109)

@@ -6,6 +6,8 @@ import {
   localAxios,
 } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
+import { log } from "../logger";
+
 async function handleStartGame(
   io: any,
   socket: any,
@@ -16,10 +18,14 @@ async function handleStartGame(
 ) {
   let r = checkSettings(settings);
   if (!r.ok) {
-    handleErrorMessage(io, socket, 2006,'there was an error with starting your game');
+    handleErrorMessage(
+      io,
+      socket,
+      2006,
+      "there was an error with starting your game"
+    );
     return;
   }
-  console.log(r.settings);
   let { word, source } = r.settings;
   if (word.id === 0) {
     word = await contributeWord(word.word, word.definition, source);
@@ -45,14 +51,14 @@ async function handleStartGame(
         round_id: newRound.roundId,
       });
     } catch (err) {
-      console.log("error recording the host's choices");
-      console.log(err.message);
+      log("error recording the host's choices");
+      log(err.message);
     }
 
     // pub-sub update
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
   } else {
-    console.log("there was a server error while starting the game");
+    log("there was a server error while starting the game");
   }
 }
 

@@ -10,12 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
+const logger_1 = require("../logger");
 function handleUpdateUsername(io, socket, lobbies, newUsername) {
     return __awaiter(this, void 0, void 0, function* () {
         const lobbyCode = common_1.whereAmI(socket);
         if (!lobbyCode) {
             // not likely to occur... but we can station a guard here to prevent developer-errors.
-            console.log("WTF!?");
+            logger_1.log("WTF!? (handleUpdateUsername)");
             return;
         }
         const oldPlayer = lobbies[lobbyCode].players.filter((player) => player.id === socket.id)[0];
@@ -36,17 +37,14 @@ function handleUpdateUsername(io, socket, lobbies, newUsername) {
                 name: updatedPlayer.username,
                 definition: updatedPlayer.definition,
                 points: updatedPlayer.points,
-                lobbyCode
+                lobbyCode,
             });
             // *notify other players if the change.
             io.to(lobbyCode).emit("updated username", updatedPlayer.id, updatedPlayer.username);
         }
         catch (err) {
-            console.log(err.message);
+            logger_1.log(err.message);
         }
-        // console.log(lobbies[lobbyCode].players);
-        // send the token to the player
-        // io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
     });
 }
 exports.default = handleUpdateUsername;

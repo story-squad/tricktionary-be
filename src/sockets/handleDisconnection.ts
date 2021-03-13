@@ -1,4 +1,6 @@
 import { whereAmI } from "./common";
+import { log } from "../logger";
+
 function handleDisconnection(io: any, socket: any, lobbies: any) {
   const lobbyCode = whereAmI(socket);
   if (lobbyCode) {
@@ -15,7 +17,7 @@ function handleDisconnection(io: any, socket: any, lobbies: any) {
       );
       lobbies[lobbyCode].players = [
         ...lobbies[lobbyCode].players,
-        { ...oldPlayer, connected: false, pulseCheck: true }
+        { ...oldPlayer, connected: false, pulseCheck: true },
       ];
 
       if (
@@ -23,7 +25,7 @@ function handleDisconnection(io: any, socket: any, lobbies: any) {
           .length === 0
       ) {
         // instead of deleting the players, we'll mark them as player.connected= false
-        console.log('deleting lobby, ', lobbyCode);
+        log(`deleting lobby: ${lobbyCode}`);
         delete lobbies[lobbyCode];
       }
       // *notify other players in the room.

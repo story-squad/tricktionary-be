@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
+const logger_1 = require("../logger");
 /**
  *
  * Allows the host to store and retrieve
@@ -74,7 +75,6 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
         function finalFormat(defRecord) {
             const { user_id, definition, def_word } = defRecord;
             const { word } = def_word;
-            console.log({ user_id, definition, word });
             return { user_id, definition, word };
         }
         function getDef(user_id, game_id) {
@@ -101,7 +101,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                     def_word = rWord.data.word;
                 }
                 catch (err) {
-                    console.log(err.message);
+                    logger_1.log(err.message);
                     return;
                 }
                 return finalFormat(Object.assign(Object.assign({}, mvd.data.definition), { user_id, def_word }));
@@ -113,8 +113,8 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
             results.push(Object.assign({}, firstPlaceResult));
         }
         catch (err) {
-            console.log("error getting 1st place");
-            console.log(err.message);
+            logger_1.log("error getting 1st place");
+            logger_1.log(err.message);
         }
         if (secondPlace) {
             try {
@@ -122,8 +122,8 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                 results.push(Object.assign({}, secondPlaceResult));
             }
             catch (err) {
-                console.log("error getting second place");
-                console.log(err.message);
+                logger_1.log("error getting second place");
+                logger_1.log(err.message);
             }
         }
         if (thirdPlace) {
@@ -132,8 +132,8 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                 results.push(Object.assign({}, thirdPlaceResult));
             }
             catch (err) {
-                console.log("error getting third place");
-                console.log(err.message);
+                logger_1.log("error getting third place");
+                logger_1.log(err.message);
             }
         }
         // add results to game-data & change phase

@@ -1,15 +1,12 @@
 import db from "../../dbConfig";
 import { validateRound } from "./utils";
-
+// import { log } from "../../logger";
 function add(gameState: any, wordId: number, lobbyCode: string) {
   const newRound = validateRound({
     word_id: wordId,
     number_players: gameState.players.length,
-    spoilers: lobbyCode
+    spoilers: lobbyCode,
   });
-  if (newRound.ok) {
-    console.log(newRound.value)
-  }
   return newRound.ok
     ? db("Rounds").insert(newRound.value).returning("id")
     : newRound.message;

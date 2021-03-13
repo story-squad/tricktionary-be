@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
+const logger_1 = require("../logger");
 /**
  *
  * Allows the host to change game state. *experimental feature
@@ -24,13 +25,13 @@ function handleSetPhase(io, socket, lobbyCode, lobbies, phase) {
     return __awaiter(this, void 0, void 0, function* () {
         const checkIfHost = common_1.playerIsHost(socket, lobbyCode, lobbies);
         if (checkIfHost.ok) {
-            console.log(`host is setting phase : ${phase}`);
+            logger_1.log(`host is setting phase : ${phase}`);
             lobbies[lobbyCode].phase = phase;
             common_1.privateMessage(io, socket, "info", `ok, set phase: ${phase}`);
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         }
         else {
-            console.log(`NOT HOST: ${socket.id}`);
+            logger_1.log(`NOT HOST: ${socket.id}`);
             common_1.privateMessage(io, socket, "error", "unauthorized call, punk!");
         }
     });

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import Definitions from "./model";
 import { DefinitionType } from "./utils";
+import { log } from "../../logger";
 
 const router = Router();
 
@@ -12,7 +13,8 @@ router.post("/new", async (req, res) => {
     result = await Definitions.add(playerId, definition, roundId);
     defId = result.pop();
   } catch (err) {
-    console.log("error! definitions router");
+    log("error! definitions router");
+    log(err.message);
   }
   if (defId > -1) {
     res.status(201).json({ definitionId: defId });

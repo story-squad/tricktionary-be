@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
+const logger_1 = require("../../logger");
 const router = express_1.Router();
 router.post("/start", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { lobby, wordId, lobbyCode } = req.body;
@@ -27,7 +28,7 @@ router.post("/finish", (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json({ result });
     }
     catch (err) {
-        console.log(err);
+        logger_1.log(err.message);
         res.status(400).json({ err });
     }
 }));

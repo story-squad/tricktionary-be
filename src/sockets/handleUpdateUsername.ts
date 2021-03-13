@@ -1,4 +1,5 @@
 import { localAxios, whereAmI } from "./common";
+import { log } from "../logger";
 
 async function handleUpdateUsername(
   io: any,
@@ -9,7 +10,7 @@ async function handleUpdateUsername(
   const lobbyCode = whereAmI(socket);
   if (!lobbyCode) {
     // not likely to occur... but we can station a guard here to prevent developer-errors.
-    console.log("WTF!?");
+    log("WTF!? (handleUpdateUsername)");
     return;
   }
   const oldPlayer = lobbies[lobbyCode].players.filter(
@@ -19,7 +20,7 @@ async function handleUpdateUsername(
   // const {id, username, definition, points} = oldPlayer;
   const updatedPlayer = {
     ...oldPlayer,
-    username: newUsername
+    username: newUsername,
   };
   // make a copy of the player list that doesn't include oldPlayer.
   const otherPlayers = lobbies[lobbyCode].players.filter(
@@ -37,7 +38,7 @@ async function handleUpdateUsername(
       name: updatedPlayer.username,
       definition: updatedPlayer.definition,
       points: updatedPlayer.points,
-      lobbyCode
+      lobbyCode,
     });
     // *notify other players if the change.
     io.to(lobbyCode).emit(
@@ -46,10 +47,7 @@ async function handleUpdateUsername(
       updatedPlayer.username
     );
   } catch (err) {
-    console.log(err.message);
+    log(err.message);
   }
-  // console.log(lobbies[lobbyCode].players);
-  // send the token to the player
-  // io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
 }
 export default handleUpdateUsername;

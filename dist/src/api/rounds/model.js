@@ -5,15 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const utils_1 = require("./utils");
+// import { log } from "../../logger";
 function add(gameState, wordId, lobbyCode) {
     const newRound = utils_1.validateRound({
         word_id: wordId,
         number_players: gameState.players.length,
-        spoilers: lobbyCode
+        spoilers: lobbyCode,
     });
-    if (newRound.ok) {
-        console.log(newRound.value);
-    }
     return newRound.ok
         ? dbConfig_1.default("Rounds").insert(newRound.value).returning("id")
         : newRound.message;
