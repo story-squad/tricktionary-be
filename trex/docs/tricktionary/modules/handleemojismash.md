@@ -28,4 +28,4 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [handleEmojiSmash.ts:13](https://github.com/story-squad/tricktionary-be/blob/f060393/src/sockets/handleEmojiSmash.ts#L13)
+Defined in: [handleEmojiSmash.ts:13](https://github.com/story-squad/tricktionary-be/blob/855fef0/src/sockets/handleEmojiSmash.ts#L13)

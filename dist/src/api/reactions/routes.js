@@ -8,22 +8,58 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const model_1 = __importDefault(require("./model"));
+const middleware_1 = require("../middleware");
+const util_1 = require("./util");
+const logger_1 = require("../../logger");
 const router = express_1.Router();
-router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // return a list of available reactions.
-    let available;
-    try {
-        available = yield model_1.default.getAll();
-        res.status(200).json({ available });
+/**
+ * request all from the database table "Reactions"
+ * @param req Request object
+ * @param res Resonse object
+ * @returns
+ */
+function sendFromDatabase(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const reply = yield util_1.getDatabaseReactions(req.redis);
+        return res.json(reply);
+    });
+}
+router.get("/", middleware_1.redisCache, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const cache = req.redis;
+    // no redis ?
+    if (!(cache === null || cache === void 0 ? void 0 : cache.getValue)) {
+        // not connected to redis
+        try {
+            yield sendFromDatabase(req, res);
+        }
+        catch (err) {
+            return res
+                .status(400)
+                .json({ error: err.message || "database lookup error" });
+        }
     }
-    catch (err) {
-        res.status(401).json({ error: err });
+    else {
+        // with redis
+        try {
+            yield cache.getValue("tricktionary-reactions", function (err, value) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    if (value && !err) {
+                        return res.json(JSON.parse(value));
+                    }
+                    else {
+                        logger_1.log("tricktionary-reactions were not found in the cache => sendFromDatabase");
+                        // database
+                        yield sendFromDatabase(req, res);
+                    }
+                });
+            });
+        }
+        catch (err) {
+            logger_1.log((err === null || err === void 0 ? void 0 : err.message) || err);
+            next();
+        }
     }
 }));
 exports.default = router;
