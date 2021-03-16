@@ -10,7 +10,11 @@ import { log } from "../logger";
 import handleErrorMessage from "./handleErrorMessage";
 
 import { schedulePulseCheck } from "./crontab";
-
+const JOINABLE = [
+  "PREGAME",
+  "RESULTS",
+  "FINALE"
+];
 /**
  * Connects the player with the active game being played.
  *
@@ -74,7 +78,7 @@ async function handleLobbyJoin(
       lobbies[lobbyCode].players.filter(
         (p: any) => p?.rejoinedAs && p.rejoinedAs === socket.id
       ).length > 0;
-    if (lobbies[lobbyCode].phase !== "PREGAME" && !rejoined) {
+    if (lobbies[lobbyCode].phase in JOINABLE && !rejoined) {
       // prevent *new players from joining mid-game.
       handleErrorMessage(
         io,
