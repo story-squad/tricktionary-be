@@ -219,6 +219,9 @@ io.on("connection", (socket) => {
       reactionID
     );
   });
+  socket.on("get reactions", () => {
+    gameSocketHandler.handleGetReactions(io, socket, lobbies);
+  })
 });
 
 export { socketApp };

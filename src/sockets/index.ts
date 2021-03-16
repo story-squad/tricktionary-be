@@ -18,6 +18,8 @@ import handleMessagePlayer from "./handleMessagePlayer";
 import handleRevealResults from "./handleRevealResults";
 import handleSetFinale from "./handleSetFinale";
 import handleEmojiSmash from "./handleEmojiSmash";
+import handleGetReactions from "./handleGetReactions";
+
 
 export default {
   handleLobbyLeave,
@@ -39,5 +41,6 @@ export default {
   handleMessagePlayer,
   handleRevealResults,
   handleSetFinale,
-  handleEmojiSmash
+  handleEmojiSmash,
+  handleGetReactions
 };
