@@ -29,6 +29,9 @@ export default async function handleRevealResults(
       2005,
       "You are not the host of the requested game"
     );
+    return
   }
+  lobbies[lobbyCode].phase = "RESULTS";
   io.to(lobbyCode).emit("reveal results", guesses);
+  io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
 }
