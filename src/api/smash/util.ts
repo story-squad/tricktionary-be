@@ -1,6 +1,6 @@
 // import { log } from "../../logger";
 import { TricktionaryCache } from "../middleware";
-import { incr, add } from "./model";
+import { incr, add, cacheGroupName } from "./model";
 import { log } from "../../logger";
 
 /**
@@ -54,7 +54,7 @@ export async function smashUpdate(
   last?: number
 ) {
   // create a unique string keyname
-  const keyName = `${game_id}-${round_id}-${definition_id}-${reaction_id}`;
+  const keyName = `${cacheGroupName}${game_id}-${round_id}-${definition_id}-${reaction_id}`;
   console.log(keyName);
   // no TricktionaryCache ?
   if (!mem?.incValue) {

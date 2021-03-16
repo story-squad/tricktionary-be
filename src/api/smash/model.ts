@@ -1,6 +1,8 @@
 import db from "../../dbConfig";
 // import { log } from "../../logger";
-export { add, get, incr, updateCount, bulkUpdate };
+const cacheGroupName = "SMASHED";
+
+export { add, get, incr, updateCount, bulkUpdate, cacheGroupName, getTotals };
 
 function add(
   game_id: string,
@@ -67,22 +69,48 @@ async function updateCount(
       definition_id,
       reaction_id
     })
+    .first()
     .update({ count })
     .returning("count");
 }
 
+/**
+ * update these records in the RDB where necessary,
+ *
+ * @param arr array of Smash records
+ * @param cb callback function
+ * @returns the list of records, unmodified
+ */
 async function bulkUpdate(arr: any[], cb?: any) {
   try {
     arr.forEach(async (item) => {
       const { game_id, round_id, definition_id, reaction_id, value } = item;
-      const result = await updateCount(game_id, round_id, definition_id, reaction_id, value);
-      const check:number = Number(result);
-      if (check === NaN || check <= 0) {
+      // check the database for an existing record
+      const result = await db("Smash")
+        .where({
+          game_id,
+          round_id,
+          definition_id,
+          reaction_id
+        })
+        .first();
+      if (!(result?.id && result?.count)) {
         await add(game_id, round_id, definition_id, reaction_id, value);
+      } else {
+        if (value > result?.count) {
+          await db("Smash").where({ id: result.id }).update({ count: value });
+        }
       }
     });
   } catch (err) {
     console.log(err);
   }
   return await cb(arr);
+}
+
+async function getTotals(game_id: string, round_id: number) {
+  return await db("Smash").where({
+    game_id,
+    round_id
+  });
 }
