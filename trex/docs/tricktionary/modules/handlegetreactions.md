@@ -24,4 +24,4 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleGetReactions.ts:4](https://github.com/story-squad/tricktionary-be/blob/c4cf9da/src/sockets/handleGetReactions.ts#L4)
+Defined in: [handleGetReactions.ts:4](https://github.com/story-squad/tricktionary-be/blob/c6eb6c8/src/sockets/handleGetReactions.ts#L4)

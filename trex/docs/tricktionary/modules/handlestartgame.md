@@ -27,4 +27,4 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleStartGame.ts:11](https://github.com/story-squad/tricktionary-be/blob/c4cf9da/src/sockets/handleStartGame.ts#L11)
+Defined in: [handleStartGame.ts:11](https://github.com/story-squad/tricktionary-be/blob/c6eb6c8/src/sockets/handleStartGame.ts#L11)

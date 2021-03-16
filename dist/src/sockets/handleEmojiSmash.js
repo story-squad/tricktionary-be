@@ -36,7 +36,7 @@ function handleEmojiSmash(io, socket, lobbies, definitionId, reactionId) {
         const { value } = data || 0;
         logger_1.log(`Definition ${definitionId}, Reaction ${reactionId} : ${value}`);
         // send back result
-        io.to(lobbyCode).emit("set reaction", definitionId, reactionId, value);
+        io.to(lobbyCode).emit("get reaction", definitionId, reactionId, value);
     });
 }
 exports.default = handleEmojiSmash;
