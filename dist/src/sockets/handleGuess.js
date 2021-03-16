@@ -52,8 +52,8 @@ function handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses) {
             handleErrorMessage_1.default(io, socket, 2003, "there was a server error while ending the round");
             return;
         }
-        logger_1.log(`changing phase, ${lobbyCode}`);
-        lobbies[lobbyCode].phase = "RESULTS";
+        logger_1.log(`changing phase, ${lobbyCode} -> POSTGAME`);
+        lobbies[lobbyCode].phase = "POSTGAME";
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
     });
 }

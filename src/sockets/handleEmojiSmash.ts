@@ -1,4 +1,4 @@
-import { whereAmI } from "./common";
+import { whereAmI, localAxios } from "./common";
 import { log } from "../logger";
 type emojiReactions = {
   [key: number]: { [key: number]: number };
@@ -10,32 +10,30 @@ type emojiReactions = {
  * @param definitionID
  * @param reactionID
  */
-function handleEmojiSmash(
+async function handleEmojiSmash(
   io: any,
   socket: any,
   lobbies: any,
-  definitionID: number,
-  reactionID: number
+  definitionId: number,
+  reactionId: number
 ) {
   const lobbyCode: string = whereAmI(socket) || "";
   if (!lobbyCode.length) {
     log(`could not find a lobbyCode for socket with id ${socket.id}`);
     return;
   }
-  // 1. create reactions object in lobby data if it doesn't exist
-  const reactions: emojiReactions = lobbies[lobbyCode]?.reactions || {};
-
-  if (!reactions[definitionID]) {
-    reactions[definitionID] = {};
-  }
-
-  if (!reactions[definitionID][reactionID]) {
-    reactions[definitionID][reactionID] = 0;
-  }
-  // 2. increment  lobbyData.reactions[definitionId][reactionId]
-  reactions[definitionID][reactionID] += 1;
-  // 3. socket.emit('get reaction', definitionId, reactionId) to all players, including the original sender
-  io.to(lobbyCode).emit("get reaction", definitionID, reactionID);
+  const game_id = lobbies[lobbyCode].game_id;
+  const roundId = lobbies[lobbyCode].roundId;
+  const { data } = await localAxios.put(`/api/smash/emoji/${lobbyCode}`, {
+    game_id,
+    roundId,
+    definitionId,
+    reactionId
+  });
+  const { value } = data || 0;
+  log(`Definition ${definitionId}, Reaction ${reactionId} : ${value}`);
+  // send back result
+  io.to(lobbyCode).emit("get reaction", definitionId, reactionId, value);
 }
 
 export default handleEmojiSmash;

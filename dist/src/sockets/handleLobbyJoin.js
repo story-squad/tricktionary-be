@@ -16,6 +16,11 @@ const common_1 = require("./common");
 const logger_1 = require("../logger");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
 const crontab_1 = require("./crontab");
+const JOINABLE = [
+    "PREGAME",
+    "RESULTS",
+    "FINALE"
+];
 /**
  * Connects the player with the active game being played.
  *
@@ -53,7 +58,7 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
         }
         if (lobbies[lobbyCode] && lobbies[lobbyCode].players) {
             let rejoined = lobbies[lobbyCode].players.filter((p) => (p === null || p === void 0 ? void 0 : p.rejoinedAs) && p.rejoinedAs === socket.id).length > 0;
-            if (lobbies[lobbyCode].phase !== "PREGAME" && !rejoined) {
+            if (lobbies[lobbyCode].phase in JOINABLE && !rejoined) {
                 // prevent *new players from joining mid-game.
                 handleErrorMessage_1.default(io, socket, 2002, `Unfortunately, the lobby with code ${lobbyCode} has already begun their game`);
                 return;

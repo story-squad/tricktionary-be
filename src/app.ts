@@ -56,7 +56,7 @@ api.use("/api/played", apiRoutes.played);
 api.use("/api/choice", apiRoutes.choice);
 api.use("/api/payments", apiRoutes.payment);
 api.use("/api/member", apiRoutes.member);
-
+api.use("/api/smash", apiRoutes.smash);
 // web sockets
 const socketApp = createServer(api);
 const io = new Server(socketApp, { cors: { origin: "*" } });
@@ -67,7 +67,7 @@ const redisPort: string = process.env.REDIS_PORT || "6379";
 // use Redis (cache) when available
 if (redisHost.length > 0) {
   // create Redis adapter
-  log('found REDIS_HOST, creating adapter.')
+  log("found REDIS_HOST, creating adapter.");
   try {
     const pubClient = new RedisClient({
       host: redisHost,
@@ -219,6 +219,9 @@ io.on("connection", (socket) => {
       reactionID
     );
   });
+  socket.on("get reactions", () => {
+    gameSocketHandler.handleGetReactions(io, socket, lobbies);
+  })
 });
 
 export { socketApp };

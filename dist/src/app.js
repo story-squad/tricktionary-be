@@ -76,6 +76,7 @@ api.use("/api/played", api_1.default.played);
 api.use("/api/choice", api_1.default.choice);
 api.use("/api/payments", api_1.default.payment);
 api.use("/api/member", api_1.default.member);
+api.use("/api/smash", api_1.default.smash);
 // web sockets
 const socketApp = http_1.createServer(api);
 exports.socketApp = socketApp;
@@ -85,7 +86,7 @@ const redisPort = process.env.REDIS_PORT || "6379";
 // use Redis (cache) when available
 if (redisHost.length > 0) {
     // create Redis adapter
-    logger_1.log('found REDIS_HOST, creating adapter.');
+    logger_1.log("found REDIS_HOST, creating adapter.");
     try {
         const pubClient = new redis_1.RedisClient({
             host: redisHost,
@@ -161,6 +162,9 @@ io.on("connection", (socket) => {
     });
     socket.on("send reaction", (definitionID, reactionID) => {
         sockets_1.default.handleEmojiSmash(io, socket, lobbies, definitionID, reactionID);
+    });
+    socket.on("get reactions", () => {
+        sockets_1.default.handleGetReactions(io, socket, lobbies);
     });
 });
 //# sourceMappingURL=app.js.map

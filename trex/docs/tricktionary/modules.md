@@ -11,6 +11,7 @@
 - [handleDisconnection](modules/handledisconnection.md)
 - [handleEmojiSmash](modules/handleemojismash.md)
 - [handleErrorMessage](modules/handleerrormessage.md)
+- [handleGetReactions](modules/handlegetreactions.md)
 - [handleGuess](modules/handleguess.md)
 - [handleLobbyCreate](modules/handlelobbycreate.md)
 - [handleLobbyJoin](modules/handlelobbyjoin.md)
