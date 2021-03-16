@@ -12,6 +12,9 @@ export type TricktionaryCache = {
   isConnected: any;
   connect: any;
   disconnect: any;
+  incValue: any;
+  findKeys: any;
+  createCallback: any;
 };
 
 interface rOptions {
@@ -25,7 +28,7 @@ const defaultOptions: rOptions = {
   port: 6379,
   host: "localhost",
   options: {},
-  name: "redis",
+  name: "redis"
 };
 
 interface rClients {
@@ -44,7 +47,7 @@ function redisOptions(port: any, host: any, options: any, name: any) {
     port: port || defaultOptions.port,
     host: host || defaultOptions.host,
     options: options || defaultOptions.options,
-    name: name || defaultOptions.name,
+    name: name || defaultOptions.name
   };
 }
 
@@ -162,12 +165,44 @@ function passOn(port: number, host: string, options: any, name: string) {
     middleware.disconnect(next);
   }
 
+  function incValue(keyName: string, cb?: any) {
+    const callBack = cb || redis.print;
+    clients?.setter?.incr(keyName, callBack);
+  }
+  function findKeys(pattern: string, cb?: any) {
+    const callBack = cb || redis.print;
+    clients?.getter?.keys(pattern, callBack);
+  }
+
+  /**
+   * create a callback function
+   * @param key name of stored value
+   * @param onReply function(value) => doSomethingWith(value)
+   * @param onError function(err) => doSomethingWith(err)
+   * @returns async function
+   */
+  function createCallback(key: string, onReply: any, onError?: any) {
+    const errFunc = onError ? onError : redis.print;
+    return async function (err: any, value: any) {
+      if (value && !err) {
+        // ie. onReply(value)=> res.json({ value });
+        return await onReply(value);
+      } else {
+        log(`[cache] ${key} not found!`);
+        return await errFunc(err);
+      }
+    };
+  }
+
   const cache: TricktionaryCache = {
     getValue,
     setValue,
     isConnected,
     connect,
     disconnect,
+    incValue,
+    findKeys,
+    createCallback
   };
   middleware.cache = cache;
   return middleware;
