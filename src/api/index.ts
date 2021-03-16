@@ -13,6 +13,7 @@ import played from "./played/routes";
 import choice from "./hostChoices/routes";
 import payment from "./payment/routes";
 import member from "./member/routes";
+import smash from "./smash/routes";
 export default {
   word,
   reaction,
@@ -28,5 +29,6 @@ export default {
   played,
   choice,
   payment,
-  member
+  member,
+  smash
 };
