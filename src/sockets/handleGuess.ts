@@ -45,7 +45,7 @@ export async function handleArrayOfGuesses(
     );
     return;
   }
-  log(`changing phase, ${lobbyCode} -> RESULTS`);
-  lobbies[lobbyCode].phase = "RESULTS";
+  log(`changing phase, ${lobbyCode} -> POSTGAME`);
+  lobbies[lobbyCode].phase = "POSTGAME";
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
 }
