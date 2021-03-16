@@ -210,7 +210,7 @@ io.on("connection", (socket) => {
     gameSocketHandler.handleSetFinale(io, socket, lobbyCode, lobbies);
   });
 
-  socket.on("get reaction", (definitionID: number, reactionID: number) => {
+  socket.on("send reaction", (definitionID: number, reactionID: number) => {
     gameSocketHandler.handleEmojiSmash(
       io,
       socket,

@@ -33,7 +33,7 @@ async function handleEmojiSmash(
   const { value } = data || 0;
   log(`Definition ${definitionId}, Reaction ${reactionId} : ${value}`);
   // send back result
-  io.to(lobbyCode).emit("set reaction", definitionId, reactionId, value);
+  io.to(lobbyCode).emit("get reaction", definitionId, reactionId, value);
 }
 
 export default handleEmojiSmash;
