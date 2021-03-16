@@ -18,6 +18,7 @@ const routes_12 = __importDefault(require("./played/routes"));
 const routes_13 = __importDefault(require("./hostChoices/routes"));
 const routes_14 = __importDefault(require("./payment/routes"));
 const routes_15 = __importDefault(require("./member/routes"));
+const routes_16 = __importDefault(require("./smash/routes"));
 exports.default = {
     word: routes_1.default,
     reaction: routes_2.default,
@@ -33,6 +34,7 @@ exports.default = {
     played: routes_12.default,
     choice: routes_13.default,
     payment: routes_14.default,
-    member: routes_15.default
+    member: routes_15.default,
+    smash: routes_16.default
 };
 //# sourceMappingURL=index.js.map

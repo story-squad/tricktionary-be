@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const logger_1 = require("../logger");
@@ -9,25 +18,26 @@ const logger_1 = require("../logger");
  * @param definitionID
  * @param reactionID
  */
-function handleEmojiSmash(io, socket, lobbies, definitionID, reactionID) {
-    var _a;
-    const lobbyCode = common_1.whereAmI(socket) || "";
-    if (!lobbyCode.length) {
-        logger_1.log(`could not find a lobbyCode for socket with id ${socket.id}`);
-        return;
-    }
-    // 1. create reactions object in lobby data if it doesn't exist
-    const reactions = ((_a = lobbies[lobbyCode]) === null || _a === void 0 ? void 0 : _a.reactions) || {};
-    if (!reactions[definitionID]) {
-        reactions[definitionID] = {};
-    }
-    if (!reactions[definitionID][reactionID]) {
-        reactions[definitionID][reactionID] = 0;
-    }
-    // 2. increment  lobbyData.reactions[definitionId][reactionId]
-    reactions[definitionID][reactionID] += 1;
-    // 3. socket.emit('get reaction', definitionId, reactionId) to all players, including the original sender
-    io.to(lobbyCode).emit("get reaction", definitionID, reactionID);
+function handleEmojiSmash(io, socket, lobbies, definitionId, reactionId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const lobbyCode = common_1.whereAmI(socket) || "";
+        if (!lobbyCode.length) {
+            logger_1.log(`could not find a lobbyCode for socket with id ${socket.id}`);
+            return;
+        }
+        const game_id = lobbies[lobbyCode].game_id;
+        const roundId = lobbies[lobbyCode].roundId;
+        const { data } = yield common_1.localAxios.put(`/api/smash/emoji/${lobbyCode}`, {
+            game_id,
+            roundId,
+            definitionId,
+            reactionId
+        });
+        const { value } = data || 0;
+        logger_1.log(`Definition ${definitionId}, Reaction ${reactionId} : ${value}`);
+        // send back result
+        io.to(lobbyCode).emit("set reaction", definitionId, reactionId, value);
+    });
 }
 exports.default = handleEmojiSmash;
 //# sourceMappingURL=handleEmojiSmash.js.map

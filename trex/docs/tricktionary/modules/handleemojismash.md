@@ -12,7 +12,7 @@
 
 ### default
 
-▸ **default**(`io`: *any*, `socket`: *any*, `lobbies`: *any*, `definitionID`: *number*, `reactionID`: *number*): *void*
+▸ **default**(`io`: *any*, `socket`: *any*, `lobbies`: *any*, `definitionId`: *number*, `reactionId`: *number*): *Promise*<void\>
 
 increase emoji (reactionID) smash counter for definitionID
 
@@ -23,9 +23,9 @@ Name | Type |
 `io` | *any* |
 `socket` | *any* |
 `lobbies` | *any* |
-`definitionID` | *number* |
-`reactionID` | *number* |
+`definitionId` | *number* |
+`reactionId` | *number* |
 
-**Returns:** *void*
+**Returns:** *Promise*<void\>
 
-Defined in: [handleEmojiSmash.ts:13](https://github.com/story-squad/tricktionary-be/blob/855fef0/src/sockets/handleEmojiSmash.ts#L13)
+Defined in: [handleEmojiSmash.ts:13](https://github.com/story-squad/tricktionary-be/blob/84c0a66/src/sockets/handleEmojiSmash.ts#L13)

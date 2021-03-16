@@ -32,8 +32,11 @@ function handleRevealResults(io, socket, lobbyCode, lobbies, guesses) {
         const authorized = common_1.playerIsHost(socket, lobbyCode, lobbies);
         if (!authorized.ok) {
             handleErrorMessage_1.default(io, socket, 2005, "You are not the host of the requested game");
+            return;
         }
+        lobbies[lobbyCode].phase = "RESULTS";
         io.to(lobbyCode).emit("reveal results", guesses);
+        io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
     });
 }
 exports.default = handleRevealResults;

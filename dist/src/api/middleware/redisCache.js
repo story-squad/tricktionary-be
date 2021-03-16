@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -14,7 +23,7 @@ const defaultOptions = {
     port: 6379,
     host: "localhost",
     options: {},
-    name: "redis",
+    name: "redis"
 };
 let getter;
 let setter;
@@ -24,7 +33,7 @@ function redisOptions(port, host, options, name) {
         port: port || defaultOptions.port,
         host: host || defaultOptions.host,
         options: options || defaultOptions.options,
-        name: name || defaultOptions.name,
+        name: name || defaultOptions.name
     };
 }
 /**
@@ -133,12 +142,47 @@ function passOn(port, host, options, name) {
     function disconnect(next) {
         middleware.disconnect(next);
     }
+    function incValue(keyName, cb) {
+        var _a;
+        const callBack = cb || redis_1.default.print;
+        (_a = clients === null || clients === void 0 ? void 0 : clients.setter) === null || _a === void 0 ? void 0 : _a.incr(keyName, callBack);
+    }
+    function findKeys(pattern, cb) {
+        var _a;
+        const callBack = cb || redis_1.default.print;
+        (_a = clients === null || clients === void 0 ? void 0 : clients.getter) === null || _a === void 0 ? void 0 : _a.keys(pattern, callBack);
+    }
+    /**
+     * create a callback function
+     * @param key name of stored value
+     * @param onReply function(value) => doSomethingWith(value)
+     * @param onError function(err) => doSomethingWith(err)
+     * @returns async function
+     */
+    function createCallback(key, onReply, onError) {
+        const errFunc = onError ? onError : redis_1.default.print;
+        return function (err, value) {
+            return __awaiter(this, void 0, void 0, function* () {
+                if (value && !err) {
+                    // ie. onReply(value)=> res.json({ value });
+                    return yield onReply(value);
+                }
+                else {
+                    logger_1.log(`[cache] ${key} not found!`);
+                    return yield errFunc(err);
+                }
+            });
+        };
+    }
     const cache = {
         getValue,
         setValue,
         isConnected,
         connect,
         disconnect,
+        incValue,
+        findKeys,
+        createCallback
     };
     middleware.cache = cache;
     return middleware;
