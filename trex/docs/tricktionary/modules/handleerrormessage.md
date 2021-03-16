@@ -27,4 +27,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleErrorMessage.ts:9](https://github.com/story-squad/tricktionary-be/blob/84c0a66/src/sockets/handleErrorMessage.ts#L9)
+Defined in: [handleErrorMessage.ts:9](https://github.com/story-squad/tricktionary-be/blob/c4cf9da/src/sockets/handleErrorMessage.ts#L9)

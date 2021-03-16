@@ -23,6 +23,7 @@ const handleMessagePlayer_1 = __importDefault(require("./handleMessagePlayer"));
 const handleRevealResults_1 = __importDefault(require("./handleRevealResults"));
 const handleSetFinale_1 = __importDefault(require("./handleSetFinale"));
 const handleEmojiSmash_1 = __importDefault(require("./handleEmojiSmash"));
+const handleGetReactions_1 = __importDefault(require("./handleGetReactions"));
 exports.default = {
     handleLobbyLeave: handleLobbyLeave_1.default,
     handleLobbyCreate: handleLobbyCreate_1.default,
@@ -43,6 +44,7 @@ exports.default = {
     handleMessagePlayer: handleMessagePlayer_1.default,
     handleRevealResults: handleRevealResults_1.default,
     handleSetFinale: handleSetFinale_1.default,
-    handleEmojiSmash: handleEmojiSmash_1.default
+    handleEmojiSmash: handleEmojiSmash_1.default,
+    handleGetReactions: handleGetReactions_1.default
 };
 //# sourceMappingURL=index.js.map

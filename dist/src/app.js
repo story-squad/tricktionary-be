@@ -163,5 +163,8 @@ io.on("connection", (socket) => {
     socket.on("send reaction", (definitionID, reactionID) => {
         sockets_1.default.handleEmojiSmash(io, socket, lobbies, definitionID, reactionID);
     });
+    socket.on("get reactions", () => {
+        sockets_1.default.handleGetReactions(io, socket, lobbies);
+    });
 });
 //# sourceMappingURL=app.js.map
