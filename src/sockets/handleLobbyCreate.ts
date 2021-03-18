@@ -1,3 +1,4 @@
+import { create } from "node:domain";
 import randomizer from "randomatic";
 import { log } from "../logger";
 
@@ -19,6 +20,11 @@ async function handleLobbyCreate(
   let og_host;
   let request_game;
   let game_id;
+  async function createGame(host: string) {
+    request_game = await localAxios.post(`/api/game/new`, { og_host: host });
+    return request_game?.data.ok ? request_game?.data.game_id : undefined;
+  }
+
   try {
     const last_player = await localAxios.get(
       `/api/player/last-user-id/${socket.id}`
@@ -26,10 +32,7 @@ async function handleLobbyCreate(
     if (last_player.data.player && last_player.data.player.id) {
       // create the Game
       og_host = last_player.data.player.id;
-      request_game = await localAxios.post(`/api/game/new`, { og_host });
-      if (request_game?.data.ok) {
-        game_id = request_game?.data.game_id;
-      }
+      game_id = await createGame(og_host);
     }
   } catch (err) {
     log(err.message);
@@ -41,7 +44,15 @@ async function handleLobbyCreate(
       log("[!game_id] asking HOST to retry create lobby")
       const newhost = og_host || socket.id;
       // ask player to retry with new token
-      return await updatePlayerToken(io, socket, newhost, username, "", 0, lobbyCode, "retry create lobby");
+      const { token } = await updatePlayerToken(io, socket, newhost, username, "", 0, lobbyCode, "retry create lobby");
+      if (!token) {
+        log("[!ERROR] creating new token for host");
+        return
+      }
+      // (restart the process)
+      og_host = newhost;
+      game_id = await createGame(og_host);
+      log(`created new token for host with game_id : ${game_id}`);
     } catch (err) {
       log("[ERROR] sending token with 'retry create lobby'");
       log(err.message);
