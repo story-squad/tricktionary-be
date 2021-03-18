@@ -281,7 +281,8 @@ async function updatePlayerToken(
   name: string,
   definition: string | undefined,
   points: number | undefined,
-  lobbyCode: string
+  lobbyCode: string,
+  info?: string,
 ) {
   let token;
   try {
@@ -296,8 +297,8 @@ async function updatePlayerToken(
     };
     const { data } = await localAxios.post("/api/auth/update-token", payload);
     if (data.ok) {
-      // update player (HOST) with new token
-      privateMessage(io, socket, "token update", data.token);
+      // send token to player
+      io.to(socket.id).emit('token update', data.token, info);
       // update the database
       token = data.token;
       await localAxios.put(`/api/player/id/${p_id}`, {
