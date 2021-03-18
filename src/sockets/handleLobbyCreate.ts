@@ -1,4 +1,4 @@
-import randomizer from "randomatic";
+import { pseudoRandomizer } from "../options"
 import { log } from "../logger";
 
 import {
@@ -14,7 +14,7 @@ async function handleLobbyCreate(
   username: string,
   lobbies: any
 ) {
-  const lobbyCode = randomizer("A", LC_LENGTH);
+  const lobbyCode =  pseudoRandomizer("A", LC_LENGTH);
   socket.join(lobbyCode);
   let og_host;
   let request_game;

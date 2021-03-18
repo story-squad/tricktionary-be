@@ -27,4 +27,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleMessagePlayer.ts:12](https://github.com/story-squad/tricktionary-be/blob/ca7657b/src/sockets/handleMessagePlayer.ts#L12)
+Defined in: [handleMessagePlayer.ts:12](https://github.com/story-squad/tricktionary-be/blob/3ae53d8/src/sockets/handleMessagePlayer.ts#L12)
