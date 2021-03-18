@@ -291,7 +291,7 @@ function updatePlayerToken(io, socket, p_id, name, definition, points, lobbyCode
             const { data } = yield localAxios.post("/api/auth/update-token", payload);
             if (data.ok) {
                 // send token to player
-                io.to(socket.id, "token update", data.token, info);
+                io.to(socket.id).emit('token update', data.token, info);
                 // update the database
                 token = data.token;
                 yield localAxios.put(`/api/player/id/${p_id}`, {
