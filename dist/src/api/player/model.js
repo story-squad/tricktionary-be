@@ -46,12 +46,13 @@ function updatePlayer(player_id, changes) {
     });
 }
 function getPlayer(player_id) {
-    return dbConfig_1.default("Player").where({ id: player_id }).first();
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield dbConfig_1.default("Player").where({ id: player_id }).first();
+    });
 }
 function findPlayer(col_name, value) {
     return __awaiter(this, void 0, void 0, function* () {
-        const player = yield dbConfig_1.default("Player").where({ [col_name]: value }).first();
-        return player;
+        return yield dbConfig_1.default("Player").where({ [col_name]: value }).first();
     });
 }
 exports.default = { newPlayer, updatePlayer, getPlayer, findPlayer };

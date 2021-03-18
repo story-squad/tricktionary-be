@@ -26,7 +26,7 @@ function add(game_id, round_id, definition_id, reaction_id, value) {
         reaction_id,
         count: value || 1
     })
-        .returning("count");
+        .returning("count").first();
 }
 exports.add = add;
 function get(game_id, round_id, definition_id, reaction_id) {
@@ -38,7 +38,7 @@ function get(game_id, round_id, definition_id, reaction_id) {
             definition_id,
             reaction_id
         })
-            .returning("count");
+            .returning("count").first();
     });
 }
 exports.get = get;
@@ -52,7 +52,7 @@ function incr(game_id, round_id, definition_id, reaction_id) {
             reaction_id
         })
             .increment("count")
-            .returning("count");
+            .returning("count").first();
     });
 }
 exports.incr = incr;
@@ -67,7 +67,7 @@ function updateCount(game_id, round_id, definition_id, reaction_id, count) {
         })
             .first()
             .update({ count })
-            .returning("count");
+            .returning("count").first();
     });
 }
 exports.updateCount = updateCount;
