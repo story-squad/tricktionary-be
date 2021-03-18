@@ -36,11 +36,12 @@ async function handleLobbyCreate(
   }
   log("LOBBY CREATED BY: " + og_host);
   log("GAME : " + game_id); // returns UNDEFINED
-  if (!game_id) {
+  if (!game_id || !og_host) {
     try {
       log("[!game_id] asking HOST to retry create lobby")
+      const newhost = og_host || socket.id;
       // ask player to retry with new token
-      return await updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode, "retry create lobby");
+      return await updatePlayerToken(io, socket, newhost, username, "", 0, lobbyCode, "retry create lobby");
     } catch (err) {
       log("[ERROR] sending token with 'retry create lobby'");
       log(err.message);
