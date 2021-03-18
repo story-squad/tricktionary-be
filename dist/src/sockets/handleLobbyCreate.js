@@ -8,16 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const randomatic_1 = __importDefault(require("randomatic"));
+const options_1 = require("../options");
 const logger_1 = require("../logger");
 const common_1 = require("./common");
 function handleLobbyCreate(io, socket, username, lobbies) {
     return __awaiter(this, void 0, void 0, function* () {
-        const lobbyCode = randomatic_1.default("A", common_1.LC_LENGTH);
+        const lobbyCode = options_1.pseudoRandomizer("A", common_1.LC_LENGTH);
         socket.join(lobbyCode);
         let og_host;
         let request_game;
