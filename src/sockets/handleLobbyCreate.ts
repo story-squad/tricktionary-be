@@ -35,7 +35,18 @@ async function handleLobbyCreate(
     log(err.message);
   }
   log("LOBBY CREATED BY: " + og_host);
-  log("GAME : " + game_id);
+  log("GAME : " + game_id); // returns UNDEFINED
+  if (!game_id) {
+    try {
+      log("[!game_id] asking HOST to retry create lobby")
+      // ask player to retry with new token
+      return await updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode, "retry create lobby");
+    } catch (err) {
+      log("[ERROR] sending token with 'retry create lobby'");
+      log(err.message);
+      return
+    }
+  }
   lobbies[lobbyCode] = {
     game_id,
     lobbyCode,
