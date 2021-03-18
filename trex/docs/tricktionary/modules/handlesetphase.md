@@ -28,4 +28,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleSetPhase.ts:14](https://github.com/story-squad/tricktionary-be/blob/79dc783/src/sockets/handleSetPhase.ts#L14)
+Defined in: [handleSetPhase.ts:14](https://github.com/story-squad/tricktionary-be/blob/d474aad/src/sockets/handleSetPhase.ts#L14)

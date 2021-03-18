@@ -28,7 +28,7 @@
 
 • `Const` **lobbyTasks**: [*cronTaskIndex*](../interfaces/crontab.crontaskindex.md)
 
-Defined in: [crontab.ts:39](https://github.com/story-squad/tricktionary-be/blob/79dc783/src/sockets/crontab.ts#L39)
+Defined in: [crontab.ts:39](https://github.com/story-squad/tricktionary-be/blob/d474aad/src/sockets/crontab.ts#L39)
 
 ## Functions
 
@@ -44,7 +44,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:119](https://github.com/story-squad/tricktionary-be/blob/79dc783/src/sockets/crontab.ts#L119)
+Defined in: [crontab.ts:119](https://github.com/story-squad/tricktionary-be/blob/d474aad/src/sockets/crontab.ts#L119)
 
 ___
 
@@ -62,7 +62,7 @@ Name | Type |
 
 a Tricktionary scheduled-task
 
-Defined in: [crontab.ts:143](https://github.com/story-squad/tricktionary-be/blob/79dc783/src/sockets/crontab.ts#L143)
+Defined in: [crontab.ts:143](https://github.com/story-squad/tricktionary-be/blob/d474aad/src/sockets/crontab.ts#L143)
 
 ___
 
@@ -85,7 +85,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:66](https://github.com/story-squad/tricktionary-be/blob/79dc783/src/sockets/crontab.ts#L66)
+Defined in: [crontab.ts:66](https://github.com/story-squad/tricktionary-be/blob/d474aad/src/sockets/crontab.ts#L66)
 
 ___
 
@@ -103,7 +103,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:153](https://github.com/story-squad/tricktionary-be/blob/79dc783/src/sockets/crontab.ts#L153)
+Defined in: [crontab.ts:153](https://github.com/story-squad/tricktionary-be/blob/d474aad/src/sockets/crontab.ts#L153)
 
 ___
 
@@ -119,7 +119,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:130](https://github.com/story-squad/tricktionary-be/blob/79dc783/src/sockets/crontab.ts#L130)
+Defined in: [crontab.ts:130](https://github.com/story-squad/tricktionary-be/blob/d474aad/src/sockets/crontab.ts#L130)
 
 ___
 
@@ -135,4 +135,4 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:109](https://github.com/story-squad/tricktionary-be/blob/79dc783/src/sockets/crontab.ts#L109)
+Defined in: [crontab.ts:109](https://github.com/story-squad/tricktionary-be/blob/d474aad/src/sockets/crontab.ts#L109)

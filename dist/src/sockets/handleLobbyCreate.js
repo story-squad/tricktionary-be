@@ -38,11 +38,12 @@ function handleLobbyCreate(io, socket, username, lobbies) {
         }
         logger_1.log("LOBBY CREATED BY: " + og_host);
         logger_1.log("GAME : " + game_id); // returns UNDEFINED
-        if (!game_id) {
+        if (!game_id || !og_host) {
             try {
                 logger_1.log("[!game_id] asking HOST to retry create lobby");
+                const newhost = og_host || socket.id;
                 // ask player to retry with new token
-                return yield common_1.updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode, "retry create lobby");
+                return yield common_1.updatePlayerToken(io, socket, newhost, username, "", 0, lobbyCode, "retry create lobby");
             }
             catch (err) {
                 logger_1.log("[ERROR] sending token with 'retry create lobby'");
