@@ -72,7 +72,7 @@ function smashUpdate(mem, game_id, round_id, definition_id, reaction_id, callBac
         const defaultValue = last || 0;
         try {
             // cache update
-            yield (mem === null || mem === void 0 ? void 0 : mem.incValue(keyName, callBack));
+            return yield (mem === null || mem === void 0 ? void 0 : mem.incValue(keyName, callBack));
         }
         catch (err) {
             return yield callBack(defaultValue + 1);

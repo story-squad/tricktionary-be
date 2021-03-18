@@ -79,7 +79,7 @@ export async function smashUpdate(
   const defaultValue = last || 0;
   try {
     // cache update
-    await mem?.incValue(keyName, callBack);
+    return await mem?.incValue(keyName, callBack);
   } catch (err) {
     return await callBack(defaultValue + 1);
   }

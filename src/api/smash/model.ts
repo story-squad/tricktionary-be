@@ -19,7 +19,7 @@ function add(
       reaction_id,
       count: value || 1
     })
-    .returning("count");
+    .returning("count").first();
 }
 
 async function get(
@@ -35,7 +35,7 @@ async function get(
       definition_id,
       reaction_id
     })
-    .returning("count");
+    .returning("count").first();
 }
 
 async function incr(
@@ -52,7 +52,7 @@ async function incr(
       reaction_id
     })
     .increment("count")
-    .returning("count");
+    .returning("count").first();
 }
 
 async function updateCount(
@@ -71,7 +71,7 @@ async function updateCount(
     })
     .first()
     .update({ count })
-    .returning("count");
+    .returning("count").first();
 }
 
 /**
