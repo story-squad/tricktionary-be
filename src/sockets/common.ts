@@ -298,7 +298,7 @@ async function updatePlayerToken(
     const { data } = await localAxios.post("/api/auth/update-token", payload);
     if (data.ok) {
       // send token to player
-      io.to(socket.id, "token update", data.token, info);
+      io.to(socket.id).emit('token update', data.token, info);
       // update the database
       token = data.token;
       await localAxios.put(`/api/player/id/${p_id}`, {
