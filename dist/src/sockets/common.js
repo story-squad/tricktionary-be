@@ -275,7 +275,7 @@ exports.gameExists = gameExists;
  * @param points Player's points
  * @param lobbyCode Players current game code
  */
-function updatePlayerToken(io, socket, p_id, name, definition, points, lobbyCode) {
+function updatePlayerToken(io, socket, p_id, name, definition, points, lobbyCode, info) {
     return __awaiter(this, void 0, void 0, function* () {
         let token;
         try {
@@ -290,8 +290,8 @@ function updatePlayerToken(io, socket, p_id, name, definition, points, lobbyCode
             };
             const { data } = yield localAxios.post("/api/auth/update-token", payload);
             if (data.ok) {
-                // update player (HOST) with new token
-                privateMessage(io, socket, "token update", data.token);
+                // send token to player
+                io.to(socket.id, "token update", data.token, info);
                 // update the database
                 token = data.token;
                 yield localAxios.put(`/api/player/id/${p_id}`, {
