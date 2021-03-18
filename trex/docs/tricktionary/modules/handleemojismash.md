@@ -28,4 +28,4 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleEmojiSmash.ts:13](https://github.com/story-squad/tricktionary-be/blob/63eb231/src/sockets/handleEmojiSmash.ts#L13)
+Defined in: [handleEmojiSmash.ts:13](https://github.com/story-squad/tricktionary-be/blob/5e22712/src/sockets/handleEmojiSmash.ts#L13)
