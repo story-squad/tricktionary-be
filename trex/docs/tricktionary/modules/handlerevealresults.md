@@ -28,4 +28,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleRevealResults.ts:13](https://github.com/story-squad/tricktionary-be/blob/fa87e4f/src/sockets/handleRevealResults.ts#L13)
+Defined in: [handleRevealResults.ts:13](https://github.com/story-squad/tricktionary-be/blob/ba1517e/src/sockets/handleRevealResults.ts#L13)

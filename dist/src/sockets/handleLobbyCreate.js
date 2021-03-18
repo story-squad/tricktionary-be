@@ -22,15 +22,18 @@ function handleLobbyCreate(io, socket, username, lobbies) {
         let og_host;
         let request_game;
         let game_id;
+        function createGame(host) {
+            return __awaiter(this, void 0, void 0, function* () {
+                request_game = yield common_1.localAxios.post(`/api/game/new`, { og_host: host });
+                return (request_game === null || request_game === void 0 ? void 0 : request_game.data.ok) ? request_game === null || request_game === void 0 ? void 0 : request_game.data.game_id : undefined;
+            });
+        }
         try {
             const last_player = yield common_1.localAxios.get(`/api/player/last-user-id/${socket.id}`);
             if (last_player.data.player && last_player.data.player.id) {
                 // create the Game
                 og_host = last_player.data.player.id;
-                request_game = yield common_1.localAxios.post(`/api/game/new`, { og_host });
-                if (request_game === null || request_game === void 0 ? void 0 : request_game.data.ok) {
-                    game_id = request_game === null || request_game === void 0 ? void 0 : request_game.data.game_id;
-                }
+                game_id = yield createGame(og_host);
             }
         }
         catch (err) {
@@ -43,7 +46,15 @@ function handleLobbyCreate(io, socket, username, lobbies) {
                 logger_1.log("[!game_id] asking HOST to retry create lobby");
                 const newhost = og_host || socket.id;
                 // ask player to retry with new token
-                return yield common_1.updatePlayerToken(io, socket, newhost, username, "", 0, lobbyCode, "retry create lobby");
+                const { token } = yield common_1.updatePlayerToken(io, socket, newhost, username, "", 0, lobbyCode, "retry create lobby");
+                if (!token) {
+                    logger_1.log("[!ERROR] creating new token for host");
+                    return;
+                }
+                // (restart the process)
+                og_host = newhost;
+                game_id = yield createGame(og_host);
+                logger_1.log(`created new token for host with game_id : ${game_id}`);
             }
             catch (err) {
                 logger_1.log("[ERROR] sending token with 'retry create lobby'");
