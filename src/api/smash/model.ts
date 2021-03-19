@@ -19,7 +19,7 @@ function add(
       reaction_id,
       count: value || 1
     })
-    .returning("count").first();
+    .returning("count");
 }
 
 async function get(
@@ -52,7 +52,7 @@ async function incr(
       reaction_id
     })
     .increment("count")
-    .returning("count").first();
+    .returning("count");
 }
 
 async function updateCount(
