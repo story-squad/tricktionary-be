@@ -32,7 +32,7 @@ router.put("/emoji/:lobbyCode", middleware_1.redisCache, (req, res) => __awaiter
     // initialize last value
     const last = value || 0;
     // non-cache callback for postgres;
-    const simpleCallback = (value) => __awaiter(void 0, void 0, void 0, function* () { return res.json(value); });
+    const simpleCallback = (value) => __awaiter(void 0, void 0, void 0, function* () { return res.json({ value }); });
     // create a callback to return the result
     const keyName = `${model_1.cacheGroupName}${game_id}-${roundId}-${definitionId}-${reactionId}`;
     const tcCallback = (tc === null || tc === void 0 ? void 0 : tc.createCallback(keyName, (value) => __awaiter(void 0, void 0, void 0, function* () { return res.json({ value }); }))) ||
@@ -75,7 +75,7 @@ router.get("/totals/:game_id/:round_id", middleware_1.redisCache, (req, res) => 
                 round_id,
                 definition_id,
                 reaction_id,
-                value
+                value,
             });
             if (result.queue.length === total) {
                 // lets rotate the board!

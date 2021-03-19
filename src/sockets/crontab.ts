@@ -50,10 +50,12 @@ function incrementTask(k: string) {
   const t = lobbyTasks[k];
   t.count += 1;
   t.last = Date.now();
-  if (t.limit === t.count) {
-    log(`finished, ${t.name}`);
-    // if we've reached the limit for this task, delete it
-    deleteScheduledTask(t.name);
+  console.log(t.name, t.count);
+  if (t.count >= t.limit) {
+    console.log('[delete]')
+    log(`deleting task: ${t.name}`);
+    t.task.stop();
+    delete lobbyTasks[k]; // remove the cronTask from our list.
   }
 }
 
@@ -116,17 +118,6 @@ function stopScheduledTask(lobbyCode: string) {
   }
 }
 
-function deleteScheduledTask(taskName: string) {
-  try {
-    const task = lobbyTasks[taskName];
-    log(`deleting task: ${task.name}`);
-    task.task.stop();
-    delete lobbyTasks[taskName]; // remove the cronTask from our list.
-  } catch (err) {
-    log(err.message);
-  }
-}
-
 function startScheduledTask(lobbyCode: string) {
   try {
     const lt = lobbyTasks[lobbyCode];
@@ -181,7 +172,6 @@ function scheduleTimer(io: any, lobbyCode: string, limit: number) {
 export {
   startScheduledTask,
   stopScheduledTask,
-  deleteScheduledTask,
   getScheduledTask,
   cronTask,
   cronTaskIndex,

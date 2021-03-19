@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.scheduleTimer = exports.schedulePulseCheck = exports.lobbyTasks = exports.getScheduledTask = exports.deleteScheduledTask = exports.stopScheduledTask = exports.startScheduledTask = void 0;
+exports.scheduleTimer = exports.schedulePulseCheck = exports.lobbyTasks = exports.getScheduledTask = exports.stopScheduledTask = exports.startScheduledTask = void 0;
 const node_cron_1 = __importDefault(require("node-cron"));
 const logger_1 = require("../logger");
 // const MINUTES = process.env.MINUTES || 5;
@@ -25,10 +25,12 @@ function incrementTask(k) {
     const t = lobbyTasks[k];
     t.count += 1;
     t.last = Date.now();
-    if (t.limit === t.count) {
-        logger_1.log(`finished, ${t.name}`);
-        // if we've reached the limit for this task, delete it
-        deleteScheduledTask(t.name);
+    console.log(t.name, t.count);
+    if (t.count >= t.limit) {
+        console.log('[delete]');
+        logger_1.log(`deleting task: ${t.name}`);
+        t.task.stop();
+        delete lobbyTasks[k]; // remove the cronTask from our list.
     }
 }
 /**
@@ -84,18 +86,6 @@ function stopScheduledTask(lobbyCode) {
     }
 }
 exports.stopScheduledTask = stopScheduledTask;
-function deleteScheduledTask(taskName) {
-    try {
-        const task = lobbyTasks[taskName];
-        logger_1.log(`deleting task: ${task.name}`);
-        task.task.stop();
-        delete lobbyTasks[taskName]; // remove the cronTask from our list.
-    }
-    catch (err) {
-        logger_1.log(err.message);
-    }
-}
-exports.deleteScheduledTask = deleteScheduledTask;
 function startScheduledTask(lobbyCode) {
     try {
         const lt = lobbyTasks[lobbyCode];
