@@ -20,7 +20,7 @@ router.put("/emoji/:lobbyCode", redisCache, async (req: any, res: any) => {
   // initialize last value
   const last = value || 0;
   // non-cache callback for postgres;
-  const simpleCallback = async (value: any) => res.json(value);
+  const simpleCallback = async (value: any) => res.json({ value });
   // create a callback to return the result
   const keyName = `${cacheGroupName}${game_id}-${roundId}-${definitionId}-${reactionId}`;
   const tcCallback =
@@ -77,7 +77,7 @@ router.get(
         round_id,
         definition_id,
         reaction_id,
-        value
+        value,
       });
       if (result.queue.length === total) {
         // lets rotate the board!

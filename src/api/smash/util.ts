@@ -1,6 +1,6 @@
 // import { log } from "../../logger";
 import { TricktionaryCache } from "../middleware";
-import { incr, add, cacheGroupName } from "./model";
+import { incr, add, get, cacheGroupName } from "./model";
 import { log } from "../../logger";
 
 /**
@@ -19,25 +19,35 @@ async function pgUpdate(
   reaction_id: number,
   callBack?: any
 ) {
+  let result: any;
+  let value: number = 0;
   log(`PG: ${game_id}, ${round_id}, ${definition_id}, ${reaction_id}`);
-  try {
-    // when all foreign-key IDs are > 0 they are likely to be valid.
-    if (gtZero([round_id, definition_id, reaction_id])) {
-      // try to increment this record.count
-      let value = await incr(game_id, round_id, definition_id, reaction_id);
-      let n = Number(value);
-      if (n === NaN || n <= 0) {
-        value = await add(game_id, round_id, definition_id, reaction_id);
-      }
-      return await callBack({ value });
-    } else {
-      // are those valid foreign keys?
-      return { error: "check ids" };
+  const oldValue = await get(game_id, round_id, definition_id, reaction_id);
+  if (!oldValue?.id) {
+    console.log("no id, add new record");
+    try {
+      // add
+      result = await add(game_id, round_id, definition_id, reaction_id);
+      console.log(result);
+      value = result[0] || 0;
+      console.log(value);
+    } catch (err) {
+      return { error: err };
     }
-  } catch (err) {
-    // database error ?
-    return { error: err };
+  } else {
+    try {
+      // increment
+      console.log("increment++");
+      result = await incr(game_id, round_id, definition_id, reaction_id);
+      console.log(result);
+      value = result[0] || result;
+      console.log(value);
+    } catch (err) {
+      // database error ?
+      return { error: err };
+    }
   }
+  return await callBack(value);
 }
 
 /**

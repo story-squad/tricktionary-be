@@ -26,7 +26,7 @@ function add(game_id, round_id, definition_id, reaction_id, value) {
         reaction_id,
         count: value || 1
     })
-        .returning("count").first();
+        .returning("count");
 }
 exports.add = add;
 function get(game_id, round_id, definition_id, reaction_id) {
@@ -52,7 +52,7 @@ function incr(game_id, round_id, definition_id, reaction_id) {
             reaction_id
         })
             .increment("count")
-            .returning("count").first();
+            .returning("count");
     });
 }
 exports.incr = incr;

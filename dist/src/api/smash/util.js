@@ -22,27 +22,38 @@ function gtZero(arr) {
 }
 function pgUpdate(game_id, round_id, definition_id, reaction_id, callBack) {
     return __awaiter(this, void 0, void 0, function* () {
+        let result;
+        let value = 0;
         logger_1.log(`PG: ${game_id}, ${round_id}, ${definition_id}, ${reaction_id}`);
-        try {
-            // when all foreign-key IDs are > 0 they are likely to be valid.
-            if (gtZero([round_id, definition_id, reaction_id])) {
-                // try to increment this record.count
-                let value = yield model_1.incr(game_id, round_id, definition_id, reaction_id);
-                let n = Number(value);
-                if (n === NaN || n <= 0) {
-                    value = yield model_1.add(game_id, round_id, definition_id, reaction_id);
-                }
-                return yield callBack({ value });
+        const oldValue = yield model_1.get(game_id, round_id, definition_id, reaction_id);
+        if (!(oldValue === null || oldValue === void 0 ? void 0 : oldValue.id)) {
+            console.log("no id, add new record");
+            try {
+                // add
+                result = yield model_1.add(game_id, round_id, definition_id, reaction_id);
+                console.log(result);
+                value = result[0] || 0;
+                console.log(value);
             }
-            else {
-                // are those valid foreign keys?
-                return { error: "check ids" };
+            catch (err) {
+                return { error: err };
             }
         }
-        catch (err) {
-            // database error ?
-            return { error: err };
+        else {
+            try {
+                // increment
+                console.log("increment++");
+                result = yield model_1.incr(game_id, round_id, definition_id, reaction_id);
+                console.log(result);
+                value = result[0] || result;
+                console.log(value);
+            }
+            catch (err) {
+                // database error ?
+                return { error: err };
+            }
         }
+        return yield callBack(value);
     });
 }
 /**
