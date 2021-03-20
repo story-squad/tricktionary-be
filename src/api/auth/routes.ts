@@ -45,18 +45,28 @@ router.post("/new-player", async (req, res) => {
   let { last_user_id, jump_code } = req.body;
   if (!last_user_id) {
     res.status(403).json({ message: "last_user_id required" });
+    return
   }
   if (jump_code) {
     log("TODO: player is jumping from another device.");
   }
   // first game ? you will need a new player_id
-  const created = await Player.newPlayer(last_user_id);
-  if (!created.ok) {
+  let created: any;
+  try {
+    created = await Player.newPlayer(last_user_id);
+  } catch (err) {
+    log(`[!ERROR] newPlayer(${last_user_id})`);
+  }
+  if (!created?.ok) {
     res.status(400).json({ message: created.message });
-  } else {
-    const pid: string = String(created.player_id);
-    const token = await newToken(last_user_id, pid, undefined, undefined);
-    res.status(token.status).json(token);
+    return
+  }
+  const pid: string = String(created.player_id);
+  let token: any;
+  try {
+    token = await newToken(last_user_id, pid, undefined, undefined);
+  } catch (err) {
+    res.status(token?.status || 400).json(token || err);
   }
 });
 
@@ -76,12 +86,12 @@ router.post("/login", async (req, res) => {
   if (!user_id || !last_token) {
     res.status(403).json({ message: "missing required elements" });
   }
-  let last_user_id:string = "";
-  let last_lobby:string = "";
+  let last_user_id: string = "";
+  let last_lobby: string = "";
   let player;
-  let player_id:string = "";
+  let player_id: string = "";
   let result;
-  let last_username:string = "";
+  let last_username: string = "";
   try {
     result = partialRecall(last_token);
     if (!result.ok) {
@@ -118,9 +128,8 @@ router.post("/login", async (req, res) => {
     player: { ...player, last_lobby },
     token,
     old_user_id,
-    old_user_name
+    old_user_name,
   });
 });
-
 
 export default router;
