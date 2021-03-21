@@ -25,10 +25,9 @@ function incrementTask(k) {
     const t = lobbyTasks[k];
     t.count += 1;
     t.last = Date.now();
-    console.log(t.name, t.count);
+    logger_1.log(`${t.name}, ${t.count}`);
     if (t.count >= t.limit) {
-        console.log('[delete]');
-        logger_1.log(`deleting task: ${t.name}`);
+        logger_1.log(`[delete] task: ${t.name}`);
         t.task.stop();
         delete lobbyTasks[k]; // remove the cronTask from our list.
     }

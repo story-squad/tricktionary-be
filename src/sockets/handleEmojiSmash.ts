@@ -24,16 +24,22 @@ async function handleEmojiSmash(
   }
   const game_id = lobbies[lobbyCode].game_id;
   const roundId = lobbies[lobbyCode].roundId;
-  const { data } = await localAxios.put(`/api/smash/emoji/${lobbyCode}`, {
-    game_id,
-    roundId,
-    definitionId,
-    reactionId
-  });
-  const { value } = data || 0;
-  log(`Definition ${definitionId}, Reaction ${reactionId} : ${value}`);
-  // send back result
-  io.to(lobbyCode).emit("get reaction", definitionId, reactionId, value);
+  try {
+    const { data } = await localAxios.put(`/api/smash/emoji/${lobbyCode}`, {
+      game_id,
+      roundId,
+      definitionId,
+      reactionId,
+    });
+    const { value } = data || 0;
+    log(`Definition ${definitionId}, Reaction ${reactionId} : ${value}`);
+    // send back result
+    io.to(lobbyCode).emit("get reaction", definitionId, reactionId, value);
+  } catch (err) {
+    log(
+      `[!ERROR] handleEmojiSmash -> Definition ${definitionId}, Reaction ${reactionId}`
+    );
+  }
 }
 
 export default handleEmojiSmash;

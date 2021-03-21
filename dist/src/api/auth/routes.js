@@ -54,19 +54,30 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
     let { last_user_id, jump_code } = req.body;
     if (!last_user_id) {
         res.status(403).json({ message: "last_user_id required" });
+        return;
     }
     if (jump_code) {
         logger_1.log("TODO: player is jumping from another device.");
     }
     // first game ? you will need a new player_id
-    const created = yield model_1.default.newPlayer(last_user_id);
-    if (!created.ok) {
-        res.status(400).json({ message: created.message });
+    let created;
+    try {
+        created = yield model_1.default.newPlayer(last_user_id);
     }
-    else {
-        const pid = String(created.player_id);
-        const token = yield utils_1.newToken(last_user_id, pid, undefined, undefined);
-        res.status(token.status).json(token);
+    catch (err) {
+        logger_1.log(`[!ERROR] newPlayer(${last_user_id})`);
+    }
+    if (!(created === null || created === void 0 ? void 0 : created.ok)) {
+        res.status(400).json({ message: created.message });
+        return;
+    }
+    const pid = String(created.player_id);
+    let token;
+    try {
+        token = yield utils_1.newToken(last_user_id, pid, undefined, undefined);
+    }
+    catch (err) {
+        res.status((token === null || token === void 0 ? void 0 : token.status) || 400).json(token || err);
     }
 }));
 router.post("/update-token", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -124,7 +135,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         player: Object.assign(Object.assign({}, player), { last_lobby }),
         token,
         old_user_id,
-        old_user_name
+        old_user_name,
     });
 }));
 exports.default = router;

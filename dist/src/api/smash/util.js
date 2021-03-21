@@ -27,13 +27,10 @@ function pgUpdate(game_id, round_id, definition_id, reaction_id, callBack) {
         logger_1.log(`PG: ${game_id}, ${round_id}, ${definition_id}, ${reaction_id}`);
         const oldValue = yield model_1.get(game_id, round_id, definition_id, reaction_id);
         if (!(oldValue === null || oldValue === void 0 ? void 0 : oldValue.id)) {
-            console.log("no id, add new record");
             try {
                 // add
                 result = yield model_1.add(game_id, round_id, definition_id, reaction_id);
-                console.log(result);
                 value = result[0] || 0;
-                console.log(value);
             }
             catch (err) {
                 return { error: err };
@@ -42,11 +39,8 @@ function pgUpdate(game_id, round_id, definition_id, reaction_id, callBack) {
         else {
             try {
                 // increment
-                console.log("increment++");
                 result = yield model_1.incr(game_id, round_id, definition_id, reaction_id);
-                console.log(result);
                 value = result[0] || result;
-                console.log(value);
             }
             catch (err) {
                 // database error ?
@@ -64,7 +58,6 @@ function smashUpdate(mem, game_id, round_id, definition_id, reaction_id, callBac
     return __awaiter(this, void 0, void 0, function* () {
         // create a unique string keyname
         const keyName = `${model_1.cacheGroupName}${game_id}-${round_id}-${definition_id}-${reaction_id}`;
-        console.log(keyName);
         // no TricktionaryCache ?
         if (!(mem === null || mem === void 0 ? void 0 : mem.incValue)) {
             logger_1.log("no cache update");

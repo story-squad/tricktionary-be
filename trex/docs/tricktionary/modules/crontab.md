@@ -27,7 +27,7 @@
 
 • `Const` **lobbyTasks**: [*cronTaskIndex*](../interfaces/crontab.crontaskindex.md)
 
-Defined in: [crontab.ts:39](https://github.com/story-squad/tricktionary-be/blob/be79db4/src/sockets/crontab.ts#L39)
+Defined in: [crontab.ts:39](https://github.com/story-squad/tricktionary-be/blob/4a95355/src/sockets/crontab.ts#L39)
 
 ## Functions
 
@@ -45,7 +45,7 @@ Name | Type |
 
 a Tricktionary scheduled-task
 
-Defined in: [crontab.ts:134](https://github.com/story-squad/tricktionary-be/blob/be79db4/src/sockets/crontab.ts#L134)
+Defined in: [crontab.ts:133](https://github.com/story-squad/tricktionary-be/blob/4a95355/src/sockets/crontab.ts#L133)
 
 ___
 
@@ -68,7 +68,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:68](https://github.com/story-squad/tricktionary-be/blob/be79db4/src/sockets/crontab.ts#L68)
+Defined in: [crontab.ts:67](https://github.com/story-squad/tricktionary-be/blob/4a95355/src/sockets/crontab.ts#L67)
 
 ___
 
@@ -86,7 +86,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:144](https://github.com/story-squad/tricktionary-be/blob/be79db4/src/sockets/crontab.ts#L144)
+Defined in: [crontab.ts:143](https://github.com/story-squad/tricktionary-be/blob/4a95355/src/sockets/crontab.ts#L143)
 
 ___
 
@@ -102,7 +102,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:121](https://github.com/story-squad/tricktionary-be/blob/be79db4/src/sockets/crontab.ts#L121)
+Defined in: [crontab.ts:120](https://github.com/story-squad/tricktionary-be/blob/4a95355/src/sockets/crontab.ts#L120)
 
 ___
 
@@ -118,4 +118,4 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [crontab.ts:111](https://github.com/story-squad/tricktionary-be/blob/be79db4/src/sockets/crontab.ts#L111)
+Defined in: [crontab.ts:110](https://github.com/story-squad/tricktionary-be/blob/4a95355/src/sockets/crontab.ts#L110)
