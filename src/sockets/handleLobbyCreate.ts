@@ -20,7 +20,12 @@ async function handleLobbyCreate(
   let request_game;
   let game_id;
   async function createGame(host: string) {
-    request_game = await localAxios.post(`/api/game/new`, { og_host: host });
+    try {
+      request_game = await localAxios.post(`/api/game/new`, { og_host: host });
+    } catch (err) {
+      log(err.message);
+      return
+    }
     return request_game?.data.ok ? request_game?.data.game_id : undefined;
   }
 
