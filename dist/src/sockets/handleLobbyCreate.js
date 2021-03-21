@@ -21,7 +21,13 @@ function handleLobbyCreate(io, socket, username, lobbies) {
         let game_id;
         function createGame(host) {
             return __awaiter(this, void 0, void 0, function* () {
-                request_game = yield common_1.localAxios.post(`/api/game/new`, { og_host: host });
+                try {
+                    request_game = yield common_1.localAxios.post(`/api/game/new`, { og_host: host });
+                }
+                catch (err) {
+                    logger_1.log(err.message);
+                    return;
+                }
                 return (request_game === null || request_game === void 0 ? void 0 : request_game.data.ok) ? request_game === null || request_game === void 0 ? void 0 : request_game.data.game_id : undefined;
             });
         }

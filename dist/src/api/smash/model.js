@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTotals = exports.cacheGroupName = exports.bulkUpdate = exports.updateCount = exports.incr = exports.get = exports.add = void 0;
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
-// import { log } from "../../logger";
+const logger_1 = require("../../logger");
 const cacheGroupName = "SMASHED";
 exports.cacheGroupName = cacheGroupName;
 function add(game_id, round_id, definition_id, reaction_id, value) {
@@ -103,7 +103,7 @@ function bulkUpdate(arr, cb) {
             }));
         }
         catch (err) {
-            console.log(err);
+            logger_1.log(err.message);
         }
         return yield cb(arr);
     });
