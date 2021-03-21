@@ -138,7 +138,6 @@ function passOn(port: number, host: string, options: any, name: string) {
   function setValue(name: string, value: string, ttl?: any, cb?: any): void {
     const secondsToLive: number = ttl ? Number(ttl) : Number(DEFAULT_TTL);
     log(`[cache] WRITE ${name} TTL ${secondsToLive}s`);
-    // console.log(secondsToLive, cb);
     const callBack = cb ? cb : redis.print;
     clients.setter?.setex(name, secondsToLive, value, callBack);
   }
@@ -215,7 +214,6 @@ function passOn(port: number, host: string, options: any, name: string) {
  * @param next Next
  */
 const passOff = (req: any, res: any, next: any) => {
-  // console.log("no redis found");
   req[defaultOptions.name] = undefined;
   next();
 };

@@ -24,24 +24,18 @@ async function pgUpdate(
   log(`PG: ${game_id}, ${round_id}, ${definition_id}, ${reaction_id}`);
   const oldValue = await get(game_id, round_id, definition_id, reaction_id);
   if (!oldValue?.id) {
-    console.log("no id, add new record");
     try {
       // add
       result = await add(game_id, round_id, definition_id, reaction_id);
-      console.log(result);
       value = result[0] || 0;
-      console.log(value);
     } catch (err) {
       return { error: err };
     }
   } else {
     try {
       // increment
-      console.log("increment++");
       result = await incr(game_id, round_id, definition_id, reaction_id);
-      console.log(result);
       value = result[0] || result;
-      console.log(value);
     } catch (err) {
       // database error ?
       return { error: err };
@@ -65,7 +59,6 @@ export async function smashUpdate(
 ) {
   // create a unique string keyname
   const keyName = `${cacheGroupName}${game_id}-${round_id}-${definition_id}-${reaction_id}`;
-  console.log(keyName);
   // no TricktionaryCache ?
   if (!mem?.incValue) {
     log("no cache update");
