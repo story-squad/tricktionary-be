@@ -9,7 +9,7 @@ async function scoreCard(player_id: string, game_id: string) {
   } catch (err) {
     return { ok: false, message: err.message };
   }
-  return { ok: true, played: uuId };
+  return { ok: true, id: uuId };
 }
 
 async function getGames(player_id: string) {

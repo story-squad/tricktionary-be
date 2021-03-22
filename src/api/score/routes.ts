@@ -14,7 +14,7 @@ router.post("/new", async (req, res) => {
   if (!linkedPlayer.ok) {
     res.status(400).json({ message: linkedPlayer.message });
   }
-  res.status(200).json({ played: linkedPlayer.played });
+  res.status(200).json({ score: linkedPlayer.id });
 });
 
 router.get("/player/:id", async (req, res) => {
