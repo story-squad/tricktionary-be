@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { log } from "../../logger";
 import { redisCache, TricktionaryCache } from "../middleware";
-import { getGames, getPlayers, scoreCard } from "./model";
+import { getGames, getPlayers, scoreCard, addPoints, subPoints } from "./model";
 const router = Router();
 
 router.post("/new", async (req, res) => {
@@ -43,6 +43,37 @@ router.get("/games/:id", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
   res.status(200).json(result);
+});
+
+router.put("/increase/:player_id", async (req, res) => {
+  const player_id = req.params.player_id;
+  const { game_id, points } = req.body;
+  if (!player_id || !game_id || !points) {
+    res.status(200).json({
+      error: `missing required [points: ${points}, game: ${game_id}, player: ${player_id}]`,
+    });
+  }
+  try {
+    const result = await addPoints(player_id, game_id, points);
+    res.json(result);
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+router.put("/decrease/:player_id", async (req, res) => {
+  const player_id = req.params.player_id;
+  const { game_id, points } = req.body;
+  if (!player_id || !game_id || !points) {
+    res.status(200).json({
+      error: `missing required [points: ${points}, game: ${game_id}, player: ${player_id}]`,
+    });
+  }
+  try {
+    const result = await subPoints(player_id, game_id, points);
+    res.json(result);
+  } catch (err) {
+    res.json({ error: err.message });
+  }
 });
 
 export default router;
