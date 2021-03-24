@@ -28,7 +28,7 @@ export async function handleArrayOfGuesses(
             `/api/score/increase/${player.pid}`,
             {
               game_id,
-              VALUE_OF_TRUTH,
+              points: VALUE_OF_TRUTH,
             }
           );
           log(pointsUpdate.data);
@@ -38,7 +38,7 @@ export async function handleArrayOfGuesses(
             `/api/score/increase/${player.pid}`,
             {
               game_id,
-              VALUE_OF_BLUFF,
+              points: VALUE_OF_BLUFF,
             }
           );
           log(pointsUpdate.data);
