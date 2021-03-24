@@ -30,9 +30,12 @@ router.get("/user/:uid/round/:rid", async (req, res) => {
   const user_id = req.params.uid;
   const round_id = Number(req.params.rid);
   let definition: DefinitionType;
+  let id:number|undefined;
   try {
     // player's definition this round
     definition = await Definitions.byUserInRound(user_id, round_id);
+    // console.log(definition);
+    id = definition.id;
   } catch (err) {
     // a blank definition object
     definition = {
@@ -42,6 +45,7 @@ router.get("/user/:uid/round/:rid", async (req, res) => {
     };
   }
   res.status(200).json({
+    id,
     user_id,
     round_id,
     definition
