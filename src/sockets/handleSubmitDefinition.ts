@@ -26,7 +26,7 @@ async function handleSubmitDefinition(
     });
   } catch (err) {
     log("errror! handleSubmitDefinitions:22");
-    handleErrorMessage(
+    return handleErrorMessage(
       io,
       socket,
       2003,
@@ -35,6 +35,15 @@ async function handleSubmitDefinition(
   }
   // then ...
   const definitionId = newDef?.data?.definitionId;
+  if (!definitionId) {
+    // error submitting definition, 
+    return handleErrorMessage(
+      io,
+      socket,
+      2003,
+      "There was a server error while submitting your definition."
+    );
+  }
   newPlayer = { ...newPlayer, definitionId, definitionEpoch }; // store definition id
   // update & count number of player submissions
   lobbies[lobbyCode].players = lobbies[lobbyCode].players.map((player: any) => {
