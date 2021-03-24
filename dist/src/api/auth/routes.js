@@ -103,8 +103,9 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     let result;
     let last_username = "";
     try {
-        result = utils_1.partialRecall(last_token);
+        result = utils_1.partialRecall(last_token); // verify this is one of our tokens.
         if (!result.ok) {
+            //  bad token detected!
             res.status(400).json(result);
         }
         player_id = result.player_id || "";

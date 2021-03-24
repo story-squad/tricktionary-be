@@ -29,7 +29,7 @@ async function handleTimeSync(
       .filter((p: any) => p.id !== host && p.connected)
       .forEach((player: any) => {
         // log(player.username);
-        io.to(player.id).emit("synchronize", seconds);
+        player?.id.length > 0 && io.to(player.id).emit("synchronize", seconds);
       });
   } else {
     log(`${socket.id} not hosting! cannot synchronize timers`);

@@ -1,6 +1,7 @@
 import { localAxios, privateMessage } from "./common";
 import { log } from "../logger";
 import handleLobbyJoin from "./handleLobbyJoin";
+import handleNewPlayer from "./handleNewPlayer";
 
 /**
  * Determine whether or not the player should auto re-join an existing game.
@@ -31,6 +32,12 @@ async function handleReturningPlayer(
       user_id,
       last_token: token,
     });
+    if (!login?.data?.token){
+      // we have a bad token.
+      // treat them as a new player.
+      // (until we have user account)
+      return handleNewPlayer(io, socket);
+    }
     player = login.data.player;
     newtoken = login.data.token;
     old_user_id = login.data.old_user_id;

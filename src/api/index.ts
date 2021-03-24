@@ -9,7 +9,7 @@ import admin from "./admin/routes";
 import auth from "./auth/routes";
 import player from "./player/routes";
 import game from "./game/routes";
-import played from "./played/routes";
+import score from "./score/routes";
 import choice from "./hostChoices/routes";
 import payment from "./payment/routes";
 import member from "./member/routes";
@@ -26,7 +26,7 @@ export default {
   auth,
   player,
   game,
-  played,
+  score,
   choice,
   payment,
   member,

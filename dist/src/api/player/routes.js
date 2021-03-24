@@ -33,9 +33,9 @@ router.get("/last-user-id/:id", (req, res) => __awaiter(void 0, void 0, void 0, 
         player = yield model_1.default.findPlayer("last_user_id", user_id);
     }
     catch (err) {
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ ok: false, error: err.message });
     }
-    res.status(200).json({ player });
+    res.status(200).json({ ok: true, player });
 }));
 router.put("/id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const player_id = req.params.id;

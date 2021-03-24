@@ -7,6 +7,7 @@ export interface DefinitionObject {
 }
 
 export type DefinitionType = {
+  id?: number,
   user_id: string;
   definition: string | null;
   round_id: number;

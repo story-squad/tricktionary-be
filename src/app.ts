@@ -52,11 +52,11 @@ api.use("/api/admin", apiRoutes.admin);
 api.use("/api/auth", apiRoutes.auth);
 api.use("/api/player", apiRoutes.player);
 api.use("/api/game", apiRoutes.game);
-api.use("/api/played", apiRoutes.played);
 api.use("/api/choice", apiRoutes.choice);
 api.use("/api/payments", apiRoutes.payment);
 api.use("/api/member", apiRoutes.member);
 api.use("/api/smash", apiRoutes.smash);
+api.use("/api/score", apiRoutes.score);
 // web sockets
 const socketApp = createServer(api);
 const io = new Server(socketApp, { cors: { origin: "*" } });
@@ -222,7 +222,9 @@ io.on("connection", (socket) => {
   socket.on("get reactions", () => {
     gameSocketHandler.handleGetReactions(io, socket, lobbies);
   });
-
+  socket.on("disconnect me", () => {
+    gameSocketHandler.removeFromLobby(io, socket, lobbies);
+  });
   socket.on("remote paint", (vector: number[]) => {
     // start with a simple array of numbers
     log(`[PAINT] ${vector.map((n) => String(n))}`);

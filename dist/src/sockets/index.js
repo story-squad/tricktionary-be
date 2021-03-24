@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,7 +34,7 @@ const handleSetPhase_1 = __importDefault(require("./handleSetPhase"));
 const handleSetNewHost_1 = __importDefault(require("./handleSetNewHost"));
 const handleNewPlayer_1 = __importDefault(require("./handleNewPlayer"));
 const handleReturningPlayer_1 = __importDefault(require("./handleReturningPlayer"));
-const handleDisconnection_1 = __importDefault(require("./handleDisconnection"));
+const handleDisconnection_1 = __importStar(require("./handleDisconnection"));
 const handleUpdateUsername_1 = __importDefault(require("./handleUpdateUsername"));
 const handleTimeSync_1 = __importDefault(require("./handleTimeSync"));
 const handleMessageHost_1 = __importDefault(require("./handleMessageHost"));
@@ -47,6 +66,7 @@ exports.default = {
     handleSetFinale: handleSetFinale_1.default,
     handleEmojiSmash: handleEmojiSmash_1.default,
     handleGetReactions: handleGetReactions_1.default,
+    removeFromLobby: handleDisconnection_1.removeFromLobby,
     handleRemotePaint: handleRemotePaint_1.default,
 };
 //# sourceMappingURL=index.js.map

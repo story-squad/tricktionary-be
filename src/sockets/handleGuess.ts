@@ -11,6 +11,7 @@ export async function handleArrayOfGuesses(
 ) {
   const lobby = lobbies[lobbyCode];
   const roundId = lobby.roundId;
+  const game_id = lobbies[lobbyCode].game_id;
   log(`vote & calculate scores, ${lobbyCode}`);
   guesses.forEach(async (g) => {
     try {
@@ -19,11 +20,28 @@ export async function handleArrayOfGuesses(
         definitionID: g.guess,
         roundID: roundId,
       });
-      lobby.players.forEach((player: any) => {
+      let pointsUpdate: any;
+      lobby.players.forEach(async (player: any) => {
         if (g.guess === 0 && player.id === g.player) {
           player.points += VALUE_OF_TRUTH; // +1 if you voted for the provided definition.
+          pointsUpdate = await localAxios.put(
+            `/api/score/increase/${player.pid}`,
+            {
+              game_id,
+              VALUE_OF_TRUTH,
+            }
+          );
+          log(pointsUpdate.data);
         } else if (g.guess === player.definitionId && g.player !== player.id) {
           player.points += VALUE_OF_BLUFF; // +1 if someone else voted for your definition.
+          pointsUpdate = await localAxios.put(
+            `/api/score/increase/${player.pid}`,
+            {
+              game_id,
+              VALUE_OF_BLUFF,
+            }
+          );
+          log(pointsUpdate.data);
         }
       });
     } catch (err) {

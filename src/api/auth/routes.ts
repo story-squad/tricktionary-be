@@ -9,7 +9,6 @@ import { log } from "../../logger";
 import { validatePayloadType, newToken, b64, partialRecall } from "./utils";
 //
 import Player from "../player/model";
-import { HttpError } from "http-errors";
 const router = Router();
 
 router.post("/recall", (req, res) => {
@@ -93,8 +92,9 @@ router.post("/login", async (req, res) => {
   let result;
   let last_username: string = "";
   try {
-    result = partialRecall(last_token);
+    result = partialRecall(last_token); // verify this is one of our tokens.
     if (!result.ok) {
+      //  bad token detected!
       res.status(400).json(result);
     }
     player_id = result.player_id || "";

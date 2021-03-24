@@ -171,6 +171,33 @@ async function wordFromID(id: any) {
   return { ok: true, word };
 }
 
+async function checkScores(lobbyCode: string, lobbies: any) {
+  const players = lobbies[lobbyCode]?.players;
+  const game_id = lobbies[lobbyCode].game_id;
+  if (!players) {
+    log(`[!ERROR] no players in ${lobbyCode}`);
+    return { ok: false, error: `invalid lobby @ ${lobbyCode}` };
+  }
+  log(`updating score-cards for players in ${lobbyCode}`);
+  players.forEach(async (playerObj: any) => {
+    const socket_id = playerObj.id;
+    const { definitionId, points, username, pid } = playerObj;
+    const pathname = `/api/score/player/${pid}/game/${game_id}`;
+    let score = await localAxios.get(pathname);
+    if (!score?.data?.id) {
+      log(`creating score card for ${username}`);
+      score = await localAxios.post("/api/score/new", {
+        game_id,
+        player_id: pid,
+      });
+    } else {
+      log(`found score card for ${username}`);
+      // todo
+    }
+    log(`test-score: ${score?.data?.id || "unknown!"}`);
+  });
+}
+
 async function startNewRound(
   host: string,
   word: any,
@@ -182,6 +209,9 @@ async function startNewRound(
   // start a new round
   let newRound: any;
   let roundId: any;
+  // make sure every player has a score-card for this game.
+  await checkScores(lobbyCode, lobbies);
+
   try {
     log("starting a new round...");
     newRound = await localAxios.post("/api/round/start", {
@@ -282,7 +312,7 @@ async function updatePlayerToken(
   definition: string | undefined,
   points: number | undefined,
   lobbyCode: string,
-  info?: string,
+  info?: string
 ) {
   let token;
   try {
@@ -298,7 +328,7 @@ async function updatePlayerToken(
     const { data } = await localAxios.post("/api/auth/update-token", payload);
     if (data.ok) {
       // send token to player
-      io.to(socket.id).emit('token update', data.token, info);
+      io.to(socket.id).emit("token update", data.token, info);
       // update the database
       token = data.token;
       await localAxios.put(`/api/player/id/${p_id}`, {

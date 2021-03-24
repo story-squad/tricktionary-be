@@ -1,5 +1,5 @@
 import db from "../../dbConfig";
-import { played } from "../played/model";
+import { scoreCard } from "../score/model";
 import { log } from "../../logger";
 // variable name must be in lowerCamelCase, PascalCase or UPPER_CASE
 function add(userID: string, roundID: number, gameID: string) {
@@ -13,7 +13,7 @@ async function addAllUserRounds(players: any, roundId: number, gameID: string) {
   players.forEach(async (player: any) => {
     try {
       await add(player.id, roundId, gameID);
-      await played(player.id, gameID);
+      await scoreCard(player.id, gameID);
     } catch (err) {
       log(err.message);
       return { ok: false, message: err.message };

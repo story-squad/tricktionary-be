@@ -69,7 +69,7 @@ function handleLobbyCreate(io, socket, username, lobbies) {
             game_id,
             lobbyCode,
             players: [
-                { id: socket.id, username, definition: "", points: 0, connected: true },
+                { id: socket.id, username, definition: "", points: 0, connected: true, pid: og_host }
             ],
             host: socket.id,
             phase: username === "bobrosslives" ? "PAINT" : "PREGAME",

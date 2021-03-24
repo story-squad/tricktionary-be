@@ -72,11 +72,11 @@ api.use("/api/admin", api_1.default.admin);
 api.use("/api/auth", api_1.default.auth);
 api.use("/api/player", api_1.default.player);
 api.use("/api/game", api_1.default.game);
-api.use("/api/played", api_1.default.played);
 api.use("/api/choice", api_1.default.choice);
 api.use("/api/payments", api_1.default.payment);
 api.use("/api/member", api_1.default.member);
 api.use("/api/smash", api_1.default.smash);
+api.use("/api/score", api_1.default.score);
 // web sockets
 const socketApp = http_1.createServer(api);
 exports.socketApp = socketApp;
@@ -165,6 +165,9 @@ io.on("connection", (socket) => {
     });
     socket.on("get reactions", () => {
         sockets_1.default.handleGetReactions(io, socket, lobbies);
+    });
+    socket.on("disconnect me", () => {
+        sockets_1.default.removeFromLobby(io, socket, lobbies);
     });
     socket.on("remote paint", (vector) => {
         // start with a simple array of numbers

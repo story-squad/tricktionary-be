@@ -35,3 +35,14 @@ function handleDisconnection(io: any, socket: any, lobbies: any) {
   }
 }
 export default handleDisconnection;
+
+export function removeFromLobby(io: any, socket: any, lobbies:any) {
+  const lobbyCode:string|null = whereAmI(socket);
+  if (lobbyCode) {
+    // remove socket.id from player list
+    lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter(
+      (player: any) => player.id !== socket.id
+    );
+    socket.leave(socket.id)
+  }
+}
