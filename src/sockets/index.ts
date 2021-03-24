@@ -10,7 +10,7 @@ import handleSetPhase from "./handleSetPhase";
 import handleSetNewHost from "./handleSetNewHost";
 import handleNewPlayer from "./handleNewPlayer";
 import handleReturningPlayer from "./handleReturningPlayer";
-import handleDisconnection from "./handleDisconnection";
+import handleDisconnection, { removeFromLobby } from "./handleDisconnection";
 import handleUpdateUsername from "./handleUpdateUsername";
 import handleTimeSync from "./handleTimeSync";
 import handleMessageHost from "./handleMessageHost";
@@ -19,7 +19,6 @@ import handleRevealResults from "./handleRevealResults";
 import handleSetFinale from "./handleSetFinale";
 import handleEmojiSmash from "./handleEmojiSmash";
 import handleGetReactions from "./handleGetReactions";
-
 
 export default {
   handleLobbyLeave,
@@ -42,5 +41,6 @@ export default {
   handleRevealResults,
   handleSetFinale,
   handleEmojiSmash,
-  handleGetReactions
+  handleGetReactions,
+  removeFromLobby
 };
