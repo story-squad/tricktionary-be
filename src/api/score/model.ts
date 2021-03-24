@@ -50,6 +50,7 @@ async function addPoints(player_id: string, game_id: string, points: number) {
       .where({ game_id, player_id })
       .increment("points", points)
       .returning("points");
+    console.log(`points ${result}`);
     return { ok: true, points: result };
   } catch (err) {
     return { ok: false, message: err.message };
@@ -63,6 +64,7 @@ async function subPoints(player_id: string, game_id: string, points: number) {
       .where({ game_id, player_id })
       .decrement("points", points)
       .returning("points");
+    console.log(`points ${result}`);
     return { ok: true, points: result };
   } catch (err) {
     return { ok: false, message: err.message };
