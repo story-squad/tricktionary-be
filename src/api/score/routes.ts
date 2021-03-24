@@ -1,7 +1,15 @@
 import { Router } from "express";
 import { log } from "../../logger";
 import { redisCache, TricktionaryCache } from "../middleware";
-import { getGames, getPlayers, scoreCard, addPoints, subPoints, getPlayerScore } from "./model";
+import {
+  getGames,
+  getPlayers,
+  scoreCard,
+  addPoints,
+  subPoints,
+  getPlayerScore,
+  updateDefinition,
+} from "./model";
 const router = Router();
 
 router.post("/new", async (req, res) => {
@@ -86,6 +94,22 @@ router.put("/decrease/:player_id", async (req, res) => {
   try {
     const result = await subPoints(player_id, game_id, points);
     res.json(result);
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
+router.put("/def/:player_id", async (req, res) => {
+  const player_id = req.params.player_id;
+  const { game_id, top_definition_id } = req.body;
+  if (!player_id || !game_id || !top_definition_id) {
+    res.status(200).json({
+      error: `missing required [top_definition_id: ${top_definition_id}, game: ${game_id}, player: ${player_id}]`,
+    });
+  }
+  try {
+    const score = await updateDefinition(player_id, game_id, top_definition_id);
+    res.json(score);
   } catch (err) {
     res.json({ error: err.message });
   }

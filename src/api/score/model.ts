@@ -69,4 +69,27 @@ async function subPoints(player_id: string, game_id: string, points: number) {
   }
 }
 
-export { scoreCard, getGames, getPlayers, addPoints, subPoints, getPlayerScore };
+async function updateDefinition(
+  player_id: string,
+  game_id: string,
+  top_definition_id: number
+) {
+  try {
+    const result = await db("score")
+      .where({ game_id, player_id })
+      .update({ top_definition_id });
+    return { ok: true, score: result };
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+}
+
+export {
+  updateDefinition,
+  scoreCard,
+  getGames,
+  getPlayers,
+  addPoints,
+  subPoints,
+  getPlayerScore,
+};
