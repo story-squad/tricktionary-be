@@ -35,7 +35,7 @@ function handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses) {
                         player.points += common_1.VALUE_OF_TRUTH; // +1 if you voted for the provided definition.
                         pointsUpdate = yield common_1.localAxios.put(`/api/score/increase/${player.pid}`, {
                             game_id,
-                            VALUE_OF_TRUTH: common_1.VALUE_OF_TRUTH,
+                            points: common_1.VALUE_OF_TRUTH,
                         });
                         logger_1.log(pointsUpdate.data);
                     }
@@ -43,7 +43,7 @@ function handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses) {
                         player.points += common_1.VALUE_OF_BLUFF; // +1 if someone else voted for your definition.
                         pointsUpdate = yield common_1.localAxios.put(`/api/score/increase/${player.pid}`, {
                             game_id,
-                            VALUE_OF_BLUFF: common_1.VALUE_OF_BLUFF,
+                            points: common_1.VALUE_OF_BLUFF,
                         });
                         logger_1.log(pointsUpdate.data);
                     }

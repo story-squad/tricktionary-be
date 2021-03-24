@@ -78,6 +78,7 @@ function addPoints(player_id, game_id, points) {
                 .where({ game_id, player_id })
                 .increment("points", points)
                 .returning("points");
+            console.log(`points ${result}`);
             return { ok: true, points: result };
         }
         catch (err) {
@@ -94,6 +95,7 @@ function subPoints(player_id, game_id, points) {
                 .where({ game_id, player_id })
                 .decrement("points", points)
                 .returning("points");
+            console.log(`points ${result}`);
             return { ok: true, points: result };
         }
         catch (err) {
