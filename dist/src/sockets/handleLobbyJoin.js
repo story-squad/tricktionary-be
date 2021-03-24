@@ -16,11 +16,7 @@ const common_1 = require("./common");
 const logger_1 = require("../logger");
 const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
 const crontab_1 = require("./crontab");
-const JOINABLE = [
-    "PREGAME",
-    "RESULTS",
-    "FINALE"
-];
+const JOINABLE = ["PREGAME", "RESULTS", "FINALE"];
 /**
  * Connects the player with the active game being played.
  *
@@ -31,6 +27,7 @@ const JOINABLE = [
  * @param lobbies game-state
  */
 function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse) {
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         if (common_1.whereAmI(socket) === lobbyCode.trim()) {
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
@@ -48,53 +45,103 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
             handleErrorMessage_1.default(io, socket, 2001, `The lobby with code ${lobbyCode} has reached the maximum player limit of ${common_1.MAX_PLAYERS}`);
             return;
         }
+        let p_id;
         try {
-            const last_player = yield common_1.localAxios.get(`/api/player/last-user-id/${socket.id}`);
-            const p_id = last_player.data.player.id;
-            yield common_1.updatePlayerToken(io, socket, p_id, username, "", 0, lobbyCode);
+            // Player.id
+            const { data } = yield common_1.localAxios.get(`/api/auth/find-player/${socket.id}`);
+            p_id = data === null || data === void 0 ? void 0 : data.id;
         }
         catch (err) {
             logger_1.log(err.message);
         }
-        if (lobbies[lobbyCode] && lobbies[lobbyCode].players) {
-            let rejoined = lobbies[lobbyCode].players.filter((p) => (p === null || p === void 0 ? void 0 : p.rejoinedAs) && p.rejoinedAs === socket.id).length > 0;
-            if (lobbies[lobbyCode].phase in JOINABLE && !rejoined) {
-                // prevent *new players from joining mid-game.
-                handleErrorMessage_1.default(io, socket, 2002, `Unfortunately, the lobby with code ${lobbyCode} has already begun their game`);
+        if (!p_id) {
+            logger_1.log("!no p_id was found (corrupted token?), creating...");
+            try {
+                const login = yield common_1.localAxios.post("/api/auth/new-player", {
+                    last_user_id: socket.id,
+                });
+                const newtoken = login.data.token;
+                p_id = login.data.player_id;
+                common_1.privateMessage(io, socket, "token update", newtoken);
+            }
+            catch (err) {
+                logger_1.log(err.message);
                 return;
             }
-            logger_1.log(`${username} ${rejoined ? "re-joined" : "joined"} ${lobbyCode}`);
-            if (!(lobbies[lobbyCode].players.filter((p) => p.id === socket.id)
-                .length > 0)) {
-                if (!rejoined) {
-                    // this player is new
-                    lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
-                            ...lobbies[lobbyCode].players,
-                            {
-                                id: socket.id,
-                                username,
-                                definition: "",
-                                points: 0,
-                                connected: true,
-                            },
-                        ] });
-                }
-                else {
-                    // this player has returned
-                    lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
-                            ...lobbies[lobbyCode].players.map((p) => {
-                                if ((p === null || p === void 0 ? void 0 : p.rejoinedAs) && p.rejoinedAs === socket.id) {
-                                    return Object.assign(Object.assign({}, p), { id: socket.id, connected: true });
-                                }
-                                return p;
-                            }),
-                        ] });
-                }
-                socket.join(lobbyCode);
-            }
         }
+        else {
+            logger_1.log(`!found player id: ${p_id}`);
+        }
+        logger_1.log(`p_id: ${p_id}`);
+        if (!p_id) {
+            logger_1.log("no join for you!!!");
+            return;
+        }
+        const otherPlayers = () => lobbies[lobbyCode].players
+            .filter((p) => p.pid && p.pid !== p_id)
+            .filter((p) => p.id && p.id !== socket.id);
+        const playerReturned = () => lobbies[lobbyCode].players.length > otherPlayers().length;
+        // sort by points, ascending order
+        function sortedDuplicates() {
+            return lobbies[lobbyCode].players
+                .filter((player) => player.pid === p_id || player.id !== socket.id)
+                .sort((a, b) => a.points - b.points);
+        }
+        function askPartyToLeave(duplicatePlayers) {
+            // ask duplicates to leave
+            duplicatePlayers.forEach((p) => {
+                logger_1.log(`suggesting 'disconnect me' -> ${p.id}`);
+                io.to(p.id).emit("disconnect me"); // politely ask duplicate to leave
+                socket.leave(p.id); // show duplicate to the exit
+            });
+            // remove from players list
+            return (lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: otherPlayers() }));
+        }
+        let old_player_obj;
+        if (playerReturned()) {
+            const duplicates = sortedDuplicates();
+            lobbies[lobbyCode] = askPartyToLeave(duplicates);
+            old_player_obj = duplicates.pop(); // most points
+        }
+        let uname = ((_a = old_player_obj === null || old_player_obj === void 0 ? void 0 : old_player_obj.username) === null || _a === void 0 ? void 0 : _a.length) > 0 ? old_player_obj.username : username;
+        // update the token,
+        let points = Number(old_player_obj === null || old_player_obj === void 0 ? void 0 : old_player_obj.points) >= 0 ? Number(old_player_obj.points) : 0;
+        yield common_1.updatePlayerToken(io, socket, p_id, uname, "", points, lobbyCode);
+        if (((_b = lobbies[lobbyCode]) === null || _b === void 0 ? void 0 : _b.phase) in JOINABLE && !old_player_obj) {
+            // prevent *new players from joining mid-game.
+            handleErrorMessage_1.default(io, socket, 2002, `Unfortunately, the lobby with code ${lobbyCode} has already begun their game`);
+            return;
+        }
+        logger_1.log(`${username} ${old_player_obj ? "re-joined" : "joined"} ${lobbyCode}`);
+        // add player to lobby data
+        if (old_player_obj) {
+            // re-construct the old player object, setting connected to true, with our new id
+            // re-join
+            lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
+                    ...lobbies[lobbyCode].players.filter((p) => p.id !== socket.id),
+                    Object.assign(Object.assign({}, old_player_obj), { id: socket.id, connected: true, pid: p_id }),
+                ] });
+        }
+        else {
+            // this player is new
+            lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { players: [
+                    ...lobbies[lobbyCode].players,
+                    {
+                        id: socket.id,
+                        username,
+                        definition: "",
+                        points: 0,
+                        connected: true,
+                        pid: p_id,
+                    },
+                ] });
+        }
+        // join socket to room
+        socket.join(lobbyCode);
+        // send welcome message
         common_1.privateMessage(io, socket, "welcome", socket.id);
-        io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
+        // ask room to update
+        io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         if (doCheckPulse) {
             logger_1.log("PULSE CHECK");
             try {

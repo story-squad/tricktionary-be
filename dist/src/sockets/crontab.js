@@ -30,7 +30,9 @@ function incrementTask(k) {
         logger_1.log(`[delete] task: ${t.name}`);
         t.task.stop();
         delete lobbyTasks[k]; // remove the cronTask from our list.
+        return { continue: false };
     }
+    return { continue: true };
 }
 /**
  * schedule a 'pulse check' for re-connected players in this game (lobbyCode)
@@ -68,11 +70,16 @@ exports.schedulePulseCheck = schedulePulseCheck;
 function checkPulse(o, k, io) {
     const needsChecking = () => o[k].players.filter((p) => p.pulseCheck && p.connected);
     const task = lobbyTasks[k]; // the first cron task for this room(k).
-    incrementTask(k);
+    const status = incrementTask(k);
     needsChecking().forEach((p) => {
         logger_1.log(`checking the pulse of ${p.username} @ ${k}`);
         io.to(p.id).emit("pulse check", task.last);
     });
+    if (!status.continue) {
+        // remove players who aren't connected
+        o[k] = Object.assign(Object.assign({}, o[k]), { players: o[k].players.filter((p) => p.connected) });
+        io.to(k).emit("game update", o[k]);
+    }
 }
 function stopScheduledTask(lobbyCode) {
     try {

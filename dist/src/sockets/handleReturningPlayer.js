@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 const logger_1 = require("../logger");
 const handleLobbyJoin_1 = __importDefault(require("./handleLobbyJoin"));
+const handleNewPlayer_1 = __importDefault(require("./handleNewPlayer"));
 /**
  * Determine whether or not the player should auto re-join an existing game.
  *
@@ -27,6 +28,7 @@ const handleLobbyJoin_1 = __importDefault(require("./handleLobbyJoin"));
  * @param lobbies game-state
  */
 function handleReturningPlayer(io, socket, token, lobbies) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const user_id = socket.id;
         let login;
@@ -40,6 +42,12 @@ function handleReturningPlayer(io, socket, token, lobbies) {
                 user_id,
                 last_token: token,
             });
+            if (!((_a = login === null || login === void 0 ? void 0 : login.data) === null || _a === void 0 ? void 0 : _a.token)) {
+                // we have a bad token.
+                // treat them as a new player.
+                // (until we have user account)
+                return handleNewPlayer_1.default(io, socket);
+            }
             player = login.data.player;
             newtoken = login.data.token;
             old_user_id = login.data.old_user_id;

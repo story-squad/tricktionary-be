@@ -77,7 +77,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
             const { word } = def_word;
             return { user_id, definition, word };
         }
-        function getDef(user_id, game_id) {
+        function getDef(user_id, game_id, player_id) {
             return __awaiter(this, void 0, void 0, function* () {
                 let result = { id: user_id, game: game_id };
                 let mvr;
@@ -86,6 +86,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                 let wid;
                 let rWord;
                 let def_word;
+                let updateScoreCard;
                 try {
                     let p = yield common_1.localAxios.get(`/api/user-rounds/user/${result.id}/game/${result.game}`);
                     result["user_rounds"] = p.data.user_rounds;
@@ -95,6 +96,10 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                     })[0].round_id;
                     // most voted definition
                     mvd = yield common_1.localAxios.get(`/api/definitions/user/${result.id}/round/${mvr}`);
+                    updateScoreCard = yield common_1.localAxios.put(`/api/score/def/${player_id}`, {
+                        game_id,
+                        top_definition_id: mvd.data.id,
+                    });
                     r = yield common_1.localAxios.get(`/api/round/id/${mvr}`);
                     wid = r.data.round.word_id;
                     rWord = yield common_1.localAxios.get(`/api/words/id/${wid}`);
@@ -109,7 +114,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
         }
         // get most voted definition(s)
         try {
-            const firstPlaceResult = yield getDef(firstPlace.id, game_id);
+            const firstPlaceResult = yield getDef(firstPlace.id, game_id, firstPlace.pid);
             results.push(Object.assign({}, firstPlaceResult));
         }
         catch (err) {
@@ -118,7 +123,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
         }
         if (secondPlace) {
             try {
-                const secondPlaceResult = yield getDef(secondPlace.id, game_id);
+                const secondPlaceResult = yield getDef(secondPlace.id, game_id, secondPlace.pid);
                 results.push(Object.assign({}, secondPlaceResult));
             }
             catch (err) {
@@ -128,7 +133,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
         }
         if (thirdPlace) {
             try {
-                const thirdPlaceResult = yield getDef(thirdPlace.id, game_id);
+                const thirdPlaceResult = yield getDef(thirdPlace.id, game_id, thirdPlace.pid);
                 results.push(Object.assign({}, thirdPlaceResult));
             }
             catch (err) {

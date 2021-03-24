@@ -34,10 +34,14 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
         }
         catch (err) {
             logger_1.log("errror! handleSubmitDefinitions:22");
-            handleErrorMessage_1.default(io, socket, 2003, "There was a server error while submitting your definition.");
+            return handleErrorMessage_1.default(io, socket, 2003, "There was a server error while submitting your definition.");
         }
         // then ...
         const definitionId = (_a = newDef === null || newDef === void 0 ? void 0 : newDef.data) === null || _a === void 0 ? void 0 : _a.definitionId;
+        if (!definitionId) {
+            // error submitting definition, 
+            return handleErrorMessage_1.default(io, socket, 2003, "There was a server error while submitting your definition.");
+        }
         newPlayer = Object.assign(Object.assign({}, newPlayer), { definitionId, definitionEpoch }); // store definition id
         // update & count number of player submissions
         lobbies[lobbyCode].players = lobbies[lobbyCode].players.map((player) => {

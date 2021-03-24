@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.removeFromLobby = void 0;
 const common_1 = require("./common");
 const logger_1 = require("../logger");
 function handleDisconnection(io, socket, lobbies) {
@@ -29,4 +30,13 @@ function handleDisconnection(io, socket, lobbies) {
     }
 }
 exports.default = handleDisconnection;
+function removeFromLobby(io, socket, lobbies) {
+    const lobbyCode = common_1.whereAmI(socket);
+    if (lobbyCode) {
+        // remove socket.id from player list
+        lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter((player) => player.id !== socket.id);
+        socket.leave(socket.id);
+    }
+}
+exports.removeFromLobby = removeFromLobby;
 //# sourceMappingURL=handleDisconnection.js.map

@@ -73,14 +73,11 @@ async function handleLobbyJoin(
       const login = await localAxios.post("/api/auth/new-player", {
         last_user_id: socket.id,
       });
-      console.log(login.data)
       const newtoken = login.data.token;
       p_id = login.data.player_id;
-      console.log(`new pid ${p_id}!`);
       privateMessage(io, socket, "token update", newtoken)
-      // return;
     } catch (err) {
-      console.log(err.message);
+      log(err.message);
       return
     }
   } else {

@@ -185,12 +185,45 @@ function wordFromID(id) {
     });
 }
 exports.wordFromID = wordFromID;
+function checkScores(lobbyCode, lobbies) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        const players = (_a = lobbies[lobbyCode]) === null || _a === void 0 ? void 0 : _a.players;
+        const game_id = lobbies[lobbyCode].game_id;
+        if (!players) {
+            logger_1.log(`[!ERROR] no players in ${lobbyCode}`);
+            return { ok: false, error: `invalid lobby @ ${lobbyCode}` };
+        }
+        logger_1.log(`updating score-cards for players in ${lobbyCode}`);
+        players.forEach((playerObj) => __awaiter(this, void 0, void 0, function* () {
+            var _b, _c;
+            const socket_id = playerObj.id;
+            const { definitionId, points, username, pid } = playerObj;
+            const pathname = `/api/score/player/${pid}/game/${game_id}`;
+            let score = yield localAxios.get(pathname);
+            if (!((_b = score === null || score === void 0 ? void 0 : score.data) === null || _b === void 0 ? void 0 : _b.id)) {
+                logger_1.log(`creating score card for ${username}`);
+                score = yield localAxios.post("/api/score/new", {
+                    game_id,
+                    player_id: pid,
+                });
+            }
+            else {
+                logger_1.log(`found score card for ${username}`);
+                // todo
+            }
+            logger_1.log(`test-score: ${((_c = score === null || score === void 0 ? void 0 : score.data) === null || _c === void 0 ? void 0 : _c.id) || "unknown!"}`);
+        }));
+    });
+}
 function startNewRound(host, word, lobbies, lobbyCode, lobbySettings) {
     return __awaiter(this, void 0, void 0, function* () {
         const phase = "WRITING";
         // start a new round
         let newRound;
         let roundId;
+        // make sure every player has a score-card for this game.
+        yield checkScores(lobbyCode, lobbies);
         try {
             logger_1.log("starting a new round...");
             newRound = yield localAxios.post("/api/round/start", {
@@ -291,7 +324,7 @@ function updatePlayerToken(io, socket, p_id, name, definition, points, lobbyCode
             const { data } = yield localAxios.post("/api/auth/update-token", payload);
             if (data.ok) {
                 // send token to player
-                io.to(socket.id).emit('token update', data.token, info);
+                io.to(socket.id).emit("token update", data.token, info);
                 // update the database
                 token = data.token;
                 yield localAxios.put(`/api/player/id/${p_id}`, {

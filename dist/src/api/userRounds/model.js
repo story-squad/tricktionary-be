@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
-const model_1 = require("../played/model");
+const model_1 = require("../score/model");
 const logger_1 = require("../../logger");
 // variable name must be in lowerCamelCase, PascalCase or UPPER_CASE
 function add(userID, roundID, gameID) {
@@ -28,7 +28,7 @@ function addAllUserRounds(players, roundId, gameID) {
         players.forEach((player) => __awaiter(this, void 0, void 0, function* () {
             try {
                 yield add(player.id, roundId, gameID);
-                yield model_1.played(player.id, gameID);
+                yield model_1.scoreCard(player.id, gameID);
             }
             catch (err) {
                 logger_1.log(err.message);

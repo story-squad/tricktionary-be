@@ -42,9 +42,11 @@ router.get("/user/:uid/round/:rid", (req, res) => __awaiter(void 0, void 0, void
     const user_id = req.params.uid;
     const round_id = Number(req.params.rid);
     let definition;
+    let id;
     try {
         // player's definition this round
         definition = yield model_1.default.byUserInRound(user_id, round_id);
+        id = definition.id;
     }
     catch (err) {
         // a blank definition object
@@ -55,6 +57,7 @@ router.get("/user/:uid/round/:rid", (req, res) => __awaiter(void 0, void 0, void
         };
     }
     res.status(200).json({
+        id,
         user_id,
         round_id,
         definition

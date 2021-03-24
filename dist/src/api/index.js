@@ -14,7 +14,7 @@ const routes_8 = __importDefault(require("./admin/routes"));
 const routes_9 = __importDefault(require("./auth/routes"));
 const routes_10 = __importDefault(require("./player/routes"));
 const routes_11 = __importDefault(require("./game/routes"));
-const routes_12 = __importDefault(require("./played/routes"));
+const routes_12 = __importDefault(require("./score/routes"));
 const routes_13 = __importDefault(require("./hostChoices/routes"));
 const routes_14 = __importDefault(require("./payment/routes"));
 const routes_15 = __importDefault(require("./member/routes"));
@@ -31,7 +31,7 @@ exports.default = {
     auth: routes_9.default,
     player: routes_10.default,
     game: routes_11.default,
-    played: routes_12.default,
+    score: routes_12.default,
     choice: routes_13.default,
     payment: routes_14.default,
     member: routes_15.default,

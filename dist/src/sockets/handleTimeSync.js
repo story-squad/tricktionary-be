@@ -32,7 +32,7 @@ function handleTimeSync(io, socket, lobbies, seconds) {
                 .filter((p) => p.id !== host && p.connected)
                 .forEach((player) => {
                 // log(player.username);
-                io.to(player.id).emit("synchronize", seconds);
+                (player === null || player === void 0 ? void 0 : player.id.length) > 0 && io.to(player.id).emit("synchronize", seconds);
             });
         }
         else {

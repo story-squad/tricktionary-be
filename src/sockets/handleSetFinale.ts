@@ -109,12 +109,10 @@ async function handleSetFinale(
       mvd = await localAxios.get(
         `/api/definitions/user/${result.id}/round/${mvr}`
       );
-      console.log(mvd.data);
       updateScoreCard = await localAxios.put(`/api/score/def/${player_id}`, {
         game_id,
         top_definition_id: mvd.data.id,
       });
-      console.log(`updated scoreCard with ${mvd.data.id}`)
       r = await localAxios.get(`/api/round/id/${mvr}`);
       wid = r.data.round.word_id;
       rWord = await localAxios.get(`/api/words/id/${wid}`);
