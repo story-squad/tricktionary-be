@@ -8,13 +8,8 @@ import {
 } from "./common";
 import { log } from "../logger";
 import handleErrorMessage from "./handleErrorMessage";
-
 import { schedulePulseCheck } from "./crontab";
-const JOINABLE = [
-  "PREGAME",
-  "RESULTS",
-  "FINALE"
-];
+const JOINABLE = ["PREGAME", "RESULTS", "FINALE"];
 /**
  * Connects the player with the active game being played.
  *
@@ -63,72 +58,127 @@ async function handleLobbyJoin(
     );
     return;
   }
+  let p_id: any;
   try {
-    const last_player = await localAxios.get(
-      `/api/player/last-user-id/${socket.id}`
-    );
-    const p_id = last_player.data.player.id;
-    await updatePlayerToken(io, socket, p_id, username, "", 0, lobbyCode);
+    // Player.id
+    const { data } = await localAxios.get(`/api/auth/find-player/${socket.id}`);
+    p_id = data?.id;
   } catch (err) {
     log(err.message);
   }
 
-  if (lobbies[lobbyCode] && lobbies[lobbyCode].players) {
-    let rejoined =
-      lobbies[lobbyCode].players.filter(
-        (p: any) => p?.rejoinedAs && p.rejoinedAs === socket.id
-      ).length > 0;
-    if (lobbies[lobbyCode].phase in JOINABLE && !rejoined) {
-      // prevent *new players from joining mid-game.
-      handleErrorMessage(
-        io,
-        socket,
-        2002,
-        `Unfortunately, the lobby with code ${lobbyCode} has already begun their game`
-      );
-      return;
+  if (!p_id) {
+    log("!no p_id was found (corrupted token?), creating...");
+    try {
+      const login = await localAxios.post("/api/auth/new-player", {
+        last_user_id: socket.id,
+      });
+      console.log(login.data)
+      const newtoken = login.data.token;
+      p_id = login.data.player_id;
+      console.log(`new pid ${p_id}!`);
+      privateMessage(io, socket, "token update", newtoken)
+      // return;
+    } catch (err) {
+      console.log(err.message);
+      return
     }
-    log(`${username} ${rejoined ? "re-joined" : "joined"} ${lobbyCode}`);
-    if (
-      !(
-        lobbies[lobbyCode].players.filter((p: any) => p.id === socket.id)
-          .length > 0
-      )
-    ) {
-      if (!rejoined) {
-        // this player is new
-        lobbies[lobbyCode] = {
-          ...lobbies[lobbyCode],
-          players: [
-            ...lobbies[lobbyCode].players,
-            {
-              id: socket.id,
-              username,
-              definition: "",
-              points: 0,
-              connected: true,
-            },
-          ],
-        };
-      } else {
-        // this player has returned
-        lobbies[lobbyCode] = {
-          ...lobbies[lobbyCode],
-          players: [
-            ...lobbies[lobbyCode].players.map((p: any) => {
-              if (p?.rejoinedAs && p.rejoinedAs === socket.id) {
-                return { ...p, id: socket.id, connected: true };
-              }
-              return p;
-            }),
-          ],
-        };
-      }
-      socket.join(lobbyCode);
-    }
+  } else {
+    log(`!found player id: ${p_id}`);
   }
+
+  log(`p_id: ${p_id}`);
+
+  if (!p_id) {
+    log("no join for you!!!");
+    return;
+  }
+  const otherPlayers = (): [] =>
+    lobbies[lobbyCode].players
+      .filter((p: any) => p.pid && p.pid !== p_id)
+      .filter((p: any) => p.id && p.id !== socket.id);
+  const playerReturned = (): boolean =>
+    lobbies[lobbyCode].players.length > otherPlayers().length;
+  // sort by points, ascending order
+  function sortedDuplicates(): [] {
+    return lobbies[lobbyCode].players
+      .filter((player: any) => player.pid === p_id || player.id !== socket.id)
+      .sort((a: any, b: any) => a.points - b.points);
+  }
+  function askPartyToLeave(duplicatePlayers: []) {
+    // ask duplicates to leave
+    duplicatePlayers.forEach((p: any) => {
+      log(`suggesting 'disconnect me' -> ${p.id}`);
+      io.to(p.id).emit("disconnect me"); // politely ask duplicate to leave
+      socket.leave(p.id); // show duplicate to the exit
+    });
+    // remove from players list
+    return (lobbies[lobbyCode] = {
+      ...lobbies[lobbyCode],
+      players: otherPlayers(),
+    });
+  }
+  let old_player_obj: any;
+
+  if (playerReturned()) {
+    const duplicates = sortedDuplicates();
+    lobbies[lobbyCode] = askPartyToLeave(duplicates);
+    old_player_obj = duplicates.pop(); // most points
+  }
+  let uname =
+    old_player_obj?.username?.length > 0 ? old_player_obj.username : username;
+  // update the token,
+  let points =
+    Number(old_player_obj?.points) >= 0 ? Number(old_player_obj.points) : 0;
+  await updatePlayerToken(io, socket, p_id, uname, "", points, lobbyCode);
+
+  if (lobbies[lobbyCode]?.phase in JOINABLE && !old_player_obj) {
+    // prevent *new players from joining mid-game.
+    handleErrorMessage(
+      io,
+      socket,
+      2002,
+      `Unfortunately, the lobby with code ${lobbyCode} has already begun their game`
+    );
+    return;
+  }
+
+  log(`${username} ${old_player_obj ? "re-joined" : "joined"} ${lobbyCode}`);
+
+  // add player to lobby data
+  if (old_player_obj) {
+    // re-construct the old player object, setting connected to true, with our new id
+    // re-join
+    lobbies[lobbyCode] = {
+      ...lobbies[lobbyCode],
+      players: [
+        ...lobbies[lobbyCode].players.filter((p: any) => p.id !== socket.id),
+        { ...old_player_obj, id: socket.id, connected: true, pid: p_id },
+      ],
+    };
+  } else {
+    // this player is new
+    lobbies[lobbyCode] = {
+      ...lobbies[lobbyCode],
+      players: [
+        ...lobbies[lobbyCode].players,
+        {
+          id: socket.id,
+          username,
+          definition: "",
+          points: 0,
+          connected: true,
+          pid: p_id,
+        },
+      ],
+    };
+  }
+  // join socket to room
+  socket.join(lobbyCode);
+  // send welcome message
   privateMessage(io, socket, "welcome", socket.id);
-  io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
+  // ask room to update
+  io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
   if (doCheckPulse) {
     log("PULSE CHECK");
     try {
@@ -138,4 +188,5 @@ async function handleLobbyJoin(
     }
   }
 }
+
 export default handleLobbyJoin;
