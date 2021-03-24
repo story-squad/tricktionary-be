@@ -109,10 +109,12 @@ async function handleSetFinale(
       mvd = await localAxios.get(
         `/api/definitions/user/${result.id}/round/${mvr}`
       );
-      updateScoreCard = await localAxios.put(`/api/score/def/${player_id}`, {
-        game_id,
-        top_definition_id: mvd.data.id,
-      });
+      if (mvd?.data?.id) {
+        updateScoreCard = await localAxios.put(`/api/score/def/${player_id}`, {
+          game_id,
+          top_definition_id: mvd.data.id,
+        });
+      }
       r = await localAxios.get(`/api/round/id/${mvr}`);
       wid = r.data.round.word_id;
       rWord = await localAxios.get(`/api/words/id/${wid}`);
@@ -125,7 +127,11 @@ async function handleSetFinale(
   }
   // get most voted definition(s)
   try {
-    const firstPlaceResult = await getDef(firstPlace.id, game_id, firstPlace.pid);
+    const firstPlaceResult = await getDef(
+      firstPlace.id,
+      game_id,
+      firstPlace.pid
+    );
     results.push({ ...firstPlaceResult });
   } catch (err) {
     log("error getting 1st place");
@@ -133,7 +139,11 @@ async function handleSetFinale(
   }
   if (secondPlace) {
     try {
-      const secondPlaceResult = await getDef(secondPlace.id, game_id, secondPlace.pid);
+      const secondPlaceResult = await getDef(
+        secondPlace.id,
+        game_id,
+        secondPlace.pid
+      );
       results.push({ ...secondPlaceResult });
     } catch (err) {
       log("error getting second place");
@@ -142,7 +152,11 @@ async function handleSetFinale(
   }
   if (thirdPlace) {
     try {
-      const thirdPlaceResult = await getDef(thirdPlace.id, game_id, thirdPlace.pid);
+      const thirdPlaceResult = await getDef(
+        thirdPlace.id,
+        game_id,
+        thirdPlace.pid
+      );
       results.push({ ...thirdPlaceResult });
     } catch (err) {
       log("error getting third place");
