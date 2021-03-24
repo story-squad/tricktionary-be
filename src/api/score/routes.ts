@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { log } from "../../logger";
 import { redisCache, TricktionaryCache } from "../middleware";
-import { getGames, getPlayers, scoreCard, addPoints, subPoints } from "./model";
+import { getGames, getPlayers, scoreCard, addPoints, subPoints, getPlayerScore } from "./model";
 const router = Router();
 
 router.post("/new", async (req, res) => {
@@ -25,6 +25,21 @@ router.get("/player/:id", async (req, res) => {
   let result;
   try {
     result = getGames(player_id); // return this player's games.
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+  res.status(200).json(result);
+});
+
+router.get("/player/:pid/game/:gid", async (req, res) => {
+  const player_id = req.params.pid;
+  const game_id = req.params.gid;
+  if (!player_id || !game_id) {
+    res.status(400).json({ error: "id ?" });
+  }
+  let result;
+  try {
+    result = await getPlayerScore(player_id, game_id);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

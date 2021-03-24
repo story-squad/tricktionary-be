@@ -11,6 +11,15 @@ async function scoreCard(player_id: string, game_id: string) {
   }
   return { ok: true, id: uuId };
 }
+async function getPlayerScore(player_id: string, game_id: string) {
+  let result;
+  try {
+    result = await db("score").where({ player_id, game_id }).first();
+  } catch (err) {
+    result = { ok: false, message: err.message };
+  }
+  return result;
+}
 
 async function getGames(player_id: string) {
   //
@@ -60,4 +69,4 @@ async function subPoints(player_id: string, game_id: string, points: number) {
   }
 }
 
-export { scoreCard, getGames, getPlayers, addPoints, subPoints };
+export { scoreCard, getGames, getPlayers, addPoints, subPoints, getPlayerScore };
