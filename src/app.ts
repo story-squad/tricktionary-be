@@ -222,6 +222,9 @@ io.on("connection", (socket) => {
   socket.on("get reactions", () => {
     gameSocketHandler.handleGetReactions(io, socket, lobbies);
   })
+  socket.on("disconnect me", () => {
+    gameSocketHandler.removeFromLobby(io, socket, lobbies);
+  })
 });
 
 export { socketApp };
