@@ -28,8 +28,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-<<<<<<< HEAD
-Defined in: [handleRevealResults.ts:13](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleRevealResults.ts#L13)
-=======
-Defined in: [handleRevealResults.ts:13](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleRevealResults.ts#L13)
->>>>>>> remotePaint
+Defined in: [handleRevealResults.ts:13](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/handleRevealResults.ts#L13)

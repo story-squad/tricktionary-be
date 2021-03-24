@@ -29,8 +29,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-<<<<<<< HEAD
-Defined in: [handleLobbyJoin.ts:22](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleLobbyJoin.ts#L22)
-=======
-Defined in: [handleLobbyJoin.ts:27](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleLobbyJoin.ts#L27)
->>>>>>> remotePaint
+Defined in: [handleLobbyJoin.ts:22](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/handleLobbyJoin.ts#L22)

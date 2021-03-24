@@ -28,8 +28,4 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-<<<<<<< HEAD
-Defined in: [handleEmojiSmash.ts:13](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleEmojiSmash.ts#L13)
-=======
-Defined in: [handleEmojiSmash.ts:13](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleEmojiSmash.ts#L13)
->>>>>>> remotePaint
+Defined in: [handleEmojiSmash.ts:13](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/handleEmojiSmash.ts#L13)

@@ -66,10 +66,7 @@ exports.default = {
     handleSetFinale: handleSetFinale_1.default,
     handleEmojiSmash: handleEmojiSmash_1.default,
     handleGetReactions: handleGetReactions_1.default,
-<<<<<<< HEAD
-    removeFromLobby: handleDisconnection_1.removeFromLobby
-=======
+    removeFromLobby: handleDisconnection_1.removeFromLobby,
     handleRemotePaint: handleRemotePaint_1.default,
->>>>>>> remotePaint
 };
 //# sourceMappingURL=index.js.map

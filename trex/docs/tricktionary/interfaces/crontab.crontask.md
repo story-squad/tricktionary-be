@@ -38,11 +38,7 @@ a Tricktionary scheduled-task
 
 • **count**: *number*
 
-<<<<<<< HEAD
-Defined in: [crontab.ts:26](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/crontab.ts#L26)
-=======
-Defined in: [crontab.ts:26](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/crontab.ts#L26)
->>>>>>> remotePaint
+Defined in: [crontab.ts:26](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/crontab.ts#L26)
 
 ___
 
@@ -50,11 +46,7 @@ ___
 
 • **created**: *number*
 
-<<<<<<< HEAD
-Defined in: [crontab.ts:27](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/crontab.ts#L27)
-=======
-Defined in: [crontab.ts:27](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/crontab.ts#L27)
->>>>>>> remotePaint
+Defined in: [crontab.ts:27](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/crontab.ts#L27)
 
 ___
 
@@ -62,11 +54,7 @@ ___
 
 • **last**: *number*
 
-<<<<<<< HEAD
-Defined in: [crontab.ts:28](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/crontab.ts#L28)
-=======
-Defined in: [crontab.ts:28](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/crontab.ts#L28)
->>>>>>> remotePaint
+Defined in: [crontab.ts:28](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/crontab.ts#L28)
 
 ___
 
@@ -74,11 +62,7 @@ ___
 
 • **limit**: *number*
 
-<<<<<<< HEAD
-Defined in: [crontab.ts:25](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/crontab.ts#L25)
-=======
-Defined in: [crontab.ts:25](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/crontab.ts#L25)
->>>>>>> remotePaint
+Defined in: [crontab.ts:25](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/crontab.ts#L25)
 
 ___
 
@@ -86,11 +70,7 @@ ___
 
 • **lobbyCode**: *string*
 
-<<<<<<< HEAD
-Defined in: [crontab.ts:24](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/crontab.ts#L24)
-=======
-Defined in: [crontab.ts:24](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/crontab.ts#L24)
->>>>>>> remotePaint
+Defined in: [crontab.ts:24](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/crontab.ts#L24)
 
 ___
 
@@ -98,11 +78,7 @@ ___
 
 • **name**: *string*
 
-<<<<<<< HEAD
-Defined in: [crontab.ts:23](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/crontab.ts#L23)
-=======
-Defined in: [crontab.ts:23](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/crontab.ts#L23)
->>>>>>> remotePaint
+Defined in: [crontab.ts:23](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/crontab.ts#L23)
 
 ___
 
@@ -110,8 +86,4 @@ ___
 
 • **task**: *ScheduledTask*
 
-<<<<<<< HEAD
-Defined in: [crontab.ts:29](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/crontab.ts#L29)
-=======
-Defined in: [crontab.ts:29](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/crontab.ts#L29)
->>>>>>> remotePaint
+Defined in: [crontab.ts:29](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/crontab.ts#L29)

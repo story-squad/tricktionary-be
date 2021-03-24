@@ -166,15 +166,13 @@ io.on("connection", (socket) => {
     socket.on("get reactions", () => {
         sockets_1.default.handleGetReactions(io, socket, lobbies);
     });
-<<<<<<< HEAD
     socket.on("disconnect me", () => {
         sockets_1.default.removeFromLobby(io, socket, lobbies);
-=======
+    });
     socket.on("remote paint", (vector) => {
         // start with a simple array of numbers
         logger_1.log(`[PAINT] ${vector.map((n) => String(n))}`);
         sockets_1.default.handleRemotePaint(io, socket, lobbies, vector);
->>>>>>> remotePaint
     });
 });
 //# sourceMappingURL=app.js.map

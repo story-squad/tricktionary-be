@@ -19,10 +19,7 @@ import handleRevealResults from "./handleRevealResults";
 import handleSetFinale from "./handleSetFinale";
 import handleEmojiSmash from "./handleEmojiSmash";
 import handleGetReactions from "./handleGetReactions";
-<<<<<<< HEAD
-=======
 import handleRemotePaint from "./handleRemotePaint";
->>>>>>> remotePaint
 
 export default {
   handleLobbyLeave,
@@ -46,9 +43,6 @@ export default {
   handleSetFinale,
   handleEmojiSmash,
   handleGetReactions,
-<<<<<<< HEAD
-  removeFromLobby
-=======
+  removeFromLobby,
   handleRemotePaint,
->>>>>>> remotePaint
 };

@@ -221,20 +221,15 @@ io.on("connection", (socket) => {
   });
   socket.on("get reactions", () => {
     gameSocketHandler.handleGetReactions(io, socket, lobbies);
-<<<<<<< HEAD
-  })
+  });
   socket.on("disconnect me", () => {
     gameSocketHandler.removeFromLobby(io, socket, lobbies);
-  })
-=======
   });
-
   socket.on("remote paint", (vector: number[]) => {
     // start with a simple array of numbers
     log(`[PAINT] ${vector.map((n) => String(n))}`);
     gameSocketHandler.handleRemotePaint(io, socket, lobbies, vector);
   });
->>>>>>> remotePaint
 });
 
 export { socketApp };

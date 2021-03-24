@@ -19,11 +19,16 @@ router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     if (!(player_id && game_id)) {
         res.status(400).json({ message: "missing information" });
     }
-    const linkedPlayer = yield model_1.scoreCard(player_id, game_id);
-    if (!linkedPlayer.ok) {
-        res.status(400).json({ message: linkedPlayer.message });
+    try {
+        const linkedPlayer = yield model_1.scoreCard(player_id, game_id);
+        if (!linkedPlayer.ok) {
+            res.status(400).json({ message: linkedPlayer.message });
+        }
+        res.status(200).json({ score: linkedPlayer.id });
     }
-    res.status(200).json({ score: linkedPlayer.id });
+    catch (err) {
+        res.status(400).json({ message: err.message });
+    }
 }));
 router.get("/player/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const player_id = req.params.id;

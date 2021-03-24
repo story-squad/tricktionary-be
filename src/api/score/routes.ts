@@ -18,11 +18,15 @@ router.post("/new", async (req, res) => {
   if (!(player_id && game_id)) {
     res.status(400).json({ message: "missing information" });
   }
-  const linkedPlayer = await scoreCard(player_id, game_id);
-  if (!linkedPlayer.ok) {
-    res.status(400).json({ message: linkedPlayer.message });
+  try {
+    const linkedPlayer = await scoreCard(player_id, game_id);
+    if (!linkedPlayer.ok) {
+      res.status(400).json({ message: linkedPlayer.message });
+    }
+    res.status(200).json({ score: linkedPlayer.id });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
-  res.status(200).json({ score: linkedPlayer.id });
 });
 
 router.get("/player/:id", async (req, res) => {

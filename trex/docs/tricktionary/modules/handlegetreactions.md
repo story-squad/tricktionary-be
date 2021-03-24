@@ -24,8 +24,4 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-<<<<<<< HEAD
-Defined in: [handleGetReactions.ts:4](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleGetReactions.ts#L4)
-=======
-Defined in: [handleGetReactions.ts:4](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleGetReactions.ts#L4)
->>>>>>> remotePaint
+Defined in: [handleGetReactions.ts:4](https://github.com/story-squad/tricktionary-be/blob/f86634d/src/sockets/handleGetReactions.ts#L4)
