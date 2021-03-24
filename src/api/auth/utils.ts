@@ -126,6 +126,7 @@ export function partialRecall(token: string) {
   if (payload.value.lob) {
     last_lobby = payload.value.lob;
   }
+  // console.log(payload)
   return {
     ok: true,
     last_user_id: payload.value.sub,

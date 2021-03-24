@@ -103,7 +103,9 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     let result;
     let last_username = "";
     try {
+        console.log('======= partial recall');
         result = utils_1.partialRecall(last_token); // verify this is one of our tokens.
+        console.log(`======= partial-recall ${result}`);
         if (!result.ok) {
             //  bad token detected!
             res.status(400).json(result);
@@ -115,8 +117,9 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         player = yield model_1.default.getPlayer(player_id);
     }
     catch (err) {
+        console.log('====== ERROR');
         logger_1.log(err.message);
-        res.status(400).json({ message: err.message });
+        res.json({ message: err.message });
     }
     let token;
     let old_user_id = last_user_id;

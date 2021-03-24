@@ -32,17 +32,19 @@ async function handleReturningPlayer(
       user_id,
       last_token: token,
     });
-    if (!login?.data?.token){
+    // console.log(login.data);
+    if (!login?.data?.token) {
       // we have a bad token.
       // treat them as a new player.
       // (until we have user account)
-      return handleNewPlayer(io, socket);
+      return await handleNewPlayer(io, socket);
     }
     player = login.data.player;
     newtoken = login.data.token;
     old_user_id = login.data.old_user_id;
     old_user_name = login.data.old_user_name;
   } catch (err) {
+    // console.log(login?.data || "[ERROR] login");
     return { ok: false, message: err.message };
   }
   // send player their new token.

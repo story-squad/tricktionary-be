@@ -42,11 +42,12 @@ function handleReturningPlayer(io, socket, token, lobbies) {
                 user_id,
                 last_token: token,
             });
+            // console.log(login.data);
             if (!((_a = login === null || login === void 0 ? void 0 : login.data) === null || _a === void 0 ? void 0 : _a.token)) {
                 // we have a bad token.
                 // treat them as a new player.
                 // (until we have user account)
-                return handleNewPlayer_1.default(io, socket);
+                return yield handleNewPlayer_1.default(io, socket);
             }
             player = login.data.player;
             newtoken = login.data.token;
@@ -54,6 +55,7 @@ function handleReturningPlayer(io, socket, token, lobbies) {
             old_user_name = login.data.old_user_name;
         }
         catch (err) {
+            // console.log(login?.data || "[ERROR] login");
             return { ok: false, message: err.message };
         }
         // send player their new token.

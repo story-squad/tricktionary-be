@@ -113,9 +113,9 @@ router.put("/def/:player_id", async (req, res) => {
   }
   let result;
   if (!top_definition_id) {
-    console.log("GETTING SCORE");
+    // console.log("GETTING SCORE");
     result = await getPlayerScore(player_id, game_id);
-    console.log(result);
+    // console.log(result);
     res.json({ score: result.score });
   }
   console.log(req.body);

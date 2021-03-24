@@ -113,8 +113,16 @@ router.put("/def/:player_id", (req, res) => __awaiter(void 0, void 0, void 0, fu
         let errorMessage = `missing required [top_definition_id: ${top_definition_id}, game: ${game_id}, player: ${player_id}]`;
         res.json({ error: errorMessage });
     }
+    let result;
+    if (!top_definition_id) {
+        // console.log("GETTING SCORE");
+        result = yield model_1.getPlayerScore(player_id, game_id);
+        // console.log(result);
+        res.json({ score: result.score });
+    }
+    console.log(req.body);
     try {
-        const result = yield model_1.updateDefinition(player_id, game_id, top_definition_id);
+        result = yield model_1.updateDefinition(player_id, game_id, Number(top_definition_id));
         const { score } = result;
         if (result.ok) {
             console.log(`score: ${score}`);

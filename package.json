@@ -5,7 +5,7 @@
   "main": "dist/src/index.js",
   "scripts": {
     "build": "sh ./scripts/makeElastic.sh",
-    "start": "node dist/src/index.js",
+    "start": "node dist/src/index.js --unhandled-rejections=strict",
     "pre-docs": "rm -rf trex/docs/tricktionary",
     "post-docs": "./scripts/copyMarkdown.sh && ./scripts/buildDocs.sh",
     "gen-docs": "npx typedoc --theme minimal --plugin typedoc-plugin-markdown src/sockets",

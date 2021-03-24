@@ -78,6 +78,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
             return { user_id, definition, word };
         }
         function getDef(user_id, game_id, player_id) {
+            var _a;
             return __awaiter(this, void 0, void 0, function* () {
                 let result = { id: user_id, game: game_id };
                 let mvr;
@@ -96,10 +97,12 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                     })[0].round_id;
                     // most voted definition
                     mvd = yield common_1.localAxios.get(`/api/definitions/user/${result.id}/round/${mvr}`);
-                    updateScoreCard = yield common_1.localAxios.put(`/api/score/def/${player_id}`, {
-                        game_id,
-                        top_definition_id: mvd.data.id,
-                    });
+                    if ((_a = mvd === null || mvd === void 0 ? void 0 : mvd.data) === null || _a === void 0 ? void 0 : _a.id) {
+                        updateScoreCard = yield common_1.localAxios.put(`/api/score/def/${player_id}`, {
+                            game_id,
+                            top_definition_id: mvd.data.id,
+                        });
+                    }
                     r = yield common_1.localAxios.get(`/api/round/id/${mvr}`);
                     wid = r.data.round.word_id;
                     rWord = yield common_1.localAxios.get(`/api/words/id/${wid}`);
