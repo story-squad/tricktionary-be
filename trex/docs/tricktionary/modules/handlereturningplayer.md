@@ -30,4 +30,8 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| { `message`: *any* ; `ok`: *boolean* = false }\>
 
+<<<<<<< HEAD
 Defined in: [handleReturningPlayer.ts:17](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleReturningPlayer.ts#L17)
+=======
+Defined in: [handleReturningPlayer.ts:16](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleReturningPlayer.ts#L16)
+>>>>>>> remotePaint

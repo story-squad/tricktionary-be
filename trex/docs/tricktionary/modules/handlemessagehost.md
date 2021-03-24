@@ -26,4 +26,8 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
+<<<<<<< HEAD
 Defined in: [handleMessageHost.ts:11](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleMessageHost.ts#L11)
+=======
+Defined in: [handleMessageHost.ts:11](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleMessageHost.ts#L11)
+>>>>>>> remotePaint

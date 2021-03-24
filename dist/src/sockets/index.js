@@ -43,6 +43,7 @@ const handleRevealResults_1 = __importDefault(require("./handleRevealResults"));
 const handleSetFinale_1 = __importDefault(require("./handleSetFinale"));
 const handleEmojiSmash_1 = __importDefault(require("./handleEmojiSmash"));
 const handleGetReactions_1 = __importDefault(require("./handleGetReactions"));
+const handleRemotePaint_1 = __importDefault(require("./handleRemotePaint"));
 exports.default = {
     handleLobbyLeave: handleLobbyLeave_1.default,
     handleLobbyCreate: handleLobbyCreate_1.default,
@@ -65,6 +66,10 @@ exports.default = {
     handleSetFinale: handleSetFinale_1.default,
     handleEmojiSmash: handleEmojiSmash_1.default,
     handleGetReactions: handleGetReactions_1.default,
+<<<<<<< HEAD
     removeFromLobby: handleDisconnection_1.removeFromLobby
+=======
+    handleRemotePaint: handleRemotePaint_1.default,
+>>>>>>> remotePaint
 };
 //# sourceMappingURL=index.js.map

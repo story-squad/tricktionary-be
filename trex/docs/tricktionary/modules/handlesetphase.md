@@ -28,4 +28,8 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
+<<<<<<< HEAD
 Defined in: [handleSetPhase.ts:14](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleSetPhase.ts#L14)
+=======
+Defined in: [handleSetPhase.ts:14](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleSetPhase.ts#L14)
+>>>>>>> remotePaint

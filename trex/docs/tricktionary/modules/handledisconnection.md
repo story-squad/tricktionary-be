@@ -25,6 +25,7 @@ Name | Type |
 
 **Returns:** *void*
 
+<<<<<<< HEAD
 Defined in: [handleDisconnection.ts:4](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleDisconnection.ts#L4)
 
 ___
@@ -44,3 +45,6 @@ Name | Type |
 **Returns:** *void*
 
 Defined in: [handleDisconnection.ts:39](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleDisconnection.ts#L39)
+=======
+Defined in: [handleDisconnection.ts:4](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleDisconnection.ts#L4)
+>>>>>>> remotePaint

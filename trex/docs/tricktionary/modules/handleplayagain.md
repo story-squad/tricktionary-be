@@ -26,4 +26,8 @@ Name | Type |
 
 **Returns:** *void*
 
+<<<<<<< HEAD
 Defined in: [handlePlayAgain.ts:4](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handlePlayAgain.ts#L4)
+=======
+Defined in: [handlePlayAgain.ts:4](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handlePlayAgain.ts#L4)
+>>>>>>> remotePaint

@@ -35,7 +35,11 @@
 
 Number of characters in lobbyCode
 
+<<<<<<< HEAD
 Defined in: [common.ts:21](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L21)
+=======
+Defined in: [common.ts:21](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L21)
+>>>>>>> remotePaint
 
 ___
 
@@ -45,7 +49,11 @@ ___
 
 maximum number of players per lobby
 
+<<<<<<< HEAD
 Defined in: [common.ts:16](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L16)
+=======
+Defined in: [common.ts:16](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L16)
+>>>>>>> remotePaint
 
 ___
 
@@ -55,7 +63,11 @@ ___
 
 POINTS AWARDED when others choose your definition
 
+<<<<<<< HEAD
 Defined in: [common.ts:35](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L35)
+=======
+Defined in: [common.ts:35](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L35)
+>>>>>>> remotePaint
 
 ___
 
@@ -65,7 +77,11 @@ ___
 
 POINTS AWARDED when you choose correctly
 
+<<<<<<< HEAD
 Defined in: [common.ts:28](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L28)
+=======
+Defined in: [common.ts:28](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L28)
+>>>>>>> remotePaint
 
 ___
 
@@ -82,7 +98,11 @@ Name | Type |
 `decode` | (`str`: *string*) => *string* |
 `encode` | (`str`: *string*) => *string* |
 
+<<<<<<< HEAD
 Defined in: [common.ts:285](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L285)
+=======
+Defined in: [common.ts:255](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L255)
+>>>>>>> remotePaint
 
 ___
 
@@ -90,7 +110,11 @@ ___
 
 • `Const` **localAxios**: AxiosInstance
 
+<<<<<<< HEAD
 Defined in: [common.ts:6](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L6)
+=======
+Defined in: [common.ts:6](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L6)
+>>>>>>> remotePaint
 
 ## Functions
 
@@ -106,7 +130,11 @@ Name | Type |
 
 **Returns:** { `message`: *any* ; `ok`: *boolean* = false; `settings`: *any*  } \| { `message`: *undefined* ; `ok`: *boolean* = true; `settings`: *any*  }
 
+<<<<<<< HEAD
 Defined in: [common.ts:121](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L121)
+=======
+Defined in: [common.ts:121](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L121)
+>>>>>>> remotePaint
 
 ___
 
@@ -124,7 +152,11 @@ Name | Type |
 
 **Returns:** *Promise*<{ `definition`: *string* ; `id`: *number* = 0; `source`: *string* ; `word`: *string*  }\>
 
+<<<<<<< HEAD
 Defined in: [common.ts:135](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L135)
+=======
+Defined in: [common.ts:135](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L135)
+>>>>>>> remotePaint
 
 ___
 
@@ -143,7 +175,11 @@ Name | Type | Description |
 
 **Returns:** *boolean*
 
+<<<<<<< HEAD
 Defined in: [common.ts:293](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L293)
+=======
+Defined in: [common.ts:263](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L263)
+>>>>>>> remotePaint
 
 ___
 
@@ -161,7 +197,11 @@ Name | Type |
 
 **Returns:** { `message`: *undefined* ; `ok`: *boolean*  } \| { `message`: *any* ; `ok`: *boolean* = false }
 
+<<<<<<< HEAD
 Defined in: [common.ts:112](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L112)
+=======
+Defined in: [common.ts:112](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L112)
+>>>>>>> remotePaint
 
 ___
 
@@ -179,7 +219,11 @@ Name | Type |
 
 **Returns:** { `message`: *undefined* ; `ok`: *boolean*  } \| { `message`: *any* ; `ok`: *boolean* = false }
 
+<<<<<<< HEAD
 Defined in: [common.ts:103](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L103)
+=======
+Defined in: [common.ts:103](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L103)
+>>>>>>> remotePaint
 
 ___
 
@@ -200,7 +244,11 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
+<<<<<<< HEAD
 Defined in: [common.ts:70](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L70)
+=======
+Defined in: [common.ts:70](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L70)
+>>>>>>> remotePaint
 
 ___
 
@@ -220,7 +268,11 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
+<<<<<<< HEAD
 Defined in: [common.ts:85](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L85)
+=======
+Defined in: [common.ts:85](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L85)
+>>>>>>> remotePaint
 
 ___
 
@@ -240,7 +292,11 @@ Name | Type |
 
 **Returns:** *Promise*<{ `lobbies`: *undefined* ; `message`: *any* ; `ok`: *boolean* = false; `result`: *undefined* ; `roundId`: *undefined*  } \| { `lobbies`: *any* ; `message`: *undefined* ; `ok`: *boolean* = false; `result`: *any* ; `roundId`: *undefined*  } \| { `lobbies`: *any* ; `message`: *undefined* ; `ok`: *boolean* = true; `result`: *any* ; `roundId`: *any*  }\>
 
+<<<<<<< HEAD
 Defined in: [common.ts:201](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L201)
+=======
+Defined in: [common.ts:174](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L174)
+>>>>>>> remotePaint
 
 ___
 
@@ -263,7 +319,11 @@ Name | Type | Description |
 
 **Returns:** *Promise*<any\>
 
+<<<<<<< HEAD
 Defined in: [common.ts:307](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L307)
+=======
+Defined in: [common.ts:277](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L277)
+>>>>>>> remotePaint
 
 ___
 
@@ -281,7 +341,11 @@ Name | Type | Description |
 
 the lobby code attached to this socket (string).
 
+<<<<<<< HEAD
 Defined in: [common.ts:262](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L262)
+=======
+Defined in: [common.ts:232](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L232)
+>>>>>>> remotePaint
 
 ___
 
@@ -297,4 +361,8 @@ Name | Type |
 
 **Returns:** *Promise*<{ `message`: *any* ; `ok`: *boolean* = false; `word`: *undefined*  } \| { `message`: *undefined* ; `ok`: *boolean* = true; `word`: *any*  }\>
 
+<<<<<<< HEAD
 Defined in: [common.ts:160](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/common.ts#L160)
+=======
+Defined in: [common.ts:160](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/common.ts#L160)
+>>>>>>> remotePaint

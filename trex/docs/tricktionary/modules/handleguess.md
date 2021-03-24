@@ -26,4 +26,8 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
+<<<<<<< HEAD
 Defined in: [handleGuess.ts:5](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleGuess.ts#L5)
+=======
+Defined in: [handleGuess.ts:5](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleGuess.ts#L5)
+>>>>>>> remotePaint

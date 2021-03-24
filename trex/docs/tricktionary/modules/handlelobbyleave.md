@@ -24,4 +24,8 @@ Name | Type |
 
 **Returns:** *void*
 
+<<<<<<< HEAD
 Defined in: [handleLobbyLeave.ts:1](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleLobbyLeave.ts#L1)
+=======
+Defined in: [handleLobbyLeave.ts:1](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleLobbyLeave.ts#L1)
+>>>>>>> remotePaint

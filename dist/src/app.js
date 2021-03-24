@@ -52,7 +52,7 @@ const api = express_1.default();
 const JSON_SIZE_LIMIT = "5mb";
 const lobbies = { DEADBEEF: [] };
 api.use(bodyParser.json({
-    limit: JSON_SIZE_LIMIT
+    limit: JSON_SIZE_LIMIT,
 }));
 api.use(helmet_1.default());
 api.use(cors_1.default());
@@ -90,7 +90,7 @@ if (redisHost.length > 0) {
     try {
         const pubClient = new redis_1.RedisClient({
             host: redisHost,
-            port: Number(redisPort)
+            port: Number(redisPort),
         });
         const subClient = pubClient.duplicate();
         io.adapter(socket_io_redis_1.createAdapter({ pubClient, subClient }));
@@ -166,8 +166,15 @@ io.on("connection", (socket) => {
     socket.on("get reactions", () => {
         sockets_1.default.handleGetReactions(io, socket, lobbies);
     });
+<<<<<<< HEAD
     socket.on("disconnect me", () => {
         sockets_1.default.removeFromLobby(io, socket, lobbies);
+=======
+    socket.on("remote paint", (vector) => {
+        // start with a simple array of numbers
+        logger_1.log(`[PAINT] ${vector.map((n) => String(n))}`);
+        sockets_1.default.handleRemotePaint(io, socket, lobbies, vector);
+>>>>>>> remotePaint
     });
 });
 //# sourceMappingURL=app.js.map

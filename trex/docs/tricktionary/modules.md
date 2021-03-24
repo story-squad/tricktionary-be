@@ -20,6 +20,7 @@
 - [handleMessagePlayer](modules/handlemessageplayer.md)
 - [handleNewPlayer](modules/handlenewplayer.md)
 - [handlePlayAgain](modules/handleplayagain.md)
+- [handleRemotePaint](modules/handleremotepaint.md)
 - [handleReturningPlayer](modules/handlereturningplayer.md)
 - [handleRevealResults](modules/handlerevealresults.md)
 - [handleSetFinale](modules/handlesetfinale.md)

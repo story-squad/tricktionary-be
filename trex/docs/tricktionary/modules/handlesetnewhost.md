@@ -29,4 +29,8 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
+<<<<<<< HEAD
 Defined in: [handleSetNewHost.ts:15](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleSetNewHost.ts#L15)
+=======
+Defined in: [handleSetNewHost.ts:15](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleSetNewHost.ts#L15)
+>>>>>>> remotePaint

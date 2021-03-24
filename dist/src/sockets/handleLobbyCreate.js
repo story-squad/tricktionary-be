@@ -69,14 +69,18 @@ function handleLobbyCreate(io, socket, username, lobbies) {
             game_id,
             lobbyCode,
             players: [
+<<<<<<< HEAD
                 { id: socket.id, username, definition: "", points: 0, connected: true, pid: og_host }
+=======
+                { id: socket.id, username, definition: "", points: 0, connected: true },
+>>>>>>> remotePaint
             ],
             host: socket.id,
-            phase: "PREGAME",
+            phase: username === "bobrosslives" ? "PAINT" : "PREGAME",
             word: "",
             definition: "",
             guesses: [],
-            roundId: null
+            roundId: null,
         };
         try {
             yield common_1.updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode);

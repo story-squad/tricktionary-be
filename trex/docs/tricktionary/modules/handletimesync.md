@@ -27,4 +27,8 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
+<<<<<<< HEAD
 Defined in: [handleTimeSync.ts:17](https://github.com/story-squad/tricktionary-be/blob/e2df648/src/sockets/handleTimeSync.ts#L17)
+=======
+Defined in: [handleTimeSync.ts:17](https://github.com/story-squad/tricktionary-be/blob/50f8f84/src/sockets/handleTimeSync.ts#L17)
+>>>>>>> remotePaint

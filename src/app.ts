@@ -23,7 +23,7 @@ const lobbies: any = { DEADBEEF: [] };
 
 api.use(
   bodyParser.json({
-    limit: JSON_SIZE_LIMIT
+    limit: JSON_SIZE_LIMIT,
   })
 );
 
@@ -71,7 +71,7 @@ if (redisHost.length > 0) {
   try {
     const pubClient = new RedisClient({
       host: redisHost,
-      port: Number(redisPort)
+      port: Number(redisPort),
     });
     const subClient = pubClient.duplicate();
     io.adapter(createAdapter({ pubClient, subClient }));
@@ -221,10 +221,20 @@ io.on("connection", (socket) => {
   });
   socket.on("get reactions", () => {
     gameSocketHandler.handleGetReactions(io, socket, lobbies);
+<<<<<<< HEAD
   })
   socket.on("disconnect me", () => {
     gameSocketHandler.removeFromLobby(io, socket, lobbies);
   })
+=======
+  });
+
+  socket.on("remote paint", (vector: number[]) => {
+    // start with a simple array of numbers
+    log(`[PAINT] ${vector.map((n) => String(n))}`);
+    gameSocketHandler.handleRemotePaint(io, socket, lobbies, vector);
+  });
+>>>>>>> remotePaint
 });
 
 export { socketApp };
