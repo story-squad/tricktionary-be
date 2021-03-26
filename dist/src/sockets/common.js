@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.gameExists = exports.updatePlayerToken = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.localAxios = exports.LC_LENGTH = exports.VALUE_OF_TRUTH = exports.VALUE_OF_BLUFF = exports.MAX_PLAYERS = void 0;
+exports.gameExists = exports.tieBreakerMatch = exports.doIt = exports.getDef = exports.updatePlayerToken = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.localAxios = exports.LC_LENGTH = exports.VALUE_OF_TRUTH = exports.VALUE_OF_BLUFF = exports.MAX_PLAYERS = void 0;
 const GameSettings_1 = require("../GameSettings");
 const logger_1 = require("../logger");
 const axios_1 = __importDefault(require("axios"));
@@ -68,6 +68,50 @@ const VALUE_OF_BLUFF = process.env.VALUE_OF_BLUFF
     ? Number(process.env.VALUE_OF_BLUFF)
     : 1;
 exports.VALUE_OF_BLUFF = VALUE_OF_BLUFF;
+function finalFormat(defRecord) {
+    const { user_id, definition, def_word } = defRecord;
+    const { word } = def_word;
+    return { user_id, definition, word };
+}
+function getDef(user_id, game_id, player_id) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        let result = { id: user_id, game: game_id };
+        let mvr;
+        let mvd;
+        let r;
+        let wid;
+        let rWord;
+        let def_word;
+        let updateScoreCard;
+        try {
+            let p = yield localAxios.get(`/api/user-rounds/user/${result.id}/game/${result.game}`);
+            result["user_rounds"] = p.data.user_rounds;
+            // most voted round
+            mvr = result.user_rounds.sort(function (a, b) {
+                return b.votes - a.votes;
+            })[0].round_id;
+            // most voted definition
+            mvd = yield localAxios.get(`/api/definitions/user/${result.id}/round/${mvr}`);
+            if ((_a = mvd === null || mvd === void 0 ? void 0 : mvd.data) === null || _a === void 0 ? void 0 : _a.id) {
+                updateScoreCard = yield localAxios.put(`/api/score/def/${player_id}`, {
+                    game_id,
+                    top_definition_id: mvd.data.id,
+                });
+            }
+            r = yield localAxios.get(`/api/round/id/${mvr}`);
+            wid = r.data.round.word_id;
+            rWord = yield localAxios.get(`/api/words/id/${wid}`);
+            def_word = rWord.data.word;
+        }
+        catch (err) {
+            logger_1.log(err.message);
+            return;
+        }
+        return finalFormat(Object.assign(Object.assign({}, mvd.data.definition), { user_id, def_word }));
+    });
+}
+exports.getDef = getDef;
 /**
  * send message to socket.id
  *
@@ -195,24 +239,24 @@ function checkScores(lobbyCode, lobbies) {
             return { ok: false, error: `invalid lobby @ ${lobbyCode}` };
         }
         logger_1.log(`updating score-cards for players in ${lobbyCode}`);
-        players.forEach((playerObj) => __awaiter(this, void 0, void 0, function* () {
-            var _b, _c;
+        return yield players.forEach((playerObj) => __awaiter(this, void 0, void 0, function* () {
+            var _b;
             const socket_id = playerObj.id;
             const { definitionId, points, username, pid } = playerObj;
             const pathname = `/api/score/player/${pid}/game/${game_id}`;
             let score = yield localAxios.get(pathname);
-            if (!((_b = score === null || score === void 0 ? void 0 : score.data) === null || _b === void 0 ? void 0 : _b.id)) {
+            if (!score.data.id) {
                 logger_1.log(`creating score card for ${username}`);
                 score = yield localAxios.post("/api/score/new", {
                     game_id,
                     player_id: pid,
                 });
+                logger_1.log(`created score card ${(_b = score.data) === null || _b === void 0 ? void 0 : _b.id} for ${username}`);
             }
             else {
-                logger_1.log(`found score card for ${username}`);
+                logger_1.log(`found score card ${score.data.id}, for ${username}`);
                 // todo
             }
-            logger_1.log(`test-score: ${((_c = score === null || score === void 0 ? void 0 : score.data) === null || _c === void 0 ? void 0 : _c.id) || "unknown!"}`);
         }));
     });
 }
@@ -345,4 +389,103 @@ function updatePlayerToken(io, socket, p_id, name, definition, points, lobbyCode
     });
 }
 exports.updatePlayerToken = updatePlayerToken;
+function doIt(game_id, firstPlace, secondPlace, thirdPlace) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let r = [];
+        // get most voted definition(s)
+        try {
+            const firstPlaceResult = yield getDef(firstPlace.id, game_id, firstPlace.pid);
+            r.push(Object.assign({}, firstPlaceResult));
+        }
+        catch (err) {
+            logger_1.log("error getting 1st place");
+            logger_1.log(err.message);
+        }
+        if (secondPlace) {
+            try {
+                const secondPlaceResult = yield getDef(secondPlace.id, game_id, secondPlace.pid);
+                r.push(Object.assign({}, secondPlaceResult));
+            }
+            catch (err) {
+                logger_1.log("error getting second place");
+                logger_1.log(err.message);
+            }
+        }
+        if (thirdPlace) {
+            try {
+                const thirdPlaceResult = yield getDef(thirdPlace.id, game_id, thirdPlace.pid);
+                r.push(Object.assign({}, thirdPlaceResult));
+            }
+            catch (err) {
+                logger_1.log("error getting third place");
+                logger_1.log(err.message);
+            }
+        }
+        return r;
+    });
+}
+exports.doIt = doIt;
+function tieBreakerMatch(checkPoints, game_id, lobbies, lobbyCode) {
+    var _a, _b;
+    return __awaiter(this, void 0, void 0, function* () {
+        logger_1.log("tie-breaker necessary");
+        // create 3 placeholders
+        let firstPlace;
+        let thirdPlace;
+        let tiebreaker;
+        if (checkPoints[0].points !== checkPoints[1].points) {
+            // A. is firstplace unique?
+            firstPlace = lobbies[lobbyCode].players
+                .filter((p) => p.pid === checkPoints[0].player_id)
+                .pop();
+            logger_1.log("- tied for second place");
+            tiebreaker = [checkPoints[1], checkPoints[2]];
+        }
+        if (!firstPlace && checkPoints[1].points !== ((_a = checkPoints[2]) === null || _a === void 0 ? void 0 : _a.points)) {
+            // B. is third place unique?
+            logger_1.log("- tied for first place");
+            tiebreaker = [checkPoints[0], checkPoints[1]];
+            if ((_b = checkPoints[2]) === null || _b === void 0 ? void 0 : _b.player_id) {
+                thirdPlace = lobbies[lobbyCode].players
+                    .filter((p) => p.pid === checkPoints[2].player_id)
+                    .pop();
+            }
+        }
+        if (!tiebreaker) {
+            // C. does everyone have the same score ?
+            logger_1.log("- everyone tied!");
+            tiebreaker = checkPoints;
+        }
+        // create a timestamp
+        const finaleTime = Date.now();
+        // [...player_ids]
+        const matchPID = tiebreaker.map((item) => item === null || item === void 0 ? void 0 : item.player_id);
+        // filtered [...lobby.players]
+        const matchPlayers = lobbies[lobbyCode].players.filter((p) => matchPID.includes(p.pid));
+        // linear sort [...lobby.players]
+        const withDelta = matchPlayers
+            .map((p) => {
+            return Object.assign(Object.assign({}, p), { timeDelta: finaleTime - (p === null || p === void 0 ? void 0 : p.definitionEpoch) || Math.random() });
+        })
+            .sort(function (a, b) {
+            return b.timeDelta - a.timeDelta;
+        });
+        // placeholder array
+        let topThree = [];
+        if (firstPlace && !thirdPlace) {
+            // A.
+            topThree = [firstPlace, ...withDelta];
+        }
+        else if (thirdPlace && !firstPlace) {
+            // B.
+            topThree = [...withDelta, thirdPlace];
+        }
+        else {
+            // C.
+            topThree = withDelta;
+        }
+        return yield doIt(game_id, topThree[0], topThree[1] || undefined, topThree[2] || undefined);
+    });
+}
+exports.tieBreakerMatch = tieBreakerMatch;
 //# sourceMappingURL=common.js.map

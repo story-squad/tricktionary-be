@@ -12,10 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPlayerScore = exports.subPoints = exports.addPoints = exports.getPlayers = exports.getGames = exports.scoreCard = exports.updateDefinition = void 0;
+exports.findTopDefinition = exports.getLatest = exports.getPlayerScore = exports.subPoints = exports.addPoints = exports.getPlayers = exports.getGames = exports.scoreCard = exports.updateDefinition = void 0;
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const uuid_1 = require("uuid");
-// import { log } from "../../logger";
 function scoreCard(player_id, game_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const uuId = uuid_1.v4();
@@ -56,6 +55,19 @@ function getGames(player_id) {
     });
 }
 exports.getGames = getGames;
+function getLatest(game_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let result;
+        try {
+            result = yield dbConfig_1.default("score").where({ game_id });
+        }
+        catch (err) {
+            result = [];
+        }
+        return { ok: true, latest: result };
+    });
+}
+exports.getLatest = getLatest;
 function getPlayers(game_id) {
     return __awaiter(this, void 0, void 0, function* () {
         //
@@ -78,7 +90,6 @@ function addPoints(player_id, game_id, points) {
                 .where({ game_id, player_id })
                 .increment("points", points)
                 .returning("points");
-            console.log(`points ${result}`);
             return { ok: true, points: result };
         }
         catch (err) {
@@ -95,7 +106,6 @@ function subPoints(player_id, game_id, points) {
                 .where({ game_id, player_id })
                 .decrement("points", points)
                 .returning("points");
-            console.log(`points ${result}`);
             return { ok: true, points: result };
         }
         catch (err) {
@@ -118,4 +128,20 @@ function updateDefinition(player_id, game_id, top_definition_id) {
     });
 }
 exports.updateDefinition = updateDefinition;
+function findTopDefinition(player_id, game_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let top_definition;
+        try {
+            top_definition = yield dbConfig_1.default("definitions")
+                .where({ player_id, game_id })
+                .orderBy("score", "desc")
+                .first();
+        }
+        catch (err) {
+            return { ok: false, error: err.message };
+        }
+        return { ok: true, top_definition };
+    });
+}
+exports.findTopDefinition = findTopDefinition;
 //# sourceMappingURL=model.js.map

@@ -20,6 +20,7 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
     return __awaiter(this, void 0, void 0, function* () {
         const definitionEpoch = Date.now(); // add a timestamp to the player for tie-breaking
         let newPlayer = yield lobbies[lobbyCode].players.find((player) => player.id === socket.id);
+        const game_id = lobbies[lobbyCode].game_id;
         let numSubmitted = 0;
         // add new definition.
         let newDef;
@@ -30,6 +31,8 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
                 playerId: newPlayer.id,
                 definition,
                 roundId: lobbies[lobbyCode].roundId,
+                pid: newPlayer.pid,
+                game_id,
             });
         }
         catch (err) {
@@ -39,7 +42,7 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
         // then ...
         const definitionId = (_a = newDef === null || newDef === void 0 ? void 0 : newDef.data) === null || _a === void 0 ? void 0 : _a.definitionId;
         if (!definitionId) {
-            // error submitting definition, 
+            // error submitting definition,
             return handleErrorMessage_1.default(io, socket, 2003, "There was a server error while submitting your definition.");
         }
         newPlayer = Object.assign(Object.assign({}, newPlayer), { definitionId, definitionEpoch }); // store definition id
