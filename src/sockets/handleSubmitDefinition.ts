@@ -13,6 +13,7 @@ async function handleSubmitDefinition(
   let newPlayer: any = await lobbies[lobbyCode].players.find(
     (player: any) => player.id === socket.id
   );
+  const game_id = lobbies[lobbyCode].game_id;
   let numSubmitted: number = 0;
   // add new definition.
   let newDef: any;
@@ -23,6 +24,8 @@ async function handleSubmitDefinition(
       playerId: newPlayer.id,
       definition,
       roundId: lobbies[lobbyCode].roundId,
+      pid: newPlayer.pid,
+      game_id,
     });
   } catch (err) {
     log("errror! handleSubmitDefinitions:22");
@@ -36,7 +39,7 @@ async function handleSubmitDefinition(
   // then ...
   const definitionId = newDef?.data?.definitionId;
   if (!definitionId) {
-    // error submitting definition, 
+    // error submitting definition,
     return handleErrorMessage(
       io,
       socket,
@@ -56,9 +59,7 @@ async function handleSubmitDefinition(
   if (!definitionId) {
     log(newDef);
   }
-  log(
-    `Definitions: ${numSubmitted}/${lobbies[lobbyCode].players.length}`
-  );
+  log(`Definitions: ${numSubmitted}/${lobbies[lobbyCode].players.length}`);
   if (numSubmitted === lobbies[lobbyCode].players.length) {
     lobbies[lobbyCode] = {
       ...lobbies[lobbyCode],
