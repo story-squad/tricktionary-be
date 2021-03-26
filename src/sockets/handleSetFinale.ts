@@ -1,11 +1,12 @@
-import { whereAmI, playerIsHost, localAxios } from "./common";
+import {
+  whereAmI,
+  playerIsHost,
+  tieBreakerMatch,
+  doIt,
+  localAxios,
+} from "./common";
 import handleErrorMessage from "./handleErrorMessage";
 import { log } from "../logger";
-// type Result<T> = { ok: true; value: T } | { ok: false; message: string };
-
-interface UserDefinitions {
-  [key: string]: { userRounds: []; definitions: [] };
-}
 
 /**
  *
@@ -25,6 +26,7 @@ async function handleSetFinale(
   lobbyCode: any,
   lobbies: any
 ) {
+  log("[Finale]");
   const present = lobbyCode && whereAmI(socket) === lobbyCode;
   if (!present) {
     handleErrorMessage(io, socket, 2004, "You're not in the lobby");
@@ -39,129 +41,33 @@ async function handleSetFinale(
     );
   }
   const game_id = lobbies[lobbyCode].game_id;
-  const finaleTime = Date.now();
-  /**
-   * extra points, for submitting early, are used to determine leaderboard stats
-   */
-  const withEpochPoints = lobbies[lobbyCode].players.map((p: any) => {
-    /**
-     * 1 + the difference between now and when the player submitted their definition
-     *
-     * *or*
-     *
-     * a random number between 0 and 2
-     */
-    const timeDelta = p.definitionEpoch
-      ? Math.ceil((finaleTime - p.definitionEpoch) / 1000) + 1
-      : Math.random() * 2;
-    /**
-     * player points + timeDelta
-     */
-    const points = p.points + timeDelta;
-    return { ...p, points };
-  });
+  let results: any;
+  // get points from the scoreCard
+  const checkScores = await localAxios.get(`/api/score/latest/${game_id}`);
+  // sort by total game points.
+  const checkPoints = checkScores.data
+    .sort((a: any, b: any) => b.points - a.points)
+    .filter((c: any) => c.top_definition_id); // only players who have submitted definitions
+  // cast point values into a set
+  const values = new Set(checkPoints.map((v: any) => v.points));
+  if (values.size === checkPoints.length) {
+    // if player.points are unique, no tie-breaker will be necessary.
+    const pids = checkPoints.map((e: any) => e.player_id);
+    // filter/sort by player_id/points
+    const naturalTopThree = lobbies[lobbyCode].players
+      .filter((player: any) => pids.includes(player.pid))
+      .sort(function (a: any, b: any) {
+        return b.points - a.points;
+      });
 
-  const topThree = withEpochPoints
-    .sort(function (a: any, b: any) {
-      return b.points - a.points;
-    })
-    .slice(0, 3);
-
-  // 1) assign the resulting player(s) to constant placeholder values,
-  const firstPlace = topThree[0];
-  const secondPlace = topThree[1] || undefined;
-  const thirdPlace = topThree[2] || undefined;
-
-  // 2) await, at the top level, the result of asynchronous operations
-  let mostVotedRound;
-  let mvd;
-  const results = [];
-  type topThreeListItem = {
-    user_id: string;
-    definition: string;
-    word: string;
-  };
-  function finalFormat(defRecord: any): topThreeListItem {
-    const { user_id, definition, def_word } = defRecord;
-    const { word } = def_word;
-    return { user_id, definition, word };
-  }
-
-  async function getDef(user_id: string, game_id: string, player_id: string) {
-    let result: any = { id: user_id, game: game_id };
-    let mvr: any[];
-    let mvd: any;
-    let r: any;
-    let wid: number;
-    let rWord: any;
-    let def_word: any;
-    let updateScoreCard: any;
-    try {
-      let p = await localAxios.get(
-        `/api/user-rounds/user/${result.id}/game/${result.game}`
-      );
-      result["user_rounds"] = p.data.user_rounds;
-      // most voted round
-      mvr = result.user_rounds.sort(function (a: any, b: any) {
-        return b.votes - a.votes;
-      })[0].round_id;
-      // most voted definition
-      mvd = await localAxios.get(
-        `/api/definitions/user/${result.id}/round/${mvr}`
-      );
-      if (mvd?.data?.id) {
-        updateScoreCard = await localAxios.put(`/api/score/def/${player_id}`, {
-          game_id,
-          top_definition_id: mvd.data.id,
-        });
-      }
-      r = await localAxios.get(`/api/round/id/${mvr}`);
-      wid = r.data.round.word_id;
-      rWord = await localAxios.get(`/api/words/id/${wid}`);
-      def_word = rWord.data.word;
-    } catch (err) {
-      log(err.message);
-      return;
-    }
-    return finalFormat({ ...mvd.data.definition, user_id, def_word });
-  }
-  // get most voted definition(s)
-  try {
-    const firstPlaceResult = await getDef(
-      firstPlace.id,
+    results = await doIt(
       game_id,
-      firstPlace.pid
+      naturalTopThree[0],
+      naturalTopThree[1] || undefined,
+      naturalTopThree[2] || undefined
     );
-    results.push({ ...firstPlaceResult });
-  } catch (err) {
-    log("error getting 1st place");
-    log(err.message);
-  }
-  if (secondPlace) {
-    try {
-      const secondPlaceResult = await getDef(
-        secondPlace.id,
-        game_id,
-        secondPlace.pid
-      );
-      results.push({ ...secondPlaceResult });
-    } catch (err) {
-      log("error getting second place");
-      log(err.message);
-    }
-  }
-  if (thirdPlace) {
-    try {
-      const thirdPlaceResult = await getDef(
-        thirdPlace.id,
-        game_id,
-        thirdPlace.pid
-      );
-      results.push({ ...thirdPlaceResult });
-    } catch (err) {
-      log("error getting third place");
-      log(err.message);
-    }
+  } else {
+    results = await tieBreakerMatch(checkPoints, game_id, lobbies, lobbyCode);
   }
   // add results to game-data & change phase
   lobbies[lobbyCode] = {
