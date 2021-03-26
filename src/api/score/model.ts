@@ -1,6 +1,17 @@
 import db from "../../dbConfig";
 import { v4 } from "uuid";
 // import { log } from "../../logger";
+export {
+  updateDefinition,
+  scoreCard,
+  getGames,
+  getPlayers,
+  addPoints,
+  subPoints,
+  getPlayerScore,
+  getLatest,
+  findTopDefinition
+};
 
 async function scoreCard(player_id: string, game_id: string) {
   const uuId = v4();
@@ -31,7 +42,15 @@ async function getGames(player_id: string) {
   }
   return result;
 }
-
+async function getLatest(game_id: string) {
+  let result: any;
+  try {
+    result = await db("score").where({ game_id });
+  } catch (err) {
+    result = [];
+  }
+  return { ok: true, latest: result };
+}
 async function getPlayers(game_id: string) {
   //
   let result;
@@ -50,7 +69,6 @@ async function addPoints(player_id: string, game_id: string, points: number) {
       .where({ game_id, player_id })
       .increment("points", points)
       .returning("points");
-    console.log(`points ${result}`);
     return { ok: true, points: result };
   } catch (err) {
     return { ok: false, message: err.message };
@@ -64,7 +82,6 @@ async function subPoints(player_id: string, game_id: string, points: number) {
       .where({ game_id, player_id })
       .decrement("points", points)
       .returning("points");
-    console.log(`points ${result}`);
     return { ok: true, points: result };
   } catch (err) {
     return { ok: false, message: err.message };
@@ -86,12 +103,15 @@ async function updateDefinition(
   }
 }
 
-export {
-  updateDefinition,
-  scoreCard,
-  getGames,
-  getPlayers,
-  addPoints,
-  subPoints,
-  getPlayerScore,
-};
+async function findTopDefinition(player_id: string, game_id: string) {
+  let top_definition;
+  try {
+    top_definition = await db("definitions")
+      .where({ player_id, game_id })
+      .orderBy("score", "desc")
+      .first();
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+  return { ok: true, top_definition };
+}

@@ -21,7 +21,7 @@ function handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses) {
         const lobby = lobbies[lobbyCode];
         const roundId = lobby.roundId;
         const game_id = lobbies[lobbyCode].game_id;
-        logger_1.log(`vote & calculate scores, ${lobbyCode}`);
+        logger_1.log(`[calculate score] ${lobbyCode}`);
         guesses.forEach((g) => __awaiter(this, void 0, void 0, function* () {
             try {
                 yield common_1.localAxios.post("/api/votes", {
@@ -30,22 +30,34 @@ function handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses) {
                     roundID: roundId,
                 });
                 let pointsUpdate;
+                let definitionUpdate;
                 lobby.players.forEach((player) => __awaiter(this, void 0, void 0, function* () {
                     if (g.guess === 0 && player.id === g.player) {
                         player.points += common_1.VALUE_OF_TRUTH; // +1 if you voted for the provided definition.
+                        // increase player score
                         pointsUpdate = yield common_1.localAxios.put(`/api/score/increase/${player.pid}`, {
                             game_id,
                             points: common_1.VALUE_OF_TRUTH,
                         });
-                        logger_1.log(pointsUpdate.data);
+                        logger_1.log(`+${common_1.VALUE_OF_TRUTH} player : ${player.username}`);
+                        // log(pointsUpdate.data);
                     }
                     else if (g.guess === player.definitionId && g.player !== player.id) {
                         player.points += common_1.VALUE_OF_BLUFF; // +1 if someone else voted for your definition.
+                        // increase player score
                         pointsUpdate = yield common_1.localAxios.put(`/api/score/increase/${player.pid}`, {
                             game_id,
                             points: common_1.VALUE_OF_BLUFF,
                         });
-                        logger_1.log(pointsUpdate.data);
+                        logger_1.log(`+${common_1.VALUE_OF_BLUFF} player : ${player.username}`);
+                        // increase definition score
+                        definitionUpdate = yield common_1.localAxios.put(`/api/definitions/increase/game/${game_id}/round/${roundId}`, {
+                            player_id: player.pid,
+                            points: common_1.VALUE_OF_BLUFF,
+                        });
+                        logger_1.log(`+${common_1.VALUE_OF_TRUTH} definition : ${player.definitionID}`);
+                        // log(pointsUpdate.data);
+                        // log(definitionUpdate.data);
                     }
                 }));
             }

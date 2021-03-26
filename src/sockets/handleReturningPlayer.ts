@@ -32,7 +32,6 @@ async function handleReturningPlayer(
       user_id,
       last_token: token,
     });
-    // console.log(login.data);
     if (!login?.data?.token) {
       // we have a bad token.
       // treat them as a new player.
@@ -44,7 +43,6 @@ async function handleReturningPlayer(
     old_user_id = login.data.old_user_id;
     old_user_name = login.data.old_user_name;
   } catch (err) {
-    // console.log(login?.data || "[ERROR] login");
     return { ok: false, message: err.message };
   }
   // send player their new token.

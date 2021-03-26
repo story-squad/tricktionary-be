@@ -12,7 +12,7 @@ export async function handleArrayOfGuesses(
   const lobby = lobbies[lobbyCode];
   const roundId = lobby.roundId;
   const game_id = lobbies[lobbyCode].game_id;
-  log(`vote & calculate scores, ${lobbyCode}`);
+  log(`[calculate score] ${lobbyCode}`);
   guesses.forEach(async (g) => {
     try {
       await localAxios.post("/api/votes", {
@@ -21,9 +21,11 @@ export async function handleArrayOfGuesses(
         roundID: roundId,
       });
       let pointsUpdate: any;
+      let definitionUpdate: any;
       lobby.players.forEach(async (player: any) => {
         if (g.guess === 0 && player.id === g.player) {
           player.points += VALUE_OF_TRUTH; // +1 if you voted for the provided definition.
+          // increase player score
           pointsUpdate = await localAxios.put(
             `/api/score/increase/${player.pid}`,
             {
@@ -31,9 +33,11 @@ export async function handleArrayOfGuesses(
               points: VALUE_OF_TRUTH,
             }
           );
-          log(pointsUpdate.data);
+          log(`+${VALUE_OF_TRUTH} player : ${player.username}`);
+          // log(pointsUpdate.data);
         } else if (g.guess === player.definitionId && g.player !== player.id) {
           player.points += VALUE_OF_BLUFF; // +1 if someone else voted for your definition.
+          // increase player score
           pointsUpdate = await localAxios.put(
             `/api/score/increase/${player.pid}`,
             {
@@ -41,7 +45,18 @@ export async function handleArrayOfGuesses(
               points: VALUE_OF_BLUFF,
             }
           );
-          log(pointsUpdate.data);
+          log(`+${VALUE_OF_BLUFF} player : ${player.username}`);
+          // increase definition score
+          definitionUpdate = await localAxios.put(
+            `/api/definitions/increase/game/${game_id}/round/${roundId}`,
+            {
+              player_id: player.pid,
+              points: VALUE_OF_BLUFF,
+            }
+          );
+          log(`+${VALUE_OF_TRUTH} definition : ${player.definitionID}`);
+          // log(pointsUpdate.data);
+          // log(definitionUpdate.data);
         }
       });
     } catch (err) {

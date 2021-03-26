@@ -53,7 +53,62 @@ export {
   b64,
   whereAmI,
   updatePlayerToken,
+  getDef,
+  doIt,
+  tieBreakerMatch
 };
+
+type topThreeListItem = {
+  user_id: string;
+  definition: string;
+  word: string;
+};
+
+function finalFormat(defRecord: any): topThreeListItem {
+  const { user_id, definition, def_word } = defRecord;
+  const { word } = def_word;
+  return { user_id, definition, word };
+}
+
+async function getDef(user_id: string, game_id: string, player_id: string) {
+  let result: any = { id: user_id, game: game_id };
+  let mvr: any[];
+  let mvd: any;
+  let r: any;
+  let wid: number;
+  let rWord: any;
+  let def_word: any;
+  let updateScoreCard: any;
+  try {
+    let p = await localAxios.get(
+      `/api/user-rounds/user/${result.id}/game/${result.game}`
+    );
+    result["user_rounds"] = p.data.user_rounds;
+    // most voted round
+    mvr = result.user_rounds.sort(function (a: any, b: any) {
+      return b.votes - a.votes;
+    })[0].round_id;
+    // most voted definition
+    mvd = await localAxios.get(
+      `/api/definitions/user/${result.id}/round/${mvr}`
+    );
+    
+    if (mvd?.data?.id) {
+      updateScoreCard = await localAxios.put(`/api/score/def/${player_id}`, {
+        game_id,
+        top_definition_id: mvd.data.id,
+      });
+    }
+    r = await localAxios.get(`/api/round/id/${mvr}`);
+    wid = r.data.round.word_id;
+    rWord = await localAxios.get(`/api/words/id/${wid}`);
+    def_word = rWord.data.word;
+  } catch (err) {
+    log(err.message);
+    return;
+  }
+  return finalFormat({ ...mvd.data.definition, user_id, def_word });
+}
 
 /**
  * send message to socket.id
@@ -179,22 +234,22 @@ async function checkScores(lobbyCode: string, lobbies: any) {
     return { ok: false, error: `invalid lobby @ ${lobbyCode}` };
   }
   log(`updating score-cards for players in ${lobbyCode}`);
-  players.forEach(async (playerObj: any) => {
+  return await players.forEach(async (playerObj: any) => {
     const socket_id = playerObj.id;
     const { definitionId, points, username, pid } = playerObj;
     const pathname = `/api/score/player/${pid}/game/${game_id}`;
     let score = await localAxios.get(pathname);
-    if (!score?.data?.id) {
+    if (!score.data.id) {
       log(`creating score card for ${username}`);
       score = await localAxios.post("/api/score/new", {
         game_id,
         player_id: pid,
       });
+      log(`created score card ${score.data?.id} for ${username}`);
     } else {
-      log(`found score card for ${username}`);
+      log(`found score card ${score.data.id}, for ${username}`);
       // todo
     }
-    log(`test-score: ${score?.data?.id || "unknown!"}`);
   });
 }
 
@@ -344,4 +399,126 @@ async function updatePlayerToken(
     return { ok: false, message: err.message };
   }
   return { ok: true, token };
+}
+
+
+async function doIt(
+  game_id: string,
+  firstPlace: any,
+  secondPlace?: any,
+  thirdPlace?: any
+) {
+  let r = [];
+  // get most voted definition(s)
+  try {
+    const firstPlaceResult = await getDef(
+      firstPlace.id,
+      game_id,
+      firstPlace.pid
+    );
+    r.push({ ...firstPlaceResult });
+  } catch (err) {
+    log("error getting 1st place");
+    log(err.message);
+  }
+  if (secondPlace) {
+    try {
+      const secondPlaceResult = await getDef(
+        secondPlace.id,
+        game_id,
+        secondPlace.pid
+      );
+      r.push({ ...secondPlaceResult });
+    } catch (err) {
+      log("error getting second place");
+      log(err.message);
+    }
+  }
+  if (thirdPlace) {
+    try {
+      const thirdPlaceResult = await getDef(
+        thirdPlace.id,
+        game_id,
+        thirdPlace.pid
+      );
+      r.push({ ...thirdPlaceResult });
+    } catch (err) {
+      log("error getting third place");
+      log(err.message);
+    }
+  }
+  return r;
+}
+
+async function tieBreakerMatch(
+  checkPoints: any[],
+  game_id: string,
+  lobbies: any[],
+  lobbyCode: any
+) {
+  log("tie-breaker necessary");
+  // create 3 placeholders
+  let firstPlace;
+  let thirdPlace;
+  let tiebreaker;
+  if (checkPoints[0].points !== checkPoints[1].points) {
+    // A. is firstplace unique?
+    firstPlace = lobbies[lobbyCode].players
+      .filter((p: any) => p.pid === checkPoints[0].player_id)
+      .pop();
+    log("- tied for second place");
+    tiebreaker = [checkPoints[1], checkPoints[2]];
+  }
+  if (!firstPlace && checkPoints[1].points !== checkPoints[2]?.points) {
+    // B. is third place unique?
+    log("- tied for first place");
+    tiebreaker = [checkPoints[0], checkPoints[1]];
+    if (checkPoints[2]?.player_id) {
+      thirdPlace = lobbies[lobbyCode].players
+        .filter((p: any) => p.pid === checkPoints[2].player_id)
+        .pop();
+    }
+  }
+  if (!tiebreaker) {
+    // C. does everyone have the same score ?
+    log("- everyone tied!");
+    tiebreaker = checkPoints;
+  }
+  // create a timestamp
+  const finaleTime = Date.now();
+  // [...player_ids]
+  const matchPID = tiebreaker.map((item: any) => item?.player_id);
+  // filtered [...lobby.players]
+  const matchPlayers = lobbies[lobbyCode].players.filter((p: any) =>
+    matchPID.includes(p.pid)
+  );
+  // linear sort [...lobby.players]
+  const withDelta = matchPlayers
+    .map((p: any) => {
+      return {
+        ...p,
+        timeDelta: finaleTime - p?.definitionEpoch || Math.random(),
+      };
+    })
+    .sort(function (a: any, b: any) {
+      return b.timeDelta - a.timeDelta;
+    });
+  // placeholder array
+  let topThree = [];
+  if (firstPlace && !thirdPlace) {
+    // A.
+    topThree = [firstPlace, ...withDelta];
+  } else if (thirdPlace && !firstPlace) {
+    // B.
+    topThree = [...withDelta, thirdPlace];
+  } else {
+    // C.
+    topThree = withDelta;
+  }
+  return await doIt(
+    game_id,
+    topThree[0],
+    topThree[1] || undefined,
+    topThree[2] || undefined
+  );
 }
