@@ -92,12 +92,10 @@ router.post("/login", async (req, res) => {
   let result;
   let last_username: string = "";
   try {
-    console.log('======= partial recall')
     result = partialRecall(last_token); // verify this is one of our tokens.
-    console.log(`======= partial-recall ${result}`)
     if (!result.ok) {
       //  bad token detected!
-      res.status(400).json(result);
+      return res.status(400).json(result);
     }
     player_id = result.player_id || "";
     last_user_id = result.last_user_id || "";
@@ -105,9 +103,8 @@ router.post("/login", async (req, res) => {
     last_username = result.username || "";
     player = await Player.getPlayer(player_id);
   } catch (err) {
-    console.log('====== ERROR')
     log(err.message);
-    res.json({ message: err.message });
+    return res.json({ message: err.message });
   }
   let token;
   let old_user_id = last_user_id;
@@ -123,10 +120,10 @@ router.post("/login", async (req, res) => {
       token = token_request.token;
     }
   } catch (err) {
-    res.status(403).json({ message: err.message });
+    return res.status(403).json({ message: err.message });
   }
   // last_lobby will be returned, if it exists, as player.last_lobby
-  res.status(200).json({
+  return res.status(200).json({
     message: "welcome",
     player: { ...player, last_lobby },
     token,
