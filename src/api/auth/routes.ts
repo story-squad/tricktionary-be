@@ -1,27 +1,20 @@
 import { Router } from "express";
-import { verifyTricktionaryToken } from "./utils";
 import { log } from "../../logger";
-
-// import jwt from "jsonwebtoken";
-//
-// import secrets from "./secrets";
-//
-import { validatePayloadType, newToken, b64, partialRecall } from "./utils";
-//
+import { newToken, b64, partialRecall } from "./utils";
 import Player from "../player/model";
 const router = Router();
 
 router.post("/recall", (req, res) => {
   const { token } = req.body;
   if (!token) {
-    res.status(400).json({ error: "token required" });
+    return res.status(400).json({ error: "token required" });
   }
   // we have a token,
   const result = partialRecall(token);
   if (!result.ok) {
-    res.status(400).json(result);
+    return res.status(400).json(result);
   }
-  res.status(200).json(result);
+  return res.status(200).json(result);
 });
 
 router.get("/find-player/:last_user_id", async (req, res) => {
@@ -29,22 +22,21 @@ router.get("/find-player/:last_user_id", async (req, res) => {
   let player;
   let errorMessage = "unknown error";
   if (!last_user_id) {
-    res.status(404).json({ message: "last_user_id required" });
+    return res.status(404).json({ message: "last_user_id required" });
   }
   try {
     player = await Player.findPlayer("last_user_id", last_user_id);
   } catch (err) {
     errorMessage = err.message;
-    res.status(400).json({ error: errorMessage });
+    return res.status(400).json({ error: errorMessage });
   }
-  res.status(200).json(player);
+  return res.status(200).json(player);
 });
 
 router.post("/new-player", async (req, res) => {
   let { last_user_id, jump_code } = req.body;
   if (!last_user_id) {
-    res.status(403).json({ message: "last_user_id required" });
-    return
+    return res.status(403).json({ message: "last_user_id required" });
   }
   if (jump_code) {
     log("TODO: player is jumping from another device.");
@@ -65,7 +57,7 @@ router.post("/new-player", async (req, res) => {
   try {
     token = await newToken(last_user_id, pid, undefined, undefined);
   } catch (err) {
-    res.status(token?.status || 400).json(token || err);
+    return res.status(token?.status || 400).json(token || err);
   }
 });
 

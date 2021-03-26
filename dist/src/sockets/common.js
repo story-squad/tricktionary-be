@@ -233,13 +233,15 @@ function checkScores(lobbyCode, lobbies) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const players = (_a = lobbies[lobbyCode]) === null || _a === void 0 ? void 0 : _a.players;
+        const host = lobbies[lobbyCode].host;
         const game_id = lobbies[lobbyCode].game_id;
         if (!players) {
             logger_1.log(`[!ERROR] no players in ${lobbyCode}`);
             return { ok: false, error: `invalid lobby @ ${lobbyCode}` };
         }
+        // add host to list
         logger_1.log(`updating score-cards for players in ${lobbyCode}`);
-        return yield players.forEach((playerObj) => __awaiter(this, void 0, void 0, function* () {
+        return yield [...players, {}].forEach((playerObj) => __awaiter(this, void 0, void 0, function* () {
             var _b;
             const socket_id = playerObj.id;
             const { definitionId, points, username, pid } = playerObj;

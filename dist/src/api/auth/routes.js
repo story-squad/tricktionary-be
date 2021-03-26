@@ -14,47 +14,41 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const logger_1 = require("../../logger");
-// import jwt from "jsonwebtoken";
-//
-// import secrets from "./secrets";
-//
 const utils_1 = require("./utils");
-//
 const model_1 = __importDefault(require("../player/model"));
 const router = express_1.Router();
 router.post("/recall", (req, res) => {
     const { token } = req.body;
     if (!token) {
-        res.status(400).json({ error: "token required" });
+        return res.status(400).json({ error: "token required" });
     }
     // we have a token,
     const result = utils_1.partialRecall(token);
     if (!result.ok) {
-        res.status(400).json(result);
+        return res.status(400).json(result);
     }
-    res.status(200).json(result);
+    return res.status(200).json(result);
 });
 router.get("/find-player/:last_user_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const last_user_id = req.params.last_user_id;
     let player;
     let errorMessage = "unknown error";
     if (!last_user_id) {
-        res.status(404).json({ message: "last_user_id required" });
+        return res.status(404).json({ message: "last_user_id required" });
     }
     try {
         player = yield model_1.default.findPlayer("last_user_id", last_user_id);
     }
     catch (err) {
         errorMessage = err.message;
-        res.status(400).json({ error: errorMessage });
+        return res.status(400).json({ error: errorMessage });
     }
-    res.status(200).json(player);
+    return res.status(200).json(player);
 }));
 router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { last_user_id, jump_code } = req.body;
     if (!last_user_id) {
-        res.status(403).json({ message: "last_user_id required" });
-        return;
+        return res.status(403).json({ message: "last_user_id required" });
     }
     if (jump_code) {
         logger_1.log("TODO: player is jumping from another device.");
@@ -77,7 +71,7 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
         token = yield utils_1.newToken(last_user_id, pid, undefined, undefined);
     }
     catch (err) {
-        res.status((token === null || token === void 0 ? void 0 : token.status) || 400).json(token || err);
+        return res.status((token === null || token === void 0 ? void 0 : token.status) || 400).json(token || err);
     }
 }));
 router.post("/update-token", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

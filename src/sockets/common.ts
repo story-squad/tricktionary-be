@@ -228,13 +228,15 @@ async function wordFromID(id: any) {
 
 async function checkScores(lobbyCode: string, lobbies: any) {
   const players = lobbies[lobbyCode]?.players;
+  const host = lobbies[lobbyCode].host
   const game_id = lobbies[lobbyCode].game_id;
   if (!players) {
     log(`[!ERROR] no players in ${lobbyCode}`);
     return { ok: false, error: `invalid lobby @ ${lobbyCode}` };
   }
+  // add host to list
   log(`updating score-cards for players in ${lobbyCode}`);
-  return await players.forEach(async (playerObj: any) => {
+  return await [...players, {}].forEach(async (playerObj: any) => {
     const socket_id = playerObj.id;
     const { definitionId, points, username, pid } = playerObj;
     const pathname = `/api/score/player/${pid}/game/${game_id}`;

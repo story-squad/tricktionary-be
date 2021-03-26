@@ -25,4 +25,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| { `message`: *any* ; `ok`: *boolean* = false }\>
 
-Defined in: [handleNewPlayer.ts:9](https://github.com/story-squad/tricktionary-be/blob/2c5f6a3/src/sockets/handleNewPlayer.ts#L9)
+Defined in: [handleNewPlayer.ts:9](https://github.com/story-squad/tricktionary-be/blob/41e169f/src/sockets/handleNewPlayer.ts#L9)

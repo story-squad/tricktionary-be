@@ -30,4 +30,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleSetFinale.ts:23](https://github.com/story-squad/tricktionary-be/blob/2c5f6a3/src/sockets/handleSetFinale.ts#L23)
+Defined in: [handleSetFinale.ts:23](https://github.com/story-squad/tricktionary-be/blob/41e169f/src/sockets/handleSetFinale.ts#L23)
