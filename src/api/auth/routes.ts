@@ -50,7 +50,7 @@ router.post("/new-player", async (req, res) => {
   }
   if (!created?.ok) {
     res.status(400).json({ message: created.message });
-    return
+    return;
   }
   const pid: string = String(created.player_id);
   let token: any;

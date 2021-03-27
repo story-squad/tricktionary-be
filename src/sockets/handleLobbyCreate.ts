@@ -33,7 +33,7 @@ async function handleLobbyCreate(
     const last_player = await localAxios.get(
       `/api/player/last-user-id/${socket.id}`
     );
-    if (last_player.data.player && last_player.data.player.id) {
+    if (last_player.data.player) {
       // create the Game
       og_host = last_player.data.player.id;
       game_id = await createGame(og_host);
@@ -76,7 +76,14 @@ async function handleLobbyCreate(
     game_id,
     lobbyCode,
     players: [
-      { id: socket.id, username, definition: "", points: 0, connected: true, pid: og_host }
+      {
+        id: socket.id,
+        username,
+        definition: "",
+        points: 0,
+        connected: true,
+        pid: og_host,
+      },
     ],
     host: socket.id,
     phase: username === "bobrosslives" ? "PAINT" : "PREGAME",

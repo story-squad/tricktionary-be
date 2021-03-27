@@ -55,59 +55,25 @@ export {
   updatePlayerToken,
   getDef,
   doIt,
-  tieBreakerMatch
+  tieBreakerMatch,
 };
 
-type topThreeListItem = {
-  user_id: string;
-  definition: string;
-  word: string;
-};
-
-function finalFormat(defRecord: any): topThreeListItem {
-  const { user_id, definition, def_word } = defRecord;
-  const { word } = def_word;
-  return { user_id, definition, word };
-}
-
-async function getDef(user_id: string, game_id: string, player_id: string) {
-  let result: any = { id: user_id, game: game_id };
-  let mvr: any[];
-  let mvd: any;
+async function getDef(user_id: string, definitionId: number) {
   let r: any;
-  let wid: number;
   let rWord: any;
-  let def_word: any;
-  let updateScoreCard: any;
   try {
-    let p = await localAxios.get(
-      `/api/user-rounds/user/${result.id}/game/${result.game}`
-    );
-    result["user_rounds"] = p.data.user_rounds;
-    // most voted round
-    mvr = result.user_rounds.sort(function (a: any, b: any) {
-      return b.votes - a.votes;
-    })[0].round_id;
-    // most voted definition
-    mvd = await localAxios.get(
-      `/api/definitions/user/${result.id}/round/${mvr}`
-    );
-    
-    if (mvd?.data?.id) {
-      updateScoreCard = await localAxios.put(`/api/score/def/${player_id}`, {
-        game_id,
-        top_definition_id: mvd.data.id,
-      });
-    }
-    r = await localAxios.get(`/api/round/id/${mvr}`);
-    wid = r.data.round.word_id;
-    rWord = await localAxios.get(`/api/words/id/${wid}`);
-    def_word = rWord.data.word;
+    const mvd = await localAxios.get(`/api/definitions/id/${definitionId}`);
+    const round_id = mvd.data.definition.round_id;
+    const definition = mvd.data.definition.definition;
+    r = await localAxios.get(`/api/round/id/${round_id}`);
+    rWord = await localAxios.get(`/api/words/id/${r.data.round.word_id}`);
+    const { word } = rWord.data.word;
+    const result = { user_id, definition, word };
+    return result;
   } catch (err) {
     log(err.message);
     return;
   }
-  return finalFormat({ ...mvd.data.definition, user_id, def_word });
 }
 
 /**
@@ -228,7 +194,6 @@ async function wordFromID(id: any) {
 
 async function checkScores(lobbyCode: string, lobbies: any) {
   const players = lobbies[lobbyCode]?.players;
-  const host = lobbies[lobbyCode].host
   const game_id = lobbies[lobbyCode].game_id;
   if (!players) {
     log(`[!ERROR] no players in ${lobbyCode}`);
@@ -237,8 +202,7 @@ async function checkScores(lobbyCode: string, lobbies: any) {
   // add host to list
   log(`updating score-cards for players in ${lobbyCode}`);
   return await [...players, {}].forEach(async (playerObj: any) => {
-    const socket_id = playerObj.id;
-    const { definitionId, points, username, pid } = playerObj;
+    const { username, pid } = playerObj;
     const pathname = `/api/score/player/${pid}/game/${game_id}`;
     let score = await localAxios.get(pathname);
     if (!score.data.id) {
@@ -403,22 +367,20 @@ async function updatePlayerToken(
   return { ok: true, token };
 }
 
-
 async function doIt(
   game_id: string,
   firstPlace: any,
   secondPlace?: any,
   thirdPlace?: any
 ) {
-  let r = [];
+  let r: any[] = [];
   // get most voted definition(s)
   try {
     const firstPlaceResult = await getDef(
-      firstPlace.id,
-      game_id,
-      firstPlace.pid
+      firstPlace.id, // socket.id
+      firstPlace.definitionId
     );
-    r.push({ ...firstPlaceResult });
+    r = [{ ...firstPlaceResult }];
   } catch (err) {
     log("error getting 1st place");
     log(err.message);
@@ -427,10 +389,9 @@ async function doIt(
     try {
       const secondPlaceResult = await getDef(
         secondPlace.id,
-        game_id,
-        secondPlace.pid
+        secondPlace.definitionId
       );
-      r.push({ ...secondPlaceResult });
+      r = [...r, { ...secondPlaceResult }];
     } catch (err) {
       log("error getting second place");
       log(err.message);
@@ -440,10 +401,9 @@ async function doIt(
     try {
       const thirdPlaceResult = await getDef(
         thirdPlace.id,
-        game_id,
-        thirdPlace.pid
+        thirdPlace.definitionId
       );
-      r.push({ ...thirdPlaceResult });
+      r = [...r, { ...thirdPlaceResult }];
     } catch (err) {
       log("error getting third place");
       log(err.message);
@@ -463,6 +423,7 @@ async function tieBreakerMatch(
   let firstPlace;
   let thirdPlace;
   let tiebreaker;
+
   if (checkPoints[0].points !== checkPoints[1].points) {
     // A. is firstplace unique?
     firstPlace = lobbies[lobbyCode].players
@@ -495,7 +456,7 @@ async function tieBreakerMatch(
     matchPID.includes(p.pid)
   );
   // linear sort [...lobby.players]
-  const withDelta = matchPlayers
+  const topThree = matchPlayers
     .map((p: any) => {
       return {
         ...p,
@@ -505,17 +466,15 @@ async function tieBreakerMatch(
     .sort(function (a: any, b: any) {
       return b.timeDelta - a.timeDelta;
     });
-  // placeholder array
-  let topThree = [];
-  if (firstPlace && !thirdPlace) {
+
+  if (firstPlace?.pid && !thirdPlace?.pid) {
     // A.
-    topThree = [firstPlace, ...withDelta];
-  } else if (thirdPlace && !firstPlace) {
+    topThree.unshift(firstPlace);
+  }
+
+  if (thirdPlace?.pid && !firstPlace?.pid) {
     // B.
-    topThree = [...withDelta, thirdPlace];
-  } else {
-    // C.
-    topThree = withDelta;
+    topThree.push(thirdPlace);
   }
   return await doIt(
     game_id,
