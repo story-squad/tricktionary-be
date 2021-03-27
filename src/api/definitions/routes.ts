@@ -95,4 +95,15 @@ router.get("/game/:game_id/player/:player_id", async (req, res) => {
   return res.json({ top_definition: result.top_definition });
 });
 
+router.get("/id/:id", async (req, res) => {
+  const definitionId: number = Number(req.params.id);
+  let definition:DefinitionType;
+  try {
+    definition = await Definitions.byId(definitionId).first();
+  } catch (err) {
+    return res.status(400).json({ ok: false, error: err.message });
+  }
+  return res.status(200).json({ ok: true, definition });
+});
+
 export default router;
