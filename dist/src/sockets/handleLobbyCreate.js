@@ -33,7 +33,7 @@ function handleLobbyCreate(io, socket, username, lobbies) {
         }
         try {
             const last_player = yield common_1.localAxios.get(`/api/player/last-user-id/${socket.id}`);
-            if (last_player.data.player && last_player.data.player.id) {
+            if (last_player.data.player) {
                 // create the Game
                 og_host = last_player.data.player.id;
                 game_id = yield createGame(og_host);
@@ -69,7 +69,14 @@ function handleLobbyCreate(io, socket, username, lobbies) {
             game_id,
             lobbyCode,
             players: [
-                { id: socket.id, username, definition: "", points: 0, connected: true, pid: og_host }
+                {
+                    id: socket.id,
+                    username,
+                    definition: "",
+                    points: 0,
+                    connected: true,
+                    pid: og_host,
+                },
             ],
             host: socket.id,
             phase: username === "bobrosslives" ? "PAINT" : "PREGAME",

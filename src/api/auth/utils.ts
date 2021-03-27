@@ -111,7 +111,8 @@ export const b64 = { encode: encode64, decode: decode64 };
  */
 export function partialRecall(token: string) {
   // get player_id & last user_id from the JWT
-  const payload = validatePayloadType(jwt.decode(token));
+  const decoded = jwt.decode(token);
+  const payload = validatePayloadType(decoded);
   if (!payload.ok) return { ok: false, message: payload.message };
   let username;
   let definition;
@@ -137,11 +138,11 @@ export function partialRecall(token: string) {
   };
 }
 
-export async function totalRecall(player_id: string | undefined) {
+export async function totalRecall(player_id: string) {
   let result;
   let player: any;
   try {
-    player = await Player.getPlayer(String(player_id));
+    player = await Player.getPlayer(player_id);
     result = { ok: true, player, lobby: undefined };
   } catch (err) {
     result = {
@@ -204,7 +205,7 @@ export async function verifyTricktionaryToken(
       // return { ...mem, status: 200 };
     } else {
       // search db for player_id
-      const existing = await totalRecall(mem.player_id);
+      const existing = await totalRecall(String(mem?.player_id));
       if (existing.ok) {
         player = existing.player;
         last_lobby = existing.spoilers;

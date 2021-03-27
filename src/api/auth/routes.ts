@@ -50,7 +50,7 @@ router.post("/new-player", async (req, res) => {
   }
   if (!created?.ok) {
     res.status(400).json({ message: created.message });
-    return
+    return;
   }
   const pid: string = String(created.player_id);
   let token: any;
@@ -65,6 +65,7 @@ router.post("/update-token", async (req, res) => {
   const { s_id, p_id, name, definition, points, lobbyCode } = req.body;
   const extra = b64.encode(JSON.stringify({ name, definition, points }));
   try {
+    log(`UPDATE TOKEN - Socket: ${s_id}, Player: ${p_id}`);
     const token = await newToken(s_id, p_id, extra, lobbyCode);
     res.status(200).json(token);
   } catch (err) {

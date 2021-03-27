@@ -27,11 +27,16 @@ async function updatePlayer(player_id: string, changes: any) {
   }
 }
 
+function bySocketID(last_user_id: string) {
+  return db("Player").where({ last_user_id }).first();
+}
 async function getPlayer(player_id: string) {
   return await db("Player").where({ id: player_id }).first();
 }
 async function findPlayer(col_name: string, value: any) {
-  return await db("Player").where({ [col_name]: value }).first();
+  return await db("Player")
+    .where({ [col_name]: value })
+    .first();
 }
 
-export default { newPlayer, updatePlayer, getPlayer, findPlayer };
+export default { newPlayer, updatePlayer, getPlayer, findPlayer, bySocketID };

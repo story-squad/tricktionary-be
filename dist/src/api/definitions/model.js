@@ -14,7 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const utils_1 = require("./utils");
-exports.default = { add, byUserInRound, byPlayerInRound, incr, decr, thisRound, findTopDefinition };
+exports.default = {
+    add,
+    byUserInRound,
+    byPlayerInRound,
+    incr,
+    decr,
+    thisRound,
+    findTopDefinition,
+    byId
+};
 function add(userID, playerID, definition, roundID, gameID) {
     // validate object.property types
     const newDefinition = utils_1.validateDefinition({
@@ -30,6 +39,9 @@ function add(userID, playerID, definition, roundID, gameID) {
 }
 function byUserInRound(user_id, round_id) {
     return dbConfig_1.default("definitions").where({ user_id, round_id }).first();
+}
+function byId(definitionId) {
+    return dbConfig_1.default("definitions").where({ id: definitionId });
 }
 function byPlayerInRound(player_id, round_id) {
     return dbConfig_1.default("definitions").where({ player_id, round_id }).first();

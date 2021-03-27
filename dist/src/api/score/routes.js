@@ -147,7 +147,7 @@ router.get("/latest/:game_id", (req, res) => __awaiter(void 0, void 0, void 0, f
         // if not ok, tell us why
         return res.json(leaderboard);
     }
-    const latestScore = [];
+    let latestScore = [];
     let countdown = leaderboard.latest.length;
     // update the latest top_definitions, as needed; returning the list
     leaderboard.latest.forEach((scoreCard) => __awaiter(void 0, void 0, void 0, function* () {
@@ -158,21 +158,24 @@ router.get("/latest/:game_id", (req, res) => __awaiter(void 0, void 0, void 0, f
         const latest_top_def = checkTop.ok && ((_a = checkTop === null || checkTop === void 0 ? void 0 : checkTop.top_definition) === null || _a === void 0 ? void 0 : _a.id);
         if (latest_top_def && top_definition_id !== latest_top_def) {
             logger_1.log("top definition changed... updating score-card");
-            yield model_1.updateDefinition(player_id, game_id, latest_top_def);
+            const result = yield model_1.updateDefinition(player_id, game_id, latest_top_def);
             countdown -= 1;
-            latestScore.push({
-                player_id,
-                points,
-                top_definition_id: latest_top_def,
-            });
+            latestScore = [
+                ...latestScore,
+                {
+                    player_id,
+                    points,
+                    top_definition_id: latest_top_def,
+                },
+            ];
         }
         else {
             logger_1.log(`top definition remains to be ${top_definition_id}`);
             countdown -= 1;
-            latestScore.push({ player_id, points, top_definition_id });
+            latestScore = [...latestScore, { player_id, points, top_definition_id }];
         }
         if (countdown < 1) {
-            return res.json(latestScore);
+            return res.json(yield latestScore);
         }
     }));
 }));

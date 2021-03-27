@@ -1,7 +1,16 @@
 import db from "../../dbConfig";
 import { validateDefinition } from "./utils";
 
-export default { add, byUserInRound, byPlayerInRound, incr, decr, thisRound, findTopDefinition };
+export default {
+  add,
+  byUserInRound,
+  byPlayerInRound,
+  incr,
+  decr,
+  thisRound,
+  findTopDefinition,
+  byId
+};
 
 function add(
   userID: string,
@@ -25,6 +34,10 @@ function add(
 
 function byUserInRound(user_id: string, round_id: number) {
   return db("definitions").where({ user_id, round_id }).first();
+}
+
+function byId(definitionId: number) {
+  return db("definitions").where({ id: definitionId });
 }
 
 function byPlayerInRound(player_id: string, round_id: number) {
