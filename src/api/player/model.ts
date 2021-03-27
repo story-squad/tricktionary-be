@@ -27,8 +27,8 @@ async function updatePlayer(player_id: string, changes: any) {
   }
 }
 
-async function bySocketID(last_user_id: string) {
-  return await db("Player").where({ last_user_id }).first();
+function bySocketID(last_user_id: string) {
+  return db("Player").where({ last_user_id }).first();
 }
 async function getPlayer(player_id: string) {
   return await db("Player").where({ id: player_id }).first();
