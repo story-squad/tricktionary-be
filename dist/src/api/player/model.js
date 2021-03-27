@@ -45,6 +45,9 @@ function updatePlayer(player_id, changes) {
         }
     });
 }
+function bySocketID(last_user_id) {
+    return dbConfig_1.default("Player").where({ last_user_id }).first();
+}
 function getPlayer(player_id) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield dbConfig_1.default("Player").where({ id: player_id }).first();
@@ -52,8 +55,10 @@ function getPlayer(player_id) {
 }
 function findPlayer(col_name, value) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield dbConfig_1.default("Player").where({ [col_name]: value }).first();
+        return yield dbConfig_1.default("Player")
+            .where({ [col_name]: value })
+            .first();
     });
 }
-exports.default = { newPlayer, updatePlayer, getPlayer, findPlayer };
+exports.default = { newPlayer, updatePlayer, getPlayer, findPlayer, bySocketID };
 //# sourceMappingURL=model.js.map

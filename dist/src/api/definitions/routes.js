@@ -106,5 +106,16 @@ router.get("/game/:game_id/player/:player_id", (req, res) => __awaiter(void 0, v
     }
     return res.json({ top_definition: result.top_definition });
 }));
+router.get("/id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const definitionId = Number(req.params.id);
+    let definition;
+    try {
+        definition = yield model_1.default.byId(definitionId).first();
+    }
+    catch (err) {
+        return res.status(400).json({ ok: false, error: err.message });
+    }
+    return res.status(200).json({ ok: true, definition });
+}));
 exports.default = router;
 //# sourceMappingURL=routes.js.map

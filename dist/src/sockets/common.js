@@ -68,47 +68,24 @@ const VALUE_OF_BLUFF = process.env.VALUE_OF_BLUFF
     ? Number(process.env.VALUE_OF_BLUFF)
     : 1;
 exports.VALUE_OF_BLUFF = VALUE_OF_BLUFF;
-function finalFormat(defRecord) {
-    const { user_id, definition, def_word } = defRecord;
-    const { word } = def_word;
-    return { user_id, definition, word };
-}
-function getDef(user_id, game_id, player_id) {
-    var _a;
+function getDef(user_id, definitionId) {
     return __awaiter(this, void 0, void 0, function* () {
-        let result = { id: user_id, game: game_id };
-        let mvr;
-        let mvd;
         let r;
-        let wid;
         let rWord;
-        let def_word;
-        let updateScoreCard;
         try {
-            let p = yield localAxios.get(`/api/user-rounds/user/${result.id}/game/${result.game}`);
-            result["user_rounds"] = p.data.user_rounds;
-            // most voted round
-            mvr = result.user_rounds.sort(function (a, b) {
-                return b.votes - a.votes;
-            })[0].round_id;
-            // most voted definition
-            mvd = yield localAxios.get(`/api/definitions/user/${result.id}/round/${mvr}`);
-            if ((_a = mvd === null || mvd === void 0 ? void 0 : mvd.data) === null || _a === void 0 ? void 0 : _a.id) {
-                updateScoreCard = yield localAxios.put(`/api/score/def/${player_id}`, {
-                    game_id,
-                    top_definition_id: mvd.data.id,
-                });
-            }
-            r = yield localAxios.get(`/api/round/id/${mvr}`);
-            wid = r.data.round.word_id;
-            rWord = yield localAxios.get(`/api/words/id/${wid}`);
-            def_word = rWord.data.word;
+            const mvd = yield localAxios.get(`/api/definitions/id/${definitionId}`);
+            const round_id = mvd.data.definition.round_id;
+            const definition = mvd.data.definition.definition;
+            r = yield localAxios.get(`/api/round/id/${round_id}`);
+            rWord = yield localAxios.get(`/api/words/id/${r.data.round.word_id}`);
+            const { word } = rWord.data.word;
+            const result = { user_id, definition, word };
+            return result;
         }
         catch (err) {
             logger_1.log(err.message);
             return;
         }
-        return finalFormat(Object.assign(Object.assign({}, mvd.data.definition), { user_id, def_word }));
     });
 }
 exports.getDef = getDef;
@@ -233,7 +210,6 @@ function checkScores(lobbyCode, lobbies) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const players = (_a = lobbies[lobbyCode]) === null || _a === void 0 ? void 0 : _a.players;
-        const host = lobbies[lobbyCode].host;
         const game_id = lobbies[lobbyCode].game_id;
         if (!players) {
             logger_1.log(`[!ERROR] no players in ${lobbyCode}`);
@@ -243,8 +219,7 @@ function checkScores(lobbyCode, lobbies) {
         logger_1.log(`updating score-cards for players in ${lobbyCode}`);
         return yield [...players, {}].forEach((playerObj) => __awaiter(this, void 0, void 0, function* () {
             var _b;
-            const socket_id = playerObj.id;
-            const { definitionId, points, username, pid } = playerObj;
+            const { username, pid } = playerObj;
             const pathname = `/api/score/player/${pid}/game/${game_id}`;
             let score = yield localAxios.get(pathname);
             if (!score.data.id) {
@@ -396,8 +371,9 @@ function doIt(game_id, firstPlace, secondPlace, thirdPlace) {
         let r = [];
         // get most voted definition(s)
         try {
-            const firstPlaceResult = yield getDef(firstPlace.id, game_id, firstPlace.pid);
-            r.push(Object.assign({}, firstPlaceResult));
+            const firstPlaceResult = yield getDef(firstPlace.id, // socket.id
+            firstPlace.definitionId);
+            r = [Object.assign({}, firstPlaceResult)];
         }
         catch (err) {
             logger_1.log("error getting 1st place");
@@ -405,8 +381,8 @@ function doIt(game_id, firstPlace, secondPlace, thirdPlace) {
         }
         if (secondPlace) {
             try {
-                const secondPlaceResult = yield getDef(secondPlace.id, game_id, secondPlace.pid);
-                r.push(Object.assign({}, secondPlaceResult));
+                const secondPlaceResult = yield getDef(secondPlace.id, secondPlace.definitionId);
+                r = [...r, Object.assign({}, secondPlaceResult)];
             }
             catch (err) {
                 logger_1.log("error getting second place");
@@ -415,8 +391,8 @@ function doIt(game_id, firstPlace, secondPlace, thirdPlace) {
         }
         if (thirdPlace) {
             try {
-                const thirdPlaceResult = yield getDef(thirdPlace.id, game_id, thirdPlace.pid);
-                r.push(Object.assign({}, thirdPlaceResult));
+                const thirdPlaceResult = yield getDef(thirdPlace.id, thirdPlace.definitionId);
+                r = [...r, Object.assign({}, thirdPlaceResult)];
             }
             catch (err) {
                 logger_1.log("error getting third place");
@@ -465,26 +441,20 @@ function tieBreakerMatch(checkPoints, game_id, lobbies, lobbyCode) {
         // filtered [...lobby.players]
         const matchPlayers = lobbies[lobbyCode].players.filter((p) => matchPID.includes(p.pid));
         // linear sort [...lobby.players]
-        const withDelta = matchPlayers
+        const topThree = matchPlayers
             .map((p) => {
             return Object.assign(Object.assign({}, p), { timeDelta: finaleTime - (p === null || p === void 0 ? void 0 : p.definitionEpoch) || Math.random() });
         })
             .sort(function (a, b) {
             return b.timeDelta - a.timeDelta;
         });
-        // placeholder array
-        let topThree = [];
-        if (firstPlace && !thirdPlace) {
+        if ((firstPlace === null || firstPlace === void 0 ? void 0 : firstPlace.pid) && !(thirdPlace === null || thirdPlace === void 0 ? void 0 : thirdPlace.pid)) {
             // A.
-            topThree = [firstPlace, ...withDelta];
+            topThree.unshift(firstPlace);
         }
-        else if (thirdPlace && !firstPlace) {
+        if ((thirdPlace === null || thirdPlace === void 0 ? void 0 : thirdPlace.pid) && !(firstPlace === null || firstPlace === void 0 ? void 0 : firstPlace.pid)) {
             // B.
-            topThree = [...withDelta, thirdPlace];
-        }
-        else {
-            // C.
-            topThree = withDelta;
+            topThree.push(thirdPlace);
         }
         return yield doIt(game_id, topThree[0], topThree[1] || undefined, topThree[2] || undefined);
     });

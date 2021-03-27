@@ -38,7 +38,7 @@
 
 Number of characters in lobbyCode
 
-Defined in: [common.ts:21](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L21)
+Defined in: [common.ts:21](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L21)
 
 ___
 
@@ -48,7 +48,7 @@ ___
 
 maximum number of players per lobby
 
-Defined in: [common.ts:16](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L16)
+Defined in: [common.ts:16](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L16)
 
 ___
 
@@ -58,7 +58,7 @@ ___
 
 POINTS AWARDED when others choose your definition
 
-Defined in: [common.ts:35](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L35)
+Defined in: [common.ts:35](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L35)
 
 ___
 
@@ -68,7 +68,7 @@ ___
 
 POINTS AWARDED when you choose correctly
 
-Defined in: [common.ts:28](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L28)
+Defined in: [common.ts:28](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L28)
 
 ___
 
@@ -85,7 +85,7 @@ Name | Type |
 `decode` | (`str`: *string*) => *string* |
 `encode` | (`str`: *string*) => *string* |
 
-Defined in: [common.ts:342](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L342)
+Defined in: [common.ts:306](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L306)
 
 ___
 
@@ -93,7 +93,7 @@ ___
 
 • `Const` **localAxios**: AxiosInstance
 
-Defined in: [common.ts:6](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L6)
+Defined in: [common.ts:6](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L6)
 
 ## Functions
 
@@ -109,7 +109,7 @@ Name | Type |
 
 **Returns:** { `message`: *any* ; `ok`: *boolean* = false; `settings`: *any*  } \| { `message`: *undefined* ; `ok`: *boolean* = true; `settings`: *any*  }
 
-Defined in: [common.ts:176](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L176)
+Defined in: [common.ts:142](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L142)
 
 ___
 
@@ -127,13 +127,13 @@ Name | Type |
 
 **Returns:** *Promise*<{ `definition`: *string* ; `id`: *number* = 0; `source`: *string* ; `word`: *string*  }\>
 
-Defined in: [common.ts:190](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L190)
+Defined in: [common.ts:156](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L156)
 
 ___
 
 ### doIt
 
-▸ **doIt**(`game_id`: *string*, `firstPlace`: *any*, `secondPlace?`: *any*, `thirdPlace?`: *any*): *Promise*<{ `definition?`: *string* ; `user_id?`: *string* ; `word?`: *string*  }[]\>
+▸ **doIt**(`game_id`: *string*, `firstPlace`: *any*, `secondPlace?`: *any*, `thirdPlace?`: *any*): *Promise*<any[]\>
 
 #### Parameters:
 
@@ -144,9 +144,9 @@ Name | Type |
 `secondPlace?` | *any* |
 `thirdPlace?` | *any* |
 
-**Returns:** *Promise*<{ `definition?`: *string* ; `user_id?`: *string* ; `word?`: *string*  }[]\>
+**Returns:** *Promise*<any[]\>
 
-Defined in: [common.ts:407](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L407)
+Defined in: [common.ts:370](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L370)
 
 ___
 
@@ -165,25 +165,24 @@ Name | Type | Description |
 
 **Returns:** *boolean*
 
-Defined in: [common.ts:350](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L350)
+Defined in: [common.ts:314](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L314)
 
 ___
 
 ### getDef
 
-▸ **getDef**(`user_id`: *string*, `game_id`: *string*, `player_id`: *string*): *Promise*<undefined \| topThreeListItem\>
+▸ **getDef**(`user_id`: *string*, `definitionId`: *number*): *Promise*<undefined \| { `definition`: *any* ; `user_id`: *string* ; `word`: *any*  }\>
 
 #### Parameters:
 
 Name | Type |
 :------ | :------ |
 `user_id` | *string* |
-`game_id` | *string* |
-`player_id` | *string* |
+`definitionId` | *number* |
 
-**Returns:** *Promise*<undefined \| topThreeListItem\>
+**Returns:** *Promise*<undefined \| { `definition`: *any* ; `user_id`: *string* ; `word`: *any*  }\>
 
-Defined in: [common.ts:73](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L73)
+Defined in: [common.ts:61](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L61)
 
 ___
 
@@ -201,7 +200,7 @@ Name | Type |
 
 **Returns:** { `message`: *undefined* ; `ok`: *boolean*  } \| { `message`: *any* ; `ok`: *boolean* = false }
 
-Defined in: [common.ts:167](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L167)
+Defined in: [common.ts:133](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L133)
 
 ___
 
@@ -219,7 +218,7 @@ Name | Type |
 
 **Returns:** { `message`: *undefined* ; `ok`: *boolean*  } \| { `message`: *any* ; `ok`: *boolean* = false }
 
-Defined in: [common.ts:158](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L158)
+Defined in: [common.ts:124](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L124)
 
 ___
 
@@ -240,7 +239,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [common.ts:125](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L125)
+Defined in: [common.ts:91](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L91)
 
 ___
 
@@ -260,7 +259,7 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [common.ts:140](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L140)
+Defined in: [common.ts:106](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L106)
 
 ___
 
@@ -280,13 +279,13 @@ Name | Type |
 
 **Returns:** *Promise*<{ `lobbies`: *undefined* ; `message`: *any* ; `ok`: *boolean* = false; `result`: *undefined* ; `roundId`: *undefined*  } \| { `lobbies`: *any* ; `message`: *undefined* ; `ok`: *boolean* = false; `result`: *any* ; `roundId`: *undefined*  } \| { `lobbies`: *any* ; `message`: *undefined* ; `ok`: *boolean* = true; `result`: *any* ; `roundId`: *any*  }\>
 
-Defined in: [common.ts:258](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L258)
+Defined in: [common.ts:222](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L222)
 
 ___
 
 ### tieBreakerMatch
 
-▸ **tieBreakerMatch**(`checkPoints`: *any*[], `game_id`: *string*, `lobbies`: *any*[], `lobbyCode`: *any*): *Promise*<{ `definition?`: *string* ; `user_id?`: *string* ; `word?`: *string*  }[]\>
+▸ **tieBreakerMatch**(`checkPoints`: *any*[], `game_id`: *string*, `lobbies`: *any*[], `lobbyCode`: *any*): *Promise*<any[]\>
 
 #### Parameters:
 
@@ -297,9 +296,9 @@ Name | Type |
 `lobbies` | *any*[] |
 `lobbyCode` | *any* |
 
-**Returns:** *Promise*<{ `definition?`: *string* ; `user_id?`: *string* ; `word?`: *string*  }[]\>
+**Returns:** *Promise*<any[]\>
 
-Defined in: [common.ts:455](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L455)
+Defined in: [common.ts:415](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L415)
 
 ___
 
@@ -322,7 +321,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [common.ts:364](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L364)
+Defined in: [common.ts:328](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L328)
 
 ___
 
@@ -340,7 +339,7 @@ Name | Type | Description |
 
 the lobby code attached to this socket (string).
 
-Defined in: [common.ts:319](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L319)
+Defined in: [common.ts:283](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L283)
 
 ___
 
@@ -356,4 +355,4 @@ Name | Type |
 
 **Returns:** *Promise*<{ `message`: *any* ; `ok`: *boolean* = false; `word`: *undefined*  } \| { `message`: *undefined* ; `ok`: *boolean* = true; `word`: *any*  }\>
 
-Defined in: [common.ts:215](https://github.com/story-squad/tricktionary-be/blob/719209f/src/sockets/common.ts#L215)
+Defined in: [common.ts:181](https://github.com/story-squad/tricktionary-be/blob/d006efb/src/sockets/common.ts#L181)
