@@ -2,6 +2,8 @@ import db from "../../dbConfig";
 import { validatePlayerType } from "./utils";
 import { v4 } from "uuid";
 
+export default { newPlayer, updatePlayer, getPlayer, findPlayer, bySocketID, getName };
+
 async function newPlayer(user_id: string) {
   const uuId = v4();
   try {
@@ -39,4 +41,7 @@ async function findPlayer(col_name: string, value: any) {
     .first();
 }
 
-export default { newPlayer, updatePlayer, getPlayer, findPlayer, bySocketID };
+async function getName(player_id: string) {
+  return await db("Player").select("name").where({ id: player_id }).first();
+}
+
