@@ -67,6 +67,7 @@ router.post("/update-token", async (req, res) => {
   try {
     log(`UPDATE TOKEN - Socket: ${s_id}, Player: ${p_id}`);
     const token = await newToken(s_id, p_id, extra, lobbyCode);
+    await Player.updatePlayer(p_id, { name });
     res.status(200).json(token);
   } catch (err) {
     res.status(400).json({ message: err.message });

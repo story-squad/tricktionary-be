@@ -28,5 +28,27 @@ router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     res.status(200).json(game_id);
 }));
+router.get("/all", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let result;
+    try {
+        result = yield model_1.default.get();
+    }
+    catch (err) {
+        result = { error: err.message };
+    }
+    return res.status(200).json(result.games);
+}));
+router.get("/latest/:limit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let limit = req.params.limit;
+    const n = Number(limit) > 0 ? Number(limit) : 5;
+    let result;
+    try {
+        result = yield model_1.default.latest(n);
+    }
+    catch (err) {
+        return res.status(400).json({ error: err.message });
+    }
+    return res.status(200).json(result);
+}));
 exports.default = router;
 //# sourceMappingURL=routes.js.map

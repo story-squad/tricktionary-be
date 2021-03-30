@@ -80,6 +80,7 @@ router.post("/update-token", (req, res) => __awaiter(void 0, void 0, void 0, fun
     try {
         logger_1.log(`UPDATE TOKEN - Socket: ${s_id}, Player: ${p_id}`);
         const token = yield utils_1.newToken(s_id, p_id, extra, lobbyCode);
+        yield model_1.default.updatePlayer(p_id, { name });
         res.status(200).json(token);
     }
     catch (err) {
