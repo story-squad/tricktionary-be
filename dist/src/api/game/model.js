@@ -14,21 +14,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const uuid_1 = require("uuid");
-exports.default = { add };
+exports.default = { add, get, latest };
 function add(og_host) {
     return __awaiter(this, void 0, void 0, function* () {
         const uuId = uuid_1.v4();
         let game_req;
         try {
-            game_req = yield dbConfig_1.default("Game").insert({
+            game_req = yield dbConfig_1.default("Game")
+                .insert({
                 id: uuId,
-                og_host
-            }).returning("id");
+                og_host,
+            })
+                .returning("id");
         }
         catch (err) {
-            return { ok: false, message: 'error' };
+            return { ok: false, message: "error" };
         }
         return { ok: true, game_id: game_req[0] };
+    });
+}
+function get() {
+    return __awaiter(this, void 0, void 0, function* () {
+        let result;
+        try {
+            result = yield dbConfig_1.default("Game").returning("id");
+        }
+        catch (err) {
+            return { ok: false, message: "error" };
+        }
+        return { ok: true, games: result };
+    });
+}
+function latest(limit) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let result;
+        try {
+            result = yield dbConfig_1.default("Game").orderBy("created_at", "desc").limit(limit);
+        }
+        catch (err) {
+            return { ok: false, message: "error" };
+        }
+        return { ok: true, games: result };
     });
 }
 //# sourceMappingURL=model.js.map
