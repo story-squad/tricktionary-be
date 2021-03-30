@@ -17,6 +17,8 @@ const logger_1 = require("../../logger");
 const utils_1 = require("./utils");
 const model_1 = __importDefault(require("../player/model"));
 const router = express_1.Router();
+const limitFromEnv = Number(process.env.USERNAME_CHARACTER_LIMIT);
+const usernameCharLimit = limitFromEnv > 0 ? limitFromEnv : 12;
 router.post("/recall", (req, res) => {
     const { token } = req.body;
     if (!token) {
@@ -76,6 +78,9 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
 }));
 router.post("/update-token", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { s_id, p_id, name, definition, points, lobbyCode } = req.body;
+    if (name.lenth > usernameCharLimit) {
+        return res.status(400).json({ message: "exceeded username character limit" });
+    }
     const extra = utils_1.b64.encode(JSON.stringify({ name, definition, points }));
     try {
         logger_1.log(`UPDATE TOKEN - Socket: ${s_id}, Player: ${p_id}`);

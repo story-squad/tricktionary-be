@@ -15,6 +15,18 @@ router.get("/id/:id", async (req, res) => {
   res.status(200).json({ player });
 });
 
+router.get("/name/:id", async (req, res) => {
+  const player_id = req.params.id;
+  let result;
+  try {
+    result = await Player.getName(player_id);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+  res.status(200).json(result);
+});
+
+
 router.get("/last-user-id/:id", async (req, res) => {
   const user_id = req.params.id;
   log(`called /api/Player/last-user-id/${user_id}`);

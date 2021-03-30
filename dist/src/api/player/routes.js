@@ -27,6 +27,17 @@ router.get("/id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     res.status(200).json({ player });
 }));
+router.get("/name/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const player_id = req.params.id;
+    let result;
+    try {
+        result = yield model_1.default.getName(player_id);
+    }
+    catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+    res.status(200).json(result);
+}));
 router.get("/last-user-id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user_id = req.params.id;
     logger_1.log(`called /api/Player/last-user-id/${user_id}`);
