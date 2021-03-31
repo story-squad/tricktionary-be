@@ -38,31 +38,6 @@ async function latest(limit: number) {
   return { ok: true, games: result };
 }
 
-async function followTrail(
-  player_id: string,
-  top_definition_id: number,
-  points: number
-) {
-  const player = await db("Player")
-    .select("name")
-    .where({ id: player_id })
-    .first();
-  const top_definition = await db("definitions")
-    .where({ id: top_definition_id })
-    .first();
-  const round_id = top_definition.round_id;
-  return {
-    player: player_id,
-    name: player.name,
-    top_definition_id: top_definition.id,
-    top_definition_score: top_definition.score,
-    top_definition: top_definition.definition,
-    total_score: points,
-    // word: word.word,
-    // definition: word.definition,
-  };
-}
-
 async function leaderBoard(game_id: string) {
   try {
     return await db("score")
