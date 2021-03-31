@@ -1,6 +1,6 @@
 import db from "../../dbConfig";
 import { v4 } from "uuid";
-export default { add, get, latest };
+export default { add, get, latest, leaderBoard };
 
 async function add(og_host: string) {
   const uuId = v4();
@@ -36,4 +36,52 @@ async function latest(limit: number) {
     return { ok: false, message: "error" };
   }
   return { ok: true, games: result };
+}
+
+async function followTrail(
+  player_id: string,
+  top_definition_id: number,
+  points: number
+) {
+  const player = await db("Player")
+    .select("name")
+    .where({ id: player_id })
+    .first();
+  const top_definition = await db("definitions")
+    .where({ id: top_definition_id })
+    .first();
+  const round_id = top_definition.round_id;
+  return {
+    player: player_id,
+    name: player.name,
+    top_definition_id: top_definition.id,
+    top_definition_score: top_definition.score,
+    top_definition: top_definition.definition,
+    total_score: points,
+    // word: word.word,
+    // definition: word.definition,
+  };
+}
+
+async function leaderBoard(game_id: string) {
+  try {
+    return await db("score")
+      .join("definitions", "definitions.id", "score.top_definition_id")
+      .join("Player", "Player.id", "definitions.player_id")
+      .join("Rounds", "Rounds.id", "definitions.round_id")
+      .join("Words", "Words.id", "Rounds.word_id")
+      .select(
+        "Player.id as player_id",
+        "Player.name as name",
+        "score.top_definition_id as top_definition_id",
+        "definitions.definition as top_definition",
+        "definitions.score as top_definition_score",
+        "Words.word as word"
+      )
+      .whereNot({ top_definition_id: null })
+      .where("score.game_id", game_id);
+  } catch (err) {
+    console.log(err.message);
+    return [];
+  }
 }

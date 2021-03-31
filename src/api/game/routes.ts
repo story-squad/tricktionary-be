@@ -38,4 +38,16 @@ router.get("/latest/:limit", async (req, res) => {
   return res.status(200).json(result);
 });
 
+router.get("/leaderboard/:game_id", async (req, res) => {
+  let game_id:string = req.params.game_id;
+  let result: any;
+  // aggregates data from 5 tables
+  try {
+    result = await Game.leaderBoard(game_id);
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+  return res.status(200).json(result);
+})
+
 export default router;
