@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const uuid_1 = require("uuid");
-exports.default = { add, get, latest };
+exports.default = { add, get, latest, leaderBoard };
 function add(og_host) {
     return __awaiter(this, void 0, void 0, function* () {
         const uuId = uuid_1.v4();
@@ -55,6 +55,24 @@ function latest(limit) {
             return { ok: false, message: "error" };
         }
         return { ok: true, games: result };
+    });
+}
+function leaderBoard(game_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield dbConfig_1.default("score")
+                .join("definitions", "definitions.id", "score.top_definition_id")
+                .join("Player", "Player.id", "definitions.player_id")
+                .join("Rounds", "Rounds.id", "definitions.round_id")
+                .join("Words", "Words.id", "Rounds.word_id")
+                .select("Player.id as player_id", "Player.name as name", "score.top_definition_id as top_definition_id", "definitions.definition as top_definition", "definitions.score as top_definition_score", "Words.word as word")
+                .whereNot({ top_definition_id: null })
+                .where("score.game_id", game_id);
+        }
+        catch (err) {
+            console.log(err.message);
+            return [];
+        }
     });
 }
 //# sourceMappingURL=model.js.map

@@ -50,5 +50,17 @@ router.get("/latest/:limit", (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
     return res.status(200).json(result);
 }));
+router.get("/leaderboard/:game_id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let game_id = req.params.game_id;
+    let result;
+    // aggregates data from 5 tables
+    try {
+        result = yield model_1.default.leaderBoard(game_id);
+    }
+    catch (err) {
+        return res.status(400).json({ error: err.message });
+    }
+    return res.status(200).json(result);
+}));
 exports.default = router;
 //# sourceMappingURL=routes.js.map
