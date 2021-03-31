@@ -30,4 +30,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| { `message`: *any* ; `ok`: *boolean* = false }\>
 
-Defined in: [handleReturningPlayer.ts:17](https://github.com/story-squad/tricktionary-be/blob/3bf28b7/src/sockets/handleReturningPlayer.ts#L17)
+Defined in: [handleReturningPlayer.ts:17](https://github.com/story-squad/tricktionary-be/blob/b9521f7/src/sockets/handleReturningPlayer.ts#L17)

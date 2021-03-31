@@ -136,6 +136,7 @@ router.get("/latest/:game_id", (req, res) => __awaiter(void 0, void 0, void 0, f
     if (!game_id) {
         return res.json({ ok: false });
     }
+    // this route creates the leaderboard, during gameplay
     let leaderboard;
     try {
         leaderboard = yield model_1.getLatest(game_id);
@@ -154,11 +155,11 @@ router.get("/latest/:game_id", (req, res) => __awaiter(void 0, void 0, void 0, f
         var _a;
         const { player_id, points, top_definition_id } = scoreCard;
         logger_1.log(`looking up top definition for player ${player_id}`);
-        const checkTop = yield model_1.findTopDefinition(player_id, game_id);
+        const checkTop = yield model_1.findTopDefinition(player_id, game_id); // sorts
         const latest_top_def = checkTop.ok && ((_a = checkTop === null || checkTop === void 0 ? void 0 : checkTop.top_definition) === null || _a === void 0 ? void 0 : _a.id);
         if (latest_top_def && top_definition_id !== latest_top_def) {
             logger_1.log("top definition changed... updating score-card");
-            const result = yield model_1.updateDefinition(player_id, game_id, latest_top_def);
+            yield model_1.updateDefinition(player_id, game_id, latest_top_def);
             countdown -= 1;
             latestScore = [
                 ...latestScore,
