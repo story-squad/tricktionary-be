@@ -44,5 +44,7 @@ export function removeFromLobby(io: any, socket: any, lobbies:any) {
       (player: any) => player.id !== socket.id
     );
     socket.leave(socket.id)
+    // tell player they've been removed.
+    io.to(socket.id).emit('disconnect me');
   }
 }
