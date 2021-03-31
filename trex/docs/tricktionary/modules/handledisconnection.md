@@ -25,13 +25,13 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [handleDisconnection.ts:4](https://github.com/story-squad/tricktionary-be/blob/fc5ef6b/src/sockets/handleDisconnection.ts#L4)
+Defined in: [handleDisconnection.ts:4](https://github.com/story-squad/tricktionary-be/blob/96eb6db/src/sockets/handleDisconnection.ts#L4)
 
 ___
 
 ### removeFromLobby
 
-▸ **removeFromLobby**(`io`: *any*, `socket`: *any*, `lobbies`: *any*): *void*
+▸ **removeFromLobby**(`io`: *any*, `socket`: *any*, `lobbies`: *any*): *Promise*<void\>
 
 #### Parameters:
 
@@ -41,6 +41,6 @@ Name | Type |
 `socket` | *any* |
 `lobbies` | *any* |
 
-**Returns:** *void*
+**Returns:** *Promise*<void\>
 
-Defined in: [handleDisconnection.ts:39](https://github.com/story-squad/tricktionary-be/blob/fc5ef6b/src/sockets/handleDisconnection.ts#L39)
+Defined in: [handleDisconnection.ts:39](https://github.com/story-squad/tricktionary-be/blob/96eb6db/src/sockets/handleDisconnection.ts#L39)

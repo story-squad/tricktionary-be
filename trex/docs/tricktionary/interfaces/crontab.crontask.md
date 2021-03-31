@@ -38,7 +38,7 @@ a Tricktionary scheduled-task
 
 • **count**: *number*
 
-Defined in: [crontab.ts:26](https://github.com/story-squad/tricktionary-be/blob/fc5ef6b/src/sockets/crontab.ts#L26)
+Defined in: [crontab.ts:26](https://github.com/story-squad/tricktionary-be/blob/96eb6db/src/sockets/crontab.ts#L26)
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • **created**: *number*
 
-Defined in: [crontab.ts:27](https://github.com/story-squad/tricktionary-be/blob/fc5ef6b/src/sockets/crontab.ts#L27)
+Defined in: [crontab.ts:27](https://github.com/story-squad/tricktionary-be/blob/96eb6db/src/sockets/crontab.ts#L27)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 • **last**: *number*
 
-Defined in: [crontab.ts:28](https://github.com/story-squad/tricktionary-be/blob/fc5ef6b/src/sockets/crontab.ts#L28)
+Defined in: [crontab.ts:28](https://github.com/story-squad/tricktionary-be/blob/96eb6db/src/sockets/crontab.ts#L28)
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 • **limit**: *number*
 
-Defined in: [crontab.ts:25](https://github.com/story-squad/tricktionary-be/blob/fc5ef6b/src/sockets/crontab.ts#L25)
+Defined in: [crontab.ts:25](https://github.com/story-squad/tricktionary-be/blob/96eb6db/src/sockets/crontab.ts#L25)
 
 ___
 
@@ -70,7 +70,7 @@ ___
 
 • **lobbyCode**: *string*
 
-Defined in: [crontab.ts:24](https://github.com/story-squad/tricktionary-be/blob/fc5ef6b/src/sockets/crontab.ts#L24)
+Defined in: [crontab.ts:24](https://github.com/story-squad/tricktionary-be/blob/96eb6db/src/sockets/crontab.ts#L24)
 
 ___
 
@@ -78,7 +78,7 @@ ___
 
 • **name**: *string*
 
-Defined in: [crontab.ts:23](https://github.com/story-squad/tricktionary-be/blob/fc5ef6b/src/sockets/crontab.ts#L23)
+Defined in: [crontab.ts:23](https://github.com/story-squad/tricktionary-be/blob/96eb6db/src/sockets/crontab.ts#L23)
 
 ___
 
@@ -86,4 +86,4 @@ ___
 
 • **task**: *ScheduledTask*
 
-Defined in: [crontab.ts:29](https://github.com/story-squad/tricktionary-be/blob/fc5ef6b/src/sockets/crontab.ts#L29)
+Defined in: [crontab.ts:29](https://github.com/story-squad/tricktionary-be/blob/96eb6db/src/sockets/crontab.ts#L29)
