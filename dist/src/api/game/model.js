@@ -57,28 +57,6 @@ function latest(limit) {
         return { ok: true, games: result };
     });
 }
-function followTrail(player_id, top_definition_id, points) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const player = yield dbConfig_1.default("Player")
-            .select("name")
-            .where({ id: player_id })
-            .first();
-        const top_definition = yield dbConfig_1.default("definitions")
-            .where({ id: top_definition_id })
-            .first();
-        const round_id = top_definition.round_id;
-        return {
-            player: player_id,
-            name: player.name,
-            top_definition_id: top_definition.id,
-            top_definition_score: top_definition.score,
-            top_definition: top_definition.definition,
-            total_score: points,
-            // word: word.word,
-            // definition: word.definition,
-        };
-    });
-}
 function leaderBoard(game_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
