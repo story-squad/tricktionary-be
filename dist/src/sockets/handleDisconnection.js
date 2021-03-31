@@ -36,6 +36,8 @@ function removeFromLobby(io, socket, lobbies) {
         // remove socket.id from player list
         lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter((player) => player.id !== socket.id);
         socket.leave(socket.id);
+        // tell player they've been removed.
+        io.to(socket.id).emit('disconnect me');
     }
 }
 exports.removeFromLobby = removeFromLobby;
