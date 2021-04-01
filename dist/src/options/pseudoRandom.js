@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.matchWords = void 0;
 const randomatic_1 = __importDefault(require("randomatic"));
 const logger_1 = require("../logger");
 const unsavory_json_1 = __importDefault(require("./unsavory.json"));
@@ -12,6 +13,7 @@ function matchWords(subject, words) {
     const regex = new RegExp("\\b(?:" + escapeMetaStrings.join("|") + ")\\b", "gi");
     return subject.match(regex) || [];
 }
+exports.matchWords = matchWords;
 function pseudoRandomizer(p, l, options, testing) {
     const raw = testing ? "BECH" : randomatic_1.default(p, l, options);
     const filtered = matchWords(raw, unsavory_json_1.default);

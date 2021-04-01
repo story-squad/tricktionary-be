@@ -15,7 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const utils_1 = require("./utils");
 const uuid_1 = require("uuid");
-exports.default = { newPlayer, updatePlayer, getPlayer, findPlayer, bySocketID, getName };
+const pseudoRandom_1 = require("../../options/pseudoRandom");
+exports.default = { newPlayer, updatePlayer, getPlayer, findPlayer, bySocketID, getName, nameCheck };
 function newPlayer(user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         const uuId = uuid_1.v4();
@@ -64,6 +65,14 @@ function findPlayer(col_name, value) {
 function getName(player_id) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield dbConfig_1.default("Player").select("name").where({ id: player_id }).first();
+    });
+}
+function nameCheck(username, last_played) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const players = yield dbConfig_1.default("Player").where({ last_played });
+        const player_names = players.map((p) => p.name.toLowerCase());
+        const check = pseudoRandom_1.matchWords(username.toLowerCase(), player_names);
+        return check.length > 0;
     });
 }
 //# sourceMappingURL=model.js.map

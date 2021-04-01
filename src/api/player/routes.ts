@@ -26,7 +26,6 @@ router.get("/name/:id", async (req, res) => {
   res.status(200).json(result);
 });
 
-
 router.get("/last-user-id/:id", async (req, res) => {
   const user_id = req.params.id;
   log(`called /api/Player/last-user-id/${user_id}`);
@@ -50,4 +49,21 @@ router.put("/id/:id", async (req, res) => {
   }
   res.status(200).json({ player });
 });
+
+router.get("/namecheck/:username/:lobbycode", async (req, res) => {
+  const name = req.params.username;
+  const last_played = req.params.lobbycode;
+  const lc_limit: number = process.env.LC_LENGTH
+    ? Number(process.env.LC_LENGTH)
+    : 4;
+  if (!name || !last_played) {
+    return res.status(400).json({
+      error: `required: username ${name?.length > 0}, lobbycode ${
+        last_played?.length === lc_limit
+      }`,
+    });
+  }
+  return res.status(200).json(await Player.nameCheck(name, last_played));
+});
+
 export default router;
