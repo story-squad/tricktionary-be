@@ -26,4 +26,4 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleSubmitDefinition.ts:5](https://github.com/story-squad/tricktionary-be/blob/5e3f2bd/src/sockets/handleSubmitDefinition.ts#L5)
+Defined in: [handleSubmitDefinition.ts:5](https://github.com/story-squad/tricktionary-be/blob/0a7e440/src/sockets/handleSubmitDefinition.ts#L5)

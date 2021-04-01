@@ -62,5 +62,18 @@ router.put("/id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     res.status(200).json({ player });
 }));
+router.get("/namecheck/:username/:lobbycode", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const name = req.params.username;
+    const last_played = req.params.lobbycode;
+    const lc_limit = process.env.LC_LENGTH
+        ? Number(process.env.LC_LENGTH)
+        : 4;
+    if (!name || !last_played) {
+        return res.status(400).json({
+            error: `required: username ${(name === null || name === void 0 ? void 0 : name.length) > 0}, lobbycode ${(last_played === null || last_played === void 0 ? void 0 : last_played.length) === lc_limit}`,
+        });
+    }
+    return res.status(200).json(yield model_1.default.nameCheck(name, last_played));
+}));
 exports.default = router;
 //# sourceMappingURL=routes.js.map
