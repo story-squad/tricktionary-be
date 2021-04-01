@@ -17,5 +17,5 @@ const words = [
   };
 });
 exports.seed = function (knex) {
-  return knex("Words").insert(words);
+  return knex("words").insert(words);
 };

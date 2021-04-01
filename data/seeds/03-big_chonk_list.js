@@ -24,7 +24,7 @@ exports.seed = async function (knex) {
     total -= chunk.length;
     start += chunk.length;
     try {
-      await knex("Words").insert(chunk);
+      await knex("words").insert(chunk);
       inserts += 1;
     } catch (err) {
       // console.log(err)
