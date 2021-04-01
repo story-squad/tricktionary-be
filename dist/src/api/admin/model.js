@@ -42,7 +42,7 @@ function getRound(roundId) {
         // I get around (get around round round I get around)
         const round = yield dbConfig_1.default("Rounds").where({ id: roundId }).first();
         // From town to town (get around round round I get around)
-        const word = yield dbConfig_1.default("Words").where({ id: round.word_id }).first();
+        const word = yield dbConfig_1.default("words").where({ id: round.word_id }).first();
         // I'm a real cool head (get around round round I get around)
         // I'm makin' real good bread (get around round round I get around)
         const choices = yield dbConfig_1.default("host-choices")
@@ -62,7 +62,7 @@ function getRound(roundId) {
 function getWordDetails(word_id) {
     return __awaiter(this, void 0, void 0, function* () {
         //get word
-        const word = yield dbConfig_1.default("Words").where({ id: word_id });
+        const word = yield dbConfig_1.default("words").where({ id: word_id });
         //get rounds with word
         const rounds = yield dbConfig_1.default("Rounds").where({ word_id });
         //get definitions for each round

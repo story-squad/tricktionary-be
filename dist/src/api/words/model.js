@@ -15,29 +15,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dbConfig_1 = __importDefault(require("../../dbConfig"));
 exports.default = { getByName, getById, add, getUnmoderatedWord, getApprovedWords, update, getUnmoderatedWordIds, getApprovedWordIds };
 function getById(id) {
-    return dbConfig_1.default("Words").where({ id }).first();
+    return dbConfig_1.default("words").where({ id }).first();
 }
 function getByName(name) {
-    return dbConfig_1.default("Words").where({ word: name }).first();
+    return dbConfig_1.default("words").where({ word: name }).first();
 }
 function add(word) {
-    return dbConfig_1.default("Words").insert(word).returning("id");
+    return dbConfig_1.default("words").insert(word).returning("id");
 }
 function getUnmoderatedWord() {
-    return dbConfig_1.default("Words").where({ moderated: false }).first();
+    return dbConfig_1.default("words").where({ moderated: false }).first();
 }
 function getApprovedWords() {
-    return dbConfig_1.default("Words").where({ moderated: true, approved: true });
+    return dbConfig_1.default("words").where({ moderated: true, approved: true });
 }
 function getApprovedWordIds() {
-    return dbConfig_1.default("Words").select("id").where({ moderated: true, approved: true });
+    return dbConfig_1.default("words").select("id").where({ moderated: true, approved: true });
 }
 function getUnmoderatedWordIds() {
-    return dbConfig_1.default("Words").select("id").where({ moderated: false, approved: false });
+    return dbConfig_1.default("words").select("id").where({ moderated: false, approved: false });
 }
 function update(id, changes) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield dbConfig_1.default("Words")
+        yield dbConfig_1.default("words")
             .where({ id })
             .update(changes);
         return getById(id);
