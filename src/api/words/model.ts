@@ -3,35 +3,35 @@ import db from "../../dbConfig";
 export default { getByName, getById, add, getUnmoderatedWord, getApprovedWords, update, getUnmoderatedWordIds, getApprovedWordIds };
 
 function getById(id: number) {
-  return db("Words").where({ id }).first();
+  return db("words").where({ id }).first();
 }
 
 function getByName(name: string) {
-  return db("Words").where({ word:name }).first();
+  return db("words").where({ word:name }).first();
 }
 
 function add(word: object) {
-  return db("Words").insert(word).returning("id");
+  return db("words").insert(word).returning("id");
 }
 
 function getUnmoderatedWord() {
-  return db("Words").where({ moderated: false }).first();
+  return db("words").where({ moderated: false }).first();
 }
 
 function getApprovedWords() {
-  return db("Words").where({ moderated: true, approved: true });
+  return db("words").where({ moderated: true, approved: true });
 }
 
 function getApprovedWordIds() {
-  return db("Words").select("id").where({ moderated: true, approved: true })
+  return db("words").select("id").where({ moderated: true, approved: true })
 }
 
 function getUnmoderatedWordIds() {
-  return db("Words").select("id").where({ moderated: false, approved: false })
+  return db("words").select("id").where({ moderated: false, approved: false })
 }
 
 async function update(id: number, changes: object) {
-  await db("Words")
+  await db("words")
     .where({ id })
     .update(changes);
   return getById(id);

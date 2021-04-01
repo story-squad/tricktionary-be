@@ -30,7 +30,7 @@ async function getRound(roundId: number) {
   // I get around (get around round round I get around)
   const round: any = await db("Rounds").where({ id: roundId }).first();
   // From town to town (get around round round I get around)
-  const word: any = await db("Words").where({ id: round.word_id }).first();
+  const word: any = await db("words").where({ id: round.word_id }).first();
   // I'm a real cool head (get around round round I get around)
   // I'm makin' real good bread (get around round round I get around)
   const choices: any = await db("host-choices")
@@ -49,7 +49,7 @@ async function getRound(roundId: number) {
 
 async function getWordDetails(word_id: number) {
   //get word
-  const word: any = await db("Words").where({ id: word_id });
+  const word: any = await db("words").where({ id: word_id });
   //get rounds with word
   const rounds: Array<any> = await db("Rounds").where({ word_id });
   //get definitions for each round
