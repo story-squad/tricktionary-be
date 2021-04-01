@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.removeFromLobby = void 0;
 const common_1 = require("./common");
@@ -31,14 +40,17 @@ function handleDisconnection(io, socket, lobbies) {
 }
 exports.default = handleDisconnection;
 function removeFromLobby(io, socket, lobbies) {
-    const lobbyCode = common_1.whereAmI(socket);
-    if (lobbyCode) {
-        // remove socket.id from player list
-        lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter((player) => player.id !== socket.id);
-        socket.leave(socket.id);
-        // tell player they've been removed.
-        io.to(socket.id).emit('disconnect me');
-    }
+    return __awaiter(this, void 0, void 0, function* () {
+        const lobbyCode = common_1.whereAmI(socket);
+        if (lobbyCode) {
+            // remove socket.id from player list
+            lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter((player) => player.id !== socket.id);
+            // tell player they've been removed.
+            yield io.to(socket.id).emit("disconnect me");
+            yield socket.leave(lobbyCode);
+            io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
+        }
+    });
 }
 exports.removeFromLobby = removeFromLobby;
 //# sourceMappingURL=handleDisconnection.js.map
