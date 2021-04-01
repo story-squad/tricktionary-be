@@ -4,8 +4,8 @@ import { newToken, b64, partialRecall } from "./utils";
 import Player from "../player/model";
 const router = Router();
 
-const limitFromEnv:number = Number(process.env.USERNAME_CHARACTER_LIMIT)
-const usernameCharLimit:number = limitFromEnv > 0 ? limitFromEnv : 12;
+const limitFromEnv: number = Number(process.env.USERNAME_CHARACTER_LIMIT);
+const usernameCharLimit: number = limitFromEnv > 0 ? limitFromEnv : 12;
 
 router.post("/recall", (req, res) => {
   const { token } = req.body;
@@ -57,17 +57,21 @@ router.post("/new-player", async (req, res) => {
   }
   const pid: string = String(created.player_id);
   let token: any;
+  let tokenError: any;
   try {
     token = await newToken(last_user_id, pid, undefined, undefined);
   } catch (err) {
-    return res.status(token?.status || 400).json(token || err);
+    tokenError = err;
   }
+  return res.status(token?.status || 400).json(token || tokenError);
 });
 
 router.post("/update-token", async (req, res) => {
   const { s_id, p_id, name, definition, points, lobbyCode } = req.body;
   if (name.lenth > usernameCharLimit) {
-    return res.status(400).json({ message: "exceeded username character limit" });
+    return res
+      .status(400)
+      .json({ message: "exceeded username character limit" });
   }
   const extra = b64.encode(JSON.stringify({ name, definition, points }));
   try {
