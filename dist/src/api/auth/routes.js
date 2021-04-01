@@ -69,17 +69,21 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
     const pid = String(created.player_id);
     let token;
+    let tokenError;
     try {
         token = yield utils_1.newToken(last_user_id, pid, undefined, undefined);
     }
     catch (err) {
-        return res.status((token === null || token === void 0 ? void 0 : token.status) || 400).json(token || err);
+        tokenError = err;
     }
+    return res.status((token === null || token === void 0 ? void 0 : token.status) || 400).json(token || tokenError);
 }));
 router.post("/update-token", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { s_id, p_id, name, definition, points, lobbyCode } = req.body;
     if (name.lenth > usernameCharLimit) {
-        return res.status(400).json({ message: "exceeded username character limit" });
+        return res
+            .status(400)
+            .json({ message: "exceeded username character limit" });
     }
     const extra = utils_1.b64.encode(JSON.stringify({ name, definition, points }));
     try {
