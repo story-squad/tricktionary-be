@@ -3,7 +3,7 @@ import randomizer from "randomatic";
 import {log} from "../logger";
 import unsavory from "./unsavory.json";
 
-function matchWords(subject: string, words: any[]) {
+export function matchWords(subject: string, words: any[]) {
   const regexMetachars = /[(){[*+?.\\^$|]/g;
   const escapeMetaStrings = words.map((w: string) =>
     w.replace(regexMetachars, "\\$&")
