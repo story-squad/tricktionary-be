@@ -1,8 +1,10 @@
 import db from "../../dbConfig";
 import { validatePlayerType } from "./utils";
 import { v4 } from "uuid";
+import { matchWords } from "../../options/pseudoRandom";
 
-export default { newPlayer, updatePlayer, getPlayer, findPlayer, bySocketID, getName };
+
+export default { newPlayer, updatePlayer, getPlayer, findPlayer, bySocketID, getName, nameCheck };
 
 async function newPlayer(user_id: string) {
   const uuId = v4();
@@ -45,3 +47,11 @@ async function getName(player_id: string) {
   return await db("Player").select("name").where({ id: player_id }).first();
 }
 
+async function nameCheck(username:string, last_played: string) {
+  const players = await db("Player").where({ last_played });
+  const player_names = players.map((p:any) => p.name.toLowerCase());
+  const check = matchWords(username.toLowerCase(), player_names);
+  console.log("Player Names", player_names)
+  console.log("check", check);
+  return check.length > 0;
+}
