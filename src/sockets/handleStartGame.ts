@@ -58,16 +58,18 @@ async function handleStartGame(
   if (newRound.ok && newRound.result?.status === 201) {
     lobbies = newRound.lobbies;
     // update the host token
-    try {
-      await localAxios.post("/api/choice", {
-        ...hostChoice,
-        round_id: newRound.roundId,
-      });
-    } catch (err) {
-      log("error recording the host's choices");
-      log(err.message);
-      handleErrorMessage(io, socket, 2006, defaultError);
-      return;
+    if (hostChoice.word_id_one > 0 && hostChoice.word_id_two > 0) {
+      try {
+        await localAxios.post("/api/choice", {
+          ...hostChoice,
+          round_id: newRound.roundId,
+        });
+      } catch (err) {
+        log("error recording the host's choices");
+        log(err.message);
+        handleErrorMessage(io, socket, 2006, defaultError);
+        return;
+      }
     }
     // pub-sub update
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);

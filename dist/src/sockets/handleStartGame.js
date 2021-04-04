@@ -53,14 +53,16 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice) {
         if (newRound.ok && ((_a = newRound.result) === null || _a === void 0 ? void 0 : _a.status) === 201) {
             lobbies = newRound.lobbies;
             // update the host token
-            try {
-                yield common_1.localAxios.post("/api/choice", Object.assign(Object.assign({}, hostChoice), { round_id: newRound.roundId }));
-            }
-            catch (err) {
-                logger_1.log("error recording the host's choices");
-                logger_1.log(err.message);
-                handleErrorMessage_1.default(io, socket, 2006, defaultError);
-                return;
+            if (hostChoice.word_id_one > 0 && hostChoice.word_id_two > 0) {
+                try {
+                    yield common_1.localAxios.post("/api/choice", Object.assign(Object.assign({}, hostChoice), { round_id: newRound.roundId }));
+                }
+                catch (err) {
+                    logger_1.log("error recording the host's choices");
+                    logger_1.log(err.message);
+                    handleErrorMessage_1.default(io, socket, 2006, defaultError);
+                    return;
+                }
             }
             // pub-sub update
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
