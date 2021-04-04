@@ -25,7 +25,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [handleDisconnection.ts:4](https://github.com/story-squad/tricktionary-be/blob/bee02e0/src/sockets/handleDisconnection.ts#L4)
+Defined in: [handleDisconnection.ts:4](https://github.com/story-squad/tricktionary-be/blob/3b25fed3/src/sockets/handleDisconnection.ts#L4)
 
 ___
 
@@ -43,4 +43,4 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleDisconnection.ts:39](https://github.com/story-squad/tricktionary-be/blob/bee02e0/src/sockets/handleDisconnection.ts#L39)
+Defined in: [handleDisconnection.ts:39](https://github.com/story-squad/tricktionary-be/blob/3b25fed3/src/sockets/handleDisconnection.ts#L39)
