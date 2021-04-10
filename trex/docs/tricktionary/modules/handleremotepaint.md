@@ -27,4 +27,4 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleRemotePaint.ts:13](https://github.com/story-squad/tricktionary-be/blob/3b25fed3/src/sockets/handleRemotePaint.ts#L13)
+Defined in: [handleRemotePaint.ts:13](https://github.com/story-squad/tricktionary-be/blob/0b1420e/src/sockets/handleRemotePaint.ts#L13)
