@@ -134,7 +134,7 @@ router.put("/def/:player_id", async (req, res) => {
   }
 });
 
-router.get("/latest/:game_id", async (req, res) => {
+router.post("/latest/:game_id", async (req, res) => {
   const game_id: string = req.params.game_id;
   if (!game_id) {
     return res.json({ ok: false });
@@ -156,10 +156,10 @@ router.get("/latest/:game_id", async (req, res) => {
   leaderboard.latest.forEach(async (scoreCard: any) => {
     const { player_id, points, top_definition_id } = scoreCard;
     log(`looking up top definition for player ${player_id}`);
-    const checkTop = await findTopDefinition(player_id, game_id); // sorts
+    const checkTop = await findTopDefinition(player_id, game_id); // sort
     const latest_top_def = checkTop.ok && checkTop?.top_definition?.id;
     if (latest_top_def && top_definition_id !== latest_top_def) {
-      log("top definition changed... updating score-card");
+      log("top definition changed... updating score-card"); // update
       await updateDefinition(player_id, game_id, latest_top_def);
       countdown -= 1;
       latestScore = [
