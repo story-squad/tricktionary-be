@@ -42,12 +42,16 @@ async function handleSetFinale(
   }
   const game_id = lobbies[lobbyCode].game_id;
   let results: any;
-  // get points from the scoreCard
-  const checkScores = await localAxios.get(`/api/score/latest/${game_id}`);
-  // sort by total game points.
-  const checkPoints = checkScores.data
-    .sort((a: any, b: any) => b.points - a.points)
-    .filter((c: any) => c.top_definition_id); // only players who have submitted definitions
+  let checkPoints: any;
+  try {
+    const postScores = await localAxios.post(`/api/score/latest/${game_id}`);
+    // sort by total game points.
+    checkPoints = postScores.data
+      .sort((a: any, b: any) => b.points - a.points)
+      .filter((c: any) => c.top_definition_id); // only players who have submitted definitions
+  } catch (err) {
+    log("error posting scores");
+  }
   // cast point values into a set
   const values = new Set(checkPoints.map((v: any) => v.points));
   if (values.size === checkPoints.length) {
@@ -59,7 +63,6 @@ async function handleSetFinale(
       .sort(function (a: any, b: any) {
         return b.points - a.points;
       });
-
     results = await doIt(
       game_id,
       naturalTopThree[0],
@@ -69,10 +72,39 @@ async function handleSetFinale(
   } else {
     results = await tieBreakerMatch(checkPoints, game_id, lobbies, lobbyCode);
   }
-  // add results to game-data & change phase
+  let data: [any];
+  let topThree: [any];
+  let n = 0;
+  try {
+    // finally, get the updated leaderboard for this game.
+    const leaderBoard = await localAxios.get(
+      `/api/game/leaderboard/${game_id}`
+    );
+    data = leaderBoard?.data;
+    // merge current user with leaderboard data
+    topThree = results.map((r: any) => {
+      const cu = lobbies[lobbyCode].players.filter(
+        (p: any) => p.id === r.user_id
+      )[0];
+      const lb =
+        data.filter((player: any) => player.player_id === cu.pid)[0] || undefined;
+      log(`[${game_id}] ${n+1}${['st', 'nd', 'rd'][n]} place -> ${cu.username}`);
+      n++;
+      return {
+        user_id: r.user_id,
+        definition: lb?.top_definition || r.definition,
+        word: lb?.word || r.word,
+      };
+    });
+  } catch (err) {
+    log(err);
+    // if we have a problem with the leaderboard endpoint, log it and return the current results
+    topThree = results;
+  }
+  // add topThree to game-data & change phase
   lobbies[lobbyCode] = {
     ...lobbies[lobbyCode],
-    topThree: results,
+    topThree,
     phase: "FINALE",
   };
   // update players

@@ -40,12 +40,17 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
         }
         const game_id = lobbies[lobbyCode].game_id;
         let results;
-        // get points from the scoreCard
-        const checkScores = yield common_1.localAxios.get(`/api/score/latest/${game_id}`);
-        // sort by total game points.
-        const checkPoints = checkScores.data
-            .sort((a, b) => b.points - a.points)
-            .filter((c) => c.top_definition_id); // only players who have submitted definitions
+        let checkPoints;
+        try {
+            const postScores = yield common_1.localAxios.post(`/api/score/latest/${game_id}`);
+            // sort by total game points.
+            checkPoints = postScores.data
+                .sort((a, b) => b.points - a.points)
+                .filter((c) => c.top_definition_id); // only players who have submitted definitions
+        }
+        catch (err) {
+            logger_1.log("error posting scores");
+        }
         // cast point values into a set
         const values = new Set(checkPoints.map((v) => v.points));
         if (values.size === checkPoints.length) {
@@ -62,8 +67,33 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
         else {
             results = yield common_1.tieBreakerMatch(checkPoints, game_id, lobbies, lobbyCode);
         }
-        // add results to game-data & change phase
-        lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { topThree: results, phase: "FINALE" });
+        let data;
+        let topThree;
+        let n = 0;
+        try {
+            // finally, get the updated leaderboard for this game.
+            const leaderBoard = yield common_1.localAxios.get(`/api/game/leaderboard/${game_id}`);
+            data = leaderBoard === null || leaderBoard === void 0 ? void 0 : leaderBoard.data;
+            // merge current user with leaderboard data
+            topThree = results.map((r) => {
+                const cu = lobbies[lobbyCode].players.filter((p) => p.id === r.user_id)[0];
+                const lb = data.filter((player) => player.player_id === cu.pid)[0] || undefined;
+                logger_1.log(`[${game_id}] ${n + 1}${['st', 'nd', 'rd'][n]} place -> ${cu.username}`);
+                n++;
+                return {
+                    user_id: r.user_id,
+                    definition: (lb === null || lb === void 0 ? void 0 : lb.top_definition) || r.definition,
+                    word: (lb === null || lb === void 0 ? void 0 : lb.word) || r.word,
+                };
+            });
+        }
+        catch (err) {
+            logger_1.log(err);
+            // if we have a problem with the leaderboard endpoint, log it and return the current results
+            topThree = results;
+        }
+        // add topThree to game-data & change phase
+        lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { topThree, phase: "FINALE" });
         // update players
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode], results);
     });

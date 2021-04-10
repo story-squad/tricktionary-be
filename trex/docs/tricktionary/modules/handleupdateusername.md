@@ -25,4 +25,4 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [handleUpdateUsername.ts:4](https://github.com/story-squad/tricktionary-be/blob/3b25fed3/src/sockets/handleUpdateUsername.ts#L4)
+Defined in: [handleUpdateUsername.ts:4](https://github.com/story-squad/tricktionary-be/blob/0b1420e/src/sockets/handleUpdateUsername.ts#L4)
