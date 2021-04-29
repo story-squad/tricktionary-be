@@ -595,9 +595,9 @@
       "integrity": "sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A=="
     },
     "docusaurus-plugin-typedoc": {
-      "version": "0.11.0",
-      "resolved": "https://registry.npmjs.org/docusaurus-plugin-typedoc/-/docusaurus-plugin-typedoc-0.11.0.tgz",
-      "integrity": "sha512-U4FESmxZNkXXmUlLHiSU5GGzz+DCJsnFauI5puYL22KMTy4CLE6i1kNOpwmHtmfO2XMkAXe3R7YHossOgP0FFg==",
+      "version": "0.13.0",
+      "resolved": "https://registry.npmjs.org/docusaurus-plugin-typedoc/-/docusaurus-plugin-typedoc-0.13.0.tgz",
+      "integrity": "sha512-/MOsnyYsnYqPxJ1sJEuSKRXJwkZcE6PsA/LelmB59zyC1x9eqVgnDqcxYHxqjapaZpWMKqFg+DhI3Bb10LiDMw==",
       "dev": true
     },
     "dotenv": {
