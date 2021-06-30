@@ -1895,9 +1895,9 @@
       }
     },
     "stripe": {
-      "version": "8.138.0",
-      "resolved": "https://registry.npmjs.org/stripe/-/stripe-8.138.0.tgz",
-      "integrity": "sha512-Cr+jzcacXOlL1Wrd7xxcE9nk9OBF0l73Z/oCAlBHXldtRr2FRflg/2h4g4Na3LTlcLRYtx+jnKs64/WPOqmpsA==",
+      "version": "8.158.0",
+      "resolved": "https://registry.npmjs.org/stripe/-/stripe-8.158.0.tgz",
+      "integrity": "sha512-N4pmDPYsufjLmCKmNBjCOm3H3CUpB0s5mOXIa1MAb1u133zaG/HcHvJB05tvr3NZa420KoCfmHAaSkH3AWxG9A==",
       "requires": {
         "@types/node": ">=8.1.0",
         "qs": "^6.6.0"
