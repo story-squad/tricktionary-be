@@ -777,14 +777,6 @@
         "source-map": "^0.6.1",
         "uglify-js": "^3.1.4",
         "wordwrap": "^1.0.0"
-      },
-      "dependencies": {
-        "source-map": {
-          "version": "0.6.1",
-          "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
-          "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==",
-          "dev": true
-        }
       }
     },
     "has": {
@@ -1762,6 +1754,12 @@
         }
       }
     },
+    "source-map": {
+      "version": "0.6.1",
+      "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz",
+      "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==",
+      "dev": true
+    },
     "source-map-support": {
       "version": "0.5.19",
       "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.19.tgz",
@@ -1948,12 +1946,12 @@
       }
     },
     "typedoc-plugin-markdown": {
-      "version": "3.6.0",
-      "resolved": "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-3.6.0.tgz",
-      "integrity": "sha512-fg4xby3awJVVxB8TdhHNsZQfiTC5x1XmauVwhKXc6hGeu1bzTnqrkmDT8NCjxfUgw64si8cUX1jBfBjAHthWpQ==",
+      "version": "3.11.3",
+      "resolved": "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-3.11.3.tgz",
+      "integrity": "sha512-rWiHbEIe0oZetDIsBR24XJVxGOJ91kDcHoj2KhFKxCLoJGX659EKBQkHne9QJ4W2stGhu1fRgFyQaouSBnxukA==",
       "dev": true,
       "requires": {
-        "handlebars": "^4.7.6"
+        "handlebars": "^4.7.7"
       }
     },
     "typescript": {
@@ -1963,9 +1961,9 @@
       "dev": true
     },
     "uglify-js": {
-      "version": "3.12.8",
-      "resolved": "https://registry.npmjs.org/uglify-js/-/uglify-js-3.12.8.tgz",
-      "integrity": "sha512-fvBeuXOsvqjecUtF/l1dwsrrf5y2BCUk9AOJGzGcm6tE7vegku5u/YvqjyDaAGr422PLoLnrxg3EnRvTqsdC1w==",
+      "version": "3.14.3",
+      "resolved": "https://registry.npmjs.org/uglify-js/-/uglify-js-3.14.3.tgz",
+      "integrity": "sha512-mic3aOdiq01DuSVx0TseaEzMIVqebMZ0Z3vaeDhFEh9bsc24hV1TFvN74reA2vs08D0ZWfNjAcJ3UbVLaBss+g==",
       "dev": true,
       "optional": true
     },
