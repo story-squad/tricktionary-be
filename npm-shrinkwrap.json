@@ -575,9 +575,9 @@
       "integrity": "sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A=="
     },
     "docusaurus-plugin-typedoc": {
-      "version": "0.11.0",
-      "resolved": "https://registry.npmjs.org/docusaurus-plugin-typedoc/-/docusaurus-plugin-typedoc-0.11.0.tgz",
-      "integrity": "sha512-U4FESmxZNkXXmUlLHiSU5GGzz+DCJsnFauI5puYL22KMTy4CLE6i1kNOpwmHtmfO2XMkAXe3R7YHossOgP0FFg==",
+      "version": "0.16.3",
+      "resolved": "https://registry.npmjs.org/docusaurus-plugin-typedoc/-/docusaurus-plugin-typedoc-0.16.3.tgz",
+      "integrity": "sha512-feVKPyAcH98KuZ3wtrVkEnutEUo3zbKvVB/9crbo4W9CjZ0QczSdBtKWuasHWuPxWbThZ6gbBZp/5oeFnSVWbg==",
       "dev": true
     },
     "dotenv": {
@@ -2022,9 +2022,9 @@
       }
     },
     "typescript": {
-      "version": "4.2.3",
-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.2.3.tgz",
-      "integrity": "sha512-qOcYwxaByStAWrBf4x0fibwZvMRG+r4cQoTjbPtUlrWjBHbmCAww1i448U0GJ+3cNNEtebDteo/cHOR3xJ4wEw==",
+      "version": "4.4.4",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.4.4.tgz",
+      "integrity": "sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==",
       "dev": true
     },
     "uglify-js": {
