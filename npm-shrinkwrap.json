@@ -195,9 +195,9 @@
       "integrity": "sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw=="
     },
     "@types/node": {
-      "version": "14.14.35",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-14.14.35.tgz",
-      "integrity": "sha512-Lt+wj8NVPx0zUmUwumiVXapmaLUcAk3yPuHCFVXras9k5VT9TdhJqKqGVUQCD60OTMCl0qxJ57OiTL0Mic3Iag=="
+      "version": "16.11.8",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.8.tgz",
+      "integrity": "sha512-hmT5gfpRkkHr7DZZHMf3jBe/zNcVGN+jXSL2f8nAsYfBPxQFToKwQlS/zES4Sjp488Bi73i+p6bvrNRRGU0x9Q=="
     },
     "@types/node-cron": {
       "version": "2.0.3",
