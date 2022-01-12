@@ -20,9 +20,9 @@ const logger_1 = require("../logger");
  */
 function handleEmojiSmash(io, socket, lobbies, definitionId, reactionId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const lobbyCode = common_1.whereAmI(socket) || "";
+        const lobbyCode = (0, common_1.whereAmI)(socket) || "";
         if (!lobbyCode.length) {
-            logger_1.log(`could not find a lobbyCode for socket with id ${socket.id}`);
+            (0, logger_1.log)(`could not find a lobbyCode for socket with id ${socket.id}`);
             return;
         }
         const game_id = lobbies[lobbyCode].game_id;
@@ -35,12 +35,12 @@ function handleEmojiSmash(io, socket, lobbies, definitionId, reactionId) {
                 reactionId,
             });
             const { value } = data || 0;
-            logger_1.log(`Definition ${definitionId}, Reaction ${reactionId} : ${value}`);
+            (0, logger_1.log)(`Definition ${definitionId}, Reaction ${reactionId} : ${value}`);
             // send back result
             io.to(lobbyCode).emit("get reaction", definitionId, reactionId, value);
         }
         catch (err) {
-            logger_1.log(`[!ERROR] handleEmojiSmash -> Definition ${definitionId}, Reaction ${reactionId}`);
+            (0, logger_1.log)(`[!ERROR] handleEmojiSmash -> Definition ${definitionId}, Reaction ${reactionId}`);
         }
     });
 }

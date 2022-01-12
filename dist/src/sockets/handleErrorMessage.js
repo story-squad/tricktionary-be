@@ -22,8 +22,9 @@ function handleErrorMessage(io, socket, code, error) {
             io.to(socket.id).emit("error", code, error);
         }
         catch (err) {
-            logger_1.log('catch (handleErrorMessage)');
-            logger_1.log(err.message);
+            (0, logger_1.log)("catch (handleErrorMessage)");
+            if (err instanceof Error)
+                (0, logger_1.log)(err.message);
         }
     });
 }

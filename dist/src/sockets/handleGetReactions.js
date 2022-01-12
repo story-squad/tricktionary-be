@@ -13,9 +13,9 @@ const common_1 = require("./common");
 const logger_1 = require("../logger");
 function getReactions(io, socket, lobbies) {
     return __awaiter(this, void 0, void 0, function* () {
-        const lobbyCode = common_1.whereAmI(socket) || "";
+        const lobbyCode = (0, common_1.whereAmI)(socket) || "";
         if (!lobbyCode.length) {
-            logger_1.log(`could not find a lobbyCode for socket with id ${socket.id}`);
+            (0, logger_1.log)(`could not find a lobbyCode for socket with id ${socket.id}`);
             return;
         }
         const game_id = lobbies[lobbyCode].game_id;
@@ -25,7 +25,9 @@ function getReactions(io, socket, lobbies) {
             io.to(socket.id).emit("get reactions", data);
         }
         catch (err) {
-            logger_1.log(err.message);
+            if (err instanceof Error) {
+                (0, logger_1.log)(err.message);
+            }
             io.to(socket.id).emit("get reactions", []);
         }
     });

@@ -31,7 +31,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.gameExists = exports.tieBreakerMatch = exports.doIt = exports.getDef = exports.updatePlayerToken = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.localAxios = exports.LC_LENGTH = exports.VALUE_OF_TRUTH = exports.VALUE_OF_BLUFF = exports.MAX_PLAYERS = void 0;
+exports.gameExists = exports.getCurrentPlayerScoreIndex = exports.getCurrentRoundIndex = exports.tieBreakerMatch = exports.doIt = exports.getDef = exports.updatePlayerToken = exports.whereAmI = exports.b64 = exports.startNewRound = exports.wordFromID = exports.contributeWord = exports.checkSettings = exports.sendToHost = exports.playerIdWasHost = exports.playerIsHost = exports.privateMessage = exports.localAxios = exports.LC_LENGTH = exports.VALUE_OF_TRUTH = exports.VALUE_OF_BLUFF = exports.MAX_PLAYERS = void 0;
 const GameSettings_1 = require("../GameSettings");
 const logger_1 = require("../logger");
 const axios_1 = __importDefault(require("axios"));
@@ -59,7 +59,7 @@ exports.LC_LENGTH = LC_LENGTH;
  */
 const VALUE_OF_TRUTH = process.env.VALUE_OF_TRUTH
     ? Number(process.env.VALUE_OF_TRUTH)
-    : 2;
+    : 1;
 exports.VALUE_OF_TRUTH = VALUE_OF_TRUTH;
 /**
  * POINTS AWARDED when others choose your definition
@@ -83,12 +83,29 @@ function getDef(user_id, definitionId) {
             return result;
         }
         catch (err) {
-            logger_1.log(err.message);
+            if (err instanceof Error)
+                (0, logger_1.log)(err.message);
             return;
         }
     });
 }
 exports.getDef = getDef;
+function getCurrentRoundIndex(lobbies, lobbyCode) {
+    // Get the current round
+    const currentRound = lobbies[lobbyCode].rounds.length;
+    // Get the index of the round
+    const curRoundIndex = lobbies[lobbyCode].rounds.findIndex((x) => x.roundNum === String(currentRound));
+    return curRoundIndex;
+}
+exports.getCurrentRoundIndex = getCurrentRoundIndex;
+function getCurrentPlayerScoreIndex(lobbies, lobbyCode, playerId) {
+    // Get the index of the round
+    const curRoundIndex = getCurrentRoundIndex(lobbies, lobbyCode);
+    // Get the index of the round
+    const curPlayerScoreIndex = lobbies[lobbyCode].rounds[curRoundIndex].scores.findIndex((x) => x.playerId === playerId);
+    return curPlayerScoreIndex;
+}
+exports.getCurrentPlayerScoreIndex = getCurrentPlayerScoreIndex;
 /**
  * send message to socket.id
  *
@@ -106,10 +123,10 @@ function privateMessage(io, socket, listener, message) {
         try {
             const pid = socket.id;
             io.to(pid).emit(listener, message); // private message player
-            logger_1.log(`${listener} message -> ${socket.id}`);
+            (0, logger_1.log)(`${listener} message -> ${socket.id}`);
         }
         catch (err) {
-            logger_1.log(`${listener}: ${message}`);
+            (0, logger_1.log)(`${listener}: ${message}`);
         }
     });
 }
@@ -152,11 +169,13 @@ exports.playerIdWasHost = playerIdWasHost;
 function checkSettings(settings) {
     let lobbySettings;
     try {
-        lobbySettings = GameSettings_1.GameSettings(settings);
+        lobbySettings = (0, GameSettings_1.GameSettings)(settings);
     }
     catch (err) {
-        logger_1.log("settings error");
-        return { ok: false, message: err.message, settings };
+        (0, logger_1.log)("settings error");
+        if (err instanceof Error)
+            return { ok: false, message: err.message, settings };
+        return { ok: false };
     }
     if (!lobbySettings.ok) {
         return { ok: false, message: lobbySettings.message, settings };
@@ -166,7 +185,7 @@ function checkSettings(settings) {
 exports.checkSettings = checkSettings;
 function contributeWord(word, definition, source) {
     return __awaiter(this, void 0, void 0, function* () {
-        logger_1.log("new word!");
+        (0, logger_1.log)("new word!");
         let newWord = { word, definition, source, id: 0 };
         // write word to user-word db table.
         try {
@@ -181,8 +200,8 @@ function contributeWord(word, definition, source) {
             }
         }
         catch (err) {
-            logger_1.log("error contributing.");
-            logger_1.log(err);
+            (0, logger_1.log)("error contributing.");
+            (0, logger_1.log)(err);
         }
         return newWord;
     });
@@ -212,26 +231,26 @@ function checkScores(lobbyCode, lobbies) {
         const players = (_a = lobbies[lobbyCode]) === null || _a === void 0 ? void 0 : _a.players;
         const game_id = lobbies[lobbyCode].game_id;
         if (!players) {
-            logger_1.log(`[!ERROR] no players in ${lobbyCode}`);
+            (0, logger_1.log)(`[!ERROR] no players in ${lobbyCode}`);
             return { ok: false, error: `invalid lobby @ ${lobbyCode}` };
         }
         // add host to list
-        logger_1.log(`updating score-cards for players in ${lobbyCode}`);
+        (0, logger_1.log)(`updating score-cards for players in ${lobbyCode}`);
         return yield [...players, {}].forEach((playerObj) => __awaiter(this, void 0, void 0, function* () {
             var _b;
             const { username, pid } = playerObj;
             const pathname = `/api/score/player/${pid}/game/${game_id}`;
             let score = yield localAxios.get(pathname);
             if (!score.data.id) {
-                logger_1.log(`creating score card for ${username}`);
+                (0, logger_1.log)(`creating score card for ${username}`);
                 score = yield localAxios.post("/api/score/new", {
                     game_id,
                     player_id: pid,
                 });
-                logger_1.log(`created score card ${(_b = score.data) === null || _b === void 0 ? void 0 : _b.id} for ${username}`);
+                (0, logger_1.log)(`created score card ${(_b = score.data) === null || _b === void 0 ? void 0 : _b.id} for ${username}`);
             }
             else {
-                logger_1.log(`found score card ${score.data.id}, for ${username}`);
+                (0, logger_1.log)(`found score card ${score.data.id}, for ${username}`);
                 // todo
             }
         }));
@@ -246,17 +265,17 @@ function startNewRound(host, word, lobbies, lobbyCode, lobbySettings) {
         // make sure every player has a score-card for this game.
         yield checkScores(lobbyCode, lobbies);
         try {
-            logger_1.log("starting a new round...");
+            (0, logger_1.log)("starting a new round...");
             newRound = yield localAxios.post("/api/round/start", {
                 lobby: lobbies[lobbyCode],
                 wordId: word.id,
                 lobbyCode,
             });
             roundId = newRound.data.roundId;
-            logger_1.log("ROUND ID: " + roundId);
+            (0, logger_1.log)("ROUND ID: " + roundId);
         }
         catch (err) {
-            logger_1.log("error trying to start new round!");
+            (0, logger_1.log)("error trying to start new round!");
             return { ok: false, message: err.message };
         }
         const roundSettings = {
@@ -354,12 +373,12 @@ function updatePlayerToken(io, socket, p_id, name, definition, points, lobbyCode
                 });
             }
             else {
-                logger_1.log(data.message);
+                (0, logger_1.log)(data.message);
                 return data;
             }
         }
         catch (err) {
-            logger_1.log(err.message);
+            (0, logger_1.log)(err.message);
             return { ok: false, message: err.message };
         }
         return { ok: true, token };
@@ -376,8 +395,8 @@ function doIt(game_id, firstPlace, secondPlace, thirdPlace) {
             r = [Object.assign({}, firstPlaceResult)];
         }
         catch (err) {
-            logger_1.log("error getting 1st place");
-            logger_1.log(err.message);
+            (0, logger_1.log)("error getting 1st place");
+            (0, logger_1.log)(err.message);
         }
         if (secondPlace) {
             try {
@@ -385,8 +404,8 @@ function doIt(game_id, firstPlace, secondPlace, thirdPlace) {
                 r = [...r, Object.assign({}, secondPlaceResult)];
             }
             catch (err) {
-                logger_1.log("error getting second place");
-                logger_1.log(err.message);
+                (0, logger_1.log)("error getting second place");
+                (0, logger_1.log)(err.message);
             }
         }
         if (thirdPlace) {
@@ -395,8 +414,8 @@ function doIt(game_id, firstPlace, secondPlace, thirdPlace) {
                 r = [...r, Object.assign({}, thirdPlaceResult)];
             }
             catch (err) {
-                logger_1.log("error getting third place");
-                logger_1.log(err.message);
+                (0, logger_1.log)("error getting third place");
+                (0, logger_1.log)(err.message);
             }
         }
         return r;
@@ -406,7 +425,7 @@ exports.doIt = doIt;
 function tieBreakerMatch(checkPoints, game_id, lobbies, lobbyCode) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
-        logger_1.log("tie-breaker necessary");
+        (0, logger_1.log)("tie-breaker necessary");
         // create 3 placeholders
         let firstPlace;
         let thirdPlace;
@@ -416,12 +435,12 @@ function tieBreakerMatch(checkPoints, game_id, lobbies, lobbyCode) {
             firstPlace = lobbies[lobbyCode].players
                 .filter((p) => p.pid === checkPoints[0].player_id)
                 .pop();
-            logger_1.log("- tied for second place");
+            (0, logger_1.log)("- tied for second place");
             tiebreaker = [checkPoints[1], checkPoints[2]];
         }
         if (!firstPlace && checkPoints[1].points !== ((_a = checkPoints[2]) === null || _a === void 0 ? void 0 : _a.points)) {
             // B. is third place unique?
-            logger_1.log("- tied for first place");
+            (0, logger_1.log)("- tied for first place");
             tiebreaker = [checkPoints[0], checkPoints[1]];
             if ((_b = checkPoints[2]) === null || _b === void 0 ? void 0 : _b.player_id) {
                 thirdPlace = lobbies[lobbyCode].players
@@ -431,7 +450,7 @@ function tieBreakerMatch(checkPoints, game_id, lobbies, lobbyCode) {
         }
         if (!tiebreaker) {
             // C. does everyone have the same score ?
-            logger_1.log("- everyone tied!");
+            (0, logger_1.log)("- everyone tied!");
             tiebreaker = checkPoints;
         }
         // create a timestamp

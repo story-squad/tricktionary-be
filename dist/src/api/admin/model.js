@@ -29,23 +29,23 @@ exports.default = {
  */
 function getRound(roundId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const definitions = yield dbConfig_1.default("Definitions").where({ round_id: roundId });
-        const definitionReactions = yield dbConfig_1.default("Definition-Reactions").where({
+        const definitions = yield (0, dbConfig_1.default)("Definitions").where({ round_id: roundId });
+        const definitionReactions = yield (0, dbConfig_1.default)("Definition-Reactions").where({
             round_id: roundId,
         });
         // I'm gettin' bugged driving up and down the same old strip
         // I gotta find a new place where the kids are hip
-        const players = yield dbConfig_1.default("User-Rounds").where({ round_id: roundId });
+        const players = yield (0, dbConfig_1.default)("User-Rounds").where({ round_id: roundId });
         // My buddies and me are getting real well known
         // Yeah, the bad guys know us and they leave us alone
-        const votes = yield dbConfig_1.default("Votes").where({ round_id: roundId });
+        const votes = yield (0, dbConfig_1.default)("Votes").where({ round_id: roundId });
         // I get around (get around round round I get around)
-        const round = yield dbConfig_1.default("Rounds").where({ id: roundId }).first();
+        const round = yield (0, dbConfig_1.default)("Rounds").where({ id: roundId }).first();
         // From town to town (get around round round I get around)
-        const word = yield dbConfig_1.default("words").where({ id: round.word_id }).first();
+        const word = yield (0, dbConfig_1.default)("words").where({ id: round.word_id }).first();
         // I'm a real cool head (get around round round I get around)
         // I'm makin' real good bread (get around round round I get around)
-        const choices = yield dbConfig_1.default("host-choices")
+        const choices = yield (0, dbConfig_1.default)("host-choices")
             .where({ round_id: roundId })
             .first();
         return {
@@ -62,23 +62,23 @@ function getRound(roundId) {
 function getWordDetails(word_id) {
     return __awaiter(this, void 0, void 0, function* () {
         //get word
-        const word = yield dbConfig_1.default("words").where({ id: word_id });
+        const word = yield (0, dbConfig_1.default)("words").where({ id: word_id });
         //get rounds with word
-        const rounds = yield dbConfig_1.default("Rounds").where({ word_id });
+        const rounds = yield (0, dbConfig_1.default)("Rounds").where({ word_id });
         //get definitions for each round
         let definitions = [];
         rounds.forEach((round) => __awaiter(this, void 0, void 0, function* () {
-            let defs = yield dbConfig_1.default("Definitions").where({
+            let defs = yield (0, dbConfig_1.default)("Definitions").where({
                 round_id: round.id,
             });
             definitions = [...definitions, ...defs];
         }));
         //get passovers for word
         let choices_with_word = [];
-        const choices_one = yield dbConfig_1.default("host-choices").where({
+        const choices_one = yield (0, dbConfig_1.default)("host-choices").where({
             word_id_one: word_id,
         });
-        const choices_two = yield dbConfig_1.default("host-choices").where({
+        const choices_two = yield (0, dbConfig_1.default)("host-choices").where({
             word_id_two: word_id,
         });
         choices_with_word = [...choices_one, ...choices_two];
@@ -93,17 +93,17 @@ function getWordDetails(word_id) {
 function getDefinitionDetails(definition_id) {
     return __awaiter(this, void 0, void 0, function* () {
         //get definition by id
-        const definition = yield dbConfig_1.default("Definitions")
+        const definition = yield (0, dbConfig_1.default)("Definitions")
             .where({ id: definition_id })
             .first();
         //get all votes by definition id
-        const votes = yield dbConfig_1.default("Votes").where({ definition_id });
+        const votes = yield (0, dbConfig_1.default)("Votes").where({ definition_id });
         //get num of players from round
-        const round = yield dbConfig_1.default("Rounds")
+        const round = yield (0, dbConfig_1.default)("Rounds")
             .where({ id: definition.round_id })
             .first();
         //get any reactions from the join table
-        const reactions = yield dbConfig_1.default("Definition-Reactions").where({
+        const reactions = yield (0, dbConfig_1.default)("Definition-Reactions").where({
             definition_id,
         });
         return {
@@ -117,7 +117,7 @@ function getDefinitionDetails(definition_id) {
 //function that loops over all the definitions, and returns all of them sorted by most votes
 function getAllDefinitions() {
     return __awaiter(this, void 0, void 0, function* () {
-        const allDefs = yield dbConfig_1.default("Definitions");
+        const allDefs = yield (0, dbConfig_1.default)("Definitions");
         let allDefDeets = [];
         for (let def of allDefs) {
             const defDeets = yield getDefinitionDetails(def.id);

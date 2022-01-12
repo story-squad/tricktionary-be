@@ -19,35 +19,35 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const defaultError = "there was an error with starting your game";
-        let r = common_1.checkSettings(settings);
+        let r = (0, common_1.checkSettings)(settings);
         if (!r.ok) {
-            handleErrorMessage_1.default(io, socket, 2006, defaultError);
+            (0, handleErrorMessage_1.default)(io, socket, 2006, defaultError);
             return;
         }
         let { word, source } = r.settings;
         if (word.id === 0) {
             try {
-                word = yield common_1.contributeWord(word.word, word.definition, source);
+                word = yield (0, common_1.contributeWord)(word.word, word.definition, source);
             }
             catch (err) {
-                logger_1.log(`[!ERROR] handleStartGame -> contributeWord(${word.word}, ${word.definition}, ${source})`);
-                handleErrorMessage_1.default(io, socket, 2006, defaultError);
+                (0, logger_1.log)(`[!ERROR] handleStartGame -> contributeWord(${word.word}, ${word.definition}, ${source})`);
+                (0, handleErrorMessage_1.default)(io, socket, 2006, defaultError);
                 return;
             }
         }
         else {
-            let r = yield common_1.wordFromID(word.id);
+            let r = yield (0, common_1.wordFromID)(word.id);
             if (r.ok) {
                 word = r.word;
             }
         }
         let newRound;
         try {
-            newRound = yield common_1.startNewRound(socket.id, word, lobbies, lobbyCode, r.settings);
+            newRound = yield (0, common_1.startNewRound)(socket.id, word, lobbies, lobbyCode, r.settings);
         }
         catch (err) {
-            logger_1.log(`[!ERROR] handleStartGame -> startNewRound by ${socket.id} with "${word.word}" from ${source}`);
-            handleErrorMessage_1.default(io, socket, 2006, defaultError);
+            (0, logger_1.log)(`[!ERROR] handleStartGame -> startNewRound by ${socket.id} with "${word.word}" from ${source}`);
+            (0, handleErrorMessage_1.default)(io, socket, 2006, defaultError);
             return;
         }
         if (newRound.ok && ((_a = newRound.result) === null || _a === void 0 ? void 0 : _a.status) === 201) {
@@ -57,17 +57,17 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice) {
                 yield common_1.localAxios.post("/api/choice", Object.assign(Object.assign({}, hostChoice), { round_id: newRound.roundId }));
             }
             catch (err) {
-                logger_1.log("error recording the host's choices");
-                logger_1.log(err.message);
-                handleErrorMessage_1.default(io, socket, 2006, defaultError);
+                (0, logger_1.log)("error recording the host's choices");
+                (0, logger_1.log)(err.message);
+                (0, handleErrorMessage_1.default)(io, socket, 2006, defaultError);
                 return;
             }
             // pub-sub update
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         }
         else {
-            logger_1.log("there was a server error while starting the game");
-            handleErrorMessage_1.default(io, socket, 2006, defaultError);
+            (0, logger_1.log)("there was a server error while starting the game");
+            (0, handleErrorMessage_1.default)(io, socket, 2006, defaultError);
         }
     });
 }

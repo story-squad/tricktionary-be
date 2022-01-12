@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
 const logger_1 = require("../../logger");
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { playerId, definition, roundId, pid, game_id } = req.body;
     let result;
@@ -25,8 +25,8 @@ router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         defId = result.pop();
     }
     catch (err) {
-        logger_1.log("error! definitions router");
-        logger_1.log(err.message);
+        (0, logger_1.log)("error! definitions router");
+        (0, logger_1.log)(err.message);
     }
     if (defId > -1) {
         res.status(201).json({ definitionId: defId });

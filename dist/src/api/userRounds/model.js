@@ -17,7 +17,7 @@ const model_1 = require("../score/model");
 const logger_1 = require("../../logger");
 // variable name must be in lowerCamelCase, PascalCase or UPPER_CASE
 function add(userID, roundID, gameID) {
-    return dbConfig_1.default("User-Rounds").insert({
+    return (0, dbConfig_1.default)("User-Rounds").insert({
         user_id: userID,
         round_id: roundID,
         game_id: gameID,
@@ -28,10 +28,10 @@ function addAllUserRounds(players, roundId, gameID) {
         players.forEach((player) => __awaiter(this, void 0, void 0, function* () {
             try {
                 yield add(player.id, roundId, gameID);
-                yield model_1.scoreCard(player.id, gameID);
+                yield (0, model_1.scoreCard)(player.id, gameID);
             }
             catch (err) {
-                logger_1.log(err.message);
+                (0, logger_1.log)(err.message);
                 return { ok: false, message: err.message };
             }
         }));
@@ -39,22 +39,22 @@ function addAllUserRounds(players, roundId, gameID) {
     });
 }
 function findPlayer(user_id) {
-    return dbConfig_1.default("User-Rounds").where({ user_id });
+    return (0, dbConfig_1.default)("User-Rounds").where({ user_id });
 }
 function findLastRound(user_id) {
-    return dbConfig_1.default("User-Rounds")
+    return (0, dbConfig_1.default)("User-Rounds")
         .where({ user_id })
         .orderBy("round_id", "desc")
         .first();
 }
 function findFirstRound(user_id) {
-    return dbConfig_1.default("User-Rounds")
+    return (0, dbConfig_1.default)("User-Rounds")
         .where({ user_id })
         .orderBy("round_id", "asc")
         .first();
 }
 function findAll(user_id, game_id) {
-    return dbConfig_1.default("User-Rounds").where({ user_id, game_id });
+    return (0, dbConfig_1.default)("User-Rounds").where({ user_id, game_id });
 }
 exports.default = {
     addAllUserRounds,

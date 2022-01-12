@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
 const logger_1 = require("../../logger");
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { word_id_one, word_id_two, round_id, times_shuffled } = req.body;
     let result;
@@ -25,8 +25,8 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         choice_id = result.pop();
     }
     catch (err) {
-        logger_1.log("error recording the host choice");
-        logger_1.log(err.message);
+        (0, logger_1.log)("error recording the host choice");
+        (0, logger_1.log)(err.message);
     }
     if (choice_id > -1) {
         res.status(201).json({ choice_id: choice_id });

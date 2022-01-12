@@ -13,7 +13,7 @@ const express_1 = require("express");
 const middleware_1 = require("../middleware");
 const util_1 = require("./util");
 const logger_1 = require("../../logger");
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 /**
  * request all from the database table "Reactions"
  * @param req Request object
@@ -22,7 +22,7 @@ const router = express_1.Router();
  */
 function sendFromDatabase(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const reply = yield util_1.getDatabaseReactions(req.redis);
+        const reply = yield (0, util_1.getDatabaseReactions)(req.redis);
         return res.json(reply);
     });
 }
@@ -49,7 +49,7 @@ router.get("/", middleware_1.redisCache, (req, res, next) => __awaiter(void 0, v
                         return res.json(JSON.parse(value));
                     }
                     else {
-                        logger_1.log("tricktionary-reactions were not found in the cache => sendFromDatabase");
+                        (0, logger_1.log)("tricktionary-reactions were not found in the cache => sendFromDatabase");
                         // database
                         yield sendFromDatabase(req, res);
                     }
@@ -57,7 +57,7 @@ router.get("/", middleware_1.redisCache, (req, res, next) => __awaiter(void 0, v
             });
         }
         catch (err) {
-            logger_1.log((err === null || err === void 0 ? void 0 : err.message) || err);
+            (0, logger_1.log)((err === null || err === void 0 ? void 0 : err.message) || err);
             next();
         }
     }

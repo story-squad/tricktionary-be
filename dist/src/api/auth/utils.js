@@ -153,7 +153,7 @@ function totalRecall(player_id) {
                 }
             }
             catch (err) {
-                logger_1.log("cannot find a last_lobby of player.");
+                (0, logger_1.log)("cannot find a last_lobby of player.");
                 return {
                     ok: true,
                     message: err.message,
@@ -182,10 +182,10 @@ function verifyTricktionaryToken(last_token, last_user_id) {
             player_id = mem.player_id ? mem.player_id : ""; // remember the player_id ?
             if (last_user_id === mem.last_user_id) {
                 // same web socket session, update token and return.
-                logger_1.log(`same socket, ${last_user_id}`);
+                (0, logger_1.log)(`same socket, ${last_user_id}`);
             }
             if (mem.last_user_id) {
-                logger_1.log(`partialRecall - last lobby -, ${mem.last_lobby}`);
+                (0, logger_1.log)(`partialRecall - last lobby -, ${mem.last_lobby}`);
                 last_lobby = mem.last_lobby;
                 // return { ...mem, status: 200 };
             }
@@ -195,10 +195,10 @@ function verifyTricktionaryToken(last_token, last_user_id) {
                 if (existing.ok) {
                     player = existing.player;
                     last_lobby = existing.spoilers;
-                    logger_1.log(`totalRecall - last lobby -, ${last_lobby}`);
+                    (0, logger_1.log)(`totalRecall - last lobby -, ${last_lobby}`);
                 }
                 else {
-                    logger_1.log(`can't find this player in the db, ${mem.player_id}`);
+                    (0, logger_1.log)(`can't find this player in the db, ${mem.player_id}`);
                 }
             }
             // NOTE: don't need to lookup player by id if we already have the last lobby from JWT

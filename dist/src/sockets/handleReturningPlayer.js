@@ -46,7 +46,7 @@ function handleReturningPlayer(io, socket, token, lobbies) {
                 // we have a bad token.
                 // treat them as a new player.
                 // (until we have user account)
-                return yield handleNewPlayer_1.default(io, socket);
+                return yield (0, handleNewPlayer_1.default)(io, socket);
             }
             player = login.data.player;
             newtoken = login.data.token;
@@ -57,10 +57,10 @@ function handleReturningPlayer(io, socket, token, lobbies) {
             return { ok: false, message: err.message };
         }
         // send player their new token.
-        common_1.privateMessage(io, socket, "token update", newtoken);
+        (0, common_1.privateMessage)(io, socket, "token update", newtoken);
         // check for last_played activity
         if (!player.last_played || !lobbies[player.last_played]) {
-            logger_1.log(`${player.last_played}, game not found.`);
+            (0, logger_1.log)(`${player.last_played}, game not found.`);
             return;
         }
         // if we're not already in the room,
@@ -79,7 +79,7 @@ function handleReturningPlayer(io, socket, token, lobbies) {
             lobbies[player.last_played].host = socket.id;
         }
         // move the player forward.
-        handleLobbyJoin_1.default(io, socket, old_user_name, player.last_played, lobbies, true);
+        (0, handleLobbyJoin_1.default)(io, socket, old_user_name, player.last_played, lobbies, true);
     });
 }
 exports.default = handleReturningPlayer;

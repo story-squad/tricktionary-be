@@ -27,7 +27,7 @@ router.post("/new", async (req, res) => {
     }
     return res.json({ score: linkedPlayer.id });
   } catch (err) {
-    return res.json({ message: err.message });
+    if (err instanceof Error) return res.json({ message: err.message });
   }
 });
 
@@ -40,7 +40,7 @@ router.get("/player/:id", async (req, res) => {
   try {
     result = getGames(player_id); // return this player's games.
   } catch (err) {
-    return res.json({ error: err.message });
+    if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
 });
@@ -55,7 +55,7 @@ router.get("/player/:pid/game/:gid", async (req, res) => {
   try {
     result = await getPlayerScore(player_id, game_id);
   } catch (err) {
-    return res.json({ error: err.message });
+    if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
 });
@@ -69,7 +69,7 @@ router.get("/games/:id", async (req, res) => {
   try {
     result = getPlayers(game_id); // return this game's players.
   } catch (err) {
-    return res.json({ error: err.message });
+    if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
 });
@@ -86,7 +86,7 @@ router.put("/increase/:player_id", async (req, res) => {
     const result = await addPoints(player_id, game_id, points);
     return res.json(result);
   } catch (err) {
-    return res.json({ error: err.message });
+    if (err instanceof Error) return res.json({ error: err.message });
   }
 });
 router.put("/decrease/:player_id", async (req, res) => {
@@ -101,7 +101,7 @@ router.put("/decrease/:player_id", async (req, res) => {
     const result = await subPoints(player_id, game_id, points);
     return res.json(result);
   } catch (err) {
-    return res.json({ error: err.message });
+    if (err instanceof Error) return res.json({ error: err.message });
   }
 });
 

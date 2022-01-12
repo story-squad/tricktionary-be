@@ -19,9 +19,9 @@ const pseudoRandom_1 = require("../../options/pseudoRandom");
 exports.default = { newPlayer, updatePlayer, getPlayer, findPlayer, bySocketID, getName, nameCheck };
 function newPlayer(user_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const uuId = uuid_1.v4();
+        const uuId = (0, uuid_1.v4)();
         try {
-            yield dbConfig_1.default("Player").insert({ id: uuId, last_user_id: user_id });
+            yield (0, dbConfig_1.default)("Player").insert({ id: uuId, last_user_id: user_id });
         }
         catch (err) {
             return { ok: false, message: err.message };
@@ -31,12 +31,12 @@ function newPlayer(user_id) {
 }
 function updatePlayer(player_id, changes) {
     return __awaiter(this, void 0, void 0, function* () {
-        const validUpdate = utils_1.validatePlayerType(Object.assign({ id: player_id }, changes));
+        const validUpdate = (0, utils_1.validatePlayerType)(Object.assign({ id: player_id }, changes));
         if (!validUpdate.ok) {
             return { ok: false, message: validUpdate.message };
         }
         try {
-            const player = yield dbConfig_1.default("Player")
+            const player = yield (0, dbConfig_1.default)("Player")
                 .where({ id: player_id })
                 .update(changes)
                 .returning("*");
@@ -48,30 +48,30 @@ function updatePlayer(player_id, changes) {
     });
 }
 function bySocketID(last_user_id) {
-    return dbConfig_1.default("Player").where({ last_user_id }).first();
+    return (0, dbConfig_1.default)("Player").where({ last_user_id }).first();
 }
 function getPlayer(player_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield dbConfig_1.default("Player").where({ id: player_id }).first();
+        return yield (0, dbConfig_1.default)("Player").where({ id: player_id }).first();
     });
 }
 function findPlayer(col_name, value) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield dbConfig_1.default("Player")
+        return yield (0, dbConfig_1.default)("Player")
             .where({ [col_name]: value })
             .first();
     });
 }
 function getName(player_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield dbConfig_1.default("Player").select("name").where({ id: player_id }).first();
+        return yield (0, dbConfig_1.default)("Player").select("name").where({ id: player_id }).first();
     });
 }
 function nameCheck(username, last_played) {
     return __awaiter(this, void 0, void 0, function* () {
-        const players = yield dbConfig_1.default("Player").where({ last_played });
+        const players = yield (0, dbConfig_1.default)("Player").where({ last_played });
         const player_names = players.map((p) => p.name.toLowerCase());
-        const check = pseudoRandom_1.matchWords(username.toLowerCase(), player_names);
+        const check = (0, pseudoRandom_1.matchWords)(username.toLowerCase(), player_names);
         return check.length > 0;
     });
 }

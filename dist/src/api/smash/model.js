@@ -18,7 +18,7 @@ const logger_1 = require("../../logger");
 const cacheGroupName = "SMASHED";
 exports.cacheGroupName = cacheGroupName;
 function add(game_id, round_id, definition_id, reaction_id, value) {
-    return dbConfig_1.default("Smash")
+    return (0, dbConfig_1.default)("Smash")
         .insert({
         game_id,
         round_id,
@@ -31,7 +31,7 @@ function add(game_id, round_id, definition_id, reaction_id, value) {
 exports.add = add;
 function get(game_id, round_id, definition_id, reaction_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield dbConfig_1.default("Smash")
+        return yield (0, dbConfig_1.default)("Smash")
             .where({
             game_id,
             round_id,
@@ -44,7 +44,7 @@ function get(game_id, round_id, definition_id, reaction_id) {
 exports.get = get;
 function incr(game_id, round_id, definition_id, reaction_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield dbConfig_1.default("Smash")
+        return yield (0, dbConfig_1.default)("Smash")
             .where({
             game_id,
             round_id,
@@ -58,7 +58,7 @@ function incr(game_id, round_id, definition_id, reaction_id) {
 exports.incr = incr;
 function updateCount(game_id, round_id, definition_id, reaction_id, count) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield dbConfig_1.default("Smash")
+        yield (0, dbConfig_1.default)("Smash")
             .where({
             game_id,
             round_id,
@@ -84,7 +84,7 @@ function bulkUpdate(arr, cb) {
             arr.forEach((item) => __awaiter(this, void 0, void 0, function* () {
                 const { game_id, round_id, definition_id, reaction_id, value } = item;
                 // check the database for an existing record
-                const result = yield dbConfig_1.default("Smash")
+                const result = yield (0, dbConfig_1.default)("Smash")
                     .where({
                     game_id,
                     round_id,
@@ -97,13 +97,13 @@ function bulkUpdate(arr, cb) {
                 }
                 else {
                     if (value > (result === null || result === void 0 ? void 0 : result.count)) {
-                        yield dbConfig_1.default("Smash").where({ id: result.id }).update({ count: value });
+                        yield (0, dbConfig_1.default)("Smash").where({ id: result.id }).update({ count: value });
                     }
                 }
             }));
         }
         catch (err) {
-            logger_1.log(err.message);
+            (0, logger_1.log)(err.message);
         }
         return yield cb(arr);
     });
@@ -111,7 +111,7 @@ function bulkUpdate(arr, cb) {
 exports.bulkUpdate = bulkUpdate;
 function getTotals(game_id, round_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield dbConfig_1.default("Smash").where({
+        return yield (0, dbConfig_1.default)("Smash").where({
             game_id,
             round_id
         });

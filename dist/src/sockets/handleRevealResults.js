@@ -25,13 +25,13 @@ const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
  */
 function handleRevealResults(io, socket, lobbyCode, lobbies, guesses) {
     return __awaiter(this, void 0, void 0, function* () {
-        const present = lobbyCode && common_1.whereAmI(socket) === lobbyCode;
+        const present = lobbyCode && (0, common_1.whereAmI)(socket) === lobbyCode;
         if (!present) {
-            handleErrorMessage_1.default(io, socket, 2004, "You are not in the requested game");
+            (0, handleErrorMessage_1.default)(io, socket, 2004, "You are not in the requested game");
         }
-        const authorized = common_1.playerIsHost(socket, lobbyCode, lobbies);
+        const authorized = (0, common_1.playerIsHost)(socket, lobbyCode, lobbies);
         if (!authorized.ok) {
-            handleErrorMessage_1.default(io, socket, 2005, "You are not the host of the requested game");
+            (0, handleErrorMessage_1.default)(io, socket, 2005, "You are not the host of the requested game");
             return;
         }
         lobbies[lobbyCode].phase = "RESULTS";

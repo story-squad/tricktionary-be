@@ -70,18 +70,18 @@ const cleverStudentRequired = (req, res, next) => __awaiter(void 0, void 0, void
             throw new Error("Missing student id");
         const studentID = match[1];
         const result = yield cleverBearer(studentID.trim()).get("/oauth/tokeninfo");
-        logger_1.log(`status : ${result.status}`);
+        (0, logger_1.log)(`status : ${result.status}`);
         // check status
         if (result.status !== 200)
             throw new Error("error verifying student");
         // attach result
         req.tokenInfo = result.data;
-        logger_1.log('success!');
+        (0, logger_1.log)('success!');
         // continue
         next();
     }
     catch (err) {
-        next(http_errors_1.default(401, err.message));
+        next((0, http_errors_1.default)(401, err.message));
     }
 });
 exports.cleverStudentRequired = cleverStudentRequired;

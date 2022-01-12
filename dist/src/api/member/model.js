@@ -17,10 +17,10 @@ const uuid_1 = require("uuid");
 exports.default = { add, findById, findByEmail };
 function add(email, username, fullname, location, external) {
     return __awaiter(this, void 0, void 0, function* () {
-        const uuId = uuid_1.v4();
+        const uuId = (0, uuid_1.v4)();
         let member_id;
         try {
-            member_id = yield dbConfig_1.default("Member")
+            member_id = yield (0, dbConfig_1.default)("Member")
                 .insert({
                 id: uuId,
                 email,
@@ -41,7 +41,7 @@ function findById(member_id) {
     return __awaiter(this, void 0, void 0, function* () {
         let member;
         try {
-            member = yield dbConfig_1.default("Member").where({ id: member_id }).first();
+            member = yield (0, dbConfig_1.default)("Member").where({ id: member_id }).first();
         }
         catch (err) {
             return { ok: false, message: "error" };
@@ -53,7 +53,7 @@ function findByEmail(email) {
     return __awaiter(this, void 0, void 0, function* () {
         let member;
         try {
-            member = yield dbConfig_1.default("Member").where({ email }).first();
+            member = yield (0, dbConfig_1.default)("Member").where({ email }).first();
         }
         catch (err) {
             return { ok: false, message: "error" };

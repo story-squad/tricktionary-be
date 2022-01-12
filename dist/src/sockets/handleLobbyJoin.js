@@ -29,20 +29,20 @@ const JOINABLE = ["PREGAME", "RESULTS", "FINALE"];
 function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
-        if (common_1.whereAmI(socket) === lobbyCode.trim()) {
+        if ((0, common_1.whereAmI)(socket) === lobbyCode.trim()) {
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
             return;
         }
         if (lobbyCode.length !== common_1.LC_LENGTH) {
-            handleErrorMessage_1.default(io, socket, 2000, "The lobby code you entered is not long enough");
+            (0, handleErrorMessage_1.default)(io, socket, 2000, "The lobby code you entered is not long enough");
             return;
         }
         if (Object.keys(lobbies).filter((lc) => lc === lobbyCode).length === 0) {
-            handleErrorMessage_1.default(io, socket, 2000, "The lobby code you entered does not correspond to an active room");
+            (0, handleErrorMessage_1.default)(io, socket, 2000, "The lobby code you entered does not correspond to an active room");
             return;
         }
         if (lobbies[lobbyCode].players.length > common_1.MAX_PLAYERS) {
-            handleErrorMessage_1.default(io, socket, 2001, `The lobby with code ${lobbyCode} has reached the maximum player limit of ${common_1.MAX_PLAYERS}`);
+            (0, handleErrorMessage_1.default)(io, socket, 2001, `The lobby with code ${lobbyCode} has reached the maximum player limit of ${common_1.MAX_PLAYERS}`);
             return;
         }
         let p_id;
@@ -52,29 +52,33 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
             p_id = data === null || data === void 0 ? void 0 : data.id;
         }
         catch (err) {
-            logger_1.log(err.message);
+            if (err instanceof Error) {
+                (0, logger_1.log)(err.message);
+            }
         }
         if (!p_id) {
-            logger_1.log("!no p_id was found (corrupted token?), creating...");
+            (0, logger_1.log)("!no p_id was found (corrupted token?), creating...");
             try {
                 const login = yield common_1.localAxios.post("/api/auth/new-player", {
                     last_user_id: socket.id,
                 });
                 const newtoken = login.data.token;
                 p_id = login.data.player_id;
-                common_1.privateMessage(io, socket, "token update", newtoken);
+                (0, common_1.privateMessage)(io, socket, "token update", newtoken);
             }
             catch (err) {
-                logger_1.log(err.message);
+                if (err instanceof Error) {
+                    (0, logger_1.log)(err.message);
+                }
                 return;
             }
         }
         else {
-            logger_1.log(`!found player id: ${p_id}`);
+            (0, logger_1.log)(`!found player id: ${p_id}`);
         }
-        logger_1.log(`p_id: ${p_id}`);
+        (0, logger_1.log)(`p_id: ${p_id}`);
         if (!p_id) {
-            logger_1.log("no join for you!!!");
+            (0, logger_1.log)("no join for you!!!");
             return;
         }
         const otherPlayers = () => lobbies[lobbyCode].players
@@ -90,7 +94,7 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
         function askPartyToLeave(duplicatePlayers) {
             // ask duplicates to leave
             duplicatePlayers.forEach((p) => {
-                logger_1.log(`suggesting 'disconnect me' -> ${p.id}`);
+                (0, logger_1.log)(`suggesting 'disconnect me' -> ${p.id}`);
                 io.to(p.id).emit("disconnect me"); // politely ask duplicate to leave
                 socket.leave(p.id); // show duplicate to the exit
             });
@@ -106,13 +110,15 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
         let uname = ((_a = old_player_obj === null || old_player_obj === void 0 ? void 0 : old_player_obj.username) === null || _a === void 0 ? void 0 : _a.length) > 0 ? old_player_obj.username : username;
         // update the token,
         let points = Number(old_player_obj === null || old_player_obj === void 0 ? void 0 : old_player_obj.points) >= 0 ? Number(old_player_obj.points) : 0;
-        yield common_1.updatePlayerToken(io, socket, p_id, uname, "", points, lobbyCode);
+        yield (0, common_1.updatePlayerToken)(io, socket, p_id, uname, "", points, lobbyCode);
         if (((_b = lobbies[lobbyCode]) === null || _b === void 0 ? void 0 : _b.phase) in JOINABLE && !old_player_obj) {
             // prevent *new players from joining mid-game.
-            handleErrorMessage_1.default(io, socket, 2002, `Unfortunately, the lobby with code ${lobbyCode} has already begun their game`);
+            (0, handleErrorMessage_1.default)(io, socket, 2002, `Unfortunately, the lobby with code ${lobbyCode} has already begun their game`);
             return;
         }
-        logger_1.log(`${username} ${old_player_obj ? "re-joined" : "joined"} ${lobbyCode}`);
+        (0, logger_1.log)(`${username} ${old_player_obj ? "re-joined" : "joined"} ${lobbyCode}`);
+        // Get current round index
+        const curRoundIndex = (0, common_1.getCurrentRoundIndex)(lobbies, lobbyCode);
         // add player to lobby data
         if (old_player_obj) {
             // re-construct the old player object, setting connected to true, with our new id
@@ -135,20 +141,27 @@ function handleLobbyJoin(io, socket, username, lobbyCode, lobbies, doCheckPulse)
                         pid: p_id,
                     },
                 ] });
+            lobbies[lobbyCode].rounds[curRoundIndex] = {
+                roundNum: lobbies[lobbyCode].rounds[curRoundIndex].roundNum,
+                scores: [
+                    ...lobbies[lobbyCode].rounds[curRoundIndex].scores,
+                    { playerId: socket.id, score: 0 },
+                ],
+            };
         }
         // join socket to room
         socket.join(lobbyCode);
         // send welcome message
-        common_1.privateMessage(io, socket, "welcome", socket.id);
+        (0, common_1.privateMessage)(io, socket, "welcome", socket.id);
         // ask room to update
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         if (doCheckPulse) {
-            logger_1.log("PULSE CHECK");
+            (0, logger_1.log)("PULSE CHECK");
             try {
-                crontab_1.schedulePulseCheck(io, lobbies, lobbyCode, 5);
+                (0, crontab_1.schedulePulseCheck)(io, lobbies, lobbyCode, 5);
             }
             catch (err) {
-                logger_1.log("ERROR scheduling pulse check");
+                (0, logger_1.log)("ERROR scheduling pulse check");
             }
         }
     });

@@ -17,11 +17,11 @@ const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const uuid_1 = require("uuid");
 function add(member_id, amount) {
     return __awaiter(this, void 0, void 0, function* () {
-        const uuId = uuid_1.v4(); // payment_id
+        const uuId = (0, uuid_1.v4)(); // payment_id
         let payment_id;
         try {
             // create a record for this payment, prior to processing
-            payment_id = yield dbConfig_1.default("Payment")
+            payment_id = yield (0, dbConfig_1.default)("Payment")
                 .insert({
                 id: uuId,
                 amount,
@@ -42,7 +42,7 @@ function update(payment_id, external) {
     return __awaiter(this, void 0, void 0, function* () {
         // update the payment with external payment provider detail
         try {
-            yield dbConfig_1.default("Payment").update({ external }).where({ id: payment_id });
+            yield (0, dbConfig_1.default)("Payment").update({ external }).where({ id: payment_id });
         }
         catch (err) {
             return { ok: false, message: err.message };

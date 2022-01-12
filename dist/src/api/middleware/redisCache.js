@@ -117,7 +117,7 @@ function passOn(port, host, options, name) {
     function setValue(name, value, ttl, cb) {
         var _a;
         const secondsToLive = ttl ? Number(ttl) : Number(DEFAULT_TTL);
-        logger_1.log(`[cache] WRITE ${name} TTL ${secondsToLive}s`);
+        (0, logger_1.log)(`[cache] WRITE ${name} TTL ${secondsToLive}s`);
         const callBack = cb ? cb : redis_1.default.print;
         (_a = clients.setter) === null || _a === void 0 ? void 0 : _a.setex(name, secondsToLive, value, callBack);
     }
@@ -167,7 +167,7 @@ function passOn(port, host, options, name) {
                     return yield onReply(value);
                 }
                 else {
-                    logger_1.log(`[cache] ${key} not found!`);
+                    (0, logger_1.log)(`[cache] ${key} not found!`);
                     return yield errFunc(err);
                 }
             });

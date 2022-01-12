@@ -38,7 +38,7 @@ function getDatabaseReactions(cache) {
             return { available };
         }
         catch (err) {
-            logger_1.log("error whilst getting/setting tricktionary-reactions");
+            (0, logger_1.log)("error whilst getting/setting tricktionary-reactions");
             return { error: err };
         }
     });

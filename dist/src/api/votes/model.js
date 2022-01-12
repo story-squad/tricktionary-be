@@ -18,15 +18,15 @@ const utils_1 = require("./utils");
 const logger_1 = require("../../logger");
 function add(userID, definitionID, roundID) {
     return __awaiter(this, void 0, void 0, function* () {
-        const result = utils_1.validateVote({
+        const result = (0, utils_1.validateVote)({
             user_id: userID,
             definition_id: definitionID === 0 ? null : definitionID,
             round_id: roundID,
         });
         if (!result.ok) {
-            return logger_1.log(result.message);
+            return (0, logger_1.log)(result.message);
         }
-        const [voteId] = yield dbConfig_1.default("Votes").insert(result.value).returning("id");
+        const [voteId] = yield (0, dbConfig_1.default)("Votes").insert(result.value).returning("id");
         return voteId;
     });
 }

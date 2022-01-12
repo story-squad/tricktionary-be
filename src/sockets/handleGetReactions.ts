@@ -15,7 +15,10 @@ async function getReactions(io: any, socket: any, lobbies: any) {
     );
     io.to(socket.id).emit("get reactions", data);
   } catch (err) {
-    log(err.message);
+    if (err instanceof Error) {
+      log(err.message);
+    }
+
     io.to(socket.id).emit("get reactions", []);
   }
 }

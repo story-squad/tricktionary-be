@@ -17,10 +17,10 @@ const uuid_1 = require("uuid");
 exports.default = { add, get, latest, leaderBoard };
 function add(og_host) {
     return __awaiter(this, void 0, void 0, function* () {
-        const uuId = uuid_1.v4();
+        const uuId = (0, uuid_1.v4)();
         let game_req;
         try {
-            game_req = yield dbConfig_1.default("Game")
+            game_req = yield (0, dbConfig_1.default)("Game")
                 .insert({
                 id: uuId,
                 og_host,
@@ -37,7 +37,7 @@ function get() {
     return __awaiter(this, void 0, void 0, function* () {
         let result;
         try {
-            result = yield dbConfig_1.default("Game").returning("id");
+            result = yield (0, dbConfig_1.default)("Game").returning("id");
         }
         catch (err) {
             return { ok: false, message: "error" };
@@ -49,7 +49,7 @@ function latest(limit) {
     return __awaiter(this, void 0, void 0, function* () {
         let result;
         try {
-            result = yield dbConfig_1.default("Game").orderBy("created_at", "desc").limit(limit);
+            result = yield (0, dbConfig_1.default)("Game").orderBy("created_at", "desc").limit(limit);
         }
         catch (err) {
             return { ok: false, message: "error" };
@@ -60,7 +60,7 @@ function latest(limit) {
 function leaderBoard(game_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            return yield dbConfig_1.default("score")
+            return yield (0, dbConfig_1.default)("score")
                 .join("definitions", "definitions.id", "score.top_definition_id")
                 .join("Player", "Player.id", "definitions.player_id")
                 .join("Rounds", "Rounds.id", "definitions.round_id")

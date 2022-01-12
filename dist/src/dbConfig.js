@@ -27,5 +27,5 @@ const knex_1 = __importDefault(require("knex"));
 const knexfile = __importStar(require("../knexfile"));
 const config = knexfile;
 const environment = process.env.DB_ENVIRONMENT || "development";
-exports.default = knex_1.default(config[environment]);
+exports.default = (0, knex_1.default)(config[environment]);
 //# sourceMappingURL=dbConfig.js.map

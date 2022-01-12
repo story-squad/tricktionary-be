@@ -27,7 +27,7 @@ const LC_LENGTH: number = process.env.LC_LENGTH
  */
 const VALUE_OF_TRUTH: number = process.env.VALUE_OF_TRUTH
   ? Number(process.env.VALUE_OF_TRUTH)
-  : 2;
+  : 1;
 
 /**
  * POINTS AWARDED when others choose your definition
@@ -40,6 +40,8 @@ export {
   MAX_PLAYERS,
   VALUE_OF_BLUFF,
   VALUE_OF_TRUTH,
+  RoundScoreItem,
+  RoundItem,
   LC_LENGTH,
   localAxios,
   privateMessage,
@@ -56,6 +58,8 @@ export {
   getDef,
   doIt,
   tieBreakerMatch,
+  getCurrentRoundIndex,
+  getCurrentPlayerScoreIndex,
 };
 
 async function getDef(user_id: string, definitionId: number) {
@@ -71,9 +75,67 @@ async function getDef(user_id: string, definitionId: number) {
     const result = { user_id, definition, word };
     return result;
   } catch (err) {
-    log(err.message);
+    if (err instanceof Error) log(err.message);
     return;
   }
+}
+
+/**
+ * Get the index of the current round
+ *
+ * @param lobbies
+ * @param lobbyCode
+ *
+ * Helper function to determine where in the rounds array is the current round
+ */
+
+// Setup the interfaces for round item
+interface RoundItem {
+  roundNum: string;
+  scores: [];
+}
+
+function getCurrentRoundIndex(lobbies: any, lobbyCode: any) {
+  // Get the current round
+  const currentRound = lobbies[lobbyCode].rounds.length;
+
+  // Get the index of the round
+  const curRoundIndex = lobbies[lobbyCode].rounds.findIndex(
+    (x: RoundItem) => x.roundNum === String(currentRound)
+  );
+
+  return curRoundIndex;
+}
+
+/**
+ * Get the index of the current player for the score
+ *
+ * @param lobbies
+ * @param lobbyCode
+ *
+ * Helper function to determine where in the scores array(from the rounds array) is the current player's score info
+ */
+
+// Setup the interfaces for score item
+interface RoundScoreItem {
+  playerId: string;
+  score: string;
+}
+
+function getCurrentPlayerScoreIndex(
+  lobbies: any,
+  lobbyCode: any,
+  playerId: string
+) {
+  // Get the index of the round
+  const curRoundIndex = getCurrentRoundIndex(lobbies, lobbyCode);
+
+  // Get the index of the round
+  const curPlayerScoreIndex = lobbies[lobbyCode].rounds[
+    curRoundIndex
+  ].scores.findIndex((x: RoundScoreItem) => x.playerId === playerId);
+
+  return curPlayerScoreIndex;
 }
 
 /**
@@ -145,7 +207,11 @@ function checkSettings(settings: any) {
     lobbySettings = GameSettings(settings);
   } catch (err) {
     log("settings error");
-    return { ok: false, message: err.message, settings };
+
+    if (err instanceof Error)
+      return { ok: false, message: err.message, settings };
+
+    return { ok: false };
   }
   if (!lobbySettings.ok) {
     return { ok: false, message: lobbySettings.message, settings };
@@ -173,6 +239,7 @@ async function contributeWord(
     }
   } catch (err) {
     log("error contributing.");
+
     log(err);
   }
   return newWord;

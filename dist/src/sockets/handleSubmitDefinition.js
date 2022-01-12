@@ -36,14 +36,14 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
             });
         }
         catch (err) {
-            logger_1.log("errror! handleSubmitDefinitions:22");
-            return handleErrorMessage_1.default(io, socket, 2003, "There was a server error while submitting your definition.");
+            (0, logger_1.log)("errror! handleSubmitDefinitions:22");
+            return (0, handleErrorMessage_1.default)(io, socket, 2003, "There was a server error while submitting your definition.");
         }
         // then ...
         const definitionId = (_a = newDef === null || newDef === void 0 ? void 0 : newDef.data) === null || _a === void 0 ? void 0 : _a.definitionId;
         if (!definitionId) {
             // error submitting definition,
-            return handleErrorMessage_1.default(io, socket, 2003, "There was a server error while submitting your definition.");
+            return (0, handleErrorMessage_1.default)(io, socket, 2003, "There was a server error while submitting your definition.");
         }
         newPlayer = Object.assign(Object.assign({}, newPlayer), { definitionId, definitionEpoch }); // store definition id
         // update & count number of player submissions
@@ -54,9 +54,9 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
             return player.id === newPlayer.id ? newPlayer : player;
         });
         if (!definitionId) {
-            logger_1.log(newDef);
+            (0, logger_1.log)(newDef);
         }
-        logger_1.log(`Definitions: ${numSubmitted}/${lobbies[lobbyCode].players.length}`);
+        (0, logger_1.log)(`Definitions: ${numSubmitted}/${lobbies[lobbyCode].players.length}`);
         if (numSubmitted === lobbies[lobbyCode].players.length) {
             lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { phase: "GUESSING" });
         }

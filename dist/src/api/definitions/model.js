@@ -26,7 +26,7 @@ exports.default = {
 };
 function add(userID, playerID, definition, roundID, gameID) {
     // validate object.property types
-    const newDefinition = utils_1.validateDefinition({
+    const newDefinition = (0, utils_1.validateDefinition)({
         user_id: userID,
         player_id: playerID,
         definition,
@@ -34,24 +34,24 @@ function add(userID, playerID, definition, roundID, gameID) {
         game_id: gameID,
     });
     return newDefinition.ok
-        ? dbConfig_1.default("definitions").insert(newDefinition.value).returning("id")
+        ? (0, dbConfig_1.default)("definitions").insert(newDefinition.value).returning("id")
         : [-1, newDefinition.message];
 }
 function byUserInRound(user_id, round_id) {
-    return dbConfig_1.default("definitions").where({ user_id, round_id }).first();
+    return (0, dbConfig_1.default)("definitions").where({ user_id, round_id }).first();
 }
 function byId(definitionId) {
-    return dbConfig_1.default("definitions").where({ id: definitionId });
+    return (0, dbConfig_1.default)("definitions").where({ id: definitionId });
 }
 function byPlayerInRound(player_id, round_id) {
-    return dbConfig_1.default("definitions").where({ player_id, round_id }).first();
+    return (0, dbConfig_1.default)("definitions").where({ player_id, round_id }).first();
 }
 function thisRound(round_id) {
-    return dbConfig_1.default("definitions").where({ round_id });
+    return (0, dbConfig_1.default)("definitions").where({ round_id });
 }
 function incr(player_id, round_id, points) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield dbConfig_1.default("definitions")
+        return yield (0, dbConfig_1.default)("definitions")
             .where({ player_id, round_id })
             .increment("score", points)
             .returning("score");
@@ -59,7 +59,7 @@ function incr(player_id, round_id, points) {
 }
 function decr(player_id, round_id, points) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield dbConfig_1.default("definitions")
+        return yield (0, dbConfig_1.default)("definitions")
             .where({ player_id, round_id })
             .decrement("score", points)
             .returning("score");
@@ -69,7 +69,7 @@ function findTopDefinition(player_id, game_id) {
     return __awaiter(this, void 0, void 0, function* () {
         let top_definition;
         try {
-            top_definition = yield dbConfig_1.default("definitions")
+            top_definition = yield (0, dbConfig_1.default)("definitions")
                 .where({ player_id, game_id })
                 .orderBy("score", "desc")
                 .first();

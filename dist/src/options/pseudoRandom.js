@@ -15,11 +15,11 @@ function matchWords(subject, words) {
 }
 exports.matchWords = matchWords;
 function pseudoRandomizer(p, l, options, testing) {
-    const raw = testing ? "BECH" : randomatic_1.default(p, l, options);
+    const raw = testing ? "BECH" : (0, randomatic_1.default)(p, l, options);
     const filtered = matchWords(raw, unsavory_json_1.default);
     const unsavoryCode = filtered.length > 0;
     if (unsavoryCode) {
-        logger_1.log(`[UNSAVORY!]: ${filtered.join(",")}`);
+        (0, logger_1.log)(`[UNSAVORY!]: ${filtered.join(",")}`);
         return pseudoRandomizer(p, l, options);
     }
     return raw;

@@ -23,16 +23,16 @@ const logger_1 = require("../logger");
  */
 function handleSetPhase(io, socket, lobbyCode, lobbies, phase) {
     return __awaiter(this, void 0, void 0, function* () {
-        const checkIfHost = common_1.playerIsHost(socket, lobbyCode, lobbies);
+        const checkIfHost = (0, common_1.playerIsHost)(socket, lobbyCode, lobbies);
         if (checkIfHost.ok) {
-            logger_1.log(`host is setting phase : ${phase}`);
+            (0, logger_1.log)(`host is setting phase : ${phase}`);
             lobbies[lobbyCode].phase = phase;
-            common_1.privateMessage(io, socket, "info", `ok, set phase: ${phase}`);
+            (0, common_1.privateMessage)(io, socket, "info", `ok, set phase: ${phase}`);
             io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
         }
         else {
-            logger_1.log(`NOT HOST: ${socket.id}`);
-            common_1.privateMessage(io, socket, "error", "unauthorized call, punk!");
+            (0, logger_1.log)(`NOT HOST: ${socket.id}`);
+            (0, common_1.privateMessage)(io, socket, "error", "unauthorized call, punk!");
         }
     });
 }

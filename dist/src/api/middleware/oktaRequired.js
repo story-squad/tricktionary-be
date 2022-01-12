@@ -51,11 +51,11 @@ const authRequired = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         }))
             .catch((err) => {
             console.error(err.message);
-            next(http_errors_1.default(401), err.message);
+            next((0, http_errors_1.default)(401), err.message);
         });
     }
     catch (err) {
-        next(http_errors_1.default(401, err.message));
+        next((0, http_errors_1.default)(401, err.message));
     }
 });
 exports.default = authRequired;

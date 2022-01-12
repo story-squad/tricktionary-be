@@ -10,7 +10,7 @@ export {
   subPoints,
   getPlayerScore,
   getLatest,
-  findTopDefinition
+  findTopDefinition,
 };
 
 async function scoreCard(player_id: string, game_id: string) {
@@ -18,7 +18,7 @@ async function scoreCard(player_id: string, game_id: string) {
   try {
     await db("score").insert({ id: uuId, player_id, game_id });
   } catch (err) {
-    return { ok: false, message: err.message };
+    if (err instanceof Error) return { ok: false, message: err.message };
   }
   return { ok: true, id: uuId };
 }
@@ -27,7 +27,7 @@ async function getPlayerScore(player_id: string, game_id: string) {
   try {
     result = await db("score").where({ player_id, game_id }).first();
   } catch (err) {
-    result = { ok: false, message: err.message };
+    if (err instanceof Error) result = { ok: false, message: err.message };
   }
   return result;
 }
@@ -38,7 +38,7 @@ async function getGames(player_id: string) {
   try {
     result = await db("score").where({ player_id }).returning("game_id");
   } catch (err) {
-    result = { ok: false, message: err.message };
+    if (err instanceof Error) result = { ok: false, message: err.message };
   }
   return result;
 }
@@ -57,7 +57,7 @@ async function getPlayers(game_id: string) {
   try {
     result = await db("score").where({ game_id }).returning("player_id");
   } catch (err) {
-    result = { ok: false, message: err.message };
+    if (err instanceof Error) result = { ok: false, message: err.message };
   }
   return result;
 }
@@ -71,7 +71,7 @@ async function addPoints(player_id: string, game_id: string, points: number) {
       .returning("points");
     return { ok: true, points: result };
   } catch (err) {
-    return { ok: false, message: err.message };
+    if (err instanceof Error) return { ok: false, message: err.message };
   }
 }
 
@@ -84,7 +84,7 @@ async function subPoints(player_id: string, game_id: string, points: number) {
       .returning("points");
     return { ok: true, points: result };
   } catch (err) {
-    return { ok: false, message: err.message };
+    if (err instanceof Error) return { ok: false, message: err.message };
   }
 }
 
@@ -99,7 +99,7 @@ async function updateDefinition(
       .update({ top_definition_id });
     return { ok: true, score: result };
   } catch (err) {
-    return { ok: false, error: err.message };
+    if (err instanceof Error) return { ok: false, error: err.message };
   }
 }
 
@@ -111,7 +111,7 @@ async function findTopDefinition(player_id: string, game_id: string) {
       .orderBy("score", "desc")
       .first();
   } catch (err) {
-    return { ok: false, error: err.message };
+    if (err instanceof Error) return { ok: false, error: err.message };
   }
   return { ok: true, top_definition };
 }

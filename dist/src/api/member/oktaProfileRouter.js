@@ -16,14 +16,14 @@ const express_1 = require("express");
 const oktaRequired_1 = __importDefault(require("../middleware/oktaRequired"));
 const oktaProfileModel_1 = __importDefault(require("./oktaProfileModel"));
 const logger_1 = require("../../logger");
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 router.get("/", oktaRequired_1.default, function (req, res) {
     oktaProfileModel_1.default.findAll()
         .then((profiles) => {
         res.status(200).json(profiles);
     })
         .catch((err) => {
-        logger_1.log(err);
+        (0, logger_1.log)(err);
         res.status(500).json({ message: err.message });
     });
 });
