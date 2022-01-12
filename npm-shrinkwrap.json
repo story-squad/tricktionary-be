@@ -17,7 +17,7 @@
         "cors": "^2.8.5",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
-        "helmet": "^4.3.1",
+        "helmet": "^5.0.1",
         "http-errors": "^1.8.0",
         "jsonwebtoken": "^8.5.1",
         "knex": "^0.95.2",
@@ -3191,11 +3191,11 @@
       }
     },
     "node_modules/helmet": {
-      "version": "4.4.1",
-      "resolved": "https://registry.npmjs.org/helmet/-/helmet-4.4.1.tgz",
-      "integrity": "sha512-G8tp0wUMI7i8wkMk2xLcEvESg5PiCitFMYgGRc/PwULB0RVhTP5GFdxOwvJwp9XVha8CuS8mnhmE8I/8dx/pbw==",
+      "version": "5.0.1",
+      "resolved": "https://registry.npmjs.org/helmet/-/helmet-5.0.1.tgz",
+      "integrity": "sha512-iyYpGYH2nbQVaQtauYDnemWg45S2RyGvJ+iKj+V9jp7Dc1NTtAJHmD+hFOSYS7Xdwe1GeyVEYSydggXLOg6TKQ==",
       "engines": {
-        "node": ">=10.0.0"
+        "node": ">=12.0.0"
       }
     },
     "node_modules/html-encoding-sniffer": {
@@ -10295,9 +10295,9 @@
       "dev": true
     },
     "helmet": {
-      "version": "4.4.1",
-      "resolved": "https://registry.npmjs.org/helmet/-/helmet-4.4.1.tgz",
-      "integrity": "sha512-G8tp0wUMI7i8wkMk2xLcEvESg5PiCitFMYgGRc/PwULB0RVhTP5GFdxOwvJwp9XVha8CuS8mnhmE8I/8dx/pbw=="
+      "version": "5.0.1",
+      "resolved": "https://registry.npmjs.org/helmet/-/helmet-5.0.1.tgz",
+      "integrity": "sha512-iyYpGYH2nbQVaQtauYDnemWg45S2RyGvJ+iKj+V9jp7Dc1NTtAJHmD+hFOSYS7Xdwe1GeyVEYSydggXLOg6TKQ=="
     },
     "html-encoding-sniffer": {
       "version": "2.0.1",
