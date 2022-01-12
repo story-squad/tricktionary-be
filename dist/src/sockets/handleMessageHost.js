@@ -20,9 +20,9 @@ const common_1 = require("./common");
  */
 function handleMessageHost(io, socket, lobbies, category, message) {
     return __awaiter(this, void 0, void 0, function* () {
-        let ok = yield common_1.sendToHost(io, socket, lobbies, category, message);
+        let ok = yield (0, common_1.sendToHost)(io, socket, lobbies, category, message);
         if (!ok) {
-            common_1.privateMessage(io, socket, "error", "error sending message to host");
+            (0, common_1.privateMessage)(io, socket, "error", "error sending message to host");
         }
     });
 }

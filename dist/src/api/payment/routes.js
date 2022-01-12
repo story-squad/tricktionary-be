@@ -13,7 +13,7 @@ const express_1 = require("express");
 const StripePayments_1 = require("./StripePayments");
 const model_1 = require("./model");
 const logger_1 = require("../../logger");
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 const membership = {
     month: 500,
     week: 125,
@@ -54,7 +54,7 @@ router.post("/checkout", (req, res) => __awaiter(void 0, void 0, void 0, functio
     if (errors.length > 0) {
         res.status(400).json({ errors });
     }
-    const result = yield model_1.add(member_id, total);
+    const result = yield (0, model_1.add)(member_id, total);
     if (!result.ok) {
         res.status(400).json({ error: result.message });
     }
@@ -82,13 +82,13 @@ function createPaymentIntent(payment_id, total) {
         try {
             paymentIntent = yield StripePayments_1.stripe.paymentIntents.create(params);
             clientSecret = paymentIntent.client_secret || "";
-            updatedPayment = yield model_1.update(payment_id, clientSecret);
+            updatedPayment = yield (0, model_1.update)(payment_id, clientSecret);
         }
         catch (err) {
             return { error: err.message };
         }
         if (!updatedPayment.ok) {
-            logger_1.log(updatedPayment.message);
+            (0, logger_1.log)(updatedPayment.message);
             return { error: updatedPayment.message };
         }
         return {
@@ -114,7 +114,7 @@ router.post("/webhook",
         event = StripePayments_1.stripe.webhooks.constructEvent(stripeBody, stripeHeaders, stripeSecret);
     }
     catch (err) {
-        logger_1.log(`⚠️  Webhook signature verification failed.`);
+        (0, logger_1.log)(`⚠️  Webhook signature verification failed.`);
         res.sendStatus(400);
         return;
     }
@@ -127,14 +127,14 @@ router.post("/webhook",
         // Funds have been captured
         // Fulfill any orders, e-mail receipts, etc
         // To cancel the payment after capture you will need to issue a Refund (https://stripe.com/docs/api/refunds).
-        logger_1.log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
-        logger_1.log("💰 Payment captured!");
+        (0, logger_1.log)(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
+        (0, logger_1.log)("💰 Payment captured!");
     }
     else if (eventType === "payment_intent.payment_failed") {
         // Cast the event into a PaymentIntent to make use of the types.
         const pi = data.object;
-        logger_1.log(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
-        logger_1.log("❌ Payment failed.");
+        (0, logger_1.log)(`🔔  Webhook received: ${pi.object} ${pi.status}!`);
+        (0, logger_1.log)("❌ Payment failed.");
     }
     res.sendStatus(200);
 }));

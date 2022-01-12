@@ -5,6 +5,7 @@ import {
   whereAmI,
   updatePlayerToken,
   privateMessage,
+  getCurrentRoundIndex,
 } from "./common";
 import { log } from "../logger";
 import handleErrorMessage from "./handleErrorMessage";
@@ -64,7 +65,9 @@ async function handleLobbyJoin(
     const { data } = await localAxios.get(`/api/auth/find-player/${socket.id}`);
     p_id = data?.id;
   } catch (err) {
-    log(err.message);
+    if (err instanceof Error) {
+      log(err.message);
+    }
   }
 
   if (!p_id) {
@@ -75,10 +78,12 @@ async function handleLobbyJoin(
       });
       const newtoken = login.data.token;
       p_id = login.data.player_id;
-      privateMessage(io, socket, "token update", newtoken)
+      privateMessage(io, socket, "token update", newtoken);
     } catch (err) {
-      log(err.message);
-      return
+      if (err instanceof Error) {
+        log(err.message);
+      }
+      return;
     }
   } else {
     log(`!found player id: ${p_id}`);
@@ -142,6 +147,9 @@ async function handleLobbyJoin(
 
   log(`${username} ${old_player_obj ? "re-joined" : "joined"} ${lobbyCode}`);
 
+  // Get current round index
+  const curRoundIndex = getCurrentRoundIndex(lobbies, lobbyCode);
+
   // add player to lobby data
   if (old_player_obj) {
     // re-construct the old player object, setting connected to true, with our new id
@@ -167,6 +175,14 @@ async function handleLobbyJoin(
           connected: true,
           pid: p_id,
         },
+      ],
+    };
+
+    lobbies[lobbyCode].rounds[curRoundIndex] = {
+      roundNum: lobbies[lobbyCode].rounds[curRoundIndex].roundNum,
+      scores: [
+        ...lobbies[lobbyCode].rounds[curRoundIndex].scores,
+        { playerId: socket.id, score: 0 },
       ],
     };
   }

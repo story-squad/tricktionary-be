@@ -25,9 +25,9 @@ function incrementTask(k) {
     const t = lobbyTasks[k];
     t.count += 1;
     t.last = Date.now();
-    logger_1.log(`${t.name}, ${t.count}`);
+    (0, logger_1.log)(`${t.name}, ${t.count}`);
     if (t.count >= t.limit) {
-        logger_1.log(`[delete] task: ${t.name}`);
+        (0, logger_1.log)(`[delete] task: ${t.name}`);
         t.task.stop();
         delete lobbyTasks[k]; // remove the cronTask from our list.
         return { continue: false };
@@ -48,7 +48,7 @@ function schedulePulseCheck(io, lobbies, lobbyCode, limit) {
         // we have a task running already, get it.
         scheduledTask = lobbyTasks[lobbyCode];
         const delta = Math.abs(Date.now() - scheduledTask.created) / 1000;
-        logger_1.log(`started a 'pulse check' for ${lobbyCode} ${delta}s ago`);
+        (0, logger_1.log)(`started a 'pulse check' for ${lobbyCode} ${delta}s ago`);
     }
     else {
         // create a task
@@ -72,7 +72,7 @@ function checkPulse(o, k, io) {
     const task = lobbyTasks[k]; // the first cron task for this room(k).
     const status = incrementTask(k);
     needsChecking().forEach((p) => {
-        logger_1.log(`checking the pulse of ${p.username} @ ${k}`);
+        (0, logger_1.log)(`checking the pulse of ${p.username} @ ${k}`);
         io.to(p.id).emit("pulse check", task.last);
     });
     if (!status.continue) {
@@ -83,23 +83,25 @@ function checkPulse(o, k, io) {
 }
 function stopScheduledTask(lobbyCode) {
     try {
-        logger_1.log(`stopping task, ${lobbyCode}`);
+        (0, logger_1.log)(`stopping task, ${lobbyCode}`);
         const task = lobbyTasks[lobbyCode];
         task.task.stop();
     }
     catch (err) {
-        logger_1.log(err.message);
+        if (err instanceof Error)
+            (0, logger_1.log)(err.message);
     }
 }
 exports.stopScheduledTask = stopScheduledTask;
 function startScheduledTask(lobbyCode) {
     try {
         const lt = lobbyTasks[lobbyCode];
-        logger_1.log(`starting ${lt.name} for room, ${lobbyCode}`);
+        (0, logger_1.log)(`starting ${lt.name} for room, ${lobbyCode}`);
         lt.task.start();
     }
     catch (err) {
-        logger_1.log(err.message);
+        if (err instanceof Error)
+            (0, logger_1.log)(err.message);
     }
 }
 exports.startScheduledTask = startScheduledTask;
@@ -125,7 +127,7 @@ function scheduleTimer(io, lobbyCode, limit) {
         // we have a timer running already, get it.
         scheduledTask = lobbyTasks[timerTask];
         const delta = Math.abs(Date.now() - scheduledTask.created) / 1000;
-        logger_1.log(`timer was initialized ${timerTask} ${delta}s ago`);
+        (0, logger_1.log)(`timer was initialized ${timerTask} ${delta}s ago`);
         return;
     }
     else {

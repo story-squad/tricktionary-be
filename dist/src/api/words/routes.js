@@ -16,7 +16,7 @@ const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
 const utils_1 = require("./utils");
 const logger_1 = require("../../logger");
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 /*
  * This route is for adding words to the database in bulk. Expects a JSON array in the following format:
  *
@@ -33,31 +33,31 @@ router.post("/json", (req, res) => {
     // begin for-loop
     words.forEach((pair) => {
         const [[word, definition]] = Object.entries(pair);
-        const result = utils_1.validateWord({ word, definition });
+        const result = (0, utils_1.validateWord)({ word, definition });
         if (result.ok) {
             model_1.default.add(result.value)
                 .then(() => true)
                 .catch((err) => {
-                logger_1.log(`${result.value}, ${err.message}`);
+                (0, logger_1.log)(`${result.value}, ${err.message}`);
             });
             added++;
         }
         else {
-            logger_1.log(result.message);
+            (0, logger_1.log)(result.message);
             skipped++;
         }
     }); // end for-loop
     res.status(201).json({ added, skipped });
 });
 router.post("/contribute", (req, res) => {
-    const result = utils_1.validateWord(req.body);
+    const result = (0, utils_1.validateWord)(req.body);
     let duplicate;
     if (!result.ok) {
         return res.status(400).json({ error: result.message });
     }
     model_1.default.getByName(result.value.word).then((dup) => {
         duplicate = (dup === null || dup === void 0 ? void 0 : dup.id) ? dup : false;
-        logger_1.log(`duplicate: ${duplicate.word}`);
+        (0, logger_1.log)(`duplicate: ${duplicate.word}`);
         if (!duplicate) {
             // add to database
             model_1.default.add(result.value)
@@ -67,7 +67,7 @@ router.post("/contribute", (req, res) => {
             })
                 .catch((err) => {
                 // error adding to database
-                logger_1.log("ERROR: /contribute");
+                (0, logger_1.log)("ERROR: /contribute");
                 res.status(400).json({ error: err });
             });
         }
@@ -99,8 +99,8 @@ router.get("/by-name/:word", (req, res) => {
  */
 router.get("/scoop/:count", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const numberOfWords = req.params.count;
-    const nw = utils_1.validNumber(numberOfWords) ? Number(numberOfWords) : 1;
-    const scoops = utils_1.validNumber(process.env.SCOOP_SIZE)
+    const nw = (0, utils_1.validNumber)(numberOfWords) ? Number(numberOfWords) : 1;
+    const scoops = (0, utils_1.validNumber)(process.env.SCOOP_SIZE)
         ? Number(process.env.SCOOP_SIZE)
         : 0;
     const words = [];
@@ -190,7 +190,7 @@ router.put("/id/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const id = Number(req.params.id);
     if (!id)
         res.status(400).json({ error: "id?" });
-    const result = utils_1.validateWord(req.body);
+    const result = (0, utils_1.validateWord)(req.body);
     if (!result.ok) {
         return res.status(400).json({ error: result.message });
     }

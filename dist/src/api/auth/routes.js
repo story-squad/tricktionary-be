@@ -16,7 +16,7 @@ const express_1 = require("express");
 const logger_1 = require("../../logger");
 const utils_1 = require("./utils");
 const model_1 = __importDefault(require("../player/model"));
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 const limitFromEnv = Number(process.env.USERNAME_CHARACTER_LIMIT);
 const usernameCharLimit = limitFromEnv > 0 ? limitFromEnv : 12;
 router.post("/recall", (req, res) => {
@@ -25,7 +25,7 @@ router.post("/recall", (req, res) => {
         return res.status(400).json({ error: "token required" });
     }
     // we have a token,
-    const result = utils_1.partialRecall(token);
+    const result = (0, utils_1.partialRecall)(token);
     if (!result.ok) {
         return res.status(400).json(result);
     }
@@ -53,7 +53,7 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
         return res.status(403).json({ message: "last_user_id required" });
     }
     if (jump_code) {
-        logger_1.log("TODO: player is jumping from another device.");
+        (0, logger_1.log)("TODO: player is jumping from another device.");
     }
     // first game ? you will need a new player_id
     let created;
@@ -61,7 +61,7 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
         created = yield model_1.default.newPlayer(last_user_id);
     }
     catch (err) {
-        logger_1.log(`[!ERROR] newPlayer(${last_user_id})`);
+        (0, logger_1.log)(`[!ERROR] newPlayer(${last_user_id})`);
     }
     if (!(created === null || created === void 0 ? void 0 : created.ok)) {
         res.status(400).json({ message: created.message });
@@ -71,7 +71,7 @@ router.post("/new-player", (req, res) => __awaiter(void 0, void 0, void 0, funct
     let token;
     let tokenError;
     try {
-        token = yield utils_1.newToken(last_user_id, pid, undefined, undefined);
+        token = yield (0, utils_1.newToken)(last_user_id, pid, undefined, undefined);
     }
     catch (err) {
         tokenError = err;
@@ -87,8 +87,8 @@ router.post("/update-token", (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
     const extra = utils_1.b64.encode(JSON.stringify({ name, definition, points }));
     try {
-        logger_1.log(`UPDATE TOKEN - Socket: ${s_id}, Player: ${p_id}`);
-        const token = yield utils_1.newToken(s_id, p_id, extra, lobbyCode);
+        (0, logger_1.log)(`UPDATE TOKEN - Socket: ${s_id}, Player: ${p_id}`);
+        const token = yield (0, utils_1.newToken)(s_id, p_id, extra, lobbyCode);
         yield model_1.default.updatePlayer(p_id, { name });
         res.status(200).json(token);
     }
@@ -108,7 +108,7 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     let result;
     let last_username = "";
     try {
-        result = utils_1.partialRecall(last_token); // verify this is one of our tokens.
+        result = (0, utils_1.partialRecall)(last_token); // verify this is one of our tokens.
         if (!result.ok) {
             //  bad token detected!
             return res.status(400).json(result);
@@ -120,14 +120,14 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         player = yield model_1.default.getPlayer(player_id);
     }
     catch (err) {
-        logger_1.log(err.message);
+        (0, logger_1.log)(err.message);
         return res.json({ message: err.message });
     }
     let token;
     let old_user_id = last_user_id;
     let old_user_name = last_username;
     try {
-        let token_request = yield utils_1.newToken(user_id, player_id, undefined, last_lobby); // generate new token & update the player record
+        let token_request = yield (0, utils_1.newToken)(user_id, player_id, undefined, last_lobby); // generate new token & update the player record
         if (token_request.ok) {
             token = token_request.token;
         }

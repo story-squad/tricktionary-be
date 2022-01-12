@@ -18,20 +18,20 @@ exports.default = { addHostChoice, getHostChoiceById };
 function addHostChoice(word_id_one, word_id_two, round_id, times_shuffled) {
     return __awaiter(this, void 0, void 0, function* () {
         // validate object.property types
-        const newHostChoice = utils_1.validateHostChoice({
+        const newHostChoice = (0, utils_1.validateHostChoice)({
             word_id_one,
             word_id_two,
             round_id,
             times_shuffled,
         });
         return newHostChoice.ok
-            ? dbConfig_1.default("host-choices").insert(newHostChoice.value).returning("id")
+            ? (0, dbConfig_1.default)("host-choices").insert(newHostChoice.value).returning("id")
             : [-1, newHostChoice.message];
     });
 }
 function getHostChoiceById(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        return dbConfig_1.default("host-choices").where({ id }).first();
+        return (0, dbConfig_1.default)("host-choices").where({ id }).first();
     });
 }
 //# sourceMappingURL=model.js.map

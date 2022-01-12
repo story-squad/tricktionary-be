@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("../words/utils");
 const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 router.get("/", (req, res) => {
     res.status(200).json({ ok: true, message: "administrative routes" });
 });
@@ -26,7 +26,7 @@ router.get("/", (req, res) => {
  */
 router.get("/round/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const roundId = req.params.id;
-    if (utils_1.validNumber(roundId)) {
+    if ((0, utils_1.validNumber)(roundId)) {
         try {
             const result = yield model_1.default.getRound(Number(roundId)); // We always take my car 'cause it's never been beat
             res.status(200).json(result); // And we've never missed yet with the girls we meet

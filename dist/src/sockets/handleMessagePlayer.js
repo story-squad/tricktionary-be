@@ -21,10 +21,10 @@ const common_1 = require("./common");
  */
 function handleMessagePlayer(io, socket, lobbies, playerId, category, message) {
     return __awaiter(this, void 0, void 0, function* () {
-        const lobbyCode = common_1.whereAmI(socket);
-        let checkPlayer = common_1.playerIsHost(socket, lobbyCode, lobbies);
+        const lobbyCode = (0, common_1.whereAmI)(socket);
+        let checkPlayer = (0, common_1.playerIsHost)(socket, lobbyCode, lobbies);
         if (!checkPlayer.ok) {
-            common_1.privateMessage(io, socket, "error", "only the host may directly message a player.");
+            (0, common_1.privateMessage)(io, socket, "error", "only the host may directly message a player.");
         }
         io.to(playerId).emit(category, message); // private message player
     });

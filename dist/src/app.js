@@ -47,15 +47,15 @@ const redis_1 = require("redis");
 const sockets_1 = __importDefault(require("./sockets"));
 const api_1 = __importDefault(require("./api"));
 const logger_1 = require("./logger");
-logger_1.log("[   Tricktionary API   ]");
-const api = express_1.default();
+(0, logger_1.log)("[   Tricktionary API   ]");
+const api = (0, express_1.default)();
 const JSON_SIZE_LIMIT = "5mb";
 const lobbies = { DEADBEEF: [] };
 api.use(bodyParser.json({
     limit: JSON_SIZE_LIMIT,
 }));
-api.use(helmet_1.default());
-api.use(cors_1.default());
+api.use((0, helmet_1.default)());
+api.use((0, cors_1.default)());
 api.use(express_1.default.json());
 api.use("/help", express_1.default.static(path_1.default.join(__dirname, "docs")));
 // CRUD routes
@@ -78,7 +78,7 @@ api.use("/api/member", api_1.default.member);
 api.use("/api/smash", api_1.default.smash);
 api.use("/api/score", api_1.default.score);
 // web sockets
-const socketApp = http_1.createServer(api);
+const socketApp = (0, http_1.createServer)(api);
 exports.socketApp = socketApp;
 const io = new socket_io_1.Server(socketApp, { cors: { origin: "*" } });
 const redisHost = process.env.REDIS_HOST || "";
@@ -86,18 +86,20 @@ const redisPort = process.env.REDIS_PORT || "6379";
 // use Redis (cache) when available
 if (redisHost.length > 0) {
     // create Redis adapter
-    logger_1.log("found REDIS_HOST, creating adapter.");
+    (0, logger_1.log)("found REDIS_HOST, creating adapter.");
     try {
         const pubClient = new redis_1.RedisClient({
             host: redisHost,
             port: Number(redisPort),
         });
         const subClient = pubClient.duplicate();
-        io.adapter(socket_io_redis_1.createAdapter({ pubClient, subClient }));
+        io.adapter((0, socket_io_redis_1.createAdapter)({ pubClient, subClient }));
     }
     catch (err) {
-        logger_1.log("[error connecting Redis adapter!]");
-        logger_1.log(err.message);
+        (0, logger_1.log)("[error connecting Redis adapter!]");
+        if (err instanceof Error) {
+            (0, logger_1.log)(err.message);
+        }
     }
 }
 // events
@@ -122,7 +124,7 @@ io.on("connection", (socket) => {
         sockets_1.default.handleTimeSync(io, socket, lobbies, seconds);
     });
     socket.on("disconnect", () => {
-        logger_1.log(`Client disconnected, ${socket.id}`);
+        (0, logger_1.log)(`Client disconnected, ${socket.id}`);
     });
     socket.on("create lobby", (username) => {
         sockets_1.default.handleLobbyCreate(io, socket, username, lobbies);
@@ -171,7 +173,7 @@ io.on("connection", (socket) => {
     });
     socket.on("remote paint", (vector) => {
         // start with a simple array of numbers
-        logger_1.log(`[PAINT] ${vector.map((n) => String(n))}`);
+        (0, logger_1.log)(`[PAINT] ${vector.map((n) => String(n))}`);
         sockets_1.default.handleRemotePaint(io, socket, lobbies, vector);
     });
 });

@@ -123,7 +123,7 @@ function stopScheduledTask(lobbyCode: string) {
     const task = lobbyTasks[lobbyCode];
     task.task.stop();
   } catch (err) {
-    log(err.message);
+    if (err instanceof Error) log(err.message);
   }
 }
 
@@ -133,7 +133,7 @@ function startScheduledTask(lobbyCode: string) {
     log(`starting ${lt.name} for room, ${lobbyCode}`);
     lt.task.start();
   } catch (err) {
-    log(err.message);
+    if (err instanceof Error) log(err.message);
   }
 }
 /**

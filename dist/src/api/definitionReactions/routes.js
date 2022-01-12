@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const model_1 = __importDefault(require("./model"));
 const utils_1 = require("./utils");
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 /**
  * example req.body
  *
@@ -29,7 +29,7 @@ const router = express_1.Router();
  *
  */
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = utils_1.validateDefinitionReaction(req.body);
+    const result = (0, utils_1.validateDefinitionReaction)(req.body);
     if (result.ok) {
         // deconstruct KWARGS
         const { user_id, round_id, reaction_id, definition_id, game_finished } = result.value;

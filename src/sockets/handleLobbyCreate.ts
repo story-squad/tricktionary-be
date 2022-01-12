@@ -23,7 +23,9 @@ async function handleLobbyCreate(
     try {
       request_game = await localAxios.post(`/api/game/new`, { og_host: host });
     } catch (err) {
-      log(err.message);
+      if (err instanceof Error) {
+        log(err.message);
+      }
       return;
     }
     return request_game?.data.ok ? request_game?.data.game_id : undefined;
@@ -39,7 +41,9 @@ async function handleLobbyCreate(
       game_id = await createGame(og_host);
     }
   } catch (err) {
-    log(err.message);
+    if (err instanceof Error) {
+      log(err.message);
+    }
   }
   log("LOBBY CREATED BY: " + og_host);
   log("GAME : " + game_id); // returns UNDEFINED
@@ -68,7 +72,11 @@ async function handleLobbyCreate(
       log(`created new token for host with game_id : ${game_id}`);
     } catch (err) {
       log("[ERROR] sending token with 'retry create lobby'");
-      log(err.message);
+
+      if (err instanceof Error) {
+        log(err.message);
+      }
+
       return;
     }
   }
@@ -91,11 +99,14 @@ async function handleLobbyCreate(
     definition: "",
     guesses: [],
     roundId: null,
+    rounds: [{ roundNum: "1", scores: [] }],
   };
   try {
     await updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode);
   } catch (err) {
-    log(err.message);
+    if (err instanceof Error) {
+      log(err.message);
+    }
   }
   privateMessage(io, socket, "welcome", socket.id);
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);

@@ -28,7 +28,7 @@ function handleNewPlayer(io, socket) {
         catch (err) {
             return { ok: false, message: err.message };
         }
-        common_1.privateMessage(io, socket, "token update", newtoken);
+        (0, common_1.privateMessage)(io, socket, "token update", newtoken);
     });
 }
 exports.default = handleNewPlayer;

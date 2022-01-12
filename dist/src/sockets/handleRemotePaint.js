@@ -22,14 +22,14 @@ const logger_1 = require("../logger");
  */
 function handleRemotePaint(io, socket, lobbies, coords) {
     return __awaiter(this, void 0, void 0, function* () {
-        const lobbyCode = common_1.whereAmI(socket);
+        const lobbyCode = (0, common_1.whereAmI)(socket);
         if (!lobbyCode) {
-            logger_1.log(`[!ERROR] socket.id ${socket.id}: cannot paint without a lobbyCode`);
+            (0, logger_1.log)(`[!ERROR] socket.id ${socket.id}: cannot paint without a lobbyCode`);
             return;
         }
         const phase = lobbies[lobbyCode].phase;
         if (phase !== "PAINT") {
-            logger_1.log(`[!ERROR] socket.id ${socket.id}: cannot paint while ${phase}`);
+            (0, logger_1.log)(`[!ERROR] socket.id ${socket.id}: cannot paint while ${phase}`);
             return;
         }
         io.to(lobbyCode).emit("update canvas", [...coords]);

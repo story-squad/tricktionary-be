@@ -24,12 +24,12 @@ function pgUpdate(game_id, round_id, definition_id, reaction_id, callBack) {
     return __awaiter(this, void 0, void 0, function* () {
         let result;
         let value = 0;
-        logger_1.log(`PG: ${game_id}, ${round_id}, ${definition_id}, ${reaction_id}`);
-        const oldValue = yield model_1.get(game_id, round_id, definition_id, reaction_id);
+        (0, logger_1.log)(`PG: ${game_id}, ${round_id}, ${definition_id}, ${reaction_id}`);
+        const oldValue = yield (0, model_1.get)(game_id, round_id, definition_id, reaction_id);
         if (!(oldValue === null || oldValue === void 0 ? void 0 : oldValue.id)) {
             try {
                 // add
-                result = yield model_1.add(game_id, round_id, definition_id, reaction_id);
+                result = yield (0, model_1.add)(game_id, round_id, definition_id, reaction_id);
                 value = result[0] || 0;
             }
             catch (err) {
@@ -39,7 +39,7 @@ function pgUpdate(game_id, round_id, definition_id, reaction_id, callBack) {
         else {
             try {
                 // increment
-                result = yield model_1.incr(game_id, round_id, definition_id, reaction_id);
+                result = yield (0, model_1.incr)(game_id, round_id, definition_id, reaction_id);
                 value = result[0] || result;
             }
             catch (err) {
@@ -60,7 +60,7 @@ function smashUpdate(mem, game_id, round_id, definition_id, reaction_id, callBac
         const keyName = `${model_1.cacheGroupName}${game_id}-${round_id}-${definition_id}-${reaction_id}`;
         // no TricktionaryCache ?
         if (!(mem === null || mem === void 0 ? void 0 : mem.incValue)) {
-            logger_1.log("no cache update");
+            (0, logger_1.log)("no cache update");
             try {
                 // update the postgres database
                 return yield pgUpdate(game_id, round_id, definition_id, reaction_id, callBack);
@@ -68,7 +68,7 @@ function smashUpdate(mem, game_id, round_id, definition_id, reaction_id, callBac
                 // return await callBack(value);
             }
             catch (err) {
-                logger_1.log(err);
+                (0, logger_1.log)(err);
                 return;
             }
         }

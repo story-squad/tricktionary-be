@@ -40,6 +40,6 @@ const server = app_1.socketApp.listen(8080, "127.0.0.1", () => {
     const localAddress = `listening @ http://${address}${port ? `:${port}` : ""}`;
     let details = withRedis ? `w / ${redisDetail} & ` : "w / ";
     details += withDB ? dbDetail : "";
-    console.log(boxMyText_1.boxMyText(["", title, "", localAddress, "", `${details}`, ""], localAddress.length + pad));
+    console.log((0, boxMyText_1.boxMyText)(["", title, "", localAddress, "", `${details}`, ""], localAddress.length + pad));
 });
 //# sourceMappingURL=index.js.map

@@ -14,7 +14,7 @@ exports.default = {
     getUnfinished
 };
 function add(userId, roundID, reactionID, definitionID, gameFinished) {
-    return dbConfig_1.default("Definition-Reactions")
+    return (0, dbConfig_1.default)("Definition-Reactions")
         .insert({
         user_id: userId,
         round_id: roundID,
@@ -25,21 +25,21 @@ function add(userId, roundID, reactionID, definitionID, gameFinished) {
         .returning("id");
 }
 function getByRound(roundID) {
-    return dbConfig_1.default("Definition-Reactions").where({ round_id: roundID });
+    return (0, dbConfig_1.default)("Definition-Reactions").where({ round_id: roundID });
 }
 function getByUser(userID) {
-    return dbConfig_1.default("Definition-Reactions").where({ user_id: userID });
+    return (0, dbConfig_1.default)("Definition-Reactions").where({ user_id: userID });
 }
 function getByReaction(reactionID) {
-    return dbConfig_1.default("Definition-Reactions").where({ reaction_id: reactionID });
+    return (0, dbConfig_1.default)("Definition-Reactions").where({ reaction_id: reactionID });
 }
 function getByDefinition(definitionID) {
-    return dbConfig_1.default("Definition-Reactions").where({ definition_id: definitionID });
+    return (0, dbConfig_1.default)("Definition-Reactions").where({ definition_id: definitionID });
 }
 function getFinished() {
-    return dbConfig_1.default("Definition-Reactions").where({ game_finished: true });
+    return (0, dbConfig_1.default)("Definition-Reactions").where({ game_finished: true });
 }
 function getUnfinished() {
-    return dbConfig_1.default("Definition-Reactions").where({ game_finished: false });
+    return (0, dbConfig_1.default)("Definition-Reactions").where({ game_finished: false });
 }
 //# sourceMappingURL=model.js.map

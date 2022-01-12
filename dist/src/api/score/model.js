@@ -17,12 +17,13 @@ const dbConfig_1 = __importDefault(require("../../dbConfig"));
 const uuid_1 = require("uuid");
 function scoreCard(player_id, game_id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const uuId = uuid_1.v4();
+        const uuId = (0, uuid_1.v4)();
         try {
-            yield dbConfig_1.default("score").insert({ id: uuId, player_id, game_id });
+            yield (0, dbConfig_1.default)("score").insert({ id: uuId, player_id, game_id });
         }
         catch (err) {
-            return { ok: false, message: err.message };
+            if (err instanceof Error)
+                return { ok: false, message: err.message };
         }
         return { ok: true, id: uuId };
     });
@@ -32,10 +33,11 @@ function getPlayerScore(player_id, game_id) {
     return __awaiter(this, void 0, void 0, function* () {
         let result;
         try {
-            result = yield dbConfig_1.default("score").where({ player_id, game_id }).first();
+            result = yield (0, dbConfig_1.default)("score").where({ player_id, game_id }).first();
         }
         catch (err) {
-            result = { ok: false, message: err.message };
+            if (err instanceof Error)
+                result = { ok: false, message: err.message };
         }
         return result;
     });
@@ -46,10 +48,11 @@ function getGames(player_id) {
         //
         let result;
         try {
-            result = yield dbConfig_1.default("score").where({ player_id }).returning("game_id");
+            result = yield (0, dbConfig_1.default)("score").where({ player_id }).returning("game_id");
         }
         catch (err) {
-            result = { ok: false, message: err.message };
+            if (err instanceof Error)
+                result = { ok: false, message: err.message };
         }
         return result;
     });
@@ -59,7 +62,7 @@ function getLatest(game_id) {
     return __awaiter(this, void 0, void 0, function* () {
         let result;
         try {
-            result = yield dbConfig_1.default("score").where({ game_id });
+            result = yield (0, dbConfig_1.default)("score").where({ game_id });
         }
         catch (err) {
             result = [];
@@ -73,10 +76,11 @@ function getPlayers(game_id) {
         //
         let result;
         try {
-            result = yield dbConfig_1.default("score").where({ game_id }).returning("player_id");
+            result = yield (0, dbConfig_1.default)("score").where({ game_id }).returning("player_id");
         }
         catch (err) {
-            result = { ok: false, message: err.message };
+            if (err instanceof Error)
+                result = { ok: false, message: err.message };
         }
         return result;
     });
@@ -86,14 +90,15 @@ function addPoints(player_id, game_id, points) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // update players points
-            const result = yield dbConfig_1.default("score")
+            const result = yield (0, dbConfig_1.default)("score")
                 .where({ game_id, player_id })
                 .increment("points", points)
                 .returning("points");
             return { ok: true, points: result };
         }
         catch (err) {
-            return { ok: false, message: err.message };
+            if (err instanceof Error)
+                return { ok: false, message: err.message };
         }
     });
 }
@@ -102,14 +107,15 @@ function subPoints(player_id, game_id, points) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // update players points
-            const result = yield dbConfig_1.default("score")
+            const result = yield (0, dbConfig_1.default)("score")
                 .where({ game_id, player_id })
                 .decrement("points", points)
                 .returning("points");
             return { ok: true, points: result };
         }
         catch (err) {
-            return { ok: false, message: err.message };
+            if (err instanceof Error)
+                return { ok: false, message: err.message };
         }
     });
 }
@@ -117,13 +123,14 @@ exports.subPoints = subPoints;
 function updateDefinition(player_id, game_id, top_definition_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const result = yield dbConfig_1.default("score")
+            const result = yield (0, dbConfig_1.default)("score")
                 .where({ game_id, player_id })
                 .update({ top_definition_id });
             return { ok: true, score: result };
         }
         catch (err) {
-            return { ok: false, error: err.message };
+            if (err instanceof Error)
+                return { ok: false, error: err.message };
         }
     });
 }
@@ -132,13 +139,14 @@ function findTopDefinition(player_id, game_id) {
     return __awaiter(this, void 0, void 0, function* () {
         let top_definition;
         try {
-            top_definition = yield dbConfig_1.default("definitions")
+            top_definition = yield (0, dbConfig_1.default)("definitions")
                 .where({ player_id, game_id })
                 .orderBy("score", "desc")
                 .first();
         }
         catch (err) {
-            return { ok: false, error: err.message };
+            if (err instanceof Error)
+                return { ok: false, error: err.message };
         }
         return { ok: true, top_definition };
     });

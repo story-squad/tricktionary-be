@@ -29,14 +29,14 @@ const logger_1 = require("../logger");
  */
 function handleSetFinale(io, socket, lobbyCode, lobbies) {
     return __awaiter(this, void 0, void 0, function* () {
-        logger_1.log("[Finale]");
-        const present = lobbyCode && common_1.whereAmI(socket) === lobbyCode;
+        (0, logger_1.log)("[Finale]");
+        const present = lobbyCode && (0, common_1.whereAmI)(socket) === lobbyCode;
         if (!present) {
-            handleErrorMessage_1.default(io, socket, 2004, "You're not in the lobby");
+            (0, handleErrorMessage_1.default)(io, socket, 2004, "You're not in the lobby");
         }
-        const authorized = common_1.playerIsHost(socket, lobbyCode, lobbies);
+        const authorized = (0, common_1.playerIsHost)(socket, lobbyCode, lobbies);
         if (!authorized.ok) {
-            handleErrorMessage_1.default(io, socket, 2005, "You're not the host and can not end the game");
+            (0, handleErrorMessage_1.default)(io, socket, 2005, "You're not the host and can not end the game");
         }
         const game_id = lobbies[lobbyCode].game_id;
         let results;
@@ -49,7 +49,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                 .filter((c) => c.top_definition_id); // only players who have submitted definitions
         }
         catch (err) {
-            logger_1.log("error posting scores");
+            (0, logger_1.log)("error posting scores");
         }
         // cast point values into a set
         const values = new Set(checkPoints.map((v) => v.points));
@@ -62,10 +62,10 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
                 .sort(function (a, b) {
                 return b.points - a.points;
             });
-            results = yield common_1.doIt(game_id, naturalTopThree[0], naturalTopThree[1] || undefined, naturalTopThree[2] || undefined);
+            results = yield (0, common_1.doIt)(game_id, naturalTopThree[0], naturalTopThree[1] || undefined, naturalTopThree[2] || undefined);
         }
         else {
-            results = yield common_1.tieBreakerMatch(checkPoints, game_id, lobbies, lobbyCode);
+            results = yield (0, common_1.tieBreakerMatch)(checkPoints, game_id, lobbies, lobbyCode);
         }
         let data;
         let topThree;
@@ -78,7 +78,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
             topThree = results.map((r) => {
                 const cu = lobbies[lobbyCode].players.filter((p) => p.id === r.user_id)[0];
                 const lb = data.filter((player) => player.player_id === cu.pid)[0] || undefined;
-                logger_1.log(`[${game_id}] ${n + 1}${['st', 'nd', 'rd'][n]} place -> ${cu.username}`);
+                (0, logger_1.log)(`[${game_id}] ${n + 1}${['st', 'nd', 'rd'][n]} place -> ${cu.username}`);
                 n++;
                 return {
                     user_id: r.user_id,
@@ -88,7 +88,7 @@ function handleSetFinale(io, socket, lobbyCode, lobbies) {
             });
         }
         catch (err) {
-            logger_1.log(err);
+            (0, logger_1.log)(err);
             // if we have a problem with the leaderboard endpoint, log it and return the current results
             topThree = results;
         }

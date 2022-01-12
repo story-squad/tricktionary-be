@@ -17,7 +17,7 @@ const logger_1 = require("../../logger");
 const middleware_1 = require("../middleware");
 const util_1 = __importDefault(require("./util"));
 const model_1 = require("./model");
-const router = express_1.Router();
+const router = (0, express_1.Router)();
 router.put("/emoji/:lobbyCode", middleware_1.redisCache, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const tc = req.redis;
     const lobbyCode = req.params.lobbyCode;
@@ -26,7 +26,7 @@ router.put("/emoji/:lobbyCode", middleware_1.redisCache, (req, res) => __awaiter
     const { roundId, definitionId, reactionId, value } = req.body;
     if (!lobbyCode || !game_id) {
         const details = `lobbyCode ${lobbyCode}, game_id ${game_id}`;
-        logger_1.log(`[SMASH!] error: ${details}`);
+        (0, logger_1.log)(`[SMASH!] error: ${details}`);
         return yield res.json({ error: details });
     }
     // initialize last value
@@ -38,7 +38,7 @@ router.put("/emoji/:lobbyCode", middleware_1.redisCache, (req, res) => __awaiter
     const tcCallback = (tc === null || tc === void 0 ? void 0 : tc.createCallback(keyName, (value) => __awaiter(void 0, void 0, void 0, function* () { return res.json({ value }); }))) ||
         simpleCallback;
     // call asynchronous update function
-    return yield util_1.default(tc, game_id, roundId, definitionId, reactionId, tcCallback, last);
+    return yield (0, util_1.default)(tc, game_id, roundId, definitionId, reactionId, tcCallback, last);
 }));
 router.get("/totals/:game_id/:round_id", middleware_1.redisCache, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const tc = req.redis;
@@ -47,7 +47,7 @@ router.get("/totals/:game_id/:round_id", middleware_1.redisCache, (req, res) => 
     if (!tc) {
         // return the results from the RDB
         try {
-            const totals = yield model_1.getTotals(game_id, round_id);
+            const totals = yield (0, model_1.getTotals)(game_id, round_id);
             return yield res.status(200).json(totals);
         }
         catch (err) {
@@ -63,7 +63,7 @@ router.get("/totals/:game_id/:round_id", middleware_1.redisCache, (req, res) => 
         return __awaiter(this, void 0, void 0, function* () {
             const check = Number(value);
             if (check === NaN || check <= 0) {
-                logger_1.log("[ERROR] non-numeric value");
+                (0, logger_1.log)("[ERROR] non-numeric value");
             }
             let parseKey = keyName.split("-");
             const reaction_id = Number(parseKey.pop()); // thats numberwang
@@ -79,7 +79,7 @@ router.get("/totals/:game_id/:round_id", middleware_1.redisCache, (req, res) => 
             });
             if (result.queue.length === total) {
                 // lets rotate the board!
-                yield model_1.bulkUpdate(result.queue, (value) => __awaiter(this, void 0, void 0, function* () { return res.json(value); }));
+                yield (0, model_1.bulkUpdate)(result.queue, (value) => __awaiter(this, void 0, void 0, function* () { return res.json(value); }));
             }
         });
     }

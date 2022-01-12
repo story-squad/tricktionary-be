@@ -23,8 +23,8 @@ const logger_1 = require("../logger");
  */
 function handleTimeSync(io, socket, lobbies, seconds) {
     return __awaiter(this, void 0, void 0, function* () {
-        const lobbyCode = common_1.whereAmI(socket) || "";
-        const checkIfHost = common_1.playerIsHost(socket, lobbyCode, lobbies);
+        const lobbyCode = (0, common_1.whereAmI)(socket) || "";
+        const checkIfHost = (0, common_1.playerIsHost)(socket, lobbyCode, lobbies);
         if (checkIfHost.ok) {
             // log(`synchronize timers: ${seconds}`);
             const host = lobbies[lobbyCode].host;
@@ -36,7 +36,7 @@ function handleTimeSync(io, socket, lobbies, seconds) {
             });
         }
         else {
-            logger_1.log(`${socket.id} not hosting! cannot synchronize timers`);
+            (0, logger_1.log)(`${socket.id} not hosting! cannot synchronize timers`);
         }
     });
 }
