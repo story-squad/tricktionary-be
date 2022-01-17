@@ -2,16 +2,28 @@ import { localAxios } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
 import { log } from "../logger";
 
-async function handleSubmitDefinition(
+/**
+ * Handles the addition/removal of bots in the game
+ *
+ * @param io (socket io)
+ * @param socket (socket io)
+ * @param definition Bot's definition submission
+ * @param botID Bot's ID
+ * @param lobbyCode Bot's join code
+ * @param lobbies game-state
+ */
+
+async function handleAlphaBotSubmission(
   io: any,
   socket: any,
   definition: string,
+  botID: string,
   lobbyCode: any,
   lobbies: any
 ) {
   const definitionEpoch = Date.now(); // add a timestamp to the player for tie-breaking
   let newPlayer: any = await lobbies[lobbyCode].players.find(
-    (player: any) => player.id === socket.id
+    (player: any) => player.id === botID
   );
   const game_id = lobbies[lobbyCode].game_id;
   let numSubmitted: number = 0;
@@ -20,7 +32,6 @@ async function handleSubmitDefinition(
   try {
     newPlayer.definition = definition;
     numSubmitted++;
-    log(`Player ID test: ${newPlayer.id}`);
     newDef = await localAxios.post("/api/definitions/new", {
       playerId: newPlayer.id,
       definition,
@@ -29,24 +40,15 @@ async function handleSubmitDefinition(
       game_id,
     });
   } catch (err) {
-    log("errror! handleSubmitDefinitions:22");
-    return handleErrorMessage(
-      io,
-      socket,
-      2003,
-      "There was a server error while submitting your definition."
-    );
+    log("errror! handleAlphaBotSubmission:22");
+
+    log(`There was a server error while ${botID} submitted their definition.`);
   }
   // then ...
   const definitionId = newDef?.data?.definitionId;
   if (!definitionId) {
     // error submitting definition,
-    return handleErrorMessage(
-      io,
-      socket,
-      2003,
-      "There was a server error while submitting your definition."
-    );
+    log(`There was a server error while ${botID} submitted their definition.`);
   }
   newPlayer = { ...newPlayer, definitionId, definitionEpoch }; // store definition id
   // update & count number of player submissions
@@ -70,4 +72,4 @@ async function handleSubmitDefinition(
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
 }
 
-export default handleSubmitDefinition;
+export default handleAlphaBotSubmission;

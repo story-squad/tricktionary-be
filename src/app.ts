@@ -35,7 +35,9 @@ api.use("/help", express.static(path.join(__dirname, "docs")));
 
 // CRUD routes
 api.get("/", (req, res) =>
-  res.status(200).json({ api: "running", timestamp: Date.now() })
+  res
+    .status(200)
+    .json({ api: "running", timestamp: Date.now(), build: "Jan 01/21/2022" })
 );
 api.get("/api", (req, res) =>
   res.status(200).json({ api: "𝜋", timestamp: Date.now() })
@@ -124,6 +126,21 @@ io.on("connection", (socket) => {
   });
 
   socket.on(
+    "manage alphabot",
+    (botName: string, botID: string, action: string, lobbyCode: string) => {
+      gameSocketHandler.handleAlphaBot(
+        io,
+        socket,
+        botName,
+        botID,
+        action,
+        lobbyCode,
+        lobbies
+      );
+    }
+  );
+
+  socket.on(
     "start game",
     (settings: any, lobbyCode: string, hostChoice: any) => {
       gameSocketHandler.handleStartGame(
@@ -146,6 +163,20 @@ io.on("connection", (socket) => {
       lobbies
     );
   });
+
+  socket.on(
+    "bot definition submitted",
+    (definition: string, botID: string, lobbyCode: string) => {
+      gameSocketHandler.handleAlphaBotSubmission(
+        io,
+        socket,
+        definition,
+        botID,
+        lobbyCode,
+        lobbies
+      );
+    }
+  );
 
   socket.on("guess", (lobbyCode: string, guesses: any[]) => {
     gameSocketHandler.handleArrayOfGuesses(
