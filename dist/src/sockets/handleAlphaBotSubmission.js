@@ -31,6 +31,7 @@ function handleAlphaBotSubmission(io, socket, definition, botID, lobbyCode, lobb
         // add new definition.
         let newDef;
         try {
+            console.log("Bot submission data", newPlayer);
             newPlayer.definition = definition;
             numSubmitted++;
             newDef = yield common_1.localAxios.post("/api/definitions/new", {

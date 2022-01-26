@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = require("../logger");
 const common_1 = require("./common");
-const uuid_1 = require("uuid");
 /**
  * Handles the addition/removal of bots in the game
  *
@@ -47,8 +46,41 @@ function handleAlphaBot(io, socket, botName, botID, action, lobbyCode, lobbies) 
         const curRoundIndex = (0, common_1.getCurrentRoundIndex)(lobbies, lobbyCode);
         //* Either add or remove the bot from the list
         if (action === "add") {
-            // Create a UUID with proper syntax for pid
-            const uuId = (0, uuid_1.v4)();
+            // Let's check if bot data is in DB for the current round
+            // If bot does not exist, create a record for it on the DB
+            const botExists = yield common_1.localAxios.get(`/api/bot/namecheck/${botName}/${lobbyCode}`);
+            let botPID;
+            let login;
+            if (botExists.data) {
+                try {
+                    login = yield common_1.localAxios.get(`/api/bot/botpid/${botName}/${lobbyCode}`);
+                    console.log(login.data);
+                    botPID = login === null || login === void 0 ? void 0 : login.data.id;
+                }
+                catch (err) {
+                    if (err instanceof Error) {
+                        return { ok: false, message: err.message };
+                    }
+                }
+                (0, logger_1.log)(`The bot ${botName}, with ID ${botID} has been re-added to game ${lobbyCode}`);
+            }
+            else {
+                try {
+                    const last_user_id = botID;
+                    login = yield common_1.localAxios.post("/api/bot/new-bot", {
+                        last_user_id,
+                        botName,
+                        lobbyCode,
+                    });
+                    botPID = login === null || login === void 0 ? void 0 : login.data.pid;
+                }
+                catch (err) {
+                    if (err instanceof Error) {
+                        return { ok: false, message: err.message };
+                    }
+                }
+                (0, logger_1.log)(`The bot ${botName}, with ID ${botID} has been added to game ${lobbyCode}`);
+            }
             // Add bot to bots list
             lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { bots: [
                     ...lobbies[lobbyCode].bots,
@@ -64,7 +96,7 @@ function handleAlphaBot(io, socket, botName, botID, action, lobbyCode, lobbies) 
                         definition: "",
                         points: 0,
                         connected: true,
-                        pid: uuId,
+                        pid: botPID,
                     },
                 ] });
             // Add bot to the round player list
@@ -75,7 +107,6 @@ function handleAlphaBot(io, socket, botName, botID, action, lobbyCode, lobbies) 
                     { playerId: botID, score: 0 },
                 ],
             };
-            (0, logger_1.log)(`The bot ${botName}, with ID ${botID} has been added to game ${lobbyCode}`);
         }
         else {
             // Remove the bot from the bot list

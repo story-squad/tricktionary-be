@@ -53,6 +53,7 @@ api.use("/api/definitions", apiRoutes.definitions);
 api.use("/api/admin", apiRoutes.admin);
 api.use("/api/auth", apiRoutes.auth);
 api.use("/api/player", apiRoutes.player);
+api.use("/api/bot", apiRoutes.bots);
 api.use("/api/game", apiRoutes.game);
 api.use("/api/choice", apiRoutes.choice);
 api.use("/api/payments", apiRoutes.payment);

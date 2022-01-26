@@ -183,10 +183,10 @@ function checkSettings(settings) {
     return { ok: true, settings };
 }
 exports.checkSettings = checkSettings;
-function contributeWord(word, definition, source) {
+function contributeWord(word, definition, category, source) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, logger_1.log)("new word!");
-        let newWord = { word, definition, source, id: 0 };
+        let newWord = { word, definition, category, source, id: 0 };
         // write word to user-word db table.
         try {
             const { data } = yield localAxios.post("/api/words/contribute", {
@@ -284,7 +284,7 @@ function startNewRound(host, word, lobbies, lobbyCode, lobbySettings) {
             filter: lobbySettings.filter,
         };
         // set phasers to "WRITING" and update the game state
-        lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { phase, word: word.word, definition: word.definition, roundId,
+        lobbies[lobbyCode] = Object.assign(Object.assign({}, lobbies[lobbyCode]), { phase, word: word.word, definition: word.definition, category: word.category !== undefined ? word.category : "thing", roundId,
             roundSettings,
             host });
         // REST-ful update

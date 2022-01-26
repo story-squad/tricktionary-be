@@ -18,6 +18,7 @@ async function handleSubmitDefinition(
   // add new definition.
   let newDef: any;
   try {
+    console.log("Player Submission Data", newPlayer);
     newPlayer.definition = definition;
     numSubmitted++;
     log(`Player ID test: ${newPlayer.id}`);

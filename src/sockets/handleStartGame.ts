@@ -23,12 +23,18 @@ async function handleStartGame(
     return;
   }
   let { word, source } = r.settings;
+
   if (word.id === 0) {
     try {
-      word = await contributeWord(word.word, word.definition, source);
+      word = await contributeWord(
+        word.word,
+        word.definition,
+        word.category,
+        source
+      );
     } catch (err) {
       log(
-        `[!ERROR] handleStartGame -> contributeWord(${word.word}, ${word.definition}, ${source})`
+        `[!ERROR] handleStartGame -> contributeWord(${word.word}, ${word.definition}, ${word.category}, ${source})`
       );
       handleErrorMessage(io, socket, 2006, defaultError);
       return;

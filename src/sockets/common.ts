@@ -222,10 +222,11 @@ function checkSettings(settings: any) {
 async function contributeWord(
   word: string,
   definition: string,
+  category: string,
   source: string
 ) {
   log("new word!");
-  let newWord = { word, definition, source, id: 0 };
+  let newWord = { word, definition, category, source, id: 0 };
   // write word to user-word db table.
   try {
     const { data } = await localAxios.post("/api/words/contribute", {
@@ -324,6 +325,7 @@ async function startNewRound(
     phase,
     word: word.word,
     definition: word.definition,
+    category: word.category !== undefined ? word.category : "thing",
     roundId,
     roundSettings,
     host,

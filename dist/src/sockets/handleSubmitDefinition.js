@@ -25,6 +25,7 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
         // add new definition.
         let newDef;
         try {
+            console.log("Player Submission Data", newPlayer);
             newPlayer.definition = definition;
             numSubmitted++;
             (0, logger_1.log)(`Player ID test: ${newPlayer.id}`);

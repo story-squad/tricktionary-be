@@ -88,7 +88,13 @@ export async function newToken(
       lobbyCode
     ); // generate new token
     await Player.updatePlayer(player_id, { token, last_user_id }); // update the player record
-    return { ok: true, token, message: "token update", status: 200 };
+    return {
+      ok: true,
+      token,
+      message: "token update",
+      status: 200,
+      pid: player_id,
+    };
   } catch (err) {
     return { ok: false, message: err.message, status: 400 };
   }

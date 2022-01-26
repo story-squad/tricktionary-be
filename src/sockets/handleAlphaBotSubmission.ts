@@ -30,6 +30,7 @@ async function handleAlphaBotSubmission(
   // add new definition.
   let newDef: any;
   try {
+    console.log("Bot submission data", newPlayer);
     newPlayer.definition = definition;
     numSubmitted++;
     newDef = await localAxios.post("/api/definitions/new", {

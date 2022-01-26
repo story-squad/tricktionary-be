@@ -1,5 +1,5 @@
 import { log } from "../logger";
-import { LC_LENGTH, getCurrentRoundIndex } from "./common";
+import { LC_LENGTH, getCurrentRoundIndex, localAxios } from "./common";
 import { v4 } from "uuid";
 
 /**
@@ -55,8 +55,50 @@ async function handleAlphaBot(
 
   //* Either add or remove the bot from the list
   if (action === "add") {
-    // Create a UUID with proper syntax for pid
-    const uuId = v4();
+    // Let's check if bot data is in DB for the current round
+    // If bot does not exist, create a record for it on the DB
+    const botExists = await localAxios.get(
+      `/api/bot/namecheck/${botName}/${lobbyCode}`
+    );
+
+    let botPID;
+    let login;
+
+    if (botExists.data) {
+      try {
+        login = await localAxios.get(`/api/bot/botpid/${botName}/${lobbyCode}`);
+
+        console.log(login.data);
+        botPID = login?.data.id;
+      } catch (err) {
+        if (err instanceof Error) {
+          return { ok: false, message: err.message };
+        }
+      }
+
+      log(
+        `The bot ${botName}, with ID ${botID} has been re-added to game ${lobbyCode}`
+      );
+    } else {
+      try {
+        const last_user_id = botID;
+        login = await localAxios.post("/api/bot/new-bot", {
+          last_user_id,
+          botName,
+          lobbyCode,
+        });
+
+        botPID = login?.data.pid;
+      } catch (err) {
+        if (err instanceof Error) {
+          return { ok: false, message: err.message };
+        }
+      }
+
+      log(
+        `The bot ${botName}, with ID ${botID} has been added to game ${lobbyCode}`
+      );
+    }
 
     // Add bot to bots list
     lobbies[lobbyCode] = {
@@ -76,7 +118,7 @@ async function handleAlphaBot(
           definition: "",
           points: 0,
           connected: true,
-          pid: uuId,
+          pid: botPID,
         },
       ],
     };
@@ -89,10 +131,6 @@ async function handleAlphaBot(
         { playerId: botID, score: 0 },
       ],
     };
-
-    log(
-      `The bot ${botName}, with ID ${botID} has been added to game ${lobbyCode}`
-    );
   } else {
     // Remove the bot from the bot list
     lobbies[lobbyCode] = {

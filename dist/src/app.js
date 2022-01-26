@@ -73,6 +73,7 @@ api.use("/api/definitions", api_1.default.definitions);
 api.use("/api/admin", api_1.default.admin);
 api.use("/api/auth", api_1.default.auth);
 api.use("/api/player", api_1.default.player);
+api.use("/api/bot", api_1.default.bots);
 api.use("/api/game", api_1.default.game);
 api.use("/api/choice", api_1.default.choice);
 api.use("/api/payments", api_1.default.payment);
