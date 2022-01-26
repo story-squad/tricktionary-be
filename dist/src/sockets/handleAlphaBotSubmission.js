@@ -8,27 +8,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
-const handleErrorMessage_1 = __importDefault(require("./handleErrorMessage"));
 const logger_1 = require("../logger");
-function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
+/**
+ * Handles the addition/removal of bots in the game
+ *
+ * @param io (socket io)
+ * @param socket (socket io)
+ * @param definition Bot's definition submission
+ * @param botID Bot's ID
+ * @param lobbyCode Bot's join code
+ * @param lobbies game-state
+ */
+function handleAlphaBotSubmission(io, socket, definition, botID, lobbyCode, lobbies) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const definitionEpoch = Date.now(); // add a timestamp to the player for tie-breaking
-        let newPlayer = yield lobbies[lobbyCode].players.find((player) => player.id === socket.id);
+        let newPlayer = yield lobbies[lobbyCode].players.find((player) => player.id === botID);
         const game_id = lobbies[lobbyCode].game_id;
         let numSubmitted = 0;
         // add new definition.
         let newDef;
         try {
-            console.log("Player Submission Data", newPlayer);
+            console.log("Bot submission data", newPlayer);
             newPlayer.definition = definition;
             numSubmitted++;
-            (0, logger_1.log)(`Player ID test: ${newPlayer.id}`);
             newDef = yield common_1.localAxios.post("/api/definitions/new", {
                 playerId: newPlayer.id,
                 definition,
@@ -38,14 +43,14 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
             });
         }
         catch (err) {
-            (0, logger_1.log)("errror! handleSubmitDefinitions:22");
-            return (0, handleErrorMessage_1.default)(io, socket, 2003, "There was a server error while submitting your definition.");
+            (0, logger_1.log)("errror! handleAlphaBotSubmission:22");
+            (0, logger_1.log)(`There was a server error while ${botID} submitted their definition.`);
         }
         // then ...
         const definitionId = (_a = newDef === null || newDef === void 0 ? void 0 : newDef.data) === null || _a === void 0 ? void 0 : _a.definitionId;
         if (!definitionId) {
             // error submitting definition,
-            return (0, handleErrorMessage_1.default)(io, socket, 2003, "There was a server error while submitting your definition.");
+            (0, logger_1.log)(`There was a server error while ${botID} submitted their definition.`);
         }
         newPlayer = Object.assign(Object.assign({}, newPlayer), { definitionId, definitionEpoch }); // store definition id
         // update & count number of player submissions
@@ -65,5 +70,5 @@ function handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies) {
         io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
     });
 }
-exports.default = handleSubmitDefinition;
-//# sourceMappingURL=handleSubmitDefinition.js.map
+exports.default = handleAlphaBotSubmission;
+//# sourceMappingURL=handleAlphaBotSubmission.js.map

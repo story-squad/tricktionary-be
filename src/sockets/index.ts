@@ -1,6 +1,8 @@
 import handleLobbyLeave from "./handleLobbyLeave";
 import handleLobbyCreate from "./handleLobbyCreate";
 import handleLobbyJoin from "./handleLobbyJoin";
+import handleAlphaBot from "./handleAlphaBot";
+import handleAlphaBotSubmission from "./handleAlphaBotSubmission";
 import handleStartGame from "./handleStartGame";
 import handleSubmitDefinition from "./handleSubmitDefinition";
 import handlePlayAgain from "./handlePlayAgain";
@@ -27,6 +29,7 @@ export default {
   handleLobbyJoin,
   handleStartGame,
   handleSubmitDefinition,
+  handleAlphaBotSubmission,
   handlePlayAgain,
   handleArrayOfGuesses,
   handleErrorMessage,
@@ -45,4 +48,5 @@ export default {
   handleGetReactions,
   removeFromLobby,
   handleRemotePaint,
+  handleAlphaBot,
 };

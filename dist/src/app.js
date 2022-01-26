@@ -59,7 +59,9 @@ api.use((0, cors_1.default)());
 api.use(express_1.default.json());
 api.use("/help", express_1.default.static(path_1.default.join(__dirname, "docs")));
 // CRUD routes
-api.get("/", (req, res) => res.status(200).json({ api: "running", timestamp: Date.now() }));
+api.get("/", (req, res) => res
+    .status(200)
+    .json({ api: "running", timestamp: Date.now(), build: "Jan 01/21/2022" }));
 api.get("/api", (req, res) => res.status(200).json({ api: "𝜋", timestamp: Date.now() }));
 api.use("/api/words", api_1.default.word);
 api.use("/api/definition-reactions", api_1.default.definitionReaction);
@@ -71,6 +73,7 @@ api.use("/api/definitions", api_1.default.definitions);
 api.use("/api/admin", api_1.default.admin);
 api.use("/api/auth", api_1.default.auth);
 api.use("/api/player", api_1.default.player);
+api.use("/api/bot", api_1.default.bots);
 api.use("/api/game", api_1.default.game);
 api.use("/api/choice", api_1.default.choice);
 api.use("/api/payments", api_1.default.payment);
@@ -132,11 +135,17 @@ io.on("connection", (socket) => {
     socket.on("join lobby", (username, lobbyCode) => {
         sockets_1.default.handleLobbyJoin(io, socket, username, lobbyCode, lobbies, false);
     });
+    socket.on("manage alphabot", (botName, botID, action, lobbyCode) => {
+        sockets_1.default.handleAlphaBot(io, socket, botName, botID, action, lobbyCode, lobbies);
+    });
     socket.on("start game", (settings, lobbyCode, hostChoice) => {
         sockets_1.default.handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice);
     });
     socket.on("definition submitted", (definition, lobbyCode) => {
         sockets_1.default.handleSubmitDefinition(io, socket, definition, lobbyCode, lobbies);
+    });
+    socket.on("bot definition submitted", (definition, botID, lobbyCode) => {
+        sockets_1.default.handleAlphaBotSubmission(io, socket, definition, botID, lobbyCode, lobbies);
     });
     socket.on("guess", (lobbyCode, guesses) => {
         sockets_1.default.handleArrayOfGuesses(io, socket, lobbyCode, lobbies, guesses);

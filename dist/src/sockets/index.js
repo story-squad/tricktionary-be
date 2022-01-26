@@ -25,6 +25,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const handleLobbyLeave_1 = __importDefault(require("./handleLobbyLeave"));
 const handleLobbyCreate_1 = __importDefault(require("./handleLobbyCreate"));
 const handleLobbyJoin_1 = __importDefault(require("./handleLobbyJoin"));
+const handleAlphaBot_1 = __importDefault(require("./handleAlphaBot"));
+const handleAlphaBotSubmission_1 = __importDefault(require("./handleAlphaBotSubmission"));
 const handleStartGame_1 = __importDefault(require("./handleStartGame"));
 const handleSubmitDefinition_1 = __importDefault(require("./handleSubmitDefinition"));
 const handlePlayAgain_1 = __importDefault(require("./handlePlayAgain"));
@@ -50,6 +52,7 @@ exports.default = {
     handleLobbyJoin: handleLobbyJoin_1.default,
     handleStartGame: handleStartGame_1.default,
     handleSubmitDefinition: handleSubmitDefinition_1.default,
+    handleAlphaBotSubmission: handleAlphaBotSubmission_1.default,
     handlePlayAgain: handlePlayAgain_1.default,
     handleArrayOfGuesses: handleGuess_1.handleArrayOfGuesses,
     handleErrorMessage: handleErrorMessage_1.default,
@@ -68,5 +71,6 @@ exports.default = {
     handleGetReactions: handleGetReactions_1.default,
     removeFromLobby: handleDisconnection_1.removeFromLobby,
     handleRemotePaint: handleRemotePaint_1.default,
+    handleAlphaBot: handleAlphaBot_1.default,
 };
 //# sourceMappingURL=index.js.map

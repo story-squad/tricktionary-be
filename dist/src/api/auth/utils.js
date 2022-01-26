@@ -75,7 +75,13 @@ function newToken(last_user_id, player_id, extra, lobbyCode) {
         try {
             const token = yield generateToken(last_user_id, player_id, extra, lobbyCode); // generate new token
             yield model_1.default.updatePlayer(player_id, { token, last_user_id }); // update the player record
-            return { ok: true, token, message: "token update", status: 200 };
+            return {
+                ok: true,
+                token,
+                message: "token update",
+                status: 200,
+                pid: player_id,
+            };
         }
         catch (err) {
             return { ok: false, message: err.message, status: 400 };

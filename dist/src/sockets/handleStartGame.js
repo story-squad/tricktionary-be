@@ -27,10 +27,10 @@ function handleStartGame(io, socket, lobbyCode, lobbies, settings, hostChoice) {
         let { word, source } = r.settings;
         if (word.id === 0) {
             try {
-                word = yield (0, common_1.contributeWord)(word.word, word.definition, source);
+                word = yield (0, common_1.contributeWord)(word.word, word.definition, word.category, source);
             }
             catch (err) {
-                (0, logger_1.log)(`[!ERROR] handleStartGame -> contributeWord(${word.word}, ${word.definition}, ${source})`);
+                (0, logger_1.log)(`[!ERROR] handleStartGame -> contributeWord(${word.word}, ${word.definition}, ${word.category}, ${source})`);
                 (0, handleErrorMessage_1.default)(io, socket, 2006, defaultError);
                 return;
             }
