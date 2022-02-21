@@ -47,7 +47,7 @@
         "@types/redis": "^2.8.28",
         "@types/socket.io": "^3.0.2",
         "@types/socket.io-redis": "^1.0.27",
-        "docusaurus-plugin-typedoc": "^0.11.0",
+        "docusaurus-plugin-typedoc": "^0.17.0",
         "jest": "^27.4.5",
         "supertest": "^6.1.6",
         "ts-node": "^9.1.1",
@@ -2556,13 +2556,13 @@
       }
     },
     "node_modules/docusaurus-plugin-typedoc": {
-      "version": "0.11.0",
-      "resolved": "https://registry.npmjs.org/docusaurus-plugin-typedoc/-/docusaurus-plugin-typedoc-0.11.0.tgz",
-      "integrity": "sha512-U4FESmxZNkXXmUlLHiSU5GGzz+DCJsnFauI5puYL22KMTy4CLE6i1kNOpwmHtmfO2XMkAXe3R7YHossOgP0FFg==",
+      "version": "0.17.0",
+      "resolved": "https://registry.npmjs.org/docusaurus-plugin-typedoc/-/docusaurus-plugin-typedoc-0.17.0.tgz",
+      "integrity": "sha512-FOvHHd5RrsgmPdn2RcUZNh6g/s5FynEI1ChdRbAPW0o7vpuElUV3Wq2YkiStw8pcTgdgz2cy8qaFY55hDoEIiA==",
       "dev": true,
       "peerDependencies": {
-        "typedoc": ">=0.20.19",
-        "typedoc-plugin-markdown": ">=3.6.0"
+        "typedoc": ">=0.22.0",
+        "typedoc-plugin-markdown": ">=3.11.10"
       }
     },
     "node_modules/domexception": {
@@ -7440,18 +7440,15 @@
       }
     },
     "node_modules/typedoc-plugin-markdown": {
-      "version": "3.6.0",
-      "resolved": "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-3.6.0.tgz",
-      "integrity": "sha512-fg4xby3awJVVxB8TdhHNsZQfiTC5x1XmauVwhKXc6hGeu1bzTnqrkmDT8NCjxfUgw64si8cUX1jBfBjAHthWpQ==",
+      "version": "3.11.14",
+      "resolved": "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-3.11.14.tgz",
+      "integrity": "sha512-lh47OQvl0079nB18YL9wuTRRhMpjo300SZKfx/xpQY8qG+GINeSxTod95QBELeI0NP81sNtUbemRDrn5nyef4Q==",
       "dev": true,
       "dependencies": {
-        "handlebars": "^4.7.6"
-      },
-      "engines": {
-        "node": ">= 10.8.0"
+        "handlebars": "^4.7.7"
       },
       "peerDependencies": {
-        "typedoc": ">=0.20.0"
+        "typedoc": ">=0.22.0"
       }
     },
     "node_modules/typedoc/node_modules/glob": {
@@ -9837,9 +9834,9 @@
       "dev": true
     },
     "docusaurus-plugin-typedoc": {
-      "version": "0.11.0",
-      "resolved": "https://registry.npmjs.org/docusaurus-plugin-typedoc/-/docusaurus-plugin-typedoc-0.11.0.tgz",
-      "integrity": "sha512-U4FESmxZNkXXmUlLHiSU5GGzz+DCJsnFauI5puYL22KMTy4CLE6i1kNOpwmHtmfO2XMkAXe3R7YHossOgP0FFg==",
+      "version": "0.17.0",
+      "resolved": "https://registry.npmjs.org/docusaurus-plugin-typedoc/-/docusaurus-plugin-typedoc-0.17.0.tgz",
+      "integrity": "sha512-FOvHHd5RrsgmPdn2RcUZNh6g/s5FynEI1ChdRbAPW0o7vpuElUV3Wq2YkiStw8pcTgdgz2cy8qaFY55hDoEIiA==",
       "dev": true,
       "requires": {}
     },
@@ -13526,12 +13523,12 @@
       }
     },
     "typedoc-plugin-markdown": {
-      "version": "3.6.0",
-      "resolved": "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-3.6.0.tgz",
-      "integrity": "sha512-fg4xby3awJVVxB8TdhHNsZQfiTC5x1XmauVwhKXc6hGeu1bzTnqrkmDT8NCjxfUgw64si8cUX1jBfBjAHthWpQ==",
+      "version": "3.11.14",
+      "resolved": "https://registry.npmjs.org/typedoc-plugin-markdown/-/typedoc-plugin-markdown-3.11.14.tgz",
+      "integrity": "sha512-lh47OQvl0079nB18YL9wuTRRhMpjo300SZKfx/xpQY8qG+GINeSxTod95QBELeI0NP81sNtUbemRDrn5nyef4Q==",
       "dev": true,
       "requires": {
-        "handlebars": "^4.7.6"
+        "handlebars": "^4.7.7"
       }
     },
     "typescript": {
