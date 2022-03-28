@@ -16,12 +16,18 @@ const pad = 11;
 if (!withDB) {
   console.log("warning: no DATABASE_URL was found.");
 }
-const server = socketApp.listen(8080, "127.0.0.1", () => {
+
+const PORT = process.env.PORT || 8080;
+
+const server = socketApp.listen(process.env.PORT, () => {
   const { port, address } = server.address() as AddressInfo;
   const localAddress = `listening @ http://${address}${port ? `:${port}` : ""}`;
   let details = withRedis ? `w / ${redisDetail} & ` : "w / ";
   details += withDB ? dbDetail : "";
   console.log(
-    boxMyText(["", title, "", localAddress, "",`${details}`, ""], localAddress.length + pad)
+    boxMyText(
+      ["", title, "", localAddress, "", `${details}`, ""],
+      localAddress.length + pad
+    )
   );
 });
