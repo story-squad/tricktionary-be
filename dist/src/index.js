@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -35,7 +39,8 @@ const pad = 11;
 if (!withDB) {
     console.log("warning: no DATABASE_URL was found.");
 }
-const server = app_1.socketApp.listen(8080, "127.0.0.1", () => {
+const PORT = process.env.PORT || 8080;
+const server = app_1.socketApp.listen(process.env.PORT, () => {
     const { port, address } = server.address();
     const localAddress = `listening @ http://${address}${port ? `:${port}` : ""}`;
     let details = withRedis ? `w / ${redisDetail} & ` : "w / ";

@@ -46,6 +46,15 @@ async function handleUpdateUsername(
       updatedPlayer.id,
       updatedPlayer.username
     );
+
+    // Send notification to host
+    const notificationData = {
+      message: "Player Updated their name",
+      description: `Player "${oldPlayer.username}" is now "${updatedPlayer.username}"`,
+      className: "player-joined",
+    };
+
+    io.emit("receive-notification", notificationData);
   } catch (err) {
     log(err.message);
   }

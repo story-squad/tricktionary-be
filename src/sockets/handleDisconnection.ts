@@ -31,6 +31,15 @@ function handleDisconnection(io: any, socket: any, lobbies: any) {
       // *notify other players in the room.
       // io.to(lobbyCode).emit("remove player", socket.id);
       io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
+
+      // Send notification to host
+      const notificationData = {
+        message: "Player Disconnected",
+        description: `Player "${oldPlayer.username}" has disconnected`,
+        className: "player-disconnected",
+      };
+
+      io.emit("receive-notification", notificationData);
     }
   }
 }
@@ -39,6 +48,11 @@ export default handleDisconnection;
 export async function removeFromLobby(io: any, socket: any, lobbies: any) {
   const lobbyCode: string | null = whereAmI(socket);
   if (lobbyCode) {
+    // GEt the player data
+    const playerData = lobbies[lobbyCode].players.filter(
+      (player: any) => player.id === socket.id
+    )[0];
+
     // remove socket.id from player list
     lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter(
       (player: any) => player.id !== socket.id
@@ -47,5 +61,14 @@ export async function removeFromLobby(io: any, socket: any, lobbies: any) {
     await io.to(socket.id).emit("disconnect me");
     await socket.leave(lobbyCode);
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
+
+    // Send notification to host
+    const notificationData = {
+      message: "Player Left",
+      description: `Player "${playerData.username}" has left the game`,
+      className: "player-left",
+    };
+
+    io.emit("receive-notification", notificationData);
   }
 }

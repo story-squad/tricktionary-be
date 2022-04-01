@@ -41,6 +41,13 @@ function handleUpdateUsername(io, socket, lobbies, newUsername) {
             });
             // *notify other players if the change.
             io.to(lobbyCode).emit("updated username", updatedPlayer.id, updatedPlayer.username);
+            // Send notification to host
+            const notificationData = {
+                message: "Player Updated their name",
+                description: `Player "${oldPlayer.username}" is now "${updatedPlayer.username}"`,
+                className: "player-joined",
+            };
+            io.emit("receive-notification", notificationData);
         }
         catch (err) {
             (0, logger_1.log)(err.message);
