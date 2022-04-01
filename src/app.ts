@@ -87,6 +87,10 @@ if (redisHost.length > 0) {
 }
 
 // events
+io.on("connect_error", (err: Error) => {
+  console.log(`connect_error due to ${err.message}`);
+});
+
 io.on("connection", (socket) => {
   // LOGIN
   socket.on("login", async (token: string | undefined) => {
