@@ -37,7 +37,7 @@ api.use("/help", express.static(path.join(__dirname, "docs")));
 api.get("/", (req, res) =>
   res
     .status(200)
-    .json({ api: "running", timestamp: Date.now(), build: "Jan 01/21/2022" })
+    .json({ api: "running", timestamp: Date.now(), build: "Feb 02/16/2022" })
 );
 api.get("/api", (req, res) =>
   res.status(200).json({ api: "𝜋", timestamp: Date.now() })
@@ -92,8 +92,10 @@ io.on("connection", (socket) => {
   socket.on("login", async (token: string | undefined) => {
     if (token && token.length > 0) {
       gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
+      log(`Handling returning player - token: ${token}`);
     } else {
       gameSocketHandler.handleNewPlayer(io, socket);
+      log(`Handling new player`);
     }
   });
   // more events to come.
@@ -122,6 +124,7 @@ io.on("connection", (socket) => {
       username,
       lobbyCode,
       lobbies,
+      false,
       false
     );
   });

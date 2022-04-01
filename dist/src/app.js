@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -61,7 +65,7 @@ api.use("/help", express_1.default.static(path_1.default.join(__dirname, "docs")
 // CRUD routes
 api.get("/", (req, res) => res
     .status(200)
-    .json({ api: "running", timestamp: Date.now(), build: "Jan 01/21/2022" }));
+    .json({ api: "running", timestamp: Date.now(), build: "Feb 02/16/2022" }));
 api.get("/api", (req, res) => res.status(200).json({ api: "𝜋", timestamp: Date.now() }));
 api.use("/api/words", api_1.default.word);
 api.use("/api/definition-reactions", api_1.default.definitionReaction);
@@ -111,9 +115,11 @@ io.on("connection", (socket) => {
     socket.on("login", (token) => __awaiter(void 0, void 0, void 0, function* () {
         if (token && token.length > 0) {
             sockets_1.default.handleReturningPlayer(io, socket, token, lobbies);
+            (0, logger_1.log)(`Handling returning player - token: ${token}`);
         }
         else {
             sockets_1.default.handleNewPlayer(io, socket);
+            (0, logger_1.log)(`Handling new player`);
         }
     }));
     // more events to come.
@@ -133,7 +139,7 @@ io.on("connection", (socket) => {
         sockets_1.default.handleLobbyCreate(io, socket, username, lobbies);
     });
     socket.on("join lobby", (username, lobbyCode) => {
-        sockets_1.default.handleLobbyJoin(io, socket, username, lobbyCode, lobbies, false);
+        sockets_1.default.handleLobbyJoin(io, socket, username, lobbyCode, lobbies, false, false);
     });
     socket.on("manage alphabot", (botName, botID, action, lobbyCode) => {
         sockets_1.default.handleAlphaBot(io, socket, botName, botID, action, lobbyCode, lobbies);

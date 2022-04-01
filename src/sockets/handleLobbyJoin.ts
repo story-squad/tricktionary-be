@@ -19,6 +19,8 @@ const JOINABLE = ["PREGAME", "RESULTS", "FINALE"];
  * @param username Player's name
  * @param lobbyCode Player's join code
  * @param lobbies game-state
+ * @param doCheckPulse checks pulse of disconnected player
+ * @param isReturning checks whether it is a retuning player or not
  */
 async function handleLobbyJoin(
   io: any,
@@ -26,7 +28,8 @@ async function handleLobbyJoin(
   username: string,
   lobbyCode: any,
   lobbies: any,
-  doCheckPulse: boolean | undefined
+  doCheckPulse: boolean | undefined,
+  isReturning: boolean
 ) {
   if (whereAmI(socket) === lobbyCode.trim()) {
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]); // ask room to update
@@ -174,6 +177,7 @@ async function handleLobbyJoin(
           points: 0,
           connected: true,
           pid: p_id,
+          playerPlacing: 0,
         },
       ],
     };
@@ -200,6 +204,25 @@ async function handleLobbyJoin(
       log("ERROR scheduling pulse check");
     }
   }
+
+  // Send notification to host
+  let notificationData;
+
+  if (isReturning) {
+    notificationData = {
+      message: "Player Re-Joined",
+      description: `Player "${username}" has re-joined the party`,
+      className: "player-rejoined",
+    };
+  } else {
+    notificationData = {
+      message: "Player Joined",
+      description: `Player "${username}" has joined the fray`,
+      className: "player-joined",
+    };
+  }
+
+  io.emit("receive-notification", notificationData);
 }
 
 export default handleLobbyJoin;

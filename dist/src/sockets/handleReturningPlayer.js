@@ -48,6 +48,7 @@ function handleReturningPlayer(io, socket, token, lobbies) {
                 // (until we have user account)
                 return yield (0, handleNewPlayer_1.default)(io, socket);
             }
+            console.log("Login Data", login);
             player = login.data.player;
             newtoken = login.data.token;
             old_user_id = login.data.old_user_id;
@@ -79,7 +80,8 @@ function handleReturningPlayer(io, socket, token, lobbies) {
             lobbies[player.last_played].host = socket.id;
         }
         // move the player forward.
-        (0, handleLobbyJoin_1.default)(io, socket, old_user_name, player.last_played, lobbies, true);
+        (0, logger_1.log)("Player has returned");
+        (0, handleLobbyJoin_1.default)(io, socket, old_user_name, player.last_played, lobbies, true, true);
     });
 }
 exports.default = handleReturningPlayer;
