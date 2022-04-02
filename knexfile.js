@@ -1,6 +1,8 @@
 var dotenv = require("dotenv");
 dotenv.config();
 
+const fs = require("fs");
+
 module.exports = {
   development: {
     client: "pg",
