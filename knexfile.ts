@@ -1,10 +1,8 @@
 // typed mirror image of knexfile.js
 
-import * as dotenv from "dotenv";
-import fs from "fs";
-import path from "path";
+import dotenv from "dotenv";
 
-dotenv.config({ path: `${__dirname}/.env` });
+dotenv.config();
 
 interface KnexConfig {
   [key: string]: object;
@@ -14,6 +12,9 @@ const knexConfig: KnexConfig = {
   development: {
     client: "pg",
     connection: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
     migrations: { directory: "./data/migrations", extension: "ts" },
     seeds: { directory: "./data/seeds" },
     pool: {

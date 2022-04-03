@@ -23,18 +23,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
 dotenv.config({ path: `${__dirname}/.env` });
 const knexConfig = {
     development: {
         client: "pg",
-        connection: process.env.DATABASE_URL,
+        connection: "postgresql://doadmin:lXRsMzIh9PwdeCkg@wordhoax-db-do-user-11224409-0.b.db.ondigitalocean.com:25060/defaultdb?sslmode=require",
         migrations: { directory: "./data/migrations", extension: "ts" },
         seeds: { directory: "./data/seeds" },
         pool: {
@@ -46,7 +41,7 @@ const knexConfig = {
         client: "pg",
         connection: process.env.DATABASE_URL,
         ssl: {
-            ca: fs_1.default.readFileSync(path_1.default.join(__dirname, "../cert/ca-certificate.crt")),
+            rejectUnauthorized: false,
         },
         migrations: { directory: "./data/migrations" },
         seeds: { directory: "./data/seeds" },
