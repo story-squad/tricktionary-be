@@ -108,6 +108,7 @@ build
 release
 pgdata
 postgres.conf
+dist/
 
 # Elastic Beanstalk Files
 # .elasticbeanstalk/*
