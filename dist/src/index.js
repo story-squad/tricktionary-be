@@ -40,7 +40,7 @@ if (!withDB) {
     console.log("warning: no DATABASE_URL was found.");
 }
 const PORT = process.env.PORT || 8080;
-const server = app_1.socketApp.listen(process.env.PORT, () => {
+const server = app_1.socketApp.listen(PORT, () => {
     const { port, address } = server.address();
     const localAddress = `listening @ http://${address}${port ? `:${port}` : ""}`;
     let details = withRedis ? `w / ${redisDetail} & ` : "w / ";
