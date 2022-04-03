@@ -20,7 +20,7 @@ module.exports = {
     client: "pg",
     connection: process.env.DATABASE_URL,
     ssl: {
-      ca: fs.readFileSync("https://richmadedesign.com/ca-certificate.crt"),
+      rejectUnauthorized: false,
     },
     migrations: { directory: "./data/migrations" },
     seeds: { directory: "./data/seeds" },
