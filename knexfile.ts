@@ -26,7 +26,7 @@ const knexConfig: KnexConfig = {
     client: "pg",
     connection: process.env.DATABASE_URL,
     ssl: {
-      ca: fs.readFileSync(path.join(__dirname, "../ca-certificate.crt")),
+      ca: fs.readFileSync(path.join(__dirname, "./cert/ca-certificate.crt")),
     },
     migrations: { directory: "./data/migrations" },
     seeds: { directory: "./data/seeds" },
