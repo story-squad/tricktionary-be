@@ -23,15 +23,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 dotenv.config({ path: `${__dirname}/.env` });
-;
 const knexConfig = {
     development: {
         client: "pg",
         connection: process.env.DATABASE_URL,
-        migrations: { directory: "./data/migrations", extension: 'ts' },
+        migrations: { directory: "./data/migrations", extension: "ts" },
         seeds: { directory: "./data/seeds" },
         pool: {
             min: 2,
@@ -41,6 +45,9 @@ const knexConfig = {
     production: {
         client: "pg",
         connection: process.env.DATABASE_URL,
+        ssl: {
+            ca: fs_1.default.readFileSync(path_1.default.join(__dirname, "../ca-certificate.crt")),
+        },
         migrations: { directory: "./data/migrations" },
         seeds: { directory: "./data/seeds" },
     },

@@ -1,15 +1,15 @@
 var dotenv = require("dotenv");
 dotenv.config();
 
+const path = require("path");
+const fs = require("fs");
+
 module.exports = {
   development: {
     client: "pg",
     connection: process.env.DATABASE_URL,
     migrations: { directory: "./data/migrations" },
     seeds: { directory: "./data/seeds" },
-    ssl: {
-      rejectUnauthorized: false,
-    },
     pool: {
       min: 2,
       max: 10,
@@ -20,7 +20,7 @@ module.exports = {
     client: "pg",
     connection: process.env.DATABASE_URL,
     ssl: {
-      rejectUnauthorized: false,
+      ca: fs.readFileSync(path.join(__dirname, "../ca-certificate.crt")),
     },
     migrations: { directory: "./data/migrations" },
     seeds: { directory: "./data/seeds" },

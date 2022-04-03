@@ -19,7 +19,7 @@ if (!withDB) {
 
 const PORT = process.env.PORT || 8080;
 
-const server = socketApp.listen(process.env.PORT, () => {
+const server = socketApp.listen(PORT, () => {
   const { port, address } = server.address() as AddressInfo;
   const localAddress = `listening @ http://${address}${port ? `:${port}` : ""}`;
   let details = withRedis ? `w / ${redisDetail} & ` : "w / ";
