@@ -1,4 +1,7 @@
-## Word Hoax
+## Word Hoax backend
+- Express App
+- uses socket.io
+- currently does not use long pooling
 
 ### Migration
 These Env vars may need assigned:
