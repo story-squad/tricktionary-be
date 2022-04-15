@@ -23,14 +23,12 @@ const knexConfig: KnexConfig = {
   production: {
     client: "pg",
     connection: {
-      user: process.env.DB_USERNAME,
-      host: process.env.DB_HOSTNAME,
-      database: process.env.DB_DATABASE,
-      password: process.env.DB_PASSWORD,
-      port: process.env.DB_PORT,
+      connectionString:
+        process.env.DATABASE_URL !== undefined
+          ? process.env.DATABASE_URL.replace("?sslmode=require", "")
+          : process.env.DATABASE_URL,
       ssl: {
-        rejectUnauthorized: true,
-        ca: process.env.CA_CERT,
+        rejectUnauthorized: false,
       },
     },
     migrations: { directory: "./data/migrations" },
