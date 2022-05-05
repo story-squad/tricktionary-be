@@ -53,7 +53,7 @@ async function handleReturningPlayer(
   // check for last_played activity
   if (!player.last_played || !lobbies[player.last_played]) {
     log(`${player.last_played}, game not found.`);
-    return;
+    return { ok: true, message: "player with no game" };
   }
   // if we're not already in the room,
   if (
