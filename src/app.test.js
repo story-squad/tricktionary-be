@@ -34,8 +34,6 @@ describe("my awesome project", () => {
   });
 
   test("test new player login", (done) => {
-    // test new player
-
     clientSocket.emit("login", "", async (arg1) => {
       expect(arg1.ok).toBe(true);
       temp = await db.default
