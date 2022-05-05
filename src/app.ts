@@ -102,12 +102,16 @@ io.on("connection", (socket) => {
         lobbies
       );
       if (callback) {
-        callback(results);
+        log(`handling test callback: ` + (await results));
+        callback(await results);
       }
       log(`Handling returning player - token: ${token}`);
     } else {
-      const results = await gameSocketHandler.handleNewPlayer(io, socket);
-      callback(results);
+      const results = gameSocketHandler.handleNewPlayer(io, socket);
+      if (callback) {
+        log(`handling test callback: ` + (await results));
+        callback(await results);
+      }
       log(`Handling new player`);
     }
   });
