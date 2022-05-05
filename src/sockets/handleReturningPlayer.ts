@@ -60,7 +60,9 @@ async function handleReturningPlayer(
     lobbies[player.last_played].players.filter((p: any) => p.id === socket.id)
       .length === 0
   ) {
-    // if this is a re-join, make it known.
+    // player.last_played has the lobby id, so take the array of players
+    // and map over it, returning a new object if the player.id === their old id
+    // otherwise return the player
     lobbies[player.last_played].players = lobbies[
       player.last_played
     ].players.map((player: any) => {
