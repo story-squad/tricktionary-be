@@ -74,7 +74,7 @@ async function getDef(user_id: string, definitionId: number) {
     const { word } = rWord.data.word;
     const result = { user_id, definition, word };
     return result;
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof Error) log(err.message);
     return;
   }
@@ -160,7 +160,7 @@ async function privateMessage(
     const pid = socket.id;
     io.to(pid).emit(listener, message); // private message player
     log(`${listener} message -> ${socket.id}`);
-  } catch (err) {
+  } catch (err: any) {
     log(`${listener}: ${message}`);
   }
 }
@@ -177,7 +177,7 @@ async function sendToHost(
     if (lobbyCode) {
       io.to(lobbies[lobbyCode].host).emit(category, message);
     }
-  } catch (err) {
+  } catch (err: any) {
     return false;
   }
   return true;
@@ -187,7 +187,7 @@ function playerIsHost(socket: any, lobbyCode: any, lobbies: any) {
   try {
     const ok = lobbies[lobbyCode].host === socket.id;
     return { ok };
-  } catch (err) {
+  } catch (err: any) {
     return { ok: false, message: err };
   }
 }
@@ -196,7 +196,7 @@ function playerIdWasHost(playerId: string, lobbyCode: any, lobbies: any) {
   try {
     const ok = lobbies[lobbyCode].host === playerId;
     return { ok };
-  } catch (err) {
+  } catch (err: any) {
     return { ok: false, message: err };
   }
 }
@@ -205,7 +205,7 @@ function checkSettings(settings: any) {
   let lobbySettings;
   try {
     lobbySettings = GameSettings(settings);
-  } catch (err) {
+  } catch (err: any) {
     log("settings error");
 
     if (err instanceof Error)
@@ -238,7 +238,7 @@ async function contributeWord(
     if (data?.id > 0) {
       newWord.id = data.id;
     }
-  } catch (err) {
+  } catch (err: any) {
     log("error contributing.");
 
     log(err);
@@ -254,7 +254,7 @@ async function wordFromID(id: any) {
     if (!word.word) {
       return { ok: false, message: "wordFromID: error" };
     }
-  } catch (err) {
+  } catch (err: any) {
     return { ok: false, message: err.message };
   }
   return { ok: true, word };
@@ -310,7 +310,7 @@ async function startNewRound(
     });
     roundId = newRound.data.roundId;
     log("ROUND ID: " + roundId);
-  } catch (err) {
+  } catch (err: any) {
     log("error trying to start new round!");
     return { ok: false, message: err.message };
   }
@@ -338,7 +338,7 @@ async function startNewRound(
       roundId,
       game_id: lobbies[lobbyCode].game_id,
     });
-  } catch (err) {
+  } catch (err: any) {
     return { ok: false, result, lobbies };
   }
   return { ok: true, result, lobbies, roundId };
@@ -429,7 +429,7 @@ async function updatePlayerToken(
       log(data.message);
       return data;
     }
-  } catch (err) {
+  } catch (err: any) {
     log(err.message);
     return { ok: false, message: err.message };
   }
@@ -450,7 +450,7 @@ async function doIt(
       firstPlace.definitionId
     );
     r = [{ ...firstPlaceResult }];
-  } catch (err) {
+  } catch (err: any) {
     log("error getting 1st place");
     log(err.message);
   }
@@ -461,7 +461,7 @@ async function doIt(
         secondPlace.definitionId
       );
       r = [...r, { ...secondPlaceResult }];
-    } catch (err) {
+    } catch (err: any) {
       log("error getting second place");
       log(err.message);
     }
@@ -473,7 +473,7 @@ async function doIt(
         thirdPlace.definitionId
       );
       r = [...r, { ...thirdPlaceResult }];
-    } catch (err) {
+    } catch (err: any) {
       log("error getting third place");
       log(err.message);
     }

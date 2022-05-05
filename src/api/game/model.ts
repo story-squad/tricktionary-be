@@ -12,7 +12,7 @@ async function add(og_host: string) {
         og_host,
       })
       .returning("id");
-  } catch (err) {
+  } catch (err: any) {
     return { ok: false, message: "error" };
   }
   return { ok: true, game_id: game_req[0] };
@@ -22,7 +22,7 @@ async function get() {
   let result;
   try {
     result = await db("Game").returning("id");
-  } catch (err) {
+  } catch (err: any) {
     return { ok: false, message: "error" };
   }
   return { ok: true, games: result };
@@ -32,7 +32,7 @@ async function latest(limit: number) {
   let result;
   try {
     result = await db("Game").orderBy("created_at", "desc").limit(limit);
-  } catch (err) {
+  } catch (err: any) {
     return { ok: false, message: "error" };
   }
   return { ok: true, games: result };
@@ -56,7 +56,7 @@ async function leaderBoard(game_id: string) {
       )
       .whereNot({ top_definition_id: null })
       .where("score.game_id", game_id);
-  } catch (err) {
+  } catch (err: any) {
     console.log(err.message);
     return [];
   }

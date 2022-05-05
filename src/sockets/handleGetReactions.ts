@@ -14,7 +14,7 @@ async function getReactions(io: any, socket: any, lobbies: any) {
       `/api/smash/totals/${game_id}/${roundId}`
     );
     io.to(socket.id).emit("get reactions", data);
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof Error) {
       log(err.message);
     }

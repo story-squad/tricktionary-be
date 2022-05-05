@@ -67,7 +67,7 @@ async function handleLobbyJoin(
     // Player.id
     const { data } = await localAxios.get(`/api/auth/find-player/${socket.id}`);
     p_id = data?.id;
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof Error) {
       log(err.message);
     }
@@ -82,7 +82,7 @@ async function handleLobbyJoin(
       const newtoken = login.data.token;
       p_id = login.data.player_id;
       privateMessage(io, socket, "token update", newtoken);
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof Error) {
         log(err.message);
       }
@@ -200,7 +200,7 @@ async function handleLobbyJoin(
     log("PULSE CHECK");
     try {
       schedulePulseCheck(io, lobbies, lobbyCode, 5);
-    } catch (err) {
+    } catch (err: any) {
       log("ERROR scheduling pulse check");
     }
   }

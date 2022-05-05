@@ -49,7 +49,7 @@ async function handleSetFinale(
     checkPoints = postScores.data
       .sort((a: any, b: any) => b.points - a.points)
       .filter((c: any) => c.top_definition_id); // only players who have submitted definitions
-  } catch (err) {
+  } catch (err: any) {
     log("error posting scores");
   }
   // cast point values into a set
@@ -87,8 +87,11 @@ async function handleSetFinale(
         (p: any) => p.id === r.user_id
       )[0];
       const lb =
-        data.filter((player: any) => player.player_id === cu.pid)[0] || undefined;
-      log(`[${game_id}] ${n+1}${['st', 'nd', 'rd'][n]} place -> ${cu.username}`);
+        data.filter((player: any) => player.player_id === cu.pid)[0] ||
+        undefined;
+      log(
+        `[${game_id}] ${n + 1}${["st", "nd", "rd"][n]} place -> ${cu.username}`
+      );
       n++;
       return {
         user_id: r.user_id,
@@ -96,7 +99,7 @@ async function handleSetFinale(
         word: lb?.word || r.word,
       };
     });
-  } catch (err) {
+  } catch (err: any) {
     log(err);
     // if we have a problem with the leaderboard endpoint, log it and return the current results
     topThree = results;

@@ -17,7 +17,7 @@ function add(
       round_id,
       definition_id,
       reaction_id,
-      count: value || 1
+      count: value || 1,
     })
     .returning("count");
 }
@@ -33,9 +33,10 @@ async function get(
       game_id,
       round_id,
       definition_id,
-      reaction_id
+      reaction_id,
     })
-    .returning("count").first();
+    .returning("count")
+    .first();
 }
 
 async function incr(
@@ -49,7 +50,7 @@ async function incr(
       game_id,
       round_id,
       definition_id,
-      reaction_id
+      reaction_id,
     })
     .increment("count")
     .returning("count");
@@ -67,11 +68,12 @@ async function updateCount(
       game_id,
       round_id,
       definition_id,
-      reaction_id
+      reaction_id,
     })
     .first()
     .update({ count })
-    .returning("count").first();
+    .returning("count")
+    .first();
 }
 
 /**
@@ -91,7 +93,7 @@ async function bulkUpdate(arr: any[], cb?: any) {
           game_id,
           round_id,
           definition_id,
-          reaction_id
+          reaction_id,
         })
         .first();
       if (!(result?.id && result?.count)) {
@@ -102,7 +104,7 @@ async function bulkUpdate(arr: any[], cb?: any) {
         }
       }
     });
-  } catch (err) {
+  } catch (err: any) {
     log(err.message);
   }
   return await cb(arr);
@@ -111,6 +113,6 @@ async function bulkUpdate(arr: any[], cb?: any) {
 async function getTotals(game_id: string, round_id: number) {
   return await db("Smash").where({
     game_id,
-    round_id
+    round_id,
   });
 }

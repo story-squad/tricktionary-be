@@ -19,10 +19,14 @@ export async function getDatabaseReactions(cache: TricktionaryCache) {
     // update cache when available
     if (cache?.setValue) {
       const stringData = JSON.stringify({ available });
-      cache.setValue("tricktionary-reactions", stringData, CACHE_LIFETIME_REACTIONS);
+      cache.setValue(
+        "tricktionary-reactions",
+        stringData,
+        CACHE_LIFETIME_REACTIONS
+      );
     }
     return { available };
-  } catch (err) {
+  } catch (err: any) {
     log("error whilst getting/setting tricktionary-reactions");
     return { error: err };
   }

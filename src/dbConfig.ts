@@ -2,7 +2,7 @@ import knex from "knex";
 
 interface KnexConfig {
   [key: string]: object;
-};
+}
 
 import * as knexfile from "../knexfile";
 

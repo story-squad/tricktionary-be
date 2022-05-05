@@ -45,7 +45,7 @@ async function handleReturningPlayer(
     newtoken = login.data.token;
     old_user_id = login.data.old_user_id;
     old_user_name = login.data.old_user_name;
-  } catch (err) {
+  } catch (err: any) {
     return { ok: false, message: err.message };
   }
   // send player their new token.

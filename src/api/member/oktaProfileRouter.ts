@@ -47,7 +47,7 @@ router.post("/", authRequired, async (req, res) => {
           res.status(400).json({ message: "profile already exists" });
         }
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       res.status(500).json({ message: e.message });
     }
@@ -67,7 +67,7 @@ router.put("/", authRequired, async (req, res) => {
           .status(200)
           .json({ message: "profile updated", profile: updated[0] });
       });
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       res.status(500).json({ message: e.message });
     }
@@ -86,7 +86,7 @@ router.delete("/:id", (req, res) => {
           .json({ message: `Profile '${id}' was deleted.`, profile: profile });
       });
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(500).json({
       message: `Could not delete profile with ID: ${id}`,
       error: err.message,

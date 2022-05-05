@@ -46,9 +46,9 @@ async function handleSetNewHost(
         log(`created score card ${score.data?.id} for ${username}`);
       }
       lobbies[lobbyCode].host = newHost;
-    } catch (err) {
+    } catch (err: any) {
       console.log(err);
-      return
+      return;
     }
     io.to(newHost).emit("welcome host", guesses);
     privateMessage(io, socket, "info", `ok, set host: ${newHost}`);

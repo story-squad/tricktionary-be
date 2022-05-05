@@ -32,7 +32,7 @@ async function handleStartGame(
         word.category,
         source
       );
-    } catch (err) {
+    } catch (err: any) {
       log(
         `[!ERROR] handleStartGame -> contributeWord(${word.word}, ${word.definition}, ${word.category}, ${source})`
       );
@@ -54,7 +54,7 @@ async function handleStartGame(
       lobbyCode,
       r.settings
     );
-  } catch (err) {
+  } catch (err: any) {
     log(
       `[!ERROR] handleStartGame -> startNewRound by ${socket.id} with "${word.word}" from ${source}`
     );
@@ -69,7 +69,7 @@ async function handleStartGame(
         ...hostChoice,
         round_id: newRound.roundId,
       });
-    } catch (err) {
+    } catch (err: any) {
       log("error recording the host's choices");
       log(err.message);
       handleErrorMessage(io, socket, 2006, defaultError);

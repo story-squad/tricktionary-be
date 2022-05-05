@@ -29,7 +29,7 @@ async function handleSubmitDefinition(
       pid: newPlayer.pid,
       game_id,
     });
-  } catch (err) {
+  } catch (err: any) {
     log("errror! handleSubmitDefinitions:22");
     return handleErrorMessage(
       io,

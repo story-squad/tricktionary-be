@@ -26,7 +26,7 @@ router.post("/new", async (req, res) => {
       return res.json({ message: linkedPlayer.message });
     }
     return res.json({ score: linkedPlayer.id });
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof Error) return res.json({ message: err.message });
   }
 });
@@ -39,7 +39,7 @@ router.get("/player/:id", async (req, res) => {
   let result;
   try {
     result = getGames(player_id); // return this player's games.
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
@@ -54,7 +54,7 @@ router.get("/player/:pid/game/:gid", async (req, res) => {
   let result;
   try {
     result = await getPlayerScore(player_id, game_id);
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
@@ -68,7 +68,7 @@ router.get("/games/:id", async (req, res) => {
   let result;
   try {
     result = getPlayers(game_id); // return this game's players.
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
@@ -85,7 +85,7 @@ router.put("/increase/:player_id", async (req, res) => {
   try {
     const result = await addPoints(player_id, game_id, points);
     return res.json(result);
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof Error) return res.json({ error: err.message });
   }
 });
@@ -100,7 +100,7 @@ router.put("/decrease/:player_id", async (req, res) => {
   try {
     const result = await subPoints(player_id, game_id, points);
     return res.json(result);
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof Error) return res.json({ error: err.message });
   }
 });
@@ -124,12 +124,11 @@ router.put("/def/:player_id", async (req, res) => {
       Number(top_definition_id)
     );
     const { score } = result;
-    if (result.ok) {
-    } else {
+    if (!result.ok) {
       res.json(result);
     }
     return res.json(score);
-  } catch (err) {
+  } catch (err: any) {
     return res.status(400).json({ error: err.message });
   }
 });
@@ -143,7 +142,7 @@ router.post("/latest/:game_id", async (req, res) => {
   let leaderboard;
   try {
     leaderboard = await getLatest(game_id);
-  } catch (err) {
+  } catch (err: any) {
     return res.json({ ok: false, error: err });
   }
   if (!leaderboard?.ok) {

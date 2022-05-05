@@ -9,7 +9,7 @@ router.get("/id/:id", async (req, res) => {
   let player;
   try {
     player = await Player.getPlayer(player_id);
-  } catch (err) {
+  } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
   res.status(200).json({ player });
@@ -20,7 +20,7 @@ router.get("/name/:id", async (req, res) => {
   let result;
   try {
     result = await Player.getName(player_id);
-  } catch (err) {
+  } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
   res.status(200).json(result);
@@ -32,7 +32,7 @@ router.get("/last-user-id/:id", async (req, res) => {
   let player;
   try {
     player = await Player.bySocketID(user_id);
-  } catch (err) {
+  } catch (err: any) {
     return res.status(400).json({ ok: false, error: err.message });
   }
   return res.status(200).json({ ok: true, player });
@@ -44,7 +44,7 @@ router.put("/id/:id", async (req, res) => {
   let player;
   try {
     player = await Player.updatePlayer(player_id, changes);
-  } catch (err) {
+  } catch (err: any) {
     res.status(400).json({ error: err.message });
   }
   res.status(200).json({ player });

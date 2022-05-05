@@ -2,7 +2,6 @@ import createHttpError from "http-errors";
 import axios from "axios";
 import { log } from "../../logger";
 
-
 // encode a string in Base64
 const encode64 = (str: string): string =>
   Buffer.from(str, "binary").toString("base64");
@@ -21,10 +20,9 @@ const cleverBasic = (clientID: string, clientSecret: string) =>
     baseURL: `${process.env.CLEVER_BASE_URL}}`,
     headers: {
       Authorization: `Basic ${encode64(`${clientID}:${clientSecret}`)}`,
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
   });
-
 
 /**
  * Auth Bearer
@@ -36,9 +34,8 @@ const cleverBearer = (token: string) =>
     baseURL: `${process.env.CLEVER_BASE_URL}`,
     headers: {
       Authorization: `Bearer ${token}`,
-    }
+    },
   });
-
 
 /**
  * verify your Clever student, teacher, or Admin
@@ -62,23 +59,17 @@ const cleverStudentRequired = async (req: any, res: any, next: any) => {
     if (!match) throw new Error("Missing student id");
     const studentID = match[1];
     const result = await cleverBearer(studentID.trim()).get("/oauth/tokeninfo");
-    log(`status : ${result.status}`)
+    log(`status : ${result.status}`);
     // check status
     if (result.status !== 200) throw new Error("error verifying student");
     // attach result
     req.tokenInfo = result.data;
-    log('success!');
+    log("success!");
     // continue
     next();
-  } catch (err) {
+  } catch (err: any) {
     next(createHttpError(401, err.message));
   }
 };
 
-export {
-  cleverStudentRequired,
-  cleverBasic,
-  cleverBearer,
-  encode64,
-  decode64
-};
+export { cleverStudentRequired, cleverBasic, cleverBearer, encode64, decode64 };

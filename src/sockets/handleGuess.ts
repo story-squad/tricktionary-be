@@ -93,7 +93,7 @@ export async function handleArrayOfGuesses(
           // log(definitionUpdate.data);
         }
       });
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof Error) {
         log(`error: handleArrayOfGuesses, ${err.message}`);
       }
@@ -104,7 +104,7 @@ export async function handleArrayOfGuesses(
     if (newRound.status === 200) {
       log(`* end of round ${roundId}`);
     }
-  } catch (err) {
+  } catch (err: any) {
     log(`error while ending round!, ${lobbyCode}`);
     handleErrorMessage(
       io,
