@@ -93,12 +93,21 @@ io.on("connect_error", (err: Error) => {
 
 io.on("connection", (socket) => {
   // LOGIN
-  socket.on("login", async (token: string | undefined) => {
+  socket.on("login", async (token: string | undefined, callback) => {
     if (token && token.length > 0) {
-      gameSocketHandler.handleReturningPlayer(io, socket, token, lobbies);
+      const results = gameSocketHandler.handleReturningPlayer(
+        io,
+        socket,
+        token,
+        lobbies
+      );
+      if (callback) {
+        callback(results);
+      }
       log(`Handling returning player - token: ${token}`);
     } else {
-      gameSocketHandler.handleNewPlayer(io, socket);
+      const results = await gameSocketHandler.handleNewPlayer(io, socket);
+      callback(results);
       log(`Handling new player`);
     }
   });
@@ -273,4 +282,4 @@ io.on("connection", (socket) => {
   });
 });
 
-export { socketApp };
+export { socketApp, io as ioServer };
