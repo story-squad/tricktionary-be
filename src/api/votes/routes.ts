@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
   try {
     const result = await Votes.add(userID, definitionID, roundID);
     res.status(200).json({ ok: true, voteID: result });
-  } catch (err: any) {
+  } catch (err:any) {
     res.status(200).json({ ok: false, error: err });
   }
 });

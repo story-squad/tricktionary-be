@@ -55,7 +55,7 @@ async function handleUpdateUsername(
     };
 
     io.emit("receive-notification", notificationData);
-  } catch (err: any) {
+  } catch (err:any) {
     log(err.message);
   }
 }

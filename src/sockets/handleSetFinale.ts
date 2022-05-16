@@ -49,20 +49,18 @@ async function handleSetFinale(
     checkPoints = postScores.data
       .sort((a: any, b: any) => b.points - a.points)
       .filter((c: any) => c.top_definition_id); // only players who have submitted definitions
-  } catch (err: any) {
+  } catch (err:any) {
     log("error posting scores");
   }
   // cast point values into a set
   const values = new Set(checkPoints.map((v: any) => v.points));
   if (values.size === checkPoints.length) {
     // if player.points are unique, no tie-breaker will be necessary.
-    const pids = checkPoints.map((e: any) => e.player_id);
-    // filter/sort by player_id/points
+    const pids = checkPoints.map((e: any) => e.playerId);
+    // filter/sort by playerId/points
     const naturalTopThree = lobbies[lobbyCode].players
       .filter((player: any) => pids.includes(player.pid))
-      .sort(function (a: any, b: any) {
-        return b.points - a.points;
-      });
+      .sort((a: any, b: any) => b.points - a.points);
     results = await doIt(
       game_id,
       naturalTopThree[0],
@@ -87,7 +85,7 @@ async function handleSetFinale(
         (p: any) => p.id === r.user_id
       )[0];
       const lb =
-        data.filter((player: any) => player.player_id === cu.pid)[0] ||
+        data.filter((player: any) => player.playerId === cu.pid)[0] ||
         undefined;
       log(
         `[${game_id}] ${n + 1}${["st", "nd", "rd"][n]} place -> ${cu.username}`
@@ -99,7 +97,7 @@ async function handleSetFinale(
         word: lb?.word || r.word,
       };
     });
-  } catch (err: any) {
+  } catch (err:any) {
     log(err);
     // if we have a problem with the leaderboard endpoint, log it and return the current results
     topThree = results;

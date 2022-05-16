@@ -40,7 +40,7 @@ async function handleAlphaBotSubmission(
       pid: newPlayer.pid,
       game_id,
     });
-  } catch (err: any) {
+  } catch (err:any) {
     log("errror! handleAlphaBotSubmission:22");
 
     log(`There was a server error while ${botID} submitted their definition.`);

@@ -50,7 +50,7 @@ router.get(
       try {
         const totals = await getTotals(game_id, round_id);
         return await res.status(200).json(totals);
-      } catch (err: any) {
+      } catch (err:any) {
         return await res.status(400).json({ error: err.message });
       }
     }
@@ -97,7 +97,7 @@ router.get(
     });
     try {
       await tc?.findKeys(pattern, tcCallback);
-    } catch (err: any) {
+    } catch (err:any) {
       res.json({ error: err });
     }
   }

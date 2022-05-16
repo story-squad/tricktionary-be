@@ -41,7 +41,7 @@ const authRequired = async (req: any, res: any, next: any) => {
         console.error(err.message);
         next(createError(401), err.message);
       });
-  } catch (err: any) {
+  } catch (err:any) {
     next(createError(401, err.message));
   }
 };

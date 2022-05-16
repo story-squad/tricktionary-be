@@ -44,23 +44,23 @@ router.post("/new-player", async (req, res) => {
   if (jump_code) {
     log("TODO: player is jumping from another device.");
   }
-  // first game ? you will need a new player_id
+  // first game ? you will need a new playerId
   let created: any;
   try {
     created = await Player.newPlayer(last_user_id);
-  } catch (err: any) {
+  } catch (err:any) {
     log(`[!ERROR] newPlayer(${last_user_id})`);
   }
   if (!created?.ok) {
     res.status(400).json({ message: created.message });
     return;
   }
-  const pid: string = String(created.player_id);
+  const pid: string = String(created.playerId);
   let token: any;
   let tokenError: any;
   try {
     token = await newToken(last_user_id, pid, undefined, undefined);
-  } catch (err: any) {
+  } catch (err:any) {
     tokenError = err;
   }
   return res.status(token?.status || 400).json(token || tokenError);
@@ -101,7 +101,7 @@ router.post("/login", async (req, res) => {
       //  bad token detected!
       return res.status(400).json(result);
     }
-    playerId = result.player_id || "";
+    playerId = result.playerId || "";
     lastUserId = result.last_user_id || "";
     lastLobby = result.last_lobby || "";
     lastUsername = result.username || "";

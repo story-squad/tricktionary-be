@@ -26,7 +26,7 @@ export async function getDatabaseReactions(cache: TricktionaryCache) {
       );
     }
     return { available };
-  } catch (err: any) {
+  } catch (err:any) {
     log("error whilst getting/setting tricktionary-reactions");
     return { error: err };
   }

@@ -41,13 +41,13 @@ export function validatePayloadType(payload: any): Result<AuthorizedPlayer> {
 
 function generateToken(
   user_id: string,
-  player_id: string,
+  playerId: string,
   extra: string | undefined,
   lobbyCode: string | undefined
 ) {
   const payload = {
     sub: user_id,
-    pid: player_id,
+    pid: playerId,
     iat: Date.now(),
     lob: lobbyCode,
     ext: extra,
@@ -62,17 +62,17 @@ function generateToken(
  * create a new token for the player.
  *
  * @param last_user_id socket.id
- * @param player_id Player.id
+ * @param playerId Player.id
  */
 export async function newToken(
   last_user_id: string,
-  player_id: string,
+  playerId: string,
   extra: string | undefined,
   lobbyCode: string | undefined
 ) {
   const payload = validatePayloadType({
     sub: last_user_id,
-    pid: player_id,
+    pid: playerId,
     iat: 0,
     lob: lobbyCode,
     ext: extra,
@@ -83,19 +83,19 @@ export async function newToken(
   try {
     const token = await generateToken(
       last_user_id,
-      player_id,
+      playerId,
       extra,
       lobbyCode
     ); // generate new token
-    await Player.updatePlayer(player_id, { token, last_user_id }); // update the player record
+    await Player.updatePlayer(playerId, { token, last_user_id }); // update the player record
     return {
       ok: true,
       token,
       message: "token update",
       status: 200,
-      pid: player_id,
+      pid: playerId,
     };
-  } catch (err: any) {
+  } catch (err:any) {
     return { ok: false, message: err.message, status: 400 };
   }
 }
@@ -111,12 +111,12 @@ const decode64 = (str: string): string =>
 export const b64 = { encode: encode64, decode: decode64 };
 
 /**
- * @returns player_id, last_user_id (from JWT)
+ * @returns playerId, last_user_id (from JWT)
  * @param token JWT
  *
  */
 export function partialRecall(token: string) {
-  // get player_id & last user_id from the JWT
+  // get playerId & last user_id from the JWT
   const decoded = jwt.decode(token);
   const payload = validatePayloadType(decoded);
   if (!payload.ok) return { ok: false, message: payload.message };
@@ -136,7 +136,7 @@ export function partialRecall(token: string) {
   return {
     ok: true,
     last_user_id: payload.value.sub,
-    player_id: payload.value.pid,
+    playerId: payload.value.pid,
     username,
     definition,
     points,
@@ -144,13 +144,13 @@ export function partialRecall(token: string) {
   };
 }
 
-export async function totalRecall(player_id: string) {
+export async function totalRecall(playerId: string) {
   let result;
   let player: any;
   try {
-    player = await Player.getPlayer(player_id);
+    player = await Player.getPlayer(playerId);
     result = { ok: true, player, lobby: undefined };
-  } catch (err: any) {
+  } catch (err:any) {
     result = {
       ok: false,
       message: err.message,
@@ -172,7 +172,7 @@ export async function totalRecall(player_id: string) {
       if (spoilers) {
         return { ok: true, player: result.player, spoilers };
       }
-    } catch (err: any) {
+    } catch (err:any) {
       log("cannot find a last_lobby of player.");
       return {
         ok: true,
@@ -190,7 +190,7 @@ export async function verifyTricktionaryToken(
   last_user_id: string
 ) {
   let last_lobby;
-  let player_id: string | undefined;
+  let playerId: string | undefined;
   let player = {};
   try {
     jwt.verify(last_token, secrets.jwtSecret); // verify it's one of ours.
@@ -200,7 +200,7 @@ export async function verifyTricktionaryToken(
       // res.status(400).json({ message: mem.message });
     }
     // player = mem.player;
-    player_id = mem.player_id ? mem.player_id : ""; // remember the player_id ?
+    playerId = mem.playerId ? mem.playerId : ""; // remember the playerId ?
     if (last_user_id === mem.last_user_id) {
       // same web socket session, update token and return.
       log(`same socket, ${last_user_id}`);
@@ -210,18 +210,18 @@ export async function verifyTricktionaryToken(
       last_lobby = mem.last_lobby;
       // return { ...mem, status: 200 };
     } else {
-      // search db for player_id
-      const existing = await totalRecall(String(mem?.player_id));
+      // search db for playerId
+      const existing = await totalRecall(String(mem?.playerId));
       if (existing.ok) {
         player = existing.player;
         last_lobby = existing.spoilers;
         log(`totalRecall - last lobby -, ${last_lobby}`);
       } else {
-        log(`can't find this player in the db, ${mem.player_id}`);
+        log(`can't find this player in the db, ${mem.playerId}`);
       }
     }
     // NOTE: don't need to lookup player by id if we already have the last lobby from JWT
-  } catch (err: any) {
+  } catch (err:any) {
     return { ok: false, status: 403, message: err.message };
   }
   return {
@@ -229,7 +229,7 @@ export async function verifyTricktionaryToken(
     status: 200,
     last_lobby,
     old_user_id: last_user_id,
-    player_id,
+    playerId,
     player,
   };
 }

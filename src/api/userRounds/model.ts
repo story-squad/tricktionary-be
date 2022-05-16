@@ -14,7 +14,7 @@ async function addAllUserRounds(players: any, roundId: number, gameID: string) {
     try {
       await add(player.id, roundId, gameID);
       await scoreCard(player.id, gameID);
-    } catch (err: any) {
+    } catch (err:any) {
       log(err.message);
       return { ok: false, message: err.message };
     }

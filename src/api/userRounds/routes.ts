@@ -23,7 +23,7 @@ router.get("/user/:id", async (req, res) => {
   }
   try {
     possibilities = await userRounds.findPlayer(user_id);
-  } catch (err: any) {
+  } catch (err:any) {
     res.status(200).json({ ok: false, message: err.message });
   }
   res.status(200).json({ ok: true, possibilities });
@@ -37,7 +37,7 @@ router.get("/user/:id/last", async (req, res) => {
   }
   try {
     possibilities = await userRounds.findLastRound(user_id);
-  } catch (err: any) {
+  } catch (err:any) {
     res.status(200).json({ ok: false, message: err.message });
   }
   res.status(200).json({ ok: true, possibilities });
@@ -51,7 +51,7 @@ router.get("/user/:id/first", async (req, res) => {
   }
   try {
     possibilities = await userRounds.findFirstRound(user_id);
-  } catch (err: any) {
+  } catch (err:any) {
     res.status(200).json({ ok: false, message: err.message });
   }
   res.status(200).json({ ok: true, possibilities });
@@ -63,7 +63,7 @@ router.get("/user/:uid/game/:gid", async (req, res) => {
   let thisGame;
   try {
     thisGame = await userRounds.findAll(user_id, game_id);
-  } catch (err: any) {
+  } catch (err:any) {
     res.status(400).json({ error: err.message });
   }
   res.status(200).json({ user_rounds: thisGame });

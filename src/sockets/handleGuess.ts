@@ -84,7 +84,7 @@ export async function handleArrayOfGuesses(
           definitionUpdate = await localAxios.put(
             `/api/definitions/increase/game/${game_id}/round/${roundId}`,
             {
-              player_id: player.pid,
+              playerId: player.pid,
               points: VALUE_OF_BLUFF,
             }
           );
@@ -93,7 +93,7 @@ export async function handleArrayOfGuesses(
           // log(definitionUpdate.data);
         }
       });
-    } catch (err: any) {
+    } catch (err:any) {
       if (err instanceof Error) {
         log(`error: handleArrayOfGuesses, ${err.message}`);
       }
@@ -104,7 +104,7 @@ export async function handleArrayOfGuesses(
     if (newRound.status === 200) {
       log(`* end of round ${roundId}`);
     }
-  } catch (err: any) {
+  } catch (err:any) {
     log(`error while ending round!, ${lobbyCode}`);
     handleErrorMessage(
       io,

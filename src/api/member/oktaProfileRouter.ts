@@ -4,7 +4,7 @@ import Profiles from "./oktaProfileModel";
 import { log } from "../../logger";
 const router = Router();
 
-router.get("/", authRequired, function (req, res) {
+router.get("/", authRequired, (req, res) => {
   Profiles.findAll()
     .then((profiles) => {
       res.status(200).json(profiles);
@@ -15,7 +15,7 @@ router.get("/", authRequired, function (req, res) {
     });
 });
 
-router.get("/:id", authRequired, function (req, res) {
+router.get("/:id", authRequired, (req, res) => {
   const id = String(req.params.id);
   Profiles.findById(id)
     .then((profile) => {
@@ -36,8 +36,8 @@ router.post("/", authRequired, async (req, res) => {
     const id = profile.id || 0;
     try {
       await Profiles.findById(id).then(async (pf) => {
-        if (pf == undefined) {
-          //profile not found so lets insert it
+        if (pf === undefined) {
+          // profile not found so lets insert it
           await Profiles.create(profile).then((profile) =>
             res
               .status(200)
@@ -47,7 +47,7 @@ router.post("/", authRequired, async (req, res) => {
           res.status(400).json({ message: "profile already exists" });
         }
       });
-    } catch (e: any) {
+    } catch (e:any) {
       console.error(e);
       res.status(500).json({ message: e.message });
     }
@@ -67,7 +67,7 @@ router.put("/", authRequired, async (req, res) => {
           .status(200)
           .json({ message: "profile updated", profile: updated[0] });
       });
-    } catch (e: any) {
+    } catch (e:any) {
       console.error(e);
       res.status(500).json({ message: e.message });
     }
@@ -86,7 +86,7 @@ router.delete("/:id", (req, res) => {
           .json({ message: `Profile '${id}' was deleted.`, profile: profile });
       });
     });
-  } catch (err: any) {
+  } catch (err:any) {
     res.status(500).json({
       message: `Could not delete profile with ID: ${id}`,
       error: err.message,

@@ -55,7 +55,7 @@ export function validNumber(num: any) {
         ? result.join("")
         : "";
     return n.length > 0;
-  } catch (err: any) {
+  } catch (err:any) {
     return false;
   }
 }

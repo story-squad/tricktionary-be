@@ -7,15 +7,15 @@ import { localAxios, privateMessage } from "./common";
  * @param socket (socket io)
  */
 async function handleNewPlayer(io: any, socket: any) {
-  const last_user_id = socket.id;
+  const lastUserId = socket.id;
   let login;
   let newtoken;
   ``;
   try {
-    login = await localAxios.post("/api/auth/new-player", { last_user_id });
+    login = await localAxios.post("/api/auth/new-player", { last_user_id: lastUserId });
     newtoken = login.data.token;
     return { ok: true, token: newtoken };
-  } catch (err: any) {
+  } catch (err:any) {
     return { ok: false, message: err.message };
   }
   privateMessage(io, socket, "token update", newtoken);

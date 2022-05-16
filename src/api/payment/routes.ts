@@ -87,7 +87,7 @@ async function createPaymentIntent(payment_id: string, total: number) {
     paymentIntent = await stripe.paymentIntents.create(params);
     clientSecret = paymentIntent.client_secret || "";
     updatedPayment = await update(payment_id, clientSecret);
-  } catch (err: any) {
+  } catch (err:any) {
     return { error: err.message };
   }
   if (!updatedPayment.ok) {
@@ -121,7 +121,7 @@ router.post(
         stripeHeaders,
         stripeSecret
       );
-    } catch (err: any) {
+    } catch (err:any) {
       log(`⚠️  Webhook signature verification failed.`);
       res.sendStatus(400);
       return;

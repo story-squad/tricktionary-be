@@ -24,7 +24,7 @@ router.get("/", redisCache, async (req: any, res: any, next: any) => {
     // not connected to redis
     try {
       await sendFromDatabase(req, res);
-    } catch (err: any) {
+    } catch (err:any) {
       return res
         .status(400)
         .json({ error: err.message || "database lookup error" });
@@ -46,7 +46,7 @@ router.get("/", redisCache, async (req: any, res: any, next: any) => {
           }
         }
       );
-    } catch (err: any) {
+    } catch (err:any) {
       log(err?.message || err);
       next();
     }

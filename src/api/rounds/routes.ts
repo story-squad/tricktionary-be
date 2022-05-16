@@ -14,7 +14,7 @@ router.post("/finish", async (req, res) => {
   try {
     const result: any = await Rounds.roundFinished(Number(roundId));
     res.status(200).json({ result });
-  } catch (err: any) {
+  } catch (err:any) {
     log(err.message);
     res.status(400).json({ err });
   }
@@ -28,7 +28,7 @@ router.get("/id/:id", async (req, res) => {
   }
   try {
     round = await Rounds.get(round_id);
-  } catch (err: any) {
+  } catch (err:any) {
     res.status(400).json({ error: err.message });
   }
   res.status(200).json({ round });

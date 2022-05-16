@@ -104,7 +104,7 @@ async function bulkUpdate(arr: any[], cb?: any) {
         }
       }
     });
-  } catch (err: any) {
+  } catch (err:any) {
     log(err.message);
   }
   return await cb(arr);

@@ -18,7 +18,7 @@ router.get("/round/:id", async (req, res) => {
     try {
       const result = await Super.getRound(Number(roundId)); // We always take my car 'cause it's never been beat
       res.status(200).json(result); // And we've never missed yet with the girls we meet
-    } catch (err: any) {
+    } catch (err:any) {
       // None of the guys go steady 'cause it wouldn't be right
       res.status(400).json({ error: err }); // To leave their best girl home now on Saturday night
     }

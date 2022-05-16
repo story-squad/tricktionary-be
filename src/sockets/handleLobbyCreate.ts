@@ -22,7 +22,7 @@ async function handleLobbyCreate(
   async function createGame(host: string) {
     try {
       request_game = await localAxios.post(`/api/game/new`, { og_host: host });
-    } catch (err: any) {
+    } catch (err:any) {
       if (err instanceof Error) {
         log(err.message);
       }
@@ -40,7 +40,7 @@ async function handleLobbyCreate(
       og_host = last_player.data.player.id;
       game_id = await createGame(og_host);
     }
-  } catch (err: any) {
+  } catch (err:any) {
     if (err instanceof Error) {
       log(err.message);
     }
@@ -70,7 +70,7 @@ async function handleLobbyCreate(
       og_host = newhost;
       game_id = await createGame(og_host);
       log(`created new token for host with game_id : ${game_id}`);
-    } catch (err: any) {
+    } catch (err:any) {
       log("[ERROR] sending token with 'retry create lobby'");
 
       if (err instanceof Error) {
@@ -105,7 +105,7 @@ async function handleLobbyCreate(
   };
   try {
     await updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode);
-  } catch (err: any) {
+  } catch (err:any) {
     if (err instanceof Error) {
       log(err.message);
     }
