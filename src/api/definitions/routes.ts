@@ -12,7 +12,7 @@ router.post("/new", async (req, res) => {
   try {
     result = await Definitions.add(playerId, pid, definition, roundId, game_id);
     defId = result.pop();
-  } catch (err) {
+  } catch (err:any) {
     log("error! definitions router");
     log(err.message);
   }
@@ -35,7 +35,7 @@ router.get("/user/:uid/round/:rid", async (req, res) => {
     // player's definition this round
     definition = await Definitions.byUserInRound(user_id, round_id);
     id = definition.id;
-  } catch (err) {
+  } catch (err:any) {
     // a blank definition object
     definition = {
       user_id,
@@ -60,16 +60,16 @@ router.put("/increase/game/:game_id/round/:round_id", async (req, res) => {
     return res.status(404).json({ error: "whatcha loooking for holmes?" });
   }
   const points: number = req.body.points;
-  const player_id: string = req.body.player_id;
+  const playerId: string = req.body.playerId;
   if (!(points > 0)) {
     return res.status(400).json({ error: "points must be > 0" });
   }
-  if (!(player_id.length > 0)) {
+  if (!(playerId.length > 0)) {
     return res.status(400).json({ error: "player who ?" });
   }
   try {
-    await Definitions.incr(player_id, round_id, points);
-  } catch (err) {
+    await Definitions.incr(playerId, round_id, points);
+  } catch (err:any) {
     return res.status(400).json({ error: err.message });
   }
   res.status(200).json({ ok: true });
@@ -80,15 +80,15 @@ router.get("/round/:round_id", async (req, res) => {
   let data: any;
   try {
     data = Definitions.thisRound(round_id);
-  } catch (err) {
+  } catch (err:any) {
     return res.status(400).json({ error: err.message });
   }
 });
 
-router.get("/game/:game_id/player/:player_id", async (req, res) => {
+router.get("/game/:game_id/player/:playerId", async (req, res) => {
   const game_id: string = req.params.game_id;
-  const player_id: string = req.params.player_id;
-  const result = await Definitions.findTopDefinition(player_id, game_id);
+  const playerId: string = req.params.playerId;
+  const result = await Definitions.findTopDefinition(playerId, game_id);
   if (!result.ok) {
     return res.status(400).json({ error: result.error });
   }
@@ -100,7 +100,7 @@ router.get("/id/:id", async (req, res) => {
   let definition:DefinitionType;
   try {
     definition = await Definitions.byId(definitionId).first();
-  } catch (err) {
+  } catch (err:any) {
     return res.status(400).json({ ok: false, error: err.message });
   }
   return res.status(200).json({ ok: true, definition });

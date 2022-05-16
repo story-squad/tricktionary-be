@@ -46,7 +46,7 @@ export function validNumber(num:any) {
     const result = num.match(pattern)
     const n:string = result?.length > 0 && result?.length === num?.length ? result.join("") : "";
     return n.length > 0;
-  } catch (err) {
+  } catch (err:any) {
     return false
   }
 }

@@ -13,12 +13,12 @@ async function newBot(botID: string, botName: string, lobbyCode: string) {
       name: botName,
       last_played: lobbyCode,
     });
-  } catch (err) {
+  } catch (err:any) {
     if (err instanceof Error) {
       return { ok: false, message: err.message };
     }
   }
-  return { ok: true, player_id: uuId };
+  return { ok: true, playerId: uuId };
 }
 
 async function getBotPID(botName: string, lobbyCode: string) {
@@ -29,7 +29,7 @@ async function getBotPID(botName: string, lobbyCode: string) {
       .select("id")
       .where({ name: botName, last_played: lobbyCode })
       .first();
-  } catch (err) {
+  } catch (err:any) {
     if (err instanceof Error) {
       return { ok: false, message: err.message };
     }
@@ -50,7 +50,7 @@ async function testDBConnection() {
 
   try {
     response = await db("Player").first();
-  } catch (err) {
+  } catch (err:any) {
     if (err instanceof Error) {
       return { ok: false, message: err.message };
     }

@@ -14,7 +14,7 @@ async function handleErrorMessage(
 ) {
   try {
     io.to(socket.id).emit("error", code, error);
-  } catch (err) {
+  } catch (err:any) {
     log("catch (handleErrorMessage)");
 
     if (err instanceof Error) log(err.message);

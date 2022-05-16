@@ -1,7 +1,7 @@
 type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 
 interface PlayerUpdate {
-  id: string; // uuid (player_id)
+  id: string; // uuid (playerId)
   token: string | undefined; // jwt
   last_played: string | undefined; // current game
   last_user_id: string | undefined; //socket.id

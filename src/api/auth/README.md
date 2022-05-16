@@ -111,7 +111,7 @@ Returns:
   {
     ok: BOOLEAN,
     last_user_id: STRING,
-    player_id: UUID,
+    playerId: UUID,
     username: STRING,
     definition: STRING,
     points: NUMBER,

@@ -22,7 +22,7 @@ export async function getDatabaseReactions(cache: TricktionaryCache) {
       cache.setValue("tricktionary-reactions", stringData, CACHE_LIFETIME_REACTIONS);
     }
     return { available };
-  } catch (err) {
+  } catch (err:any) {
     log("error whilst getting/setting tricktionary-reactions");
     return { error: err };
   }

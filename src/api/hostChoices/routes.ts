@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
       times_shuffled
     );
     choice_id = result.pop();
-  } catch (err) {
+  } catch (err:any) {
     log("error recording the host choice");
     log(err.message);
   }

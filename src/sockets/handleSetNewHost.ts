@@ -41,12 +41,12 @@ async function handleSetNewHost(
         log(`creating score card for ${username}`);
         score = await localAxios.post("/api/score/new", {
           game_id,
-          player_id: pid,
+          playerId: pid,
         });
         log(`created score card ${score.data?.id} for ${username}`);
       }
       lobbies[lobbyCode].host = newHost;
-    } catch (err) {
+    } catch (err:any) {
       console.log(err);
       return
     }

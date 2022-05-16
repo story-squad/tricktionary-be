@@ -15,121 +15,120 @@ import {
 const router = Router();
 
 router.post("/new", async (req, res) => {
-  const { player_id, game_id } = req.body;
+  const { playerId, game_id } = req.body;
   log("NEW SCORE CARD.");
-  if (!(player_id && game_id)) {
+  if (!(playerId && game_id)) {
     return res.json({ message: "missing information" });
   }
   try {
-    const linkedPlayer = await scoreCard(player_id, game_id);
+    const linkedPlayer = await scoreCard(playerId, game_id);
     if (!linkedPlayer.ok) {
       return res.json({ message: linkedPlayer.message });
     }
     return res.json({ score: linkedPlayer.id });
-  } catch (err) {
+  } catch (err:any) {
     if (err instanceof Error) return res.json({ message: err.message });
   }
 });
 
 router.get("/player/:id", async (req, res) => {
-  const player_id = req.params.id;
-  if (!player_id) {
+  const playerId = req.params.id;
+  if (!playerId) {
     return res.json({ error: "id ?" });
   }
   let result;
   try {
-    result = getGames(player_id); // return this player's games.
-  } catch (err) {
+    result = getGames(playerId); // return this player's games.
+  } catch (err:any) {
     if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
 });
 
 router.get("/player/:pid/game/:gid", async (req, res) => {
-  const player_id = req.params.pid;
-  const game_id = req.params.gid;
-  if (!player_id || !game_id) {
+  const playerId = req.params.pid;
+  const gameId = req.params.gid;
+  if (!playerId || !gameId) {
     return res.json({ error: "id ?" });
   }
   let result;
   try {
-    result = await getPlayerScore(player_id, game_id);
-  } catch (err) {
+    result = await getPlayerScore(playerId, gameId);
+  } catch (err:any) {
     if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
 });
 
 router.get("/games/:id", async (req, res) => {
-  const game_id = req.params.id;
-  if (!game_id) {
+  const gameId = req.params.id;
+  if (!gameId) {
     return res.json({ error: "id ?" });
   }
   let result;
   try {
-    result = getPlayers(game_id); // return this game's players.
-  } catch (err) {
+    result = getPlayers(gameId); // return this game's players.
+  } catch (err:any) {
     if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
 });
 
-router.put("/increase/:player_id", async (req, res) => {
-  const player_id = req.params.player_id;
+router.put("/increase/:playerId", async (req, res) => {
+  const playerId = req.params.playerId;
   const { game_id, points } = req.body;
   let errorMessage: string | undefined;
-  if (!player_id || !game_id || !points) {
-    errorMessage = `missing required [points: ${points}, game: ${game_id}, player: ${player_id}]`;
+  if (!playerId || !game_id || !points) {
+    errorMessage = `missing required [points: ${points}, game: ${game_id}, player: ${playerId}]`;
     return res.json({ error: errorMessage });
   }
   try {
-    const result = await addPoints(player_id, game_id, points);
+    const result = await addPoints(playerId, game_id, points);
     return res.json(result);
-  } catch (err) {
+  } catch (err:any) {
     if (err instanceof Error) return res.json({ error: err.message });
   }
 });
-router.put("/decrease/:player_id", async (req, res) => {
-  const player_id = req.params.player_id;
+router.put("/decrease/:playerId", async (req, res) => {
+  const playerId = req.params.playerId;
   const { game_id, points } = req.body;
   let errorMessage: string | undefined;
-  if (!player_id || !game_id || !points) {
-    errorMessage = `missing required [points: ${points}, game: ${game_id}, player: ${player_id}]`;
+  if (!playerId || !game_id || !points) {
+    errorMessage = `missing required [points: ${points}, game: ${game_id}, player: ${playerId}]`;
     return res.json({ error: errorMessage });
   }
   try {
-    const result = await subPoints(player_id, game_id, points);
+    const result = await subPoints(playerId, game_id, points);
     return res.json(result);
-  } catch (err) {
+  } catch (err:any) {
     if (err instanceof Error) return res.json({ error: err.message });
   }
 });
 
-router.put("/def/:player_id", async (req, res) => {
-  const player_id = req.params.player_id;
+router.put("/def/:playerId", async (req, res) => {
+  const playerId = req.params.playerId;
   const { game_id, top_definition_id } = req.body;
-  if (!player_id || !game_id || !top_definition_id) {
-    let errorMessage = `missing required [top_definition_id: ${top_definition_id}, game: ${game_id}, player: ${player_id}]`;
+  if (!playerId || !game_id || !top_definition_id) {
+    const errorMessage = `missing required [top_definition_id: ${top_definition_id}, game: ${game_id}, player: ${playerId}]`;
     return res.status(400).json({ error: errorMessage });
   }
-  let result;
+  let result:any;
   if (!top_definition_id) {
-    result = await getPlayerScore(player_id, game_id);
+    result = await getPlayerScore(playerId, game_id);
     return res.status(200).json({ score: result.score });
   }
   try {
     result = await updateDefinition(
-      player_id,
+      playerId,
       game_id,
       Number(top_definition_id)
     );
     const { score } = result;
-    if (result.ok) {
-    } else {
+    if (!result.ok) {
       res.json(result);
     }
     return res.json(score);
-  } catch (err) {
+  } catch (err:any) {
     return res.status(400).json({ error: err.message });
   }
 });
@@ -143,7 +142,7 @@ router.post("/latest/:game_id", async (req, res) => {
   let leaderboard;
   try {
     leaderboard = await getLatest(game_id);
-  } catch (err) {
+  } catch (err:any) {
     return res.json({ ok: false, error: err });
   }
   if (!leaderboard?.ok) {
@@ -153,32 +152,32 @@ router.post("/latest/:game_id", async (req, res) => {
   let latestScore: any = [];
   let countdown = leaderboard.latest.length;
   // update the latest top_definitions, as needed; returning the list
-  leaderboard.latest.forEach(async (scoreCard: any) => {
-    const { player_id, points, top_definition_id } = scoreCard;
-    log(`looking up top definition for player ${player_id}`);
-    const checkTop = await findTopDefinition(player_id, game_id); // sort
-    const latest_top_def = checkTop.ok && checkTop?.top_definition?.id;
-    if (latest_top_def && top_definition_id !== latest_top_def) {
+  for (const scoreCard1 of leaderboard.latest) {
+    const { playerId, points, top_definition_id } = scoreCard1;
+    log(`looking up top definition for player ${playerId}`);
+    const checkTop = await findTopDefinition(playerId, game_id); // sort
+    const latestTopDef = checkTop.ok && checkTop?.top_definition?.id;
+    if (latestTopDef && top_definition_id !== latestTopDef) {
       log("top definition changed... updating score-card"); // update
-      await updateDefinition(player_id, game_id, latest_top_def);
+      await updateDefinition(playerId, game_id, latestTopDef);
       countdown -= 1;
       latestScore = [
         ...latestScore,
         {
-          player_id,
+          playerId,
           points,
-          top_definition_id: latest_top_def,
+          top_definition_id: latestTopDef,
         },
       ];
     } else {
       log(`top definition remains to be ${top_definition_id}`);
       countdown -= 1;
-      latestScore = [...latestScore, { player_id, points, top_definition_id }];
+      latestScore = [...latestScore, { playerId, points, top_definition_id }];
     }
     if (countdown < 1) {
-      return res.json(await latestScore);
+      res.json(await latestScore);
     }
-  });
+  }
 });
 
 export default router;
