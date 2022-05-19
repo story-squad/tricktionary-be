@@ -64,7 +64,7 @@ router.get("/botpid/:username/:lobbycode", (req, res) => {
 
 // WIL REMOVE SOON! I AM JUST TESTING ENV OUTPUT
 router.get("/testENV", (req, res) => {
-  const PORT = process.env.PORT;
+  const PORT = process.env.BE_PORT;
   const NODE_ENV = process.env.DB_ENVIRONMENT;
   const DATABASE_URL = process.env.DATABASE_URL;
   const CA = process.env.CA_CERT;

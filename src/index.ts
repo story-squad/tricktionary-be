@@ -17,7 +17,7 @@ if (!withDB) {
   console.log("warning: no DATABASE_URL was found.");
 }
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.BE_PORT || 8080;
 
 const server = socketApp.listen(PORT, () => {
   // const { port, address } = server.address() as AddressInfo;
