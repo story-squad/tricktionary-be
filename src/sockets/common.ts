@@ -5,7 +5,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 const localAxios = axios.create({
   baseURL: `${process.env.BASE_URL || "http://localhost"}:${
-    process.env.FE_PORT || 5000
+    process.env.BE_PORT || 5000
   }`,
 });
 localAxios.defaults.timeout = 10000;
