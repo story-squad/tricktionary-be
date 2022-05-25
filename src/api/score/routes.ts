@@ -112,7 +112,7 @@ router.put("/def/:player_id", async (req, res) => {
     let errorMessage = `missing required [top_definition_id: ${top_definition_id}, game: ${game_id}, player: ${player_id}]`;
     return res.status(400).json({ error: errorMessage });
   }
-  let result;
+  let result: any;
   if (!top_definition_id) {
     result = await getPlayerScore(player_id, game_id);
     return res.status(200).json({ score: result.score });
