@@ -8,7 +8,7 @@
     "start": "node ./dist/src/index.js --unhandled-rejections=strict",
     "pre-docs": "rm -rf trex/docs/tricktionary",
     "post-docs": "./scripts/copyMarkdown.sh && ./scripts/buildDocs.sh",
-    "gen-docs": "npx typedoc --theme minimal --plugin typedoc-plugin-markdown src/sockets",
+    "gen-docs": "npx typedoc --theme default --plugin typedoc-plugin-markdown src/sockets",
     "docs": "npm run pre-docs && npm run gen-docs && npm run post-docs",
     "develop": "npm run build && npm run docs && npm start"
   },
