@@ -29,7 +29,7 @@ router.get("/find-player/:last_user_id", async (req, res) => {
   }
   try {
     player = await Player.findPlayer("last_user_id", last_user_id);
-  } catch (err) {
+  } catch (err:any) {
     errorMessage = err.message;
     return res.status(400).json({ error: errorMessage });
   }
@@ -48,7 +48,7 @@ router.post("/new-player", async (req, res) => {
   let created: any;
   try {
     created = await Player.newPlayer(last_user_id);
-  } catch (err) {
+  } catch (err:any){
     log(`[!ERROR] newPlayer(${last_user_id})`);
   }
   if (!created?.ok) {
@@ -60,7 +60,7 @@ router.post("/new-player", async (req, res) => {
   let tokenError: any;
   try {
     token = await newToken(last_user_id, pid, undefined, undefined);
-  } catch (err) {
+  } catch (err:any){
     tokenError = err;
   }
   return res.status(token?.status || 400).json(token || tokenError);
@@ -79,7 +79,7 @@ router.post("/update-token", async (req, res) => {
     const token = await newToken(s_id, p_id, extra, lobbyCode);
     await Player.updatePlayer(p_id, { name });
     res.status(200).json(token);
-  } catch (err) {
+  } catch (err:any){
     res.status(400).json({ message: err.message });
   }
 });
@@ -106,7 +106,7 @@ router.post("/login", async (req, res) => {
     last_lobby = result.last_lobby || "";
     last_username = result.username || "";
     player = await Player.getPlayer(player_id);
-  } catch (err) {
+  } catch (err:any){
     log(err.message);
     return res.json({ message: err.message });
   }
@@ -123,7 +123,7 @@ router.post("/login", async (req, res) => {
     if (token_request.ok) {
       token = token_request.token;
     }
-  } catch (err) {
+  } catch (err:any){
     return res.status(403).json({ message: err.message });
   }
   // last_lobby will be returned, if it exists, as player.last_lobby

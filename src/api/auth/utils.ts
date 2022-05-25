@@ -95,7 +95,7 @@ export async function newToken(
       status: 200,
       pid: player_id,
     };
-  } catch (err) {
+  } catch (err:any){
     return { ok: false, message: err.message, status: 400 };
   }
 }
@@ -150,7 +150,7 @@ export async function totalRecall(player_id: string) {
   try {
     player = await Player.getPlayer(player_id);
     result = { ok: true, player, lobby: undefined };
-  } catch (err) {
+  } catch (err:any){
     result = {
       ok: false,
       message: err.message,
@@ -172,7 +172,7 @@ export async function totalRecall(player_id: string) {
       if (spoilers) {
         return { ok: true, player: result.player, spoilers };
       }
-    } catch (err) {
+    } catch (err:any){
       log("cannot find a last_lobby of player.");
       return {
         ok: true,
@@ -221,7 +221,7 @@ export async function verifyTricktionaryToken(
       }
     }
     // NOTE: don't need to lookup player by id if we already have the last lobby from JWT
-  } catch (err) {
+  } catch (err:any){
     return { ok: false, status: 403, message: err.message };
   }
   return {

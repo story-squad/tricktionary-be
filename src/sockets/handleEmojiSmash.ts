@@ -35,7 +35,7 @@ async function handleEmojiSmash(
     log(`Definition ${definitionId}, Reaction ${reactionId} : ${value}`);
     // send back result
     io.to(lobbyCode).emit("get reaction", definitionId, reactionId, value);
-  } catch (err) {
+  } catch (err:any){
     log(
       `[!ERROR] handleEmojiSmash -> Definition ${definitionId}, Reaction ${reactionId}`
     );

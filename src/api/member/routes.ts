@@ -16,7 +16,7 @@ router.post("/new", async (req, res) => {
       external
     );
     // member_id = createMember.member_id;
-  } catch (err) {
+  } catch (err:any){
     res.status(400).json({ message: err.message });
   }
   res.status(200).json({ member_id: createMember?.member_id || member_id });

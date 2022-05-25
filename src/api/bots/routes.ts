@@ -14,7 +14,7 @@ router.post("/new-bot", async (req, res) => {
   let created: any;
   try {
     created = await Bot.newBot(last_user_id, botName, lobbyCode);
-  } catch (err) {
+  } catch (err:any){
     log(`[!ERROR] newPlayer(${last_user_id})`);
   }
   if (!created?.ok) {
@@ -26,7 +26,7 @@ router.post("/new-bot", async (req, res) => {
   let tokenError: any;
   try {
     token = await newToken(last_user_id, pid, undefined, undefined);
-  } catch (err) {
+  } catch (err:any){
     tokenError = err;
   }
   return res.status(token?.status || 400).json(token || tokenError);

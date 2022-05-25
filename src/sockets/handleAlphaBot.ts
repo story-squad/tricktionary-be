@@ -70,7 +70,7 @@ async function handleAlphaBot(
 
         console.log(login.data);
         botPID = login?.data.id;
-      } catch (err) {
+      } catch (err:any){
         if (err instanceof Error) {
           return { ok: false, message: err.message };
         }
@@ -89,7 +89,7 @@ async function handleAlphaBot(
         });
 
         botPID = login?.data.pid;
-      } catch (err) {
+      } catch (err:any){
         if (err instanceof Error) {
           return { ok: false, message: err.message };
         }

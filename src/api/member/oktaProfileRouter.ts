@@ -86,7 +86,7 @@ router.delete("/:id", (req, res) => {
           .json({ message: `Profile '${id}' was deleted.`, profile: profile });
       });
     });
-  } catch (err) {
+  } catch (err:any){
     res.status(500).json({
       message: `Could not delete profile with ID: ${id}`,
       error: err.message,

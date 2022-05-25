@@ -78,7 +78,7 @@ if (redisHost.length > 0) {
     });
     const subClient = pubClient.duplicate();
     io.adapter(createAdapter({ pubClient, subClient }));
-  } catch (err) {
+  } catch (err:any){
     log("[error connecting Redis adapter!]");
     if (err instanceof Error) {
       log(err.message);

@@ -70,7 +70,7 @@ const cleverStudentRequired = async (req: any, res: any, next: any) => {
     log('success!');
     // continue
     next();
-  } catch (err) {
+  } catch (err:any){
     next(createHttpError(401, err.message));
   }
 };

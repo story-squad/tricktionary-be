@@ -12,7 +12,7 @@ router.post("/new", async (req, res) => {
   try {
     result = await Definitions.add(playerId, pid, definition, roundId, game_id);
     defId = result.pop();
-  } catch (err) {
+  } catch (err:any){
     log("error! definitions router");
     log(err.message);
   }
@@ -35,7 +35,7 @@ router.get("/user/:uid/round/:rid", async (req, res) => {
     // player's definition this round
     definition = await Definitions.byUserInRound(user_id, round_id);
     id = definition.id;
-  } catch (err) {
+  } catch (err:any){
     // a blank definition object
     definition = {
       user_id,
@@ -69,7 +69,7 @@ router.put("/increase/game/:game_id/round/:round_id", async (req, res) => {
   }
   try {
     await Definitions.incr(player_id, round_id, points);
-  } catch (err) {
+  } catch (err:any){
     return res.status(400).json({ error: err.message });
   }
   res.status(200).json({ ok: true });
@@ -80,7 +80,7 @@ router.get("/round/:round_id", async (req, res) => {
   let data: any;
   try {
     data = Definitions.thisRound(round_id);
-  } catch (err) {
+  } catch (err:any){
     return res.status(400).json({ error: err.message });
   }
 });
@@ -100,7 +100,7 @@ router.get("/id/:id", async (req, res) => {
   let definition:DefinitionType;
   try {
     definition = await Definitions.byId(definitionId).first();
-  } catch (err) {
+  } catch (err:any){
     return res.status(400).json({ ok: false, error: err.message });
   }
   return res.status(200).json({ ok: true, definition });

@@ -13,7 +13,7 @@ async function handleNewPlayer(io: any, socket: any) {
   try {
     login = await localAxios.post('/api/auth/new-player', { last_user_id });
     newtoken = login.data.token;
-  } catch (err) {
+  } catch (err:any){
     return { ok: false, message: err.message };
   }
   privateMessage(io, socket, "token update", newtoken)

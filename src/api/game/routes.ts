@@ -10,7 +10,7 @@ router.post("/new", async (req, res) => {
     if (og_host) {
       game_id = await Game.add(og_host);
     }
-  } catch (err) {
+  } catch (err:any){
     res.status(400).json({ message: err.message });
   }
   res.status(200).json(game_id);
@@ -20,7 +20,7 @@ router.get("/all", async (req, res) => {
   let result;
   try {
     result = await Game.get();
-  } catch (err) {
+  } catch (err:any){
     result = { error: err.message };
   }
   return res.status(200).json(result.games);
@@ -32,7 +32,7 @@ router.get("/latest/:limit", async (req, res) => {
   let result: any;
   try {
     result = await Game.latest(n);
-  } catch (err) {
+  } catch (err:any){
     return res.status(400).json({ error: err.message });
   }
   return res.status(200).json(result);
@@ -44,7 +44,7 @@ router.get("/leaderboard/:game_id", async (req, res) => {
   // aggregates data from 5 tables
   try {
     result = await Game.leaderBoard(game_id);
-  } catch (err) {
+  } catch (err:any){
     return res.status(400).json({ error: err.message });
   }
   return res.status(200).json(result);

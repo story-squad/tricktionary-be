@@ -15,7 +15,7 @@ async function add(member_id: string, amount: number) {
         external: "processing"
       })
       .returning("id");
-  } catch (err) {
+  } catch (err:any){
     // NOTE: it should error when the member_id does not exist
     return { ok: false, message: "error" };
   }
@@ -26,7 +26,7 @@ async function update(payment_id: string, external: string) {
   // update the payment with external payment provider detail
   try {
     await db("Payment").update({ external }).where({ id: payment_id });
-  } catch (err) {
+  } catch (err:any){
     return { ok: false, message: err.message };
   }
   return { ok: true, message: "success" };
