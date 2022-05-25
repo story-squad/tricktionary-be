@@ -213,7 +213,7 @@ router.put("/id/:id", async (req, res) => {
       ...result.value,
     });
     res.status(200).json({ word });
-  } catch(err) {
+  } catch (err:any) {
     res.status(500).json({ error: err.message})
   }
 });
