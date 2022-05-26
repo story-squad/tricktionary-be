@@ -1,4 +1,4 @@
-#/bin/env sh
+#!/bin/env sh
 
 # copy all the README file from the src/api folders to our docusaurus docs folder
 for foo in $(ls src/api/*/README.md); do 
