@@ -5,7 +5,7 @@ import Profiles from "../member/oktaProfileModel"
 
 const oktaJwtVerifier = new OktaJwtVerifier(oktaVerifierConfig.config);
 
-const makeProfileObj = (claims:any) => {
+const makeProfileObj = (claims:{sub: string; email: string; name: string}) => {
   return {
     id: claims.sub,
     email: claims.email,
