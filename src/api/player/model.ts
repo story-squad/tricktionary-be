@@ -49,7 +49,7 @@ async function getName(player_id: string) {
 
 async function nameCheck(username:string, last_played: string) {
   const players = await db("Player").where({ last_played });
-  const player_names = players.map((p:any) => p.name.toLowerCase());
+  const player_names = players.map((p:{name: string}) => p.name.toLowerCase());
   const check = matchWords(username.toLowerCase(), player_names);
   return check.length > 0;
 }
