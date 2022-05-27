@@ -118,3 +118,5 @@ dist/
 .local-env
 
 trex/yarn*
+
+.vscode
