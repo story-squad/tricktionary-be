@@ -196,7 +196,7 @@ router.put("/id/:id", async (req, res) => {
   if (!result.ok) {
     return res.status(400).json({ error: result.message });
   }
-  const oldRecord:any = await Words.getById(id);
+  const oldRecord:{word: string} = await Words.getById(id);
   // if the spelling has changed, the db will consider this a different word.
   if (result.value.word.toLowerCase() !== oldRecord.word.toLowerCase()) {
     // make sure this word doesn't already exist under another id.
@@ -208,7 +208,7 @@ router.put("/id/:id", async (req, res) => {
   }
   // at this point, we should be ok to update the database.
   try {
-    const word:any = await Words.update(id, {
+    const word:string = await Words.update(id, {
       ...oldRecord,
       ...result.value,
     });
