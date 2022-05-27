@@ -6,7 +6,7 @@ const router = Router();
 router.post("/", async (req, res) => {
   const vote = req.body;
   const userID:string = vote?.userID;
-  const definitionID:any = vote?.definitionID;
+  const definitionID:string = vote?.definitionID;
   const roundID:number = vote?.roundID;
   try {
     const result = await Votes.add(userID, definitionID, roundID)
