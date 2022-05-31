@@ -9,7 +9,7 @@ const router = Router();
 /**
  * request all from the database table "Reactions"
  * @param req Request object
- * @param res Resonse object
+ * @param res Response object
  * @returns
  */
 async function sendFromDatabase(req: any, res: any) {
