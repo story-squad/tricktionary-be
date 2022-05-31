@@ -3,7 +3,7 @@ import choiceModel from "./model";
 import { log } from "../../logger";
 const router = Router();
 
-router.post("/", async (req, res) => {
+router.post("/", async (req: any, res: any) => {
   const { word_id_one, word_id_two, round_id, times_shuffled } = req.body;
   let result: any;
   let choice_id: number = -1;
@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/id/:id", async (req, res) => {
+router.get("/id/:id", async (req: any, res: any) => {
   const id = Number(req.params.id);
   if (!id) res.status(400).json({ error: "id?" });
   choiceModel

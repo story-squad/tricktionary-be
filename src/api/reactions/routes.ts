@@ -23,7 +23,7 @@ router.get("/", redisCache, async (req: any, res: any, next: any) => {
   if (!cache?.getValue) {
     // not connected to redis
     try {
-      await sendFromDatabase(req, res);
+      await sendFromDatabase(req: any, res: any);
     } catch (err:any){
       return res
         .status(400)
@@ -42,7 +42,7 @@ router.get("/", redisCache, async (req: any, res: any, next: any) => {
               "tricktionary-reactions were not found in the cache => sendFromDatabase"
             );
             // database
-            await sendFromDatabase(req, res);
+            await sendFromDatabase(req: any, res: any);
           }
         }
       );

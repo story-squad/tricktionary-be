@@ -40,7 +40,7 @@ function getPrice(item: string): number {
 /**
  * prices are calculated server-side and a "payment intent" is returned.
  */
-router.post("/checkout", async (req, res) => {
+router.post("/checkout", async (req: any, res: any) => {
   const checkout: ShoppingCart = req.body.cart;
   const member_id: string = req.body.member_id;
   // process the items and create a payment record.
@@ -107,7 +107,7 @@ async function createPaymentIntent(payment_id: string, total: number) {
 router.post(
   "/webhook",
   // bodyParser.raw({ type: "application/json" }),
-  async (req, res): Promise<void> => {
+  async (req: any, res: any): Promise<void> => {
     const stripeBody = req.body;
     // todo: fix 'Webhook signature verification failed'
     const stripeHeaders = req.headers["stripe-signature"] || "";

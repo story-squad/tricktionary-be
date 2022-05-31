@@ -7,7 +7,7 @@ const router = Router();
 const limitFromEnv: number = Number(process.env.USERNAME_CHARACTER_LIMIT);
 const usernameCharLimit: number = limitFromEnv > 0 ? limitFromEnv : 12;
 
-router.post("/recall", (req, res) => {
+router.post("/recall", (req: any, res: any) => {
   const { token } = req.body;
   if (!token) {
     return res.status(400).json({ error: "token required" });
@@ -20,7 +20,7 @@ router.post("/recall", (req, res) => {
   return res.status(200).json(result);
 });
 
-router.get("/find-player/:last_user_id", async (req, res) => {
+router.get("/find-player/:last_user_id", async (req: any, res: any) => {
   const last_user_id = req.params.last_user_id;
   let player;
   let errorMessage = "unknown error";
@@ -36,7 +36,7 @@ router.get("/find-player/:last_user_id", async (req, res) => {
   return res.status(200).json(player);
 });
 
-router.post("/new-player", async (req, res) => {
+router.post("/new-player", async (req: any, res: any) => {
   let { last_user_id, jump_code } = req.body;
   if (!last_user_id) {
     return res.status(403).json({ message: "last_user_id required" });
@@ -66,7 +66,7 @@ router.post("/new-player", async (req, res) => {
   return res.status(token?.status || 400).json(token || tokenError);
 });
 
-router.post("/update-token", async (req, res) => {
+router.post("/update-token", async (req: any, res: any) => {
   const { s_id, p_id, name, definition, points, lobbyCode } = req.body;
   if (name.lenth > usernameCharLimit) {
     return res
@@ -84,7 +84,7 @@ router.post("/update-token", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: any, res: any) => {
   const { user_id, last_token } = req.body;
   if (!user_id || !last_token) {
     res.status(403).json({ message: "missing required elements" });

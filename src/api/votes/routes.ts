@@ -3,7 +3,7 @@ import Votes from "./model";
 
 const router = Router();
 
-router.post("/", async (req, res) => {
+router.post("/", async (req: any, res: any) => {
   const vote = req.body;
   const userID:string = vote?.userID;
   const definitionID:string = vote?.definitionID;

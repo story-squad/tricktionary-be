@@ -4,7 +4,7 @@ import { newToken } from "../auth/utils";
 import Bot from "./model";
 const router = Router();
 
-router.post("/new-bot", async (req, res) => {
+router.post("/new-bot", async (req: any, res: any) => {
   let { last_user_id, botName, lobbyCode } = req.body;
 
   if (!last_user_id) {
@@ -32,7 +32,7 @@ router.post("/new-bot", async (req, res) => {
   return res.status(token?.status || 400).json(token || tokenError);
 });
 
-router.get("/namecheck/:username/:lobbycode", async (req, res) => {
+router.get("/namecheck/:username/:lobbycode", async (req: any, res: any) => {
   const name = req.params.username;
   const last_played = req.params.lobbycode;
   const lc_limit: number = process.env.LC_LENGTH
@@ -48,7 +48,7 @@ router.get("/namecheck/:username/:lobbycode", async (req, res) => {
   return res.status(200).json(await Bot.checkBot(name, last_played));
 });
 
-router.get("/botpid/:username/:lobbycode", (req, res) => {
+router.get("/botpid/:username/:lobbycode", (req: any, res: any) => {
   const { username, lobbycode } = req.params;
 
   Bot.getBotPID(username, lobbycode)
@@ -63,7 +63,7 @@ router.get("/botpid/:username/:lobbycode", (req, res) => {
 });
 
 // WIL REMOVE SOON! I AM JUST TESTING ENV OUTPUT
-router.get("/testENV", (req, res) => {
+router.get("/testENV", (req: any, res: any) => {
   const PORT = process.env.PORT;
   const NODE_ENV = process.env.DB_ENVIRONMENT;
   const DATABASE_URL = process.env.DATABASE_URL;

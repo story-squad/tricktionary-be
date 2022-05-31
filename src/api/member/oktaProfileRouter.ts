@@ -4,7 +4,7 @@ import Profiles from "./oktaProfileModel";
 import { log } from "../../logger";
 const router = Router();
 
-router.get("/", authRequired, function (req, res) {
+router.get("/", authRequired, function (req: any, res: any) {
   Profiles.findAll()
     .then((profiles) => {
       res.status(200).json(profiles);
@@ -15,7 +15,7 @@ router.get("/", authRequired, function (req, res) {
     });
 });
 
-router.get("/:id", authRequired, function (req, res) {
+router.get("/:id", authRequired, function (req: any, res: any) {
   const id = String(req.params.id);
   Profiles.findById(id)
     .then((profile) => {
@@ -30,7 +30,7 @@ router.get("/:id", authRequired, function (req, res) {
     });
 });
 
-router.post("/", authRequired, async (req, res) => {
+router.post("/", authRequired, async (req: any, res: any) => {
   const profile = req.body;
   if (profile) {
     const id = profile.id || 0;
@@ -56,7 +56,7 @@ router.post("/", authRequired, async (req, res) => {
   }
 });
 
-router.put("/", authRequired, async (req, res) => {
+router.put("/", authRequired, async (req: any, res: any) => {
   const profile = req.body;
   if (profile) {
     const id = profile.id || 0;
@@ -76,7 +76,7 @@ router.put("/", authRequired, async (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req: any, res: any) => {
   const id = req.params.id;
   try {
     Profiles.findById(id).then((profile) => {

@@ -3,13 +3,13 @@ import Rounds from "./model";
 import { log } from "../../logger";
 const router = Router();
 
-router.post("/start", async (req, res) => {
+router.post("/start", async (req: any, res: any) => {
   const { lobby, wordId, lobbyCode } = req.body;
   const result = await Rounds.add(lobby, wordId, lobbyCode);
   res.status(201).json({ roundId: Array.from(result).pop() });
 });
 
-router.post("/finish", async (req, res) => {
+router.post("/finish", async (req: any, res: any) => {
   const { roundId } = req.body;
   try {
     const result: any = await Rounds.roundFinished(Number(roundId));
@@ -20,7 +20,7 @@ router.post("/finish", async (req, res) => {
   }
 });
 
-router.get("/id/:id", async (req, res) => {
+router.get("/id/:id", async (req: any, res: any) => {
   const round_id = Number(req.params.id);
   let round;
   if (!round_id) {

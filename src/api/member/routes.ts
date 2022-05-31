@@ -3,7 +3,7 @@ import Member from "./model";
 
 const router = Router();
 
-router.post("/new", async (req, res) => {
+router.post("/new", async (req: any, res: any) => {
   const { email, username, fullname, location, external } = req.body;
   let createMember;
   let member_id: string = "ERROR CREATING MEMBERSHIP";

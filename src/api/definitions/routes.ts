@@ -5,7 +5,7 @@ import { log } from "../../logger";
 
 const router = Router();
 
-router.post("/new", async (req, res) => {
+router.post("/new", async (req: any, res: any) => {
   const { playerId, definition, roundId, pid, game_id } = req.body;
   let result: any;
   let defId: number = -1;
@@ -26,7 +26,7 @@ router.post("/new", async (req, res) => {
 /**
  * @returns { user_id, round_id, definition }
  */
-router.get("/user/:uid/round/:rid", async (req, res) => {
+router.get("/user/:uid/round/:rid", async (req: any, res: any) => {
   const user_id = req.params.uid;
   const round_id = Number(req.params.rid);
   let definition: DefinitionType;
@@ -51,7 +51,7 @@ router.get("/user/:uid/round/:rid", async (req, res) => {
   });
 });
 
-router.put("/increase/game/:game_id/round/:round_id", async (req, res) => {
+router.put("/increase/game/:game_id/round/:round_id", async (req: any, res: any) => {
   const game_id: string = req.params.game_id;
   const round_id: number = Number(req.params.round_id);
   const ok_round: boolean = round_id > 0;
@@ -75,7 +75,7 @@ router.put("/increase/game/:game_id/round/:round_id", async (req, res) => {
   res.status(200).json({ ok: true });
 });
 
-router.get("/round/:round_id", async (req, res) => {
+router.get("/round/:round_id", async (req: any, res: any) => {
   const round_id: number = Number(req.params.round_id);
   let data: any;
   try {
@@ -85,7 +85,7 @@ router.get("/round/:round_id", async (req, res) => {
   }
 });
 
-router.get("/game/:game_id/player/:player_id", async (req, res) => {
+router.get("/game/:game_id/player/:player_id", async (req: any, res: any) => {
   const game_id: string = req.params.game_id;
   const player_id: string = req.params.player_id;
   const result = await Definitions.findTopDefinition(player_id, game_id);
@@ -95,7 +95,7 @@ router.get("/game/:game_id/player/:player_id", async (req, res) => {
   return res.json({ top_definition: result.top_definition });
 });
 
-router.get("/id/:id", async (req, res) => {
+router.get("/id/:id", async (req: any, res: any) => {
   const definitionId: number = Number(req.params.id);
   let definition:DefinitionType;
   try {

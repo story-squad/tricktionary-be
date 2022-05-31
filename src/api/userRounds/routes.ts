@@ -2,7 +2,7 @@ import { Router } from "express";
 import userRounds from "./model";
 
 const router = Router();
-router.post("/add-players", async (req, res) => {
+router.post("/add-players", async (req: any, res: any) => {
   // this route is called internally by sockets/handleStartGame
   const { players, roundId, game_id } = req.body;
   if (!(players && roundId))
@@ -11,7 +11,7 @@ router.post("/add-players", async (req, res) => {
   res.status(result.ok ? 201 : 400).json({ message: result.message });
 });
 
-router.get("/user/:id", async (req, res) => {
+router.get("/user/:id", async (req: any, res: any) => {
   const user_id = req.params.id;
   let possibilities;
   if (!user_id) {
@@ -25,7 +25,7 @@ router.get("/user/:id", async (req, res) => {
   res.status(200).json({ ok: true, possibilities });
 });
 
-router.get("/user/:id/last", async (req, res) => {
+router.get("/user/:id/last", async (req: any, res: any) => {
   const user_id = req.params.id;
   let possibilities;
   if (!user_id) {
@@ -39,7 +39,7 @@ router.get("/user/:id/last", async (req, res) => {
   res.status(200).json({ ok: true, possibilities });
 });
 
-router.get("/user/:id/first", async (req, res) => {
+router.get("/user/:id/first", async (req: any, res: any) => {
   const user_id = req.params.id;
   let possibilities;
   if (!user_id) {
@@ -53,7 +53,7 @@ router.get("/user/:id/first", async (req, res) => {
   res.status(200).json({ ok: true, possibilities });
 });
 
-router.get("/user/:uid/game/:gid", async (req, res) => {
+router.get("/user/:uid/game/:gid", async (req: any, res: any) => {
   const user_id = req.params.uid;
   const game_id = req.params.gid;
   let thisGame;

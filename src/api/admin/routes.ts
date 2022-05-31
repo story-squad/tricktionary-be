@@ -3,7 +3,7 @@ import { Router } from "express";
 import Super from "./model";
 const router = Router();
 
-router.get("/", (req, res) => {
+router.get("/", (req: any, res: any) => {
   res.status(200).json({ ok: true, message: "administrative routes" });
 });
 
@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
  * (Round round)
  * I get a round
  */
-router.get("/round/:id", async (req, res) => {
+router.get("/round/:id", async (req: any, res: any) => {
   const roundId = req.params.id;
   if (validNumber(roundId)) {
     try {
@@ -25,7 +25,7 @@ router.get("/round/:id", async (req, res) => {
   }
 });
 
-router.get("/word/:word_id", async (req, res) => {
+router.get("/word/:word_id", async (req: any, res: any) => {
   const id = Number(req.params.word_id);
   if (!id) res.status(400).json({ error: "id?" });
   Super.getWordDetails(id)
@@ -38,7 +38,7 @@ router.get("/word/:word_id", async (req, res) => {
 });
 
 // I'm pretty sure this works but don't have any definitions to test with 
-router.get("/definition/:id", async (req, res) => {
+router.get("/definition/:id", async (req: any, res: any) => {
   const id = Number(req.params.id);
   if (!id) res.status(400).json({ error: "id?" });
   Super.getDefinitionDetails(id)
@@ -50,7 +50,7 @@ router.get("/definition/:id", async (req, res) => {
     });
 });
 
-router.get("/topdefinitions", async (req, res) => {
+router.get("/topdefinitions", async (req: any, res: any) => {
   Super.getTopVotedDefinitions()
     .then((definitions) => {
       res.status(200).json(definitions);

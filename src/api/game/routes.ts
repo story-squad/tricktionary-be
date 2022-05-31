@@ -3,7 +3,7 @@ import Game from "./model";
 
 const router = Router();
 
-router.post("/new", async (req, res) => {
+router.post("/new", async (req: any, res: any) => {
   const { og_host } = req.body;
   let game_id;
   try {
@@ -16,7 +16,7 @@ router.post("/new", async (req, res) => {
   res.status(200).json(game_id);
 });
 
-router.get("/all", async (req, res) => {
+router.get("/all", async (req: any, res: any) => {
   let result;
   try {
     result = await Game.get();
@@ -26,7 +26,7 @@ router.get("/all", async (req, res) => {
   return res.status(200).json(result.games);
 });
 
-router.get("/latest/:limit", async (req, res) => {
+router.get("/latest/:limit", async (req: any, res: any) => {
   let limit:string = req.params.limit;
   const n = Number(limit) > 0 ? Number(limit) : 5;
   let result: any;
@@ -38,7 +38,7 @@ router.get("/latest/:limit", async (req, res) => {
   return res.status(200).json(result);
 });
 
-router.get("/leaderboard/:game_id", async (req, res) => {
+router.get("/leaderboard/:game_id", async (req: any, res: any) => {
   let game_id:string = req.params.game_id;
   let result: any;
   // aggregates data from 5 tables
