@@ -5,19 +5,39 @@ import Profiles from "../member/oktaProfileModel"
 
 const oktaJwtVerifier = new OktaJwtVerifier(oktaVerifierConfig.config);
 
-const makeProfileObj = (claims:any) => {
-  return {
-    id: claims.sub,
-    email: claims.email,
-    name: claims.name,
-  };
-};
+interface Claims {
+  sub: string;
+  email: string;
+  name: string;
+}
+
+interface Profile {
+  id: string;
+  email: string;
+  name: string;
+}
+
+class ProfileObj {
+  id: string;
+  email: string;
+  name: string;
+  constructor(claims: Claims) {
+    this.id = claims.sub;
+    this.email = claims.email;
+    this.name = claims.name;
+  }
+}
+
+function makeProfileObj(claims: Claims):Profile {
+  return new ProfileObj(claims);
+}
+
 /**
  * A simple middleware that asserts valid Okta idToken and sends 401 responses
  * if the token is not present or fails validation. If the token is valid its
  * contents are attached to req.profile
  */
-const authRequired = async (req:any, res:any, next:any) => {
+const authRequired = async (req: any, res: any, next: any) => {
   try {
     const authHeader = req.headers.authorization || '';
     const match = authHeader.match(/Bearer (.+)/);
@@ -27,7 +47,7 @@ const authRequired = async (req:any, res:any, next:any) => {
     const idToken = match[1];
     oktaJwtVerifier
       .verifyAccessToken(idToken, oktaVerifierConfig.expectedAudience)
-      .then(async (data:any) => {
+      .then(async (data: any) => {
         const jwtUserObj = makeProfileObj(data.claims);
         const profile = await Profiles.findOrCreateProfile(jwtUserObj);
         if (profile) {
@@ -37,11 +57,11 @@ const authRequired = async (req:any, res:any, next:any) => {
         }
         next();
       })
-      .catch((err:any) => {
+      .catch((err: any) => {
         console.error(err.message);
         next(createError(401), err.message);
       });
-  } catch (err) {
+  } catch (err: any) {
     next(createError(401, err.message));
   }
 };

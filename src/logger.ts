@@ -26,7 +26,7 @@ export const log = function (entry: string) {
   if (process.env.WRITELOG === "1") {
     try {
       fs.appendFileSync(getLogFilePaths(), message);
-    } catch (err) {
+    } catch (err:any){
       console.log(message);
     }
   } else {

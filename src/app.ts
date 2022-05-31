@@ -34,12 +34,12 @@ api.use(express.json());
 api.use("/help", express.static(path.join(__dirname, "docs")));
 
 // CRUD routes
-api.get("/", (req, res) =>
+api.get("/", (req: any, res: any) =>
   res
     .status(200)
     .json({ api: "running", timestamp: Date.now(), build: "Feb 02/16/2022" })
 );
-api.get("/api", (req, res) =>
+api.get("/api", (req: any, res: any) =>
   res.status(200).json({ api: "𝜋", timestamp: Date.now() })
 );
 
@@ -78,7 +78,7 @@ if (redisHost.length > 0) {
     });
     const subClient = pubClient.duplicate();
     io.adapter(createAdapter({ pubClient, subClient }));
-  } catch (err) {
+  } catch (err:any){
     log("[error connecting Redis adapter!]");
     if (err instanceof Error) {
       log(err.message);

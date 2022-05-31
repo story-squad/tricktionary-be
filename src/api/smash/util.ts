@@ -28,7 +28,7 @@ async function pgUpdate(
       // add
       result = await add(game_id, round_id, definition_id, reaction_id);
       value = result[0] || 0;
-    } catch (err) {
+    } catch (err:any){
       return { error: err };
     }
   } else {
@@ -36,7 +36,7 @@ async function pgUpdate(
       // increment
       result = await incr(game_id, round_id, definition_id, reaction_id);
       value = result[0] || result;
-    } catch (err) {
+    } catch (err:any){
       // database error ?
       return { error: err };
     }
@@ -73,7 +73,7 @@ export async function smashUpdate(
       );
       // const value = await pgUpdate(keyName);
       // return await callBack(value);
-    } catch (err) {
+    } catch (err:any){
       log(err);
       return;
     }
@@ -83,7 +83,7 @@ export async function smashUpdate(
   try {
     // cache update
     return await mem?.incValue(keyName, callBack);
-  } catch (err) {
+  } catch (err:any){
     return await callBack(defaultValue + 1);
   }
 }

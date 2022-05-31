@@ -22,7 +22,7 @@ async function add(
         external
       })
       .returning("id");
-  } catch (err) {
+  } catch (err:any){
     return { ok: false, message: "error" };
   }
   return { ok: true, member_id: member_id[0] };
@@ -32,7 +32,7 @@ async function findById(member_id: string) {
   let member: any;
   try {
     member = await db("Member").where({ id: member_id }).first();
-  } catch (err) {
+  } catch (err:any){
     return { ok: false, message: "error" };
   }
   return { ok: true, member };
@@ -42,7 +42,7 @@ async function findByEmail(email: string) {
   let member: any;
   try {
     member = await db("Member").where({ email }).first();
-  } catch (err) {
+  } catch (err:any){
     return { ok: false, message: "error" };
   }
   return { ok: true, member };

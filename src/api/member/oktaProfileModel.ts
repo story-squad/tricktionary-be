@@ -4,19 +4,19 @@ const findAll = async () => {
   return await db('profiles');
 };
 
-const findBy = (filter:any) => {
+const findBy = (filter:string) => {
   return db('profiles').where(filter);
 };
 
-const findById = async (id:any) => {
+const findById = async (id:string) => {
   return db('profiles').where({ id }).first().select('*');
 };
 
-const create = async (profile:any) => {
+const create = async (profile:object) => {
   return db('profiles').insert(profile).returning('*');
 };
 
-const update = (id:any, profile:any) => {
+const update = (id:string, profile:object) => {
   return db('profiles')
     .where({ id: id })
     .first()
@@ -24,11 +24,11 @@ const update = (id:any, profile:any) => {
     .returning('*');
 };
 
-const remove = async (id:any) => {
+const remove = async (id:string) => {
   return await db('profiles').where({ id }).del();
 };
 
-const findOrCreateProfile = async (profileObj:any) => {
+const findOrCreateProfile = async (profileObj:{id: string}) => {
   const foundProfile = await findById(profileObj.id).then((profile) => profile);
   if (foundProfile) {
     return foundProfile;

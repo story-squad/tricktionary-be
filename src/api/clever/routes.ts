@@ -3,7 +3,7 @@ import { cleverStudentRequired } from "../middleware/cleverRequired";
 
 const router = Router();
 
-router.get("/", cleverStudentRequired, (req, res) => {
+router.get("/", cleverStudentRequired, (req: any, res: any) => {
   res.status(200).json({ok: true, message: "Clever student verified."});
 });
 

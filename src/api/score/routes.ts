@@ -14,7 +14,7 @@ import {
 } from "./model";
 const router = Router();
 
-router.post("/new", async (req, res) => {
+router.post("/new", async (req: any, res: any) => {
   const { player_id, game_id } = req.body;
   log("NEW SCORE CARD.");
   if (!(player_id && game_id)) {
@@ -26,12 +26,12 @@ router.post("/new", async (req, res) => {
       return res.json({ message: linkedPlayer.message });
     }
     return res.json({ score: linkedPlayer.id });
-  } catch (err) {
+  } catch (err:any){
     if (err instanceof Error) return res.json({ message: err.message });
   }
 });
 
-router.get("/player/:id", async (req, res) => {
+router.get("/player/:id", async (req: any, res: any) => {
   const player_id = req.params.id;
   if (!player_id) {
     return res.json({ error: "id ?" });
@@ -39,13 +39,13 @@ router.get("/player/:id", async (req, res) => {
   let result;
   try {
     result = getGames(player_id); // return this player's games.
-  } catch (err) {
+  } catch (err:any){
     if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
 });
 
-router.get("/player/:pid/game/:gid", async (req, res) => {
+router.get("/player/:pid/game/:gid", async (req: any, res: any) => {
   const player_id = req.params.pid;
   const game_id = req.params.gid;
   if (!player_id || !game_id) {
@@ -54,13 +54,13 @@ router.get("/player/:pid/game/:gid", async (req, res) => {
   let result;
   try {
     result = await getPlayerScore(player_id, game_id);
-  } catch (err) {
+  } catch (err:any){
     if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
 });
 
-router.get("/games/:id", async (req, res) => {
+router.get("/games/:id", async (req: any, res: any) => {
   const game_id = req.params.id;
   if (!game_id) {
     return res.json({ error: "id ?" });
@@ -68,13 +68,13 @@ router.get("/games/:id", async (req, res) => {
   let result;
   try {
     result = getPlayers(game_id); // return this game's players.
-  } catch (err) {
+  } catch (err:any){
     if (err instanceof Error) return res.json({ error: err.message });
   }
   return res.json(result);
 });
 
-router.put("/increase/:player_id", async (req, res) => {
+router.put("/increase/:player_id", async (req: any, res: any) => {
   const player_id = req.params.player_id;
   const { game_id, points } = req.body;
   let errorMessage: string | undefined;
@@ -85,11 +85,11 @@ router.put("/increase/:player_id", async (req, res) => {
   try {
     const result = await addPoints(player_id, game_id, points);
     return res.json(result);
-  } catch (err) {
+  } catch (err:any){
     if (err instanceof Error) return res.json({ error: err.message });
   }
 });
-router.put("/decrease/:player_id", async (req, res) => {
+router.put("/decrease/:player_id", async (req: any, res: any) => {
   const player_id = req.params.player_id;
   const { game_id, points } = req.body;
   let errorMessage: string | undefined;
@@ -100,19 +100,19 @@ router.put("/decrease/:player_id", async (req, res) => {
   try {
     const result = await subPoints(player_id, game_id, points);
     return res.json(result);
-  } catch (err) {
+  } catch (err:any){
     if (err instanceof Error) return res.json({ error: err.message });
   }
 });
 
-router.put("/def/:player_id", async (req, res) => {
+router.put("/def/:player_id", async (req: any, res: any) => {
   const player_id = req.params.player_id;
   const { game_id, top_definition_id } = req.body;
   if (!player_id || !game_id || !top_definition_id) {
     let errorMessage = `missing required [top_definition_id: ${top_definition_id}, game: ${game_id}, player: ${player_id}]`;
     return res.status(400).json({ error: errorMessage });
   }
-  let result;
+  let result: any;
   if (!top_definition_id) {
     result = await getPlayerScore(player_id, game_id);
     return res.status(200).json({ score: result.score });
@@ -129,12 +129,12 @@ router.put("/def/:player_id", async (req, res) => {
       res.json(result);
     }
     return res.json(score);
-  } catch (err) {
+  } catch (err:any){
     return res.status(400).json({ error: err.message });
   }
 });
 
-router.post("/latest/:game_id", async (req, res) => {
+router.post("/latest/:game_id", async (req: any, res: any) => {
   const game_id: string = req.params.game_id;
   if (!game_id) {
     return res.json({ ok: false });
@@ -143,7 +143,7 @@ router.post("/latest/:game_id", async (req, res) => {
   let leaderboard;
   try {
     leaderboard = await getLatest(game_id);
-  } catch (err) {
+  } catch (err:any){
     return res.json({ ok: false, error: err });
   }
   if (!leaderboard?.ok) {

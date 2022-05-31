@@ -4,7 +4,7 @@ import Profiles from "./oktaProfileModel";
 import { log } from "../../logger";
 const router = Router();
 
-router.get("/", authRequired, function (req, res) {
+router.get("/", authRequired, function (req: any, res: any) {
   Profiles.findAll()
     .then((profiles) => {
       res.status(200).json(profiles);
@@ -15,7 +15,7 @@ router.get("/", authRequired, function (req, res) {
     });
 });
 
-router.get("/:id", authRequired, function (req, res) {
+router.get("/:id", authRequired, function (req: any, res: any) {
   const id = String(req.params.id);
   Profiles.findById(id)
     .then((profile) => {
@@ -30,7 +30,7 @@ router.get("/:id", authRequired, function (req, res) {
     });
 });
 
-router.post("/", authRequired, async (req, res) => {
+router.post("/", authRequired, async (req: any, res: any) => {
   const profile = req.body;
   if (profile) {
     const id = profile.id || 0;
@@ -47,7 +47,7 @@ router.post("/", authRequired, async (req, res) => {
           res.status(400).json({ message: "profile already exists" });
         }
       });
-    } catch (e) {
+    } catch (e:any) {
       console.error(e);
       res.status(500).json({ message: e.message });
     }
@@ -56,7 +56,7 @@ router.post("/", authRequired, async (req, res) => {
   }
 });
 
-router.put("/", authRequired, async (req, res) => {
+router.put("/", authRequired, async (req: any, res: any) => {
   const profile = req.body;
   if (profile) {
     const id = profile.id || 0;
@@ -67,7 +67,7 @@ router.put("/", authRequired, async (req, res) => {
           .status(200)
           .json({ message: "profile updated", profile: updated[0] });
       });
-    } catch (e) {
+    } catch (e:any) {
       console.error(e);
       res.status(500).json({ message: e.message });
     }
@@ -76,7 +76,7 @@ router.put("/", authRequired, async (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req: any, res: any) => {
   const id = req.params.id;
   try {
     Profiles.findById(id).then((profile) => {
@@ -86,7 +86,7 @@ router.delete("/:id", (req, res) => {
           .json({ message: `Profile '${id}' was deleted.`, profile: profile });
       });
     });
-  } catch (err) {
+  } catch (err:any){
     res.status(500).json({
       message: `Could not delete profile with ID: ${id}`,
       error: err.message,

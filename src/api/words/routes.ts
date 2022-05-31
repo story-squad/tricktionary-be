@@ -13,13 +13,13 @@ const router = Router();
  *   ...
  * ]
  */
-router.post("/json", (req, res) => {
+router.post("/json", (req: any, res: any) => {
   const words = req.body;
   let added: number = 0;
   let skipped: number = 0;
 
   // begin for-loop
-  words.forEach((pair: any) => {
+  words.forEach((pair: string[]) => {
     const [[word, definition]] = Object.entries(pair);
     const result = validateWord({ word, definition });
     if (result.ok) {
@@ -38,7 +38,7 @@ router.post("/json", (req, res) => {
   res.status(201).json({ added, skipped });
 });
 
-router.post("/contribute", (req, res) => {
+router.post("/contribute", (req: any, res: any) => {
   const result = validateWord(req.body);
   let duplicate: any;
   if (!result.ok) {
@@ -69,7 +69,7 @@ router.post("/contribute", (req, res) => {
 /**
  * GET / returns a random approved word
  */
-router.get("/", (req, res) => {
+router.get("/", (req: any, res: any) => {
   Words.getApprovedWords()
     .then((possibleWords) => {
       const index = Math.floor(Math.random() * possibleWords.length);
@@ -80,7 +80,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/by-name/:word", (req, res) => {
+router.get("/by-name/:word", (req: any, res: any) => {
   const word = req.params.word;
   Words.getByName(word).then((value) => res.status(200).json(value));
 });
@@ -88,7 +88,7 @@ router.get("/by-name/:word", (req, res) => {
 /**
  * GET / returns a scoop of n-many random approved word
  */
-router.get("/scoop/:count", async (req, res) => {
+router.get("/scoop/:count", async (req: any, res: any) => {
   const numberOfWords: any = req.params.count;
   const nw = validNumber(numberOfWords) ? Number(numberOfWords) : 1;
   const scoops = validNumber(process.env.SCOOP_SIZE)
@@ -111,7 +111,7 @@ router.get("/scoop/:count", async (req, res) => {
 /**
  * GET /unmoderated
  */
-router.get("/unmoderated", (req, res) => {
+router.get("/unmoderated", (req: any, res: any) => {
   Words.getUnmoderatedWord()
     .then((word) => {
       res.status(200).json(word);
@@ -125,7 +125,7 @@ router.get("/unmoderated", (req, res) => {
  * GET /:id
  * update a word, by ID
  */
-router.get("/id/:id", (req, res) => {
+router.get("/id/:id", (req: any, res: any) => {
   const id = Number(req.params.id);
   if (!id) res.status(400).json({ error: "id?" });
   Words.getById(id)
@@ -141,7 +141,7 @@ router.get("/id/:id", (req, res) => {
  * PUT /id/:id/approve
  * Approve a word, by ID
  */
-router.put("/id/:id/approve", (req, res) => {
+router.put("/id/:id/approve", (req: any, res: any) => {
   const id = Number(req.params.id);
   if (!id) res.status(400).json({ error: "id?" });
   Words.getById(id).then((wordObj) => {
@@ -165,7 +165,7 @@ router.put("/id/:id/approve", (req, res) => {
  * put /id/:id/reject
  * Reject a word, by ID
  */
-router.put("/id/:id/reject", (req, res) => {
+router.put("/id/:id/reject", (req: any, res: any) => {
   const id = Number(req.params.id);
   if (!id) res.status(400).json({ error: "id?" });
   Words.getById(id).then((wordObj) => {
@@ -189,14 +189,14 @@ router.put("/id/:id/reject", (req, res) => {
  * put /id/:id
  * modify a word, by ID
  */
-router.put("/id/:id", async (req, res) => {
+router.put("/id/:id", async (req: any, res: any) => {
   const id = Number(req.params.id);
   if (!id) res.status(400).json({ error: "id?" });
   const result = validateWord(req.body);
   if (!result.ok) {
     return res.status(400).json({ error: result.message });
   }
-  const oldRecord:any = await Words.getById(id);
+  const oldRecord:{word: string} = await Words.getById(id);
   // if the spelling has changed, the db will consider this a different word.
   if (result.value.word.toLowerCase() !== oldRecord.word.toLowerCase()) {
     // make sure this word doesn't already exist under another id.
@@ -208,12 +208,12 @@ router.put("/id/:id", async (req, res) => {
   }
   // at this point, we should be ok to update the database.
   try {
-    const word:any = await Words.update(id, {
+    const word:string = await Words.update(id, {
       ...oldRecord,
       ...result.value,
     });
     res.status(200).json({ word });
-  } catch(err) {
+  } catch (err:any) {
     res.status(500).json({ error: err.message})
   }
 });

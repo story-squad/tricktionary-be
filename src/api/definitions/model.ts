@@ -67,7 +67,7 @@ async function findTopDefinition(player_id: string, game_id: string) {
       .where({ player_id, game_id })
       .orderBy("score", "desc")
       .first();
-  } catch (err) {
+  } catch (err:any){
     return { ok: false, error: err.message };
   }
   return { ok: true, top_definition };
