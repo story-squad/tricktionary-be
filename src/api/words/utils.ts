@@ -1,17 +1,17 @@
 type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 
 interface WordObject {
-  word: string;
-  definition: string;
+  word: string | undefined;
+  definition: string | undefined;
   source: string | undefined;
-  moderated: boolean | undefined;
-  approved: boolean | undefined;
+  moderated: boolean;
+  approved: boolean;
 }
 
 export function validateWord(wordObj: WordObject): Result<WordObject> {
   // word must be a string and cannot be empty
-  const skel = { word: undefined, definition: undefined, source: undefined, moderated: false, approved: false }
-  const value = { ...skel, ...wordObj }
+  const skel: WordObject = { word: undefined, definition: undefined, source: undefined, moderated: false, approved: false }
+  const value: WordObject = { ...skel, ...wordObj }
   if (typeof value.word !== "string") {
     return {
       ok: false,
