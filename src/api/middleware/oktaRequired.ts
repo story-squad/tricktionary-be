@@ -11,6 +11,12 @@ interface Claims {
   name: string;
 }
 
+interface Profile {
+  id: string;
+  email: string;
+  name: string;
+}
+
 class ProfileObj {
   id: string;
   email: string;
@@ -22,7 +28,7 @@ class ProfileObj {
   }
 }
 
-function makeProfileObj(claims: Claims) {
+function makeProfileObj(claims: Claims):Profile {
   return new ProfileObj(claims);
 }
 
