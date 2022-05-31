@@ -1,28 +1,26 @@
 type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 
 interface WordObject {
-  word: string | undefined;
+  word: string;
   definition: string | undefined;
-  source: string | undefined;
-  moderated: boolean;
-  approved: boolean;
+  source?: string | undefined;
+  moderated?: boolean;
+  approved?: boolean;
 }
 
 export function validateWord(wordObj: WordObject): Result<WordObject> {
-  // word must be a string and cannot be empty
-  const skel: WordObject = { word: undefined, definition: undefined, source: undefined, moderated: false, approved: false }
+  const skel: WordObject = { word: '', definition: undefined, source: undefined, moderated: false, approved: false }
   const value: WordObject = { ...skel, ...wordObj }
-  if (typeof value.word !== "string") {
+  if (!value.word) {
     return {
       ok: false,
-      message: `must be of type string, received ${typeof value.word}`
+      message: "Word field is required"
     };
   }
-  // word must be a string and cannot be empty
-  if (typeof value.definition !== "string") {
+  if (!value.definition) {
     return {
       ok: false,
-      message: `must be of type string, received ${typeof value.definition}`
+      message: "Definition field is required"
     };
   }
 
