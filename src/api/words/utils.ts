@@ -8,10 +8,10 @@ interface WordObject {
   approved: boolean | undefined;
 }
 
-export function validateWord(wordObj: any): Result<WordObject> {
+export function validateWord(wordObj: WordObject): Result<WordObject> {
   // word must be a string and cannot be empty
   const skel = { word: undefined, definition: undefined, source: undefined, moderated: false, approved: false }
-  const value = { ...skel, ...wordObj}
+  const value = { ...skel, ...wordObj }
   if (typeof value.word !== "string") {
     return {
       ok: false,
@@ -29,7 +29,7 @@ export function validateWord(wordObj: any): Result<WordObject> {
   return { ok: true, value };
 }
 
-export function range(n:number) {
+export function range(n: number): number[] {
   return Array.from(Array(n).keys());
 }
 
@@ -40,13 +40,13 @@ export function range(n:number) {
  * this function exists because typeof(NaN) === "number"; wtfJS!?
  *
  */
-export function validNumber(num:any) {
+export function validNumber(num: any): boolean {
   try {
     const pattern = /[0-9]/g;
     const result = num.match(pattern)
-    const n:string = result?.length > 0 && result?.length === num?.length ? result.join("") : "";
+    const n: string = result?.length > 0 && result?.length === num?.length ? result.join("") : "";
     return n.length > 0;
-  } catch (err:any){
+  } catch (err: any) {
     return false
   }
 }
