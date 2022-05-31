@@ -11,12 +11,6 @@ interface Claims {
   name: string;
 }
 
-interface Profile {
-  id: string;
-  email: string;
-  name: string;
-}
-
 class ProfileObj {
   id: string;
   email: string;
