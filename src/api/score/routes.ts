@@ -123,10 +123,9 @@ router.put("/def/:playerId", async (req, res) => {
       game_id,
       Number(top_definition_id)
     );
-    const { score }: any = result;
-    if (result) {
-      if (!result.ok) {
-        res.json(result);}
+    const { score } = result;
+    if (!result.ok) {
+      res.json(result);
     }
     return res.json(score);
   } catch (err:any) {
