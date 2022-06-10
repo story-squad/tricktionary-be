@@ -1,5 +1,6 @@
 #!/bin/sh
-if [ -d dist ]; then
+if [ -d dist ]
+ then
    echo "removing old dist"
    rm -rf dist
 fi
@@ -7,7 +8,8 @@ fi
 echo "transpiling..."
 tsc
 
-if [ -d data ]; then
+if [ -d data ]
+ then
    echo "copying data to dist"
    cp -r data dist
 fi
