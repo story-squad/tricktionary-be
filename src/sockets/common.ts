@@ -119,6 +119,7 @@ function getCurrentRoundIndex(lobbies: any, lobbyCode: any) {
 // Setup the interfaces for score item
 interface RoundScoreItem {
   playerId: string;
+  playerPID: string;
   score: string;
 }
 

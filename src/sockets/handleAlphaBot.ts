@@ -61,7 +61,7 @@ async function handleAlphaBot(
       `/api/bot/namecheck/${botName}/${lobbyCode}`
     );
 
-    let botPID;
+    let botPID: any;
     let login;
 
     if (botExists.data) {
@@ -100,6 +100,19 @@ async function handleAlphaBot(
       );
     }
 
+    // First let's calculate the player's placing
+    let curPlayerPlacing = 1;
+
+    const sortPlayersByPoints = lobbies[lobbyCode].players
+      .filter((p: any) => lobbies[lobbyCode].host !== p.id)
+      .sort((a: any, b: any) => b.points - a.points);
+
+    if (sortPlayersByPoints && sortPlayersByPoints.length > 0) {
+      if (sortPlayersByPoints[sortPlayersByPoints.length - 1].points !== 0) {
+        curPlayerPlacing += 1;
+      }
+    }
+
     // Add bot to bots list
     lobbies[lobbyCode] = {
       ...lobbies[lobbyCode],
@@ -119,17 +132,21 @@ async function handleAlphaBot(
           points: 0,
           connected: true,
           pid: botPID,
+          playerPlacing: curPlayerPlacing,
         },
       ],
-    };
+      rounds: lobbies[lobbyCode].rounds.map((round: any) => {
+        const newPlayer = {
+          playerId: botID,
+          playerPID: botPID,
+          score: 0,
+        };
 
-    // Add bot to the round player list
-    lobbies[lobbyCode].rounds[curRoundIndex] = {
-      roundNum: lobbies[lobbyCode].rounds[curRoundIndex].roundNum,
-      scores: [
-        ...lobbies[lobbyCode].rounds[curRoundIndex].scores,
-        { playerId: botID, score: 0 },
-      ],
+        return {
+          roundNum: round.roundNum,
+          scores: [...round.scores, newPlayer],
+        };
+      }),
     };
   } else {
     // Remove the bot from the bot list
@@ -139,9 +156,12 @@ async function handleAlphaBot(
       players: [
         ...lobbies[lobbyCode].players.filter((b: any) => b.id !== botID),
       ],
+      rounds: lobbies[lobbyCode].rounds.filter(
+        (b: any) => b.playerId !== botID
+      ),
     };
 
-    // Add bot to the round player list
+    // Remove bot from the round player list
     lobbies[lobbyCode].rounds[curRoundIndex] = {
       ...lobbies[lobbyCode].rounds[curRoundIndex],
       scores: [

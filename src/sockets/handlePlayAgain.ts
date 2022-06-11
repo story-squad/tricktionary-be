@@ -45,7 +45,11 @@ function handlePlayAgain(
         roundNum: String(nextRound),
         scores: lobbies[lobbyCode].rounds[curRoundIndex].scores.map(
           (score: RoundScoreItem) => {
-            return { playerId: score.playerId, score: 0 };
+            return {
+              playerId: score.playerId,
+              playerPID: score.playerPID,
+              score: 0,
+            };
           }
         ),
       },

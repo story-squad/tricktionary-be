@@ -54,7 +54,7 @@ async function handleUpdateUsername(
       className: "player-joined",
     };
 
-    io.emit("receive-notification", notificationData);
+    io.to(lobbyCode).emit("receive-notification", notificationData, socket.id);
   } catch (err) {
     log(err.message);
   }

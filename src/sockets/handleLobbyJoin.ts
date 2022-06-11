@@ -6,6 +6,7 @@ import {
   updatePlayerToken,
   privateMessage,
   getCurrentRoundIndex,
+  RoundScoreItem,
 } from "./common";
 import { log } from "../logger";
 import handleErrorMessage from "./handleErrorMessage";
@@ -150,9 +151,6 @@ async function handleLobbyJoin(
 
   log(`${username} ${old_player_obj ? "re-joined" : "joined"} ${lobbyCode}`);
 
-  // Get current round index
-  const curRoundIndex = getCurrentRoundIndex(lobbies, lobbyCode);
-
   // add player to lobby data
   if (old_player_obj) {
     // re-construct the old player object, setting connected to true, with our new id
@@ -163,8 +161,63 @@ async function handleLobbyJoin(
         ...lobbies[lobbyCode].players.filter((p: any) => p.id !== socket.id),
         { ...old_player_obj, id: socket.id, connected: true, pid: p_id },
       ],
+      rounds: lobbies[lobbyCode].rounds.map((round: any) => {
+        return {
+          roundNum: round.roundNum,
+          scores: round.scores.map((score: RoundScoreItem) => {
+            if (score.playerPID === old_player_obj.pid) {
+              return { ...score, playerId: socket.id };
+            }
+
+            return score;
+          }),
+        };
+      }),
     };
   } else {
+    // First let's calculate the player's placing
+    let curPlayerPlacing;
+
+    const sortPlayersByPoints = lobbies[lobbyCode].players
+      .filter((p: any) => lobbies[lobbyCode].host !== p.id)
+      .sort((a: any, b: any) => b.points - a.points);
+
+    if (sortPlayersByPoints && sortPlayersByPoints.length > 1) {
+      const lastPlacePlayer =
+        sortPlayersByPoints[sortPlayersByPoints.length - 1];
+      const lastPlacePlayerPlacing = lastPlacePlayer.playerPlacing;
+
+      if (lastPlacePlayer.points === 0) {
+        curPlayerPlacing = lastPlacePlayerPlacing;
+      } else {
+        curPlayerPlacing = lastPlacePlayerPlacing + 1;
+      }
+    } else {
+      curPlayerPlacing = 1;
+    }
+
+    const newPlayerStandings = sortPlayersByPoints.map(
+      (player: any, index: any) => {
+        let newPlacing;
+
+        if (sortPlayersByPoints.length > 1 && index !== 0) {
+          const prevPlayer = sortPlayersByPoints[index - 1];
+          const prevPlayerPlacing = prevPlayer.playerPlacing;
+
+          if (player.points !== sortPlayersByPoints[index - 1]) {
+            newPlacing = prevPlayerPlacing + 1;
+          } else {
+            newPlacing = prevPlayerPlacing;
+          }
+        }
+
+        return {
+          ...player,
+          playerPlacing: newPlacing,
+        };
+      }
+    );
+
     // this player is new
     lobbies[lobbyCode] = {
       ...lobbies[lobbyCode],
@@ -177,17 +230,21 @@ async function handleLobbyJoin(
           points: 0,
           connected: true,
           pid: p_id,
-          playerPlacing: 0,
+          playerPlacing: curPlayerPlacing,
         },
       ],
-    };
+      rounds: lobbies[lobbyCode].rounds.map((round: any) => {
+        const newPlayer = {
+          playerId: socket.id,
+          playerPID: p_id,
+          score: 0,
+        };
 
-    lobbies[lobbyCode].rounds[curRoundIndex] = {
-      roundNum: lobbies[lobbyCode].rounds[curRoundIndex].roundNum,
-      scores: [
-        ...lobbies[lobbyCode].rounds[curRoundIndex].scores,
-        { playerId: socket.id, score: 0 },
-      ],
+        return {
+          roundNum: round.roundNum,
+          scores: [...round.scores, newPlayer],
+        };
+      }),
     };
   }
   // join socket to room
@@ -222,7 +279,7 @@ async function handleLobbyJoin(
     };
   }
 
-  io.emit("receive-notification", notificationData);
+  io.to(lobbyCode).emit("receive-notification", notificationData, socket.id);
 }
 
 export default handleLobbyJoin;

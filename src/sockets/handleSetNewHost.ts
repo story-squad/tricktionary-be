@@ -48,11 +48,20 @@ async function handleSetNewHost(
       lobbies[lobbyCode].host = newHost;
     } catch (err) {
       console.log(err);
-      return
+      return;
     }
     io.to(newHost).emit("welcome host", guesses);
     privateMessage(io, socket, "info", `ok, set host: ${newHost}`);
     io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
+
+    // Send notification to host
+    const notificationData = {
+      message: "New Host",
+      description: `Player "${username}" is the new boss!`,
+      className: "new-host",
+    };
+
+    io.to(lobbyCode).emit("receive-notification", notificationData, newHost);
   } else {
     log(`NOT HOST: ${socket.id}, cannot assign a new host`);
     privateMessage(io, socket, "error", "unauthorized call, punk!");
