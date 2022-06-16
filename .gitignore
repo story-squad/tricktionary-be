@@ -118,3 +118,13 @@ dist/
 .local-env
 
 trex/yarn*
+/.idea/deployment.xml
+/.idea/markdown.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/package-lock.json
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/tricktionary-be.iml
+/.idea/vcs.xml
+/.idea/workspace.xml
