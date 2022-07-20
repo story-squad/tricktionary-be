@@ -80,6 +80,7 @@ async function handleLobbyCreate(
       return;
     }
   }
+
   lobbies[lobbyCode] = {
     game_id,
     lobbyCode,
@@ -91,6 +92,7 @@ async function handleLobbyCreate(
         points: 0,
         connected: true,
         pid: og_host,
+        playerPlacing: 1,
       },
     ],
     bots: [],
@@ -101,8 +103,14 @@ async function handleLobbyCreate(
     category: "",
     guesses: [],
     roundId: null,
-    rounds: [{ roundNum: "1", scores: [] }],
+    rounds: [
+      {
+        roundNum: "1",
+        scores: [{ playerId: socket.id, playerPID: og_host, score: 0 }],
+      },
+    ],
   };
+
   try {
     await updatePlayerToken(io, socket, og_host, username, "", 0, lobbyCode);
   } catch (err) {

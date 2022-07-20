@@ -39,7 +39,11 @@ function handleDisconnection(io: any, socket: any, lobbies: any) {
         className: "player-disconnected",
       };
 
-      io.emit("receive-notification", notificationData);
+      io.to(lobbyCode).emit(
+        "receive-notification",
+        notificationData,
+        socket.id
+      );
     }
   }
 }
@@ -57,6 +61,14 @@ export async function removeFromLobby(io: any, socket: any, lobbies: any) {
     lobbies[lobbyCode].players = lobbies[lobbyCode].players.filter(
       (player: any) => player.id !== socket.id
     );
+
+    lobbies[lobbyCode].rounds = lobbies[lobbyCode].rounds.map((round: any) => {
+      return {
+        roundNum: round.roundNum,
+        scores: round.scores.filter((p: any) => p.playerId !== socket.id),
+      };
+    });
+
     // tell player they've been removed.
     await io.to(socket.id).emit("disconnect me");
     await socket.leave(lobbyCode);
@@ -69,6 +81,6 @@ export async function removeFromLobby(io: any, socket: any, lobbies: any) {
       className: "player-left",
     };
 
-    io.emit("receive-notification", notificationData);
+    io.to(lobbyCode).emit("receive-notification", notificationData, socket.id);
   }
 }

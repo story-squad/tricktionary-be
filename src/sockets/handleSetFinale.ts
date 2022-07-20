@@ -54,6 +54,22 @@ async function handleSetFinale(
   }
   // cast point values into a set
   const values = new Set(checkPoints.map((v: any) => v.points));
+
+  // Get the top placing players
+  const firstPlaceGroup = lobbies[lobbyCode].players.filter(
+    (player: any) => player.playerPlacing === 1
+  );
+  const secondPlaceGroup = lobbies[lobbyCode].players.filter(
+    (player: any) => player.playerPlacing === 2
+  );
+  const thirdPlaceGroup = lobbies[lobbyCode].players.filter(
+    (player: any) => player.playerPlacing === 3
+  );
+
+  console.log("1st place", firstPlaceGroup);
+  console.log("2nd place", secondPlaceGroup);
+  console.log("3rd place", thirdPlaceGroup);
+
   if (values.size === checkPoints.length) {
     // if player.points are unique, no tie-breaker will be necessary.
     const pids = checkPoints.map((e: any) => e.player_id);
@@ -87,8 +103,11 @@ async function handleSetFinale(
         (p: any) => p.id === r.user_id
       )[0];
       const lb =
-        data.filter((player: any) => player.player_id === cu.pid)[0] || undefined;
-      log(`[${game_id}] ${n+1}${['st', 'nd', 'rd'][n]} place -> ${cu.username}`);
+        data.filter((player: any) => player.player_id === cu.pid)[0] ||
+        undefined;
+      log(
+        `[${game_id}] ${n + 1}${["st", "nd", "rd"][n]} place -> ${cu.username}`
+      );
       n++;
       return {
         user_id: r.user_id,
@@ -107,6 +126,8 @@ async function handleSetFinale(
     topThree,
     phase: "FINALE",
   };
+
+  console.log("results", results);
   // update players
   io.to(lobbyCode).emit("game update", lobbies[lobbyCode], results);
 }

@@ -39,8 +39,6 @@ async function handleReturningPlayer(
       return await handleNewPlayer(io, socket);
     }
 
-    console.log("Login Data", login);
-
     player = login.data.player;
     newtoken = login.data.token;
     old_user_id = login.data.old_user_id;
@@ -75,11 +73,11 @@ async function handleReturningPlayer(
     lobbies[player.last_played].host = socket.id;
   }
   // move the player forward.
-  log("Player has returned");
+  log(`Player ${player.name} has returned`);
   handleLobbyJoin(
     io,
     socket,
-    old_user_name,
+    player.name,
     player.last_played,
     lobbies,
     true,

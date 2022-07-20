@@ -62,33 +62,4 @@ router.get("/botpid/:username/:lobbycode", (req, res) => {
     });
 });
 
-// WIL REMOVE SOON! I AM JUST TESTING ENV OUTPUT
-router.get("/testENV", (req, res) => {
-  const PORT = process.env.PORT;
-  const NODE_ENV = process.env.DB_ENVIRONMENT;
-  const DATABASE_URL = process.env.DATABASE_URL;
-  const CA = process.env.CA_CERT;
-
-  Bot.testDBConnection()
-    .then((response) => {
-      res.status(200).json({
-        port: PORT,
-        CA: CA,
-        nodeENV: NODE_ENV,
-        dbURL: DATABASE_URL,
-        response: response,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        CA: CA,
-        port: PORT,
-        nodeENV: NODE_ENV,
-        dbURL: DATABASE_URL,
-        message: "Error getting test connection",
-        err: err.message,
-      });
-    });
-});
-
 export default router;

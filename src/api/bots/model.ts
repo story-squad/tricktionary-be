@@ -2,7 +2,7 @@ import db from "../../dbConfig";
 import { v4 } from "uuid";
 import { matchWords } from "../../options/pseudoRandom";
 
-export default { newBot, checkBot, getBotPID, testDBConnection };
+export default { newBot, checkBot, getBotPID };
 
 async function newBot(botID: string, botName: string, lobbyCode: string) {
   const uuId = v4();
@@ -43,18 +43,4 @@ async function checkBot(username: string, last_played: string) {
   const player_names = players.map((p: any) => p.name.toLowerCase());
   const check = matchWords(username.toLowerCase(), player_names);
   return check.length > 0;
-}
-
-async function testDBConnection() {
-  let response;
-
-  try {
-    response = await db("Player").first();
-  } catch (err) {
-    if (err instanceof Error) {
-      return { ok: false, message: err.message };
-    }
-  }
-
-  return response;
 }
