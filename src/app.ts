@@ -37,7 +37,7 @@ api.use("/help", express.static(path.join(__dirname, "docs")));
 api.get("/", (req, res) =>
   res
     .status(200)
-    .json({ api: "running", timestamp: Date.now(), build: "Feb 02/16/2022" })
+    .json({ api: "running", timestamp: Date.now(), build: "07/22/2022" })
 );
 api.get("/api", (req, res) =>
   res.status(200).json({ api: "𝜋", timestamp: Date.now() })
