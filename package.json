@@ -4,7 +4,7 @@
   "description": "",
   "main": "./dist/src/index.js",
   "scripts": {
-    "build": "sh ./scripts/makeElastic.sh",
+    "build": "sh ./scripts/build.sh",
     "start": "node ./dist/src/index.js --unhandled-rejections=strict",
     "pre-docs": "rm -rf trex/docs/tricktionary",
     "post-docs": "./scripts/copyMarkdown.sh && ./scripts/buildDocs.sh",
