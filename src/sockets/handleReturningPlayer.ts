@@ -75,7 +75,8 @@ async function handleReturningPlayer(
   }
   // move the player forward.
   log(`Player ${player.name} has returned`);
-  handleLobbyJoin(
+  // awaited, so an error in the join reaches this handler's caller
+  await handleLobbyJoin(
     io,
     socket,
     player.name,
