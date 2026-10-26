@@ -11,6 +11,7 @@ import {
 import { log } from "../logger";
 import handleErrorMessage from "./handleErrorMessage";
 import { schedulePulseCheck } from "./crontab";
+import { serializeByKey } from "./serializeByKey";
 const JOINABLE = ["PREGAME", "RESULTS", "FINALE"];
 /**
  * Connects the player with the active game being played.
@@ -23,7 +24,25 @@ const JOINABLE = ["PREGAME", "RESULTS", "FINALE"];
  * @param doCheckPulse checks pulse of disconnected player
  * @param isReturning checks whether it is a retuning player or not
  */
-async function handleLobbyJoin(
+function handleLobbyJoin(
+  io: any,
+  socket: any,
+  username: string,
+  lobbyCode: any,
+  lobbies: any,
+  doCheckPulse: boolean | undefined,
+  isReturning: boolean
+) {
+  // A fresh player's join sends "token update" partway through, and the FE
+  // answers it with another "join lobby" on the same socket. Run joins for one
+  // socket one at a time so the second sees the finished first (and returns
+  // early) instead of both appending the player.
+  return serializeByKey(socket.id, () =>
+    joinLobby(io, socket, username, lobbyCode, lobbies, doCheckPulse, isReturning)
+  );
+}
+
+async function joinLobby(
   io: any,
   socket: any,
   username: string,
@@ -175,6 +194,11 @@ async function handleLobbyJoin(
       }),
     };
   } else {
+    if (lobbies[lobbyCode].players.some((p: any) => p.id === socket.id)) {
+      // already in this lobby (e.g. a repeated join); just refresh the room
+      io.to(lobbyCode).emit("game update", lobbies[lobbyCode]);
+      return;
+    }
     // First let's calculate the player's placing
     let curPlayerPlacing;
 
