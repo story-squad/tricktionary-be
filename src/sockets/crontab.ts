@@ -1,4 +1,4 @@
-import cron from "node-cron";
+import cron, { ScheduledTask } from "node-cron";
 import { log } from "../logger";
 
 // const MINUTES = process.env.MINUTES || 5;
@@ -26,7 +26,7 @@ interface cronTask {
   count: number; // number of times this task has been run
   created: number; // timestamp
   last: number; // timestamp
-  task: cron.ScheduledTask;
+  task: ScheduledTask;
 }
 
 /**

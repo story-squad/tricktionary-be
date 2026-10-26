@@ -52,7 +52,7 @@ function generateToken(
     lob: lobbyCode,
     ext: extra,
   };
-  const options = {
+  const options: jwt.SignOptions = {
     expiresIn: "1h",
   };
   return jwt.sign(payload, secrets.jwtSecret, options);

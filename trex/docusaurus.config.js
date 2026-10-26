@@ -16,6 +16,8 @@ module.exports = {
   baseUrl: "/help/",
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
+  // Docusaurus 3 compiles .md as MDX by default; parse .md as plain Markdown and only .mdx as MDX
+  markdown: { format: "detect" },
   favicon: "img/favicon.ico",
   organizationName: "storysquad", // Usually your GitHub org/user name.
   projectName: "docusaurus", // Usually your repo name.
