@@ -11,9 +11,9 @@ router.get("/id/:id", async (req, res) => {
   try {
     player = await Player.getPlayer(player_id);
   } catch (err) {
-    res.status(400).json({ error: errorMessage(err) });
+    return res.status(400).json({ error: errorMessage(err) });
   }
-  res.status(200).json({ player });
+  return res.status(200).json({ player });
 });
 
 router.get("/name/:id", async (req, res) => {
@@ -22,9 +22,9 @@ router.get("/name/:id", async (req, res) => {
   try {
     result = await Player.getName(player_id);
   } catch (err) {
-    res.status(400).json({ error: errorMessage(err) });
+    return res.status(400).json({ error: errorMessage(err) });
   }
-  res.status(200).json(result);
+  return res.status(200).json(result);
 });
 
 router.get("/last-user-id/:id", async (req, res) => {
@@ -46,9 +46,9 @@ router.put("/id/:id", async (req, res) => {
   try {
     player = await Player.updatePlayer(player_id, changes);
   } catch (err) {
-    res.status(400).json({ error: errorMessage(err) });
+    return res.status(400).json({ error: errorMessage(err) });
   }
-  res.status(200).json({ player });
+  return res.status(200).json({ player });
 });
 
 router.get("/namecheck/:username/:lobbycode", async (req, res) => {

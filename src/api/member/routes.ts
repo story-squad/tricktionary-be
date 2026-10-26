@@ -18,9 +18,9 @@ router.post("/new", async (req, res) => {
     );
     // member_id = createMember.member_id;
   } catch (err) {
-    res.status(400).json({ message: errorMessage(err) });
+    return res.status(400).json({ message: errorMessage(err) });
   }
-  res.status(200).json({ member_id: createMember?.member_id || member_id });
+  return res.status(200).json({ member_id: createMember?.member_id || member_id });
 });
 
 // todo: findby email, findby member_id

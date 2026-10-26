@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
 
 router.get("/id/:id", async (req, res) => {
   const id = Number(req.params.id);
-  if (!id) res.status(400).json({ error: "id?" });
+  if (!id) return res.status(400).json({ error: "id?" });
   choiceModel
     .getHostChoiceById(id)
     .then((choice) => {

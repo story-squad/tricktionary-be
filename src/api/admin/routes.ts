@@ -27,7 +27,7 @@ router.get("/round/:id", async (req, res) => {
 
 router.get("/word/:word_id", async (req, res) => {
   const id = Number(req.params.word_id);
-  if (!id) res.status(400).json({ error: "id?" });
+  if (!id) return res.status(400).json({ error: "id?" });
   Super.getWordDetails(id)
     .then((details) => {
       res.status(200).json({ details });
@@ -40,7 +40,7 @@ router.get("/word/:word_id", async (req, res) => {
 // I'm pretty sure this works but don't have any definitions to test with 
 router.get("/definition/:id", async (req, res) => {
   const id = Number(req.params.id);
-  if (!id) res.status(400).json({ error: "id?" });
+  if (!id) return res.status(400).json({ error: "id?" });
   Super.getDefinitionDetails(id)
     .then((details) => {
       res.status(200).json({ details });

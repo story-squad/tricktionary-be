@@ -88,7 +88,7 @@ router.post("/update-token", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { user_id, last_token } = req.body;
   if (!user_id || !last_token) {
-    res.status(403).json({ message: "missing required elements" });
+    return res.status(403).json({ message: "missing required elements" });
   }
   let last_user_id: string = "";
   let last_lobby: string = "";

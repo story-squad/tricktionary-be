@@ -12,9 +12,9 @@ router.post("/new", async (req, res) => {
       game_id = await Game.add(og_host);
     }
   } catch (err) {
-    res.status(400).json({ message: errorMessage(err) });
+    return res.status(400).json({ message: errorMessage(err) });
   }
-  res.status(200).json(game_id);
+  return res.status(200).json(game_id);
 });
 
 router.get("/all", async (req, res) => {

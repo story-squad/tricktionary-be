@@ -124,12 +124,10 @@ router.put("/def/:player_id", async (req, res) => {
       game_id,
       Number(top_definition_id)
     );
-    const { score } = result;
-    if (result.ok) {
-    } else {
-      res.json(result);
+    if (!result.ok) {
+      return res.status(400).json(result);
     }
-    return res.json(score);
+    return res.json(result.score);
   } catch (err) {
     return res.status(400).json({ error: errorMessage(err) });
   }
@@ -151,35 +149,28 @@ router.post("/latest/:game_id", async (req, res) => {
     // if not ok, tell us why
     return res.json(leaderboard);
   }
-  let latestScore: any = [];
-  let countdown = leaderboard.latest.length;
   // update the latest top_definitions, as needed; returning the list
-  leaderboard.latest.forEach(async (scoreCard: any) => {
-    const { player_id, points, top_definition_id } = scoreCard;
-    log(`looking up top definition for player ${player_id}`);
-    const checkTop = await findTopDefinition(player_id, game_id); // sort
-    const latest_top_def = checkTop.ok && checkTop?.top_definition?.id;
-    if (latest_top_def && top_definition_id !== latest_top_def) {
-      log("top definition changed... updating score-card"); // update
-      await updateDefinition(player_id, game_id, latest_top_def);
-      countdown -= 1;
-      latestScore = [
-        ...latestScore,
-        {
-          player_id,
-          points,
-          top_definition_id: latest_top_def,
-        },
-      ];
-    } else {
-      log(`top definition remains to be ${top_definition_id}`);
-      countdown -= 1;
-      latestScore = [...latestScore, { player_id, points, top_definition_id }];
-    }
-    if (countdown < 1) {
-      return res.json(await latestScore);
-    }
-  });
+  let latestScore: any[];
+  try {
+    latestScore = await Promise.all(
+      leaderboard.latest.map(async (scoreCard: any) => {
+        const { player_id, points, top_definition_id } = scoreCard;
+        log(`looking up top definition for player ${player_id}`);
+        const checkTop = await findTopDefinition(player_id, game_id); // sort
+        const latest_top_def = checkTop.ok && checkTop?.top_definition?.id;
+        if (latest_top_def && top_definition_id !== latest_top_def) {
+          log("top definition changed... updating score-card"); // update
+          await updateDefinition(player_id, game_id, latest_top_def);
+          return { player_id, points, top_definition_id: latest_top_def };
+        }
+        log(`top definition remains to be ${top_definition_id}`);
+        return { player_id, points, top_definition_id };
+      })
+    );
+  } catch (err) {
+    return res.json({ ok: false, error: errorMessage(err) });
+  }
+  return res.json(latestScore);
 });
 
 export default router;

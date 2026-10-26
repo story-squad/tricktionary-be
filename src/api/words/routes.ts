@@ -128,7 +128,7 @@ router.get("/unmoderated", (req, res) => {
  */
 router.get("/id/:id", (req, res) => {
   const id = Number(req.params.id);
-  if (!id) res.status(400).json({ error: "id?" });
+  if (!id) return res.status(400).json({ error: "id?" });
   Words.getById(id)
     .then((word) => {
       res.status(200).json({ word });
@@ -144,7 +144,7 @@ router.get("/id/:id", (req, res) => {
  */
 router.put("/id/:id/approve", (req, res) => {
   const id = Number(req.params.id);
-  if (!id) res.status(400).json({ error: "id?" });
+  if (!id) return res.status(400).json({ error: "id?" });
   Words.getById(id).then((wordObj) => {
     wordObj = {
       ...wordObj,
@@ -168,7 +168,7 @@ router.put("/id/:id/approve", (req, res) => {
  */
 router.put("/id/:id/reject", (req, res) => {
   const id = Number(req.params.id);
-  if (!id) res.status(400).json({ error: "id?" });
+  if (!id) return res.status(400).json({ error: "id?" });
   Words.getById(id).then((wordObj) => {
     wordObj = {
       ...wordObj,
@@ -192,7 +192,7 @@ router.put("/id/:id/reject", (req, res) => {
  */
 router.put("/id/:id", async (req, res) => {
   const id = Number(req.params.id);
-  if (!id) res.status(400).json({ error: "id?" });
+  if (!id) return res.status(400).json({ error: "id?" });
   const result = validateWord(req.body);
   if (!result.ok) {
     return res.status(400).json({ error: result.message });

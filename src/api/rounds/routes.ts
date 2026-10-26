@@ -25,13 +25,13 @@ router.get("/id/:id", async (req, res) => {
   const round_id = Number(req.params.id);
   let round;
   if (!round_id) {
-    res.status(400).json({ error: "id?" });
+    return res.status(400).json({ error: "id?" });
   }
   try {
     round = await Rounds.get(round_id);
   } catch (err) {
-    res.status(400).json({ error: errorMessage(err) });
+    return res.status(400).json({ error: errorMessage(err) });
   }
-  res.status(200).json({ round });
+  return res.status(200).json({ round });
 });
 export default router;
