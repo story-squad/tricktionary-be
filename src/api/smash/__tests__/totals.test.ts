@@ -2,7 +2,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { cacheGroupName } from "../model";
+import smashRoutes from "../routes";
 import {
+  collectCachedTotals,
   createTotalsCollector,
   parseSmashKey,
   SmashTotal,
@@ -68,4 +70,103 @@ test("totals complete only once every key has been seen", async () => {
   assert.equal(calls, 0);
   await addTotal(key(2), "7");
   assert.equal(calls, 1);
+});
+
+// a cache holding these values; findKeys fails when keysError is given
+function fakeCache(values: Record<string, unknown>, keysError?: Error) {
+  return {
+    findKeys: (pattern: string, cb: any) =>
+      cb(keysError || null, keysError ? undefined : Object.keys(values)),
+    getValue: (keyName: string, cb: any) => cb(null, values[keyName] ?? null),
+    // the cache's own callback helper, as redisCache builds it
+    createCallback: (key: string, onReply: any, onError?: any) =>
+      async (err: any, value: any) =>
+        value && !err ? onReply(value) : onError?.(err),
+  };
+}
+
+test("no cached keys gives an empty list of totals, once", () => {
+  const results: unknown[] = [];
+  collectCachedTotals(
+    fakeCache({}),
+    "pattern",
+    (queue) => results.push(queue),
+    (err) => results.push(err)
+  );
+  assert.deepEqual(results, [[]]);
+});
+
+test("a failed key lookup calls onError once", () => {
+  const totals: unknown[] = [];
+  const errors: unknown[] = [];
+  collectCachedTotals(
+    fakeCache({}, new Error("redis down")),
+    "pattern",
+    (queue) => totals.push(queue),
+    (err) => errors.push(err)
+  );
+  assert.equal(totals.length, 0);
+  assert.equal(errors.length, 1);
+});
+
+test("a key whose value is gone is left out, and the totals still complete", async () => {
+  const results: SmashTotal[][] = [];
+  collectCachedTotals(
+    fakeCache({ [key(1)]: "2", [key(2)]: null }),
+    "pattern",
+    (queue) => results.push(queue),
+    () => assert.fail("no error expected")
+  );
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(results.length, 1);
+  assert.deepEqual(
+    results[0].map((t) => t.reaction_id),
+    [1]
+  );
+});
+
+// GET /api/smash/totals/:game_id/:round_id, called with a cache on req.redis
+async function getTotalsWith(cache: any) {
+  const layer: any = smashRoutes.stack.find(
+    (l: any) => l.route?.path === "/totals/:game_id/:round_id"
+  );
+  const handlers = layer.route.stack;
+  const handler = handlers[handlers.length - 1].handle;
+  const replies: { status: number; body: unknown }[] = [];
+  const res: any = {
+    headersSent: false,
+    statusCode: 200,
+    status(code: number) {
+      this.statusCode = code;
+      return this;
+    },
+    json(body: unknown) {
+      if (this.headersSent) throw new Error("ERR_HTTP_HEADERS_SENT");
+      this.headersSent = true;
+      replies.push({ status: this.statusCode, body });
+      return this;
+    },
+  };
+  const req = { redis: cache, params: { game_id: gameId, round_id: "3" } };
+  await handler(req, res, () => {});
+  // let the cache callbacks run
+  for (let i = 0; i < 5; i++) await new Promise((r) => setImmediate(r));
+  return replies;
+}
+
+test("/totals replies once with an empty list when the round has no cached keys", async () => {
+  assert.deepEqual(await getTotalsWith(fakeCache({})), [
+    { status: 200, body: [] },
+  ]);
+});
+
+test("/totals replies once with an error when the key lookup fails", async () => {
+  const replies = await getTotalsWith(fakeCache({}, new Error("redis down")));
+  assert.deepEqual(replies, [{ status: 400, body: { error: "redis down" } }]);
+});
+
+test("/totals replies once when a cached value is gone", async () => {
+  assert.deepEqual(await getTotalsWith(fakeCache({ [key(1)]: null })), [
+    { status: 200, body: [] },
+  ]);
 });

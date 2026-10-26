@@ -3,7 +3,7 @@ import { log } from "../../logger";
 import { redisCache, TricktionaryCache } from "../middleware";
 import smashUpdate from "./util";
 import { bulkUpdate, cacheGroupName, getTotals } from "./model";
-import { createTotalsCollector } from "./totals";
+import { collectCachedTotals } from "./totals";
 import { errorMessage } from "../../errorMessage";
 
 const router = Router();
@@ -59,24 +59,26 @@ router.get(
     // const { game_id, round_id } = req.body;
     // search key-names from the cache that match this pattern,
     const pattern = `${cacheGroupName}${game_id}-${round_id}*`;
-    const tcCallback = tc?.createCallback(pattern, async (keys: any) => {
-      // lets rotate the board!
-      const addTotal = createTotalsCollector(keys.length, (queue) =>
-        bulkUpdate(queue, async (value: any) => res.json(value))
-      );
-      keys.forEach((keyName: string) =>
-        tc.getValue(
-          keyName,
-          tc?.createCallback(keyName, (value: any) =>
-            addTotal(keyName, value)
-          )
-        )
-      );
-    });
+    // exactly one reply, whichever way the lookup goes
+    const reply = (status: number, body: any) => {
+      if (!res.headersSent) res.status(status).json(body);
+    };
     try {
-      await tc?.findKeys(pattern, tcCallback);
+      collectCachedTotals(
+        tc,
+        pattern,
+        // lets rotate the board!
+        async (queue) => {
+          try {
+            await bulkUpdate(queue, async (value: any) => reply(200, value));
+          } catch (err) {
+            reply(400, { error: errorMessage(err) });
+          }
+        },
+        (err) => reply(400, { error: errorMessage(err) })
+      );
     } catch (err) {
-      res.json({ error: err });
+      reply(400, { error: errorMessage(err) });
     }
   }
 );

@@ -68,3 +68,39 @@ export function createTotalsCollector(
     }
   };
 }
+
+/** the part of the Tricktionary cache that collecting totals uses */
+type TotalsCache = {
+  findKeys: (pattern: string, cb: (err: unknown, keys: unknown) => unknown) => unknown;
+  getValue: (keyName: string, cb: (err: unknown, value: unknown) => unknown) => unknown;
+};
+
+/**
+ * Read the cached reaction totals of a round. Exactly one of the callbacks is
+ * called, once: `onTotals` with the valid totals (an empty list when the cache
+ * has no keys for the round), or `onError` when the key lookup fails. A key
+ * whose value can't be read counts as invalid and is left out.
+ *
+ * @param tc the Tricktionary cache
+ * @param pattern key pattern of the round, `${cacheGroupName}${game_id}-${round_id}*`
+ * @param onTotals receives the valid totals
+ * @param onError receives the lookup error
+ */
+export function collectCachedTotals(
+  tc: TotalsCache,
+  pattern: string,
+  onTotals: (queue: SmashTotal[]) => unknown,
+  onError: (err: unknown) => unknown
+) {
+  tc.findKeys(pattern, (err: unknown, keys: unknown) => {
+    if (err) return onError(err);
+    const keyNames: string[] = Array.isArray(keys) ? keys : [];
+    if (keyNames.length === 0) return onTotals([]);
+    const addTotal = createTotalsCollector(keyNames.length, onTotals);
+    keyNames.forEach((keyName) =>
+      tc.getValue(keyName, (err: unknown, value: unknown) =>
+        addTotal(keyName, err ? undefined : value)
+      )
+    );
+  });
+}
