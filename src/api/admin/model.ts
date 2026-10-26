@@ -59,7 +59,7 @@ async function getWordDetails(word_id: number) {
   const definitionsByRound: Array<Array<any>> = await Promise.all(
     rounds.map(async (round) => {
       try {
-        return await db("Definitions").where({ round_id: round.id });
+        return await db("definitions").where({ round_id: round.id });
       } catch (err) {
         log(`[ERROR] definitions of round ${round.id}: ${errorMessage(err)}`);
         return [];

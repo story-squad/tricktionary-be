@@ -39,7 +39,7 @@ function fakeDb(tables: { [table: string]: unknown }) {
       const rows = typeof entry === "function" ? entry(clause) : entry;
       // resolve later, as a real query does; the definitions lookups are the
       // slowest, so a caller that doesn't wait for them returns without them
-      const delay = table === "Definitions" ? 15 : 1;
+      const delay = table === "definitions" ? 15 : 1;
       return new Promise((resolve, reject) =>
         setTimeout(() => (rows instanceof Error ? reject(rows) : resolve(rows)), delay)
       );
@@ -71,7 +71,7 @@ test("admin getWordDetails: a failed definitions lookup is logged", async () => 
   fakeDb({
     words: [{ id: 1 }],
     Rounds: [{ id: 5 }],
-    Definitions: new Error("database is down"),
+    definitions: new Error("database is down"),
     "host-choices": [],
   });
   const details: any = await Super.getWordDetails(1);
@@ -86,7 +86,7 @@ test("admin getWordDetails: the definitions of every round are in the reply", as
   fakeDb({
     words: [{ id: 1 }],
     Rounds: [{ id: 5 }, { id: 6 }],
-    Definitions: (where: any) => [{ id: where.round_id * 10, round_id: where.round_id }],
+    definitions: (where: any) => [{ id: where.round_id * 10, round_id: where.round_id }],
     "host-choices": [],
   });
   const details: any = await Super.getWordDetails(1);
@@ -101,7 +101,7 @@ test("admin getWordDetails: one failed round leaves the others' definitions in",
   fakeDb({
     words: [{ id: 1 }],
     Rounds: [{ id: 5 }, { id: 6 }],
-    Definitions: (where: any) =>
+    definitions: (where: any) =>
       where.round_id === 5
         ? new Error("database is down")
         : [{ id: 60, round_id: 6 }],
