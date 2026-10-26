@@ -39,32 +39,37 @@ router.post("/json", (req, res) => {
   res.status(201).json({ added, skipped });
 });
 
-router.post("/contribute", (req, res) => {
+router.post("/contribute", async (req, res) => {
   const result = validateWord(req.body);
   let duplicate: any;
   if (!result.ok) {
     return res.status(400).json({ error: result.message });
   }
-  Words.getByName(result.value.word).then((dup) => {
-    duplicate = dup?.id ? dup : false;
-    log(`duplicate: ${duplicate.word}`);
-    if (!duplicate) {
-      // add to database
-      Words.add(result.value)
-        .then(([id]) => {
-          // return id of new record
-          res.status(201).json({ id });
-        })
-        .catch((err) => {
-          // error adding to database
-          log("ERROR: /contribute");
-          res.status(400).json({ error: err });
-        });
-    } else {
-      // return id of existing record
-      res.status(200).json({ id: dup.id });
-    }
-  });
+  let dup: any;
+  try {
+    dup = await Words.getByName(result.value.word);
+  } catch (err) {
+    // error looking up the word
+    log(`ERROR: /contribute, ${errorMessage(err)}`);
+    return res.status(400).json({ error: errorMessage(err) });
+  }
+  duplicate = dup?.id ? dup : false;
+  log(`duplicate: ${duplicate.word}`);
+  if (duplicate) {
+    // return id of existing record
+    return res.status(200).json({ id: dup.id });
+  }
+  // add to database
+  let id: any;
+  try {
+    [id] = await Words.add(result.value);
+  } catch (err) {
+    // error adding to database
+    log("ERROR: /contribute");
+    return res.status(400).json({ error: err });
+  }
+  // return id of new record
+  return res.status(201).json({ id });
 });
 
 /**
@@ -81,9 +86,15 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/by-name/:word", (req, res) => {
+router.get("/by-name/:word", async (req, res) => {
   const word = req.params.word;
-  Words.getByName(word).then((value) => res.status(200).json(value));
+  let value: any;
+  try {
+    value = await Words.getByName(word);
+  } catch (err) {
+    return res.status(500).json({ error: errorMessage(err) });
+  }
+  return res.status(200).json(value);
 });
 
 /**
@@ -142,48 +153,42 @@ router.get("/id/:id", (req, res) => {
  * PUT /id/:id/approve
  * Approve a word, by ID
  */
-router.put("/id/:id/approve", (req, res) => {
+router.put("/id/:id/approve", async (req, res) => {
   const id = Number(req.params.id);
   if (!id) return res.status(400).json({ error: "id?" });
-  Words.getById(id).then((wordObj) => {
-    wordObj = {
-      ...wordObj,
+  let word: any;
+  try {
+    const wordObj = {
+      ...(await Words.getById(id)),
       moderated: true,
       approved: true
     };
-
-    Words.update(id, wordObj)
-      .then((word) => {
-        res.status(200).json({ word });
-      })
-      .catch((err) => {
-        res.status(500).json({ error: err.message });
-      });
-  });
+    word = await Words.update(id, wordObj);
+  } catch (err) {
+    return res.status(500).json({ error: errorMessage(err) });
+  }
+  return res.status(200).json({ word });
 });
 
 /**
  * put /id/:id/reject
  * Reject a word, by ID
  */
-router.put("/id/:id/reject", (req, res) => {
+router.put("/id/:id/reject", async (req, res) => {
   const id = Number(req.params.id);
   if (!id) return res.status(400).json({ error: "id?" });
-  Words.getById(id).then((wordObj) => {
-    wordObj = {
-      ...wordObj,
+  let word: any;
+  try {
+    const wordObj = {
+      ...(await Words.getById(id)),
       moderated: true,
       approved: false
     };
-
-    Words.update(id, wordObj)
-      .then((word) => {
-        res.status(200).json({ word });
-      })
-      .catch((err) => {
-        res.status(500).json({ error: err.message });
-      });
-  });
+    word = await Words.update(id, wordObj);
+  } catch (err) {
+    return res.status(500).json({ error: errorMessage(err) });
+  }
+  return res.status(200).json({ word });
 });
 
 /**

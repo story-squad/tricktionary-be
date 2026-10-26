@@ -315,6 +315,69 @@ const cases: Case[] = [
       status: 400,
     },
   ]),
+  {
+    name: "GET /api/words/by-name/:word, database error",
+    mount: ["/api/words", apiRoutes.word],
+    fakes: () => fake(Words, "getByName", dbError),
+    send: (r) => r.get("/api/words/by-name/x"),
+    status: 500,
+  },
+  {
+    name: "POST /api/words/contribute, lookup error",
+    mount: ["/api/words", apiRoutes.word],
+    fakes: () => fake(Words, "getByName", dbError),
+    send: (r) => r.post("/api/words/contribute").send({ word: "w", definition: "d" }),
+    status: 400,
+  },
+  {
+    name: "POST /api/words/contribute, insert error",
+    mount: ["/api/words", apiRoutes.word],
+    fakes: () => {
+      fake(Words, "getByName", resolves(undefined));
+      fake(Words, "add", dbError);
+    },
+    send: (r) => r.post("/api/words/contribute").send({ word: "w", definition: "d" }),
+    status: 400,
+  },
+  {
+    name: "POST /api/words/contribute, new word",
+    mount: ["/api/words", apiRoutes.word],
+    fakes: () => {
+      fake(Words, "getByName", resolves(undefined));
+      fake(Words, "add", resolves([7]));
+    },
+    send: (r) => r.post("/api/words/contribute").send({ word: "w", definition: "d" }),
+    status: 201,
+  },
+  {
+    name: "POST /api/words/contribute, existing word",
+    mount: ["/api/words", apiRoutes.word],
+    fakes: () => fake(Words, "getByName", resolves({ id: 3, word: "w" })),
+    send: (r) => r.post("/api/words/contribute").send({ word: "w", definition: "d" }),
+    status: 200,
+  },
+  ...["approve", "reject"].flatMap((verb): Case[] => [
+    {
+      name: `PUT /api/words/id/:id/${verb}, lookup error`,
+      mount: ["/api/words", apiRoutes.word],
+      fakes: () => {
+        fake(Words, "getById", dbError);
+        fake(Words, "update", resolves({}));
+      },
+      send: (r) => r.put(`/api/words/id/1/${verb}`),
+      status: 500,
+    },
+    {
+      name: `PUT /api/words/id/:id/${verb}, update error`,
+      mount: ["/api/words", apiRoutes.word],
+      fakes: () => {
+        fake(Words, "getById", resolves({ id: 1, word: "w" }));
+        fake(Words, "update", dbError);
+      },
+      send: (r) => r.put(`/api/words/id/1/${verb}`),
+      status: 500,
+    },
+  ]),
 ];
 
 for (const c of cases) {
