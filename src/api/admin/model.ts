@@ -54,20 +54,19 @@ async function getWordDetails(word_id: number) {
   const word: any = await db("words").where({ id: word_id });
   //get rounds with word
   const rounds: Array<any> = await db("Rounds").where({ word_id });
-  //get definitions for each round
-  let definitions: Array<any> = [];
-  // not awaited (the reply does not wait for these); each lookup logs its own
-  // error, since a rejection here would reach no handler and stop the process
-  rounds.forEach(async (round) => {
-    try {
-      let defs: Array<any> = await db("Definitions").where({
-        round_id: round.id,
-      });
-      definitions = [...definitions, ...defs];
-    } catch (err) {
-      log(`[ERROR] definitions of round ${round.id}: ${errorMessage(err)}`);
-    }
-  });
+  //get definitions for each round, in round order. A failed lookup is
+  //logged and adds no definitions, so the other rounds' are still returned.
+  const definitionsByRound: Array<Array<any>> = await Promise.all(
+    rounds.map(async (round) => {
+      try {
+        return await db("Definitions").where({ round_id: round.id });
+      } catch (err) {
+        log(`[ERROR] definitions of round ${round.id}: ${errorMessage(err)}`);
+        return [];
+      }
+    })
+  );
+  const definitions: Array<any> = definitionsByRound.flat();
   //get passovers for word
   let choices_with_word: Array<any> = [];
   const choices_one: Array<any> = await db("host-choices").where({
