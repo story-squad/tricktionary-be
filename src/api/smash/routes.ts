@@ -8,7 +8,11 @@ import { errorMessage } from "../../errorMessage";
 
 const router = Router();
 
-router.put("/emoji/:lobbyCode", redisCache, async (req: any, res: any) => {
+/**
+ * PUT /api/smash/emoji/:lobbyCode: count one reaction to a definition, in the
+ * cache when there is one, otherwise in the database. Replies exactly once.
+ */
+export async function smashEmoji(req: any, res: any) {
   const tc: TricktionaryCache = req.redis;
   const lobbyCode = req.params.lobbyCode;
   const game_id = req.body.game_id;
@@ -21,15 +25,20 @@ router.put("/emoji/:lobbyCode", redisCache, async (req: any, res: any) => {
   }
   // initialize last value
   const last = value || 0;
+  // exactly one reply, whichever way the update goes
+  const reply = (status: number, body: any) => {
+    if (!res.headersSent) res.status(status).json(body);
+  };
   // non-cache callback for postgres;
-  const simpleCallback = async (value: any) => res.json({ value });
+  const simpleCallback = async (value: any) => reply(200, { value });
   // create a callback to return the result
   const keyName = `${cacheGroupName}${game_id}-${roundId}-${definitionId}-${reactionId}`;
   const tcCallback =
-    tc?.createCallback(keyName, async (value: any) => res.json({ value })) ||
-    simpleCallback;
+    tc?.createCallback(keyName, simpleCallback, (err: any) =>
+      reply(400, { error: err ? errorMessage(err) : "cache update failed" })
+    ) || simpleCallback;
   // call asynchronous update function
-  return await smashUpdate(
+  const result: any = await smashUpdate(
     tc,
     game_id,
     roundId,
@@ -38,7 +47,14 @@ router.put("/emoji/:lobbyCode", redisCache, async (req: any, res: any) => {
     tcCallback,
     last
   );
-});
+  // without the cache the update is done here; if it failed, nothing replied
+  if (!tc?.incValue) {
+    const error = result?.error;
+    reply(400, { error: error ? errorMessage(error) : "smash update failed" });
+  }
+}
+
+router.put("/emoji/:lobbyCode", redisCache, smashEmoji);
 
 router.get(
   "/totals/:game_id/:round_id",

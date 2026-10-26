@@ -1,5 +1,6 @@
 import redis from "redis";
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 // provides basic access to a redis.creacteClient() instance
 // see https://www.npmjs.com/package/redis
 const REDIS_HOST: string = process.env.REDIS_HOST || "";
@@ -42,6 +43,31 @@ let setter: redis.RedisClient | undefined;
 
 const clients: rClients = { getter, setter };
 
+/**
+ * Log a client's errors. A RedisClient emits "error" when it loses Redis or
+ * can't reach it, and an EventEmitter with no "error" listener throws, which
+ * stops the process. The client keeps reconnecting on its own.
+ *
+ * @param client a RedisClient
+ * @returns the same client
+ */
+export function logRedisErrors<C extends { on: (event: string, cb: (err: unknown) => void) => unknown }>(
+  client: C,
+  name: string = "cache"
+): C {
+  client.on("error", (err: unknown) =>
+    log(`[${name}] redis error: ${errorMessage(err)}`)
+  );
+  return client;
+}
+
+/** a client and its duplicate, both with their errors logged */
+function createClients(port: number, host: string, options: any) {
+  const getter = logRedisErrors(redis.createClient(port, host, options));
+  const setter = logRedisErrors(getter.duplicate());
+  return { getter, setter };
+}
+
 function redisOptions(port: any, host: any, options: any, name: any) {
   return {
     port: port || defaultOptions.port,
@@ -61,8 +87,7 @@ function redisOptions(port: any, host: any, options: any, name: any) {
  */
 function passOn(port: number, host: string, options: any, name: string) {
   const config = redisOptions(port, host, options, name);
-  clients.getter = redis.createClient(config.port, config.host, options);
-  clients.setter = clients.getter.duplicate();
+  Object.assign(clients, createClients(config.port, config.host, options));
   const keyname: string = config.name;
   /**
    * Express Middleware - Redis cache
@@ -74,16 +99,12 @@ function passOn(port: number, host: string, options: any, name: string) {
     if (clients.getter && clients.getter.connected) {
       // already connected,
       req[keyname] = cache;
-      next();
     } else {
-      // pass redisClient to req, once connected.
-      if (clients.getter) {
-        clients.getter.on("ready", () => {
-          req[keyname] = cache;
-          next();
-        });
-      }
+      // Redis is unreachable (or still connecting): go on without the cache,
+      // as when no REDIS_HOST is set, rather than wait for it to come back.
+      req[keyname] = undefined;
     }
+    next();
   };
   middleware.clients = clients;
   middleware.connect = (next: any) => {
@@ -91,12 +112,10 @@ function passOn(port: number, host: string, options: any, name: string) {
       // if we're already connected
       clients.getter.once("end", () => {
         // reconnect after this connection ends
-        clients.getter = redis.createClient(
-          config.port,
-          config.host,
-          config.options
+        Object.assign(
+          clients,
+          createClients(config.port, config.host, config.options)
         );
-        clients.setter = clients.getter.duplicate();
         // proceed with the new connection
         next();
       });
@@ -104,12 +123,10 @@ function passOn(port: number, host: string, options: any, name: string) {
       clients.getter.quit();
     } else {
       // create the connection
-      clients.getter = redis.createClient(
-        config.port,
-        config.host,
-        config.options
+      Object.assign(
+        clients,
+        createClients(config.port, config.host, config.options)
       );
-      clients.setter = clients.getter.duplicate();
       // proceed
       next();
     }
@@ -178,17 +195,23 @@ function passOn(port: number, host: string, options: any, name: string) {
    * @param key name of stored value
    * @param onReply function(value) => doSomethingWith(value)
    * @param onError function(err) => doSomethingWith(err)
-   * @returns async function
+   * @returns async function; it never rejects (redis ignores the promise, so
+   * a rejection would stop the process), an error in onReply or onError is
+   * logged
    */
   function createCallback(key: string, onReply: any, onError?: any) {
     const errFunc = onError ? onError : redis.print;
     return async function (err: any, value: any) {
-      if (value && !err) {
-        // ie. onReply(value)=> res.json({ value });
-        return await onReply(value);
-      } else {
-        log(`[cache] ${key} not found!`);
-        return await errFunc(err);
+      try {
+        if (value && !err) {
+          // ie. onReply(value)=> res.json({ value });
+          return await onReply(value);
+        } else {
+          log(`[cache] ${key} not found!`);
+          return await errFunc(err);
+        }
+      } catch (cbErr) {
+        log(`[cache] ${key} callback failed: ${errorMessage(cbErr)}`);
       }
     };
   }
@@ -231,4 +254,5 @@ const redisCache =
       )
     : passOff;
 
+export { passOn };
 export default redisCache;

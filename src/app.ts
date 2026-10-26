@@ -15,6 +15,7 @@ import apiRoutes from "./api";
 import { forwardAsyncErrors, handleErrors } from "./api/middleware/asyncErrors";
 
 import { log } from "./logger";
+import { errorMessage } from "./errorMessage";
 
 log("[   Tricktionary API   ]");
 
@@ -82,6 +83,11 @@ if (redisHost.length > 0) {
     });
     const subClient = pubClient.duplicate();
     io.adapter(createAdapter({ pubClient, subClient }));
+    // The adapter listens for its clients' errors and emits them itself; an
+    // EventEmitter with no "error" listener throws, which stops the process.
+    io.of("/").adapter.on("error", (err: unknown) =>
+      log(`[adapter] redis error: ${errorMessage(err)}`)
+    );
   } catch (err) {
     log("[error connecting Redis adapter!]");
     if (err instanceof Error) {
