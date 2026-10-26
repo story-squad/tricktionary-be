@@ -3,6 +3,7 @@ import { log } from "../../logger";
 import { redisCache, TricktionaryCache } from "../middleware";
 import smashUpdate from "./util";
 import { bulkUpdate, cacheGroupName, getTotals } from "./model";
+import { createTotalsCollector } from "./totals";
 import { errorMessage } from "../../errorMessage";
 
 const router = Router();
@@ -58,40 +59,16 @@ router.get(
     // const { game_id, round_id } = req.body;
     // search key-names from the cache that match this pattern,
     const pattern = `${cacheGroupName}${game_id}-${round_id}*`;
-    type resultQueue = {
-      [key: string]: any[];
-    };
-    // collect them in this queue
-    const result: resultQueue = { queue: [] };
-    async function updateFinal(keyName: string, value: any, total: number) {
-      const check = Number(value);
-      if (check === NaN || check <= 0) {
-        log("[ERROR] non-numeric value");
-      }
-      let parseKey = keyName.split("-");
-      const reaction_id = Number(parseKey.pop()); // thats numberwang
-      const definition_id = Number(parseKey.pop()); // thats numberwang
-      const round_id = Number(parseKey.pop()); // thats numberwang
-      const game_id = parseKey.join("-").slice(cacheGroupName.length);
-      result.queue.push({
-        game_id,
-        round_id,
-        definition_id,
-        reaction_id,
-        value,
-      });
-      if (result.queue.length === total) {
-        // lets rotate the board!
-        await bulkUpdate(result.queue, async (value: any) => res.json(value));
-      }
-    }
     const tcCallback = tc?.createCallback(pattern, async (keys: any) => {
-      const totalKeys = keys.length;
+      // lets rotate the board!
+      const addTotal = createTotalsCollector(keys.length, (queue) =>
+        bulkUpdate(queue, async (value: any) => res.json(value))
+      );
       keys.forEach((keyName: string) =>
         tc.getValue(
           keyName,
           tc?.createCallback(keyName, (value: any) =>
-            updateFinal(keyName, Number(value), totalKeys)
+            addTotal(keyName, value)
           )
         )
       );

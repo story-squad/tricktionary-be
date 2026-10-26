@@ -11,7 +11,7 @@
     "gen-docs": "npx typedoc --plugin typedoc-plugin-markdown --modulesFileName modules src/sockets",
     "docs": "npm run pre-docs && npm run gen-docs && npm run post-docs",
     "develop": "npm run build && npm run docs && npm start",
-    "test": "npm run build && node --test \"dist/src/sockets/__tests__/*.test.js\""
+    "test": "npm run build && node --test \"dist/src/**/__tests__/*.test.js\""
   },
   "engines": {
     "node": ">=24"
