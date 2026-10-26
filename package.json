@@ -5,7 +5,7 @@
   "main": "./dist/src/index.js",
   "scripts": {
     "build": "sh ./scripts/build.sh",
-    "start": "node ./dist/src/index.js --unhandled-rejections=strict",
+    "start": "node --unhandled-rejections=strict ./dist/src/index.js",
     "pre-docs": "rm -rf trex/docs/tricktionary",
     "post-docs": "./scripts/copyMarkdown.sh && ./scripts/buildDocs.sh",
     "gen-docs": "npx typedoc --plugin typedoc-plugin-markdown --modulesFileName modules src/sockets",
