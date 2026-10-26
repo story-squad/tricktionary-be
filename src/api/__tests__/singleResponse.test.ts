@@ -17,6 +17,8 @@ import Super from "../admin/model";
 import choiceModel from "../hostChoices/model";
 import Words from "../words/model";
 import * as paymentModel from "../payment/model";
+import Definitions from "../definitions/model";
+import DefinitionReactions from "../definitionReactions/model";
 import { stripe } from "../payment/StripePayments";
 import apiRoutes from "..";
 // supertest ships without types; it is only called here
@@ -269,6 +271,50 @@ const cases: Case[] = [
         .send({ cart: { items: ["lifetime"] }, member_id: "m" }),
     status: 400,
   },
+  {
+    name: "GET /api/admin/round/:id, invalid id",
+    mount: ["/api/admin", apiRoutes.admin],
+    fakes: () => fake(Super, "getRound", resolves({})),
+    send: (r) => r.get("/api/admin/round/abc"),
+    status: 400,
+  },
+  {
+    name: "GET /api/definitions/round/:round_id",
+    mount: ["/api/definitions", apiRoutes.definitions],
+    fakes: () => fake(Definitions, "thisRound", resolves([])),
+    send: (r) => r.get("/api/definitions/round/1"),
+    status: 200,
+  },
+  {
+    name: "GET /api/definitions/round/:round_id, database error",
+    mount: ["/api/definitions", apiRoutes.definitions],
+    fakes: () => fake(Definitions, "thisRound", dbError),
+    send: (r) => r.get("/api/definitions/round/abc"),
+    status: 400,
+  },
+  ...[
+    ["/user/x", "getByUser"],
+    ["/round/1", "getByRound"],
+    ["/reaction/1", "getByReaction"],
+    ["/definition/1", "getByDefinition"],
+    ["/finished", "getFinished"],
+    ["/unfinished", "getUnfinished"],
+  ].flatMap(([path, lookup]): Case[] => [
+    {
+      name: `GET /api/definition-reactions${path}`,
+      mount: ["/api/definition-reactions", apiRoutes.definitionReaction],
+      fakes: () => fake(DefinitionReactions, lookup, resolves([])),
+      send: (r) => r.get(`/api/definition-reactions${path}`),
+      status: 200,
+    },
+    {
+      name: `GET /api/definition-reactions${path}, database error`,
+      mount: ["/api/definition-reactions", apiRoutes.definitionReaction],
+      fakes: () => fake(DefinitionReactions, lookup, dbError),
+      send: (r) => r.get(`/api/definition-reactions${path}`),
+      status: 400,
+    },
+  ]),
 ];
 
 for (const c of cases) {

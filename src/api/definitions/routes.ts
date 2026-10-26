@@ -80,10 +80,11 @@ router.get("/round/:round_id", async (req, res) => {
   const round_id: number = Number(req.params.round_id);
   let data: any;
   try {
-    data = Definitions.thisRound(round_id);
+    data = await Definitions.thisRound(round_id);
   } catch (err) {
     return res.status(400).json({ error: errorMessage(err) });
   }
+  return res.status(200).json(data);
 });
 
 router.get("/game/:game_id/player/:player_id", async (req, res) => {
