@@ -12,6 +12,7 @@ import { RedisClient } from "redis";
 // Tricktionary
 import gameSocketHandler from "./sockets";
 import apiRoutes from "./api";
+import { forwardAsyncErrors, handleErrors } from "./api/middleware/asyncErrors";
 
 import { log } from "./logger";
 
@@ -60,6 +61,9 @@ api.use("/api/payments", apiRoutes.payment);
 api.use("/api/member", apiRoutes.member);
 api.use("/api/smash", apiRoutes.smash);
 api.use("/api/score", apiRoutes.score);
+// an error in any API route becomes a 500 reply, not a crash
+Object.values(apiRoutes).forEach(forwardAsyncErrors);
+api.use(handleErrors);
 // web sockets
 const socketApp = createServer(api);
 const io = new Server(socketApp, { cors: { origin: "*" } });
