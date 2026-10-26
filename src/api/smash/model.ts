@@ -86,23 +86,30 @@ async function updateCount(
  */
 async function bulkUpdate(arr: any[], cb?: any) {
   try {
+    // not awaited; the records are returned without waiting for the writes.
+    // Each write logs its own error: a rejection here would reach no handler
+    // and stop the process.
     arr.forEach(async (item) => {
       const { game_id, round_id, definition_id, reaction_id, value } = item;
-      // check the database for an existing record
-      const result = await db("Smash")
-        .where({
-          game_id,
-          round_id,
-          definition_id,
-          reaction_id
-        })
-        .first();
-      if (!(result?.id && result?.count)) {
-        await add(game_id, round_id, definition_id, reaction_id, value);
-      } else {
-        if (value > result?.count) {
-          await db("Smash").where({ id: result.id }).update({ count: value });
+      try {
+        // check the database for an existing record
+        const result = await db("Smash")
+          .where({
+            game_id,
+            round_id,
+            definition_id,
+            reaction_id
+          })
+          .first();
+        if (!(result?.id && result?.count)) {
+          await add(game_id, round_id, definition_id, reaction_id, value);
+        } else {
+          if (value > result?.count) {
+            await db("Smash").where({ id: result.id }).update({ count: value });
+          }
         }
+      } catch (err) {
+        log(`[ERROR] storing smash total ${JSON.stringify(item)}: ${errorMessage(err)}`);
       }
     });
   } catch (err) {

@@ -1,5 +1,7 @@
 import { idText } from "typescript";
 import db from "../../dbConfig";
+import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 
 export default {
   getRound,
@@ -54,11 +56,17 @@ async function getWordDetails(word_id: number) {
   const rounds: Array<any> = await db("Rounds").where({ word_id });
   //get definitions for each round
   let definitions: Array<any> = [];
+  // not awaited (the reply does not wait for these); each lookup logs its own
+  // error, since a rejection here would reach no handler and stop the process
   rounds.forEach(async (round) => {
-    let defs: Array<any> = await db("Definitions").where({
-      round_id: round.id,
-    });
-    definitions = [...definitions, ...defs];
+    try {
+      let defs: Array<any> = await db("Definitions").where({
+        round_id: round.id,
+      });
+      definitions = [...definitions, ...defs];
+    } catch (err) {
+      log(`[ERROR] definitions of round ${round.id}: ${errorMessage(err)}`);
+    }
   });
   //get passovers for word
   let choices_with_word: Array<any> = [];
