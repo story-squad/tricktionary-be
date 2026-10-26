@@ -81,7 +81,7 @@ async function handleLobbyJoin(
         last_user_id: socket.id,
       });
       const newtoken = login.data.token;
-      p_id = login.data.player_id;
+      p_id = login.data.pid;
       privateMessage(io, socket, "token update", newtoken);
     } catch (err) {
       if (err instanceof Error) {
