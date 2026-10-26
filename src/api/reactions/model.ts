@@ -3,7 +3,7 @@ import db from "../../dbConfig";
 export default { add, getAll, getById };
 
 function add(content: string) {
-  return db("Reactions").insert({ content }).returning("id");
+  return db("Reactions").insert({ content }).returning("id").then((rows: any[]) => rows.map((r) => r.id));
 }
 
 function getAll() {

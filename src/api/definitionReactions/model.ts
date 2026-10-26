@@ -24,7 +24,8 @@ function add(
       definition_id: definitionID,
       game_finished: gameFinished
     })
-    .returning("id");
+    .returning("id")
+    .then((rows: any[]) => rows.map((r) => r.id));
 }
 
 function getByRound(roundID: number) {

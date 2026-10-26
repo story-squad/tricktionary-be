@@ -11,7 +11,8 @@ async function add(og_host: string) {
         id: uuId,
         og_host,
       })
-      .returning("id");
+      .returning("id")
+      .then((rows: any[]) => rows.map((r) => r.id));
   } catch (err) {
     return { ok: false, message: "error" };
   }

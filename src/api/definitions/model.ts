@@ -28,7 +28,7 @@ function add(
     game_id: gameID,
   });
   return newDefinition.ok
-    ? db("definitions").insert(newDefinition.value).returning("id")
+    ? db("definitions").insert(newDefinition.value).returning("id").then((rows: any[]) => rows.map((r) => r.id))
     : [-1, newDefinition.message];
 }
 
@@ -50,14 +50,16 @@ async function incr(player_id: string, round_id: number, points: number) {
   return await db("definitions")
     .where({ player_id, round_id })
     .increment("score", points)
-    .returning("score");
+    .returning("score")
+    .then((rows: any[]) => rows.map((r) => r.score));
 }
 
 async function decr(player_id: string, round_id: number, points: number) {
   return await db("definitions")
     .where({ player_id, round_id })
     .decrement("score", points)
-    .returning("score");
+    .returning("score")
+    .then((rows: any[]) => rows.map((r) => r.score));
 }
 
 async function findTopDefinition(player_id: string, game_id: string) {

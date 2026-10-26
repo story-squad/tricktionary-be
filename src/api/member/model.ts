@@ -21,7 +21,8 @@ async function add(
         location,
         external
       })
-      .returning("id");
+      .returning("id")
+      .then((rows: any[]) => rows.map((r) => r.id));
   } catch (err) {
     return { ok: false, message: "error" };
   }

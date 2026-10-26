@@ -11,7 +11,7 @@ function getByName(name: string) {
 }
 
 function add(word: object) {
-  return db("words").insert(word).returning("id");
+  return db("words").insert(word).returning("id").then((rows: any[]) => rows.map((r) => r.id));
 }
 
 function getUnmoderatedWord() {

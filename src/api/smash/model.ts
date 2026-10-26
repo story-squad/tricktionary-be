@@ -19,7 +19,8 @@ function add(
       reaction_id,
       count: value || 1
     })
-    .returning("count");
+    .returning("count")
+    .then((rows: any[]) => rows.map((r) => r.count));
 }
 
 async function get(
@@ -52,7 +53,8 @@ async function incr(
       reaction_id
     })
     .increment("count")
-    .returning("count");
+    .returning("count")
+    .then((rows: any[]) => rows.map((r) => r.count));
 }
 
 async function updateCount(
