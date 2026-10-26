@@ -15,6 +15,23 @@ import {
 import { errorMessage } from "../../errorMessage";
 const router = Router();
 
+/**
+ * Reply once with the rows of a score lookup: 200 with the rows, or 400 with
+ * the error when the lookup fails (the model returns { ok: false, message }
+ * instead of throwing) or rejects.
+ */
+async function replyWithRows(res: any, lookup: () => Promise<any>) {
+  try {
+    const result = await lookup();
+    if (!Array.isArray(result)) {
+      return res.status(400).json({ error: result?.message || "lookup failed" });
+    }
+    return res.status(200).json(result);
+  } catch (err) {
+    return res.status(400).json({ error: errorMessage(err) });
+  }
+}
+
 router.post("/new", async (req, res) => {
   const { player_id, game_id } = req.body;
   log("NEW SCORE CARD.");
@@ -37,13 +54,7 @@ router.get("/player/:id", async (req, res) => {
   if (!player_id) {
     return res.json({ error: "id ?" });
   }
-  let result;
-  try {
-    result = getGames(player_id); // return this player's games.
-  } catch (err) {
-    if (err instanceof Error) return res.json({ error: err.message });
-  }
-  return res.json(result);
+  return replyWithRows(res, () => getGames(player_id)); // this player's games
 });
 
 router.get("/player/:pid/game/:gid", async (req, res) => {
@@ -66,13 +77,7 @@ router.get("/games/:id", async (req, res) => {
   if (!game_id) {
     return res.json({ error: "id ?" });
   }
-  let result;
-  try {
-    result = getPlayers(game_id); // return this game's players.
-  } catch (err) {
-    if (err instanceof Error) return res.json({ error: err.message });
-  }
-  return res.json(result);
+  return replyWithRows(res, () => getPlayers(game_id)); // this game's players
 });
 
 router.put("/increase/:player_id", async (req, res) => {

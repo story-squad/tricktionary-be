@@ -391,3 +391,42 @@ for (const c of cases) {
     assert.deepEqual(escaped, []);
   });
 }
+
+// GET /api/score/player/:id and /api/score/games/:id used to reply before the
+// lookup finished, so the body was {} (a promise serialized), on a failed
+// lookup too. They now reply once with the rows, or 400 with the error.
+const scoreRows = [
+  { id: "s-1", player_id: "p-1", game_id: "g-1", points: 2, top_definition_id: null },
+];
+for (const [path, lookup] of [
+  ["/api/score/player/p-1", "getGames"],
+  ["/api/score/games/g-1", "getPlayers"],
+]) {
+  test(`GET ${path}: replies once with the rows`, async () => {
+    fake(scoreModel, lookup, resolves(scoreRows));
+    const res = await request(appFor("/api/score", apiRoutes.score)).get(path).timeout(2000);
+    await flush();
+    assert.equal(res.status, 200);
+    assert.deepEqual(res.body, scoreRows);
+    assert.equal(sends, 1);
+    assert.deepEqual(escaped, []);
+  });
+  test(`GET ${path}: a failed lookup replies once with 400`, async () => {
+    fake(scoreModel, lookup, resolves({ ok: false, message: "database is down" }));
+    const res = await request(appFor("/api/score", apiRoutes.score)).get(path).timeout(2000);
+    await flush();
+    assert.equal(res.status, 400);
+    assert.deepEqual(res.body, { error: "database is down" });
+    assert.equal(sends, 1);
+    assert.deepEqual(escaped, []);
+  });
+  test(`GET ${path}: a rejected lookup replies once with 400`, async () => {
+    fake(scoreModel, lookup, dbError);
+    const res = await request(appFor("/api/score", apiRoutes.score)).get(path).timeout(2000);
+    await flush();
+    assert.equal(res.status, 400);
+    assert.match(res.body.error, /invalid input syntax/);
+    assert.equal(sends, 1);
+    assert.deepEqual(escaped, []);
+  });
+}
