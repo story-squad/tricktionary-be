@@ -2,6 +2,7 @@ import { localAxios, privateMessage } from "./common";
 import { log } from "../logger";
 import handleLobbyJoin from "./handleLobbyJoin";
 import handleNewPlayer from "./handleNewPlayer";
+import { errorMessage } from "../errorMessage";
 
 /**
  * Determine whether or not the player should auto re-join an existing game.
@@ -44,7 +45,7 @@ async function handleReturningPlayer(
     old_user_id = login.data.old_user_id;
     old_user_name = login.data.old_user_name;
   } catch (err) {
-    return { ok: false, message: err.message };
+    return { ok: false, message: errorMessage(err) };
   }
   // send player their new token.
   privateMessage(io, socket, "token update", newtoken);

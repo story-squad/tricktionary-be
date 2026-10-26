@@ -74,7 +74,7 @@ export async function smashUpdate(
       // const value = await pgUpdate(keyName);
       // return await callBack(value);
     } catch (err) {
-      log(err);
+      log(String(err));
       return;
     }
   }

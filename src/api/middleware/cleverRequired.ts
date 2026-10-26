@@ -1,6 +1,7 @@
 import createHttpError from "http-errors";
 import axios from "axios";
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 
 
 // encode a string in Base64
@@ -71,7 +72,7 @@ const cleverStudentRequired = async (req: any, res: any, next: any) => {
     // continue
     next();
   } catch (err) {
-    next(createHttpError(401, err.message));
+    next(createHttpError(401, errorMessage(err)));
   }
 };
 

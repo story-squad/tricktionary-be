@@ -116,7 +116,7 @@ async function handleSetFinale(
       };
     });
   } catch (err) {
-    log(err);
+    log(String(err));
     // if we have a problem with the leaderboard endpoint, log it and return the current results
     topThree = results;
   }

@@ -5,6 +5,7 @@ import { stripe } from "./StripePayments";
 import { add, update } from "./model";
 import Stripe from "stripe";
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 
 const router = Router();
 
@@ -88,7 +89,7 @@ async function createPaymentIntent(payment_id: string, total: number) {
     clientSecret = paymentIntent.client_secret || "";
     updatedPayment = await update(payment_id, clientSecret);
   } catch (err) {
-    return { error: err.message };
+    return { error: errorMessage(err) };
   }
   if (!updatedPayment.ok) {
     log(updatedPayment.message);

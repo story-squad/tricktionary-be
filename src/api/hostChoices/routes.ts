@@ -1,6 +1,7 @@
 import { Router } from "express";
 import choiceModel from "./model";
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 const router = Router();
 
 router.post("/", async (req, res) => {
@@ -17,7 +18,7 @@ router.post("/", async (req, res) => {
     choice_id = result.pop();
   } catch (err) {
     log("error recording the host choice");
-    log(err.message);
+    log(errorMessage(err));
   }
   if (choice_id > -1) {
     res.status(201).json({ choice_id: choice_id });

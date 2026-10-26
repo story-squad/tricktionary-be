@@ -2,6 +2,7 @@ import { Router } from "express";
 import Words from "./model";
 import { validateWord, validNumber } from "./utils";
 import {log} from "../../logger";
+import { errorMessage } from "../../errorMessage";
 const router = Router();
 
 /*
@@ -214,7 +215,7 @@ router.put("/id/:id", async (req, res) => {
     });
     res.status(200).json({ word });
   } catch(err) {
-    res.status(500).json({ error: err.message})
+    res.status(500).json({ error: errorMessage(err)})
   }
 });
 

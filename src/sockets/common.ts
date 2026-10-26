@@ -2,6 +2,7 @@ import { GameSettings } from "../GameSettings";
 import { log } from "../logger";
 import axios from "axios";
 import * as dotenv from "dotenv";
+import { errorMessage } from "../errorMessage";
 dotenv.config();
 const localAxios = axios.create({
   baseURL: `${process.env.BASE_URL || "http://0.0.0.0"}:${
@@ -242,7 +243,7 @@ async function contributeWord(
   } catch (err) {
     log("error contributing.");
 
-    log(err);
+    log(String(err));
   }
   return newWord;
 }
@@ -256,7 +257,7 @@ async function wordFromID(id: any) {
       return { ok: false, message: "wordFromID: error" };
     }
   } catch (err) {
-    return { ok: false, message: err.message };
+    return { ok: false, message: errorMessage(err) };
   }
   return { ok: true, word };
 }
@@ -313,7 +314,7 @@ async function startNewRound(
     log("ROUND ID: " + roundId);
   } catch (err) {
     log("error trying to start new round!");
-    return { ok: false, message: err.message };
+    return { ok: false, message: errorMessage(err) };
   }
   const roundSettings: any = {
     seconds: lobbySettings.seconds,
@@ -431,8 +432,8 @@ async function updatePlayerToken(
       return data;
     }
   } catch (err) {
-    log(err.message);
-    return { ok: false, message: err.message };
+    log(errorMessage(err));
+    return { ok: false, message: errorMessage(err) };
   }
   return { ok: true, token };
 }
@@ -453,7 +454,7 @@ async function doIt(
     r = [{ ...firstPlaceResult }];
   } catch (err) {
     log("error getting 1st place");
-    log(err.message);
+    log(errorMessage(err));
   }
   if (secondPlace) {
     try {
@@ -464,7 +465,7 @@ async function doIt(
       r = [...r, { ...secondPlaceResult }];
     } catch (err) {
       log("error getting second place");
-      log(err.message);
+      log(errorMessage(err));
     }
   }
   if (thirdPlace) {
@@ -476,7 +477,7 @@ async function doIt(
       r = [...r, { ...thirdPlaceResult }];
     } catch (err) {
       log("error getting third place");
-      log(err.message);
+      log(errorMessage(err));
     }
   }
   return r;

@@ -2,6 +2,7 @@ import { Router } from "express";
 import authRequired from "../middleware/oktaRequired";
 import Profiles from "./oktaProfileModel";
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 const router = Router();
 
 router.get("/", authRequired, function (req, res) {
@@ -49,7 +50,7 @@ router.post("/", authRequired, async (req, res) => {
       });
     } catch (e) {
       console.error(e);
-      res.status(500).json({ message: e.message });
+      res.status(500).json({ message: errorMessage(e) });
     }
   } else {
     res.status(404).json({ message: "Profile missing" });
@@ -69,7 +70,7 @@ router.put("/", authRequired, async (req, res) => {
       });
     } catch (e) {
       console.error(e);
-      res.status(500).json({ message: e.message });
+      res.status(500).json({ message: errorMessage(e) });
     }
   } else {
     res.status(404).json({ message: "Profile missing" });
@@ -89,7 +90,7 @@ router.delete("/:id", (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: `Could not delete profile with ID: ${id}`,
-      error: err.message,
+      error: errorMessage(err),
     });
   }
 });

@@ -1,6 +1,7 @@
 import Player from "./model";
 import { log } from "../../logger";
 import { Router } from "express";
+import { errorMessage } from "../../errorMessage";
 
 const router = Router();
 
@@ -10,7 +11,7 @@ router.get("/id/:id", async (req, res) => {
   try {
     player = await Player.getPlayer(player_id);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: errorMessage(err) });
   }
   res.status(200).json({ player });
 });
@@ -21,7 +22,7 @@ router.get("/name/:id", async (req, res) => {
   try {
     result = await Player.getName(player_id);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: errorMessage(err) });
   }
   res.status(200).json(result);
 });
@@ -33,7 +34,7 @@ router.get("/last-user-id/:id", async (req, res) => {
   try {
     player = await Player.bySocketID(user_id);
   } catch (err) {
-    return res.status(400).json({ ok: false, error: err.message });
+    return res.status(400).json({ ok: false, error: errorMessage(err) });
   }
   return res.status(200).json({ ok: true, player });
 });
@@ -45,7 +46,7 @@ router.put("/id/:id", async (req, res) => {
   try {
     player = await Player.updatePlayer(player_id, changes);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: errorMessage(err) });
   }
   res.status(200).json({ player });
 });

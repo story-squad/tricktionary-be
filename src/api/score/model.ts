@@ -1,5 +1,6 @@
 import db from "../../dbConfig";
 import { v4 } from "uuid";
+import { errorMessage } from "../../errorMessage";
 // import { log } from "../../logger";
 export {
   updateDefinition,
@@ -101,7 +102,7 @@ async function updateDefinition(
       .update({ top_definition_id });
     return { ok: true, score: result };
   } catch (err) {
-    if (err instanceof Error) return { ok: false, error: err.message };
+    return { ok: false, error: errorMessage(err) };
   }
 }
 

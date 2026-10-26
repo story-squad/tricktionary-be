@@ -2,6 +2,7 @@ import db from "../../dbConfig";
 import { validatePlayerType } from "./utils";
 import { v4 } from "uuid";
 import { matchWords } from "../../options/pseudoRandom";
+import { errorMessage } from "../../errorMessage";
 
 
 export default { newPlayer, updatePlayer, getPlayer, findPlayer, bySocketID, getName, nameCheck };
@@ -11,7 +12,7 @@ async function newPlayer(user_id: string) {
   try {
     await db("Player").insert({ id: uuId, last_user_id: user_id });
   } catch (err) {
-    return { ok: false, message: err.message };
+    return { ok: false, message: errorMessage(err) };
   }
   return { ok: true, player_id: uuId };
 }
@@ -27,7 +28,7 @@ async function updatePlayer(player_id: string, changes: any) {
       .returning("*");
     return player[0];
   } catch (err) {
-    return { ok: false, message: err.messge };
+    return { ok: false, message: errorMessage(err) };
   }
 }
 

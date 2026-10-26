@@ -1,5 +1,6 @@
 import db from "../../dbConfig";
 import { v4 } from "uuid";
+import { errorMessage } from "../../errorMessage";
 export { add, update };
 
 async function add(member_id: string, amount: number) {
@@ -29,7 +30,7 @@ async function update(payment_id: string, external: string) {
   try {
     await db("Payment").update({ external }).where({ id: payment_id });
   } catch (err) {
-    return { ok: false, message: err.message };
+    return { ok: false, message: errorMessage(err) };
   }
   return { ok: true, message: "success" };
 }

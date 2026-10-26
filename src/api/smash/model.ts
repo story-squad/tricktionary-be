@@ -1,5 +1,6 @@
 import db from "../../dbConfig";
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 const cacheGroupName = "SMASHED";
 
 export { add, get, incr, updateCount, bulkUpdate, cacheGroupName, getTotals };
@@ -105,7 +106,7 @@ async function bulkUpdate(arr: any[], cb?: any) {
       }
     });
   } catch (err) {
-    log(err.message);
+    log(errorMessage(err));
   }
   return await cb(arr);
 }

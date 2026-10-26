@@ -1,5 +1,6 @@
 import db from "../../dbConfig";
 import { validateDefinition } from "./utils";
+import { errorMessage } from "../../errorMessage";
 
 export default {
   add,
@@ -70,7 +71,7 @@ async function findTopDefinition(player_id: string, game_id: string) {
       .orderBy("score", "desc")
       .first();
   } catch (err) {
-    return { ok: false, error: err.message };
+    return { ok: false, error: errorMessage(err) };
   }
   return { ok: true, top_definition };
 }

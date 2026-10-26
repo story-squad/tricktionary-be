@@ -2,6 +2,7 @@ import createError from "http-errors";
 import OktaJwtVerifier from "@okta/jwt-verifier";
 import oktaVerifierConfig from "./oktaConfig";
 import Profiles from "../member/oktaProfileModel"
+import { errorMessage } from "../../errorMessage";
 
 const oktaJwtVerifier = new OktaJwtVerifier(oktaVerifierConfig.config);
 
@@ -42,7 +43,7 @@ const authRequired = async (req:any, res:any, next:any) => {
         next(createError(401), err.message);
       });
   } catch (err) {
-    next(createError(401, err.message));
+    next(createError(401, errorMessage(err)));
   }
 };
 

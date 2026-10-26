@@ -1,5 +1,6 @@
 import db from "../../dbConfig";
 import { v4 } from "uuid";
+import { errorMessage } from "../../errorMessage";
 export default { add, get, latest, leaderBoard };
 
 async function add(og_host: string) {
@@ -58,7 +59,7 @@ async function leaderBoard(game_id: string) {
       .whereNot({ top_definition_id: null })
       .where("score.game_id", game_id);
   } catch (err) {
-    console.log(err.message);
+    console.log(errorMessage(err));
     return [];
   }
 }

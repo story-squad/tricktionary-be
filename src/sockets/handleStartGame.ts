@@ -7,6 +7,7 @@ import {
 } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
 import { log } from "../logger";
+import { errorMessage } from "../errorMessage";
 
 async function handleStartGame(
   io: any,
@@ -71,7 +72,7 @@ async function handleStartGame(
       });
     } catch (err) {
       log("error recording the host's choices");
-      log(err.message);
+      log(errorMessage(err));
       handleErrorMessage(io, socket, 2006, defaultError);
       return;
     }

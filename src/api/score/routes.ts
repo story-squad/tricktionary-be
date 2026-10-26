@@ -12,6 +12,7 @@ import {
   updateDefinition,
   findTopDefinition,
 } from "./model";
+import { errorMessage } from "../../errorMessage";
 const router = Router();
 
 router.post("/new", async (req, res) => {
@@ -130,7 +131,7 @@ router.put("/def/:player_id", async (req, res) => {
     }
     return res.json(score);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: errorMessage(err) });
   }
 });
 

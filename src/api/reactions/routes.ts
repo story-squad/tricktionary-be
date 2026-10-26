@@ -3,6 +3,7 @@ import { redisCache, TricktionaryCache } from "../middleware";
 import { getDatabaseReactions } from "./util";
 
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.get("/", redisCache, async (req: any, res: any, next: any) => {
     } catch (err) {
       return res
         .status(400)
-        .json({ error: err.message || "database lookup error" });
+        .json({ error: errorMessage(err) || "database lookup error" });
     }
   } else {
     // with redis
@@ -47,7 +48,7 @@ router.get("/", redisCache, async (req: any, res: any, next: any) => {
         }
       );
     } catch (err) {
-      log(err?.message || err);
+      log(errorMessage(err) || String(err));
       next();
     }
   }

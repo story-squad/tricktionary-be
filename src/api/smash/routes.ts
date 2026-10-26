@@ -3,6 +3,7 @@ import { log } from "../../logger";
 import { redisCache, TricktionaryCache } from "../middleware";
 import smashUpdate from "./util";
 import { bulkUpdate, cacheGroupName, getTotals } from "./model";
+import { errorMessage } from "../../errorMessage";
 
 const router = Router();
 
@@ -51,7 +52,7 @@ router.get(
         const totals = await getTotals(game_id, round_id);
         return await res.status(200).json(totals);
       } catch (err) {
-        return await res.status(400).json({ error: err.message });
+        return await res.status(400).json({ error: errorMessage(err) });
       }
     }
     // const { game_id, round_id } = req.body;
