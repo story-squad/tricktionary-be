@@ -1,5 +1,6 @@
 import db from "../../dbConfig";
 import { v4 } from "uuid";
+import { errorMessage } from "../../errorMessage";
 // import { log } from "../../logger";
 export {
   updateDefinition,
@@ -68,7 +69,8 @@ async function addPoints(player_id: string, game_id: string, points: number) {
     const result = await db("score")
       .where({ game_id, player_id })
       .increment("points", points)
-      .returning("points");
+      .returning("points")
+      .then((rows: any[]) => rows.map((r) => r.points));
     return { ok: true, points: result };
   } catch (err) {
     if (err instanceof Error) return { ok: false, message: err.message };
@@ -81,7 +83,8 @@ async function subPoints(player_id: string, game_id: string, points: number) {
     const result = await db("score")
       .where({ game_id, player_id })
       .decrement("points", points)
-      .returning("points");
+      .returning("points")
+      .then((rows: any[]) => rows.map((r) => r.points));
     return { ok: true, points: result };
   } catch (err) {
     if (err instanceof Error) return { ok: false, message: err.message };
@@ -99,7 +102,7 @@ async function updateDefinition(
       .update({ top_definition_id });
     return { ok: true, score: result };
   } catch (err) {
-    if (err instanceof Error) return { ok: false, error: err.message };
+    return { ok: false, error: errorMessage(err) };
   }
 }
 

@@ -1,5 +1,6 @@
 import db from "../../dbConfig";
 import { v4 } from "uuid";
+import { errorMessage } from "../../errorMessage";
 export { add, update };
 
 async function add(member_id: string, amount: number) {
@@ -14,7 +15,9 @@ async function add(member_id: string, amount: number) {
         member_id,
         external: "processing"
       })
-      .returning("id");
+      .returning("id")
+      // an array, as knex 0.95 returned it; the declared string type was never accurate
+      .then((rows: any[]) => rows.map((r) => r.id) as any);
   } catch (err) {
     // NOTE: it should error when the member_id does not exist
     return { ok: false, message: "error" };
@@ -27,7 +30,7 @@ async function update(payment_id: string, external: string) {
   try {
     await db("Payment").update({ external }).where({ id: payment_id });
   } catch (err) {
-    return { ok: false, message: err.message };
+    return { ok: false, message: errorMessage(err) };
   }
   return { ok: true, message: "success" };
 }

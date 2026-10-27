@@ -2,6 +2,7 @@ import { Router } from "express";
 import { log } from "../../logger";
 import { newToken, b64, partialRecall } from "./utils";
 import Player from "../player/model";
+import { errorMessage } from "../../errorMessage";
 const router = Router();
 
 const limitFromEnv: number = Number(process.env.USERNAME_CHARACTER_LIMIT);
@@ -23,15 +24,15 @@ router.post("/recall", (req, res) => {
 router.get("/find-player/:last_user_id", async (req, res) => {
   const last_user_id = req.params.last_user_id;
   let player;
-  let errorMessage = "unknown error";
+  let message = "unknown error";
   if (!last_user_id) {
     return res.status(404).json({ message: "last_user_id required" });
   }
   try {
     player = await Player.findPlayer("last_user_id", last_user_id);
   } catch (err) {
-    errorMessage = err.message;
-    return res.status(400).json({ error: errorMessage });
+    message = errorMessage(err);
+    return res.status(400).json({ error: message });
   }
   return res.status(200).json(player);
 });
@@ -80,14 +81,14 @@ router.post("/update-token", async (req, res) => {
     await Player.updatePlayer(p_id, { name });
     res.status(200).json(token);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ message: errorMessage(err) });
   }
 });
 
 router.post("/login", async (req, res) => {
   const { user_id, last_token } = req.body;
   if (!user_id || !last_token) {
-    res.status(403).json({ message: "missing required elements" });
+    return res.status(403).json({ message: "missing required elements" });
   }
   let last_user_id: string = "";
   let last_lobby: string = "";
@@ -107,8 +108,8 @@ router.post("/login", async (req, res) => {
     last_username = result.username || "";
     player = await Player.getPlayer(player_id);
   } catch (err) {
-    log(err.message);
-    return res.json({ message: err.message });
+    log(errorMessage(err));
+    return res.json({ message: errorMessage(err) });
   }
   let token;
   let old_user_id = last_user_id;
@@ -124,7 +125,7 @@ router.post("/login", async (req, res) => {
       token = token_request.token;
     }
   } catch (err) {
-    return res.status(403).json({ message: err.message });
+    return res.status(403).json({ message: errorMessage(err) });
   }
   // last_lobby will be returned, if it exists, as player.last_lobby
   return res.status(200).json({

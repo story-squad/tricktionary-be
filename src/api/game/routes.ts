@@ -1,5 +1,6 @@
 import { Router } from "express";
 import Game from "./model";
+import { errorMessage } from "../../errorMessage";
 
 const router = Router();
 
@@ -11,9 +12,9 @@ router.post("/new", async (req, res) => {
       game_id = await Game.add(og_host);
     }
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return res.status(400).json({ message: errorMessage(err) });
   }
-  res.status(200).json(game_id);
+  return res.status(200).json(game_id);
 });
 
 router.get("/all", async (req, res) => {
@@ -21,7 +22,7 @@ router.get("/all", async (req, res) => {
   try {
     result = await Game.get();
   } catch (err) {
-    result = { error: err.message };
+    result = { error: errorMessage(err) };
   }
   return res.status(200).json(result.games);
 });
@@ -33,7 +34,7 @@ router.get("/latest/:limit", async (req, res) => {
   try {
     result = await Game.latest(n);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: errorMessage(err) });
   }
   return res.status(200).json(result);
 });
@@ -45,7 +46,7 @@ router.get("/leaderboard/:game_id", async (req, res) => {
   try {
     result = await Game.leaderBoard(game_id);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: errorMessage(err) });
   }
   return res.status(200).json(result);
 })

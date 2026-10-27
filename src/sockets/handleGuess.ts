@@ -7,6 +7,7 @@ import {
 } from "./common";
 import handleErrorMessage from "./handleErrorMessage";
 import { log } from "../logger";
+import { errorMessage } from "../errorMessage";
 
 export async function handleArrayOfGuesses(
   io: any,
@@ -32,65 +33,74 @@ export async function handleArrayOfGuesses(
       });
       let pointsUpdate: any;
       let definitionUpdate: any;
+      // not awaited: the round finishes without waiting for the score
+      // updates. Each one logs its own error, since a rejection here would
+      // reach no handler and stop the process.
       lobby.players.forEach(async (player: any) => {
-        if (g.guess === 0 && player.id === g.player) {
-          player.points += VALUE_OF_TRUTH; // +1 if you voted for the provided definition.
+        try {
+          if (g.guess === 0 && player.id === g.player) {
+            player.points += VALUE_OF_TRUTH; // +1 if you voted for the provided definition.
 
-          // Add the points to the current round for the player
-          const curPlayerScoreIndex = getCurrentPlayerScoreIndex(
-            lobbies,
-            lobbyCode,
-            player.id
+            // Add the points to the current round for the player
+            const curPlayerScoreIndex = getCurrentPlayerScoreIndex(
+              lobbies,
+              lobbyCode,
+              player.id
+            );
+
+            lobby.rounds[curRoundIndex].scores[curPlayerScoreIndex].score +=
+              VALUE_OF_TRUTH;
+
+            // increase player score
+            pointsUpdate = await localAxios.put(
+              `/api/score/increase/${player.pid}`,
+              {
+                game_id,
+                points: VALUE_OF_TRUTH,
+              }
+            );
+            log(`+${VALUE_OF_TRUTH} truth player : ${player.username}`);
+
+            // log(pointsUpdate.data);
+          } else if (g.guess === player.definitionId && g.player !== player.id) {
+            player.points += VALUE_OF_BLUFF; // +1 if someone else voted for your definition.
+
+            // Add the points to the current round for the player
+            const curPlayerScoreIndex = getCurrentPlayerScoreIndex(
+              lobbies,
+              lobbyCode,
+              player.id
+            );
+
+            lobby.rounds[curRoundIndex].scores[curPlayerScoreIndex].score +=
+              VALUE_OF_BLUFF;
+
+            // increase player score
+            pointsUpdate = await localAxios.put(
+              `/api/score/increase/${player.pid}`,
+              {
+                game_id,
+                points: VALUE_OF_BLUFF,
+              }
+            );
+            log(`+${VALUE_OF_BLUFF} Bluff player : ${player.username}`);
+
+            // increase definition score
+            definitionUpdate = await localAxios.put(
+              `/api/definitions/increase/game/${game_id}/round/${roundId}`,
+              {
+                player_id: player.pid,
+                points: VALUE_OF_BLUFF,
+              }
+            );
+            log(`+${VALUE_OF_TRUTH} definition : ${player.definitionID}`);
+            // log(pointsUpdate.data);
+            // log(definitionUpdate.data);
+          }
+        } catch (err) {
+          log(
+            `error: handleArrayOfGuesses, scoring ${player.username}, ${errorMessage(err)}`
           );
-
-          lobby.rounds[curRoundIndex].scores[curPlayerScoreIndex].score +=
-            VALUE_OF_TRUTH;
-
-          // increase player score
-          pointsUpdate = await localAxios.put(
-            `/api/score/increase/${player.pid}`,
-            {
-              game_id,
-              points: VALUE_OF_TRUTH,
-            }
-          );
-          log(`+${VALUE_OF_TRUTH} truth player : ${player.username}`);
-
-          // log(pointsUpdate.data);
-        } else if (g.guess === player.definitionId && g.player !== player.id) {
-          player.points += VALUE_OF_BLUFF; // +1 if someone else voted for your definition.
-
-          // Add the points to the current round for the player
-          const curPlayerScoreIndex = getCurrentPlayerScoreIndex(
-            lobbies,
-            lobbyCode,
-            player.id
-          );
-
-          lobby.rounds[curRoundIndex].scores[curPlayerScoreIndex].score +=
-            VALUE_OF_BLUFF;
-
-          // increase player score
-          pointsUpdate = await localAxios.put(
-            `/api/score/increase/${player.pid}`,
-            {
-              game_id,
-              points: VALUE_OF_BLUFF,
-            }
-          );
-          log(`+${VALUE_OF_BLUFF} Bluff player : ${player.username}`);
-
-          // increase definition score
-          definitionUpdate = await localAxios.put(
-            `/api/definitions/increase/game/${game_id}/round/${roundId}`,
-            {
-              player_id: player.pid,
-              points: VALUE_OF_BLUFF,
-            }
-          );
-          log(`+${VALUE_OF_TRUTH} definition : ${player.definitionID}`);
-          // log(pointsUpdate.data);
-          // log(definitionUpdate.data);
         }
       });
     } catch (err) {

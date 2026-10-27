@@ -12,7 +12,25 @@ import {
   updateDefinition,
   findTopDefinition,
 } from "./model";
+import { errorMessage } from "../../errorMessage";
 const router = Router();
+
+/**
+ * Reply once with the rows of a score lookup: 200 with the rows, or 400 with
+ * the error when the lookup fails (the model returns { ok: false, message }
+ * instead of throwing) or rejects.
+ */
+async function replyWithRows(res: any, lookup: () => Promise<any>) {
+  try {
+    const result = await lookup();
+    if (!Array.isArray(result)) {
+      return res.status(400).json({ error: result?.message || "lookup failed" });
+    }
+    return res.status(200).json(result);
+  } catch (err) {
+    return res.status(400).json({ error: errorMessage(err) });
+  }
+}
 
 router.post("/new", async (req, res) => {
   const { player_id, game_id } = req.body;
@@ -36,13 +54,7 @@ router.get("/player/:id", async (req, res) => {
   if (!player_id) {
     return res.json({ error: "id ?" });
   }
-  let result;
-  try {
-    result = getGames(player_id); // return this player's games.
-  } catch (err) {
-    if (err instanceof Error) return res.json({ error: err.message });
-  }
-  return res.json(result);
+  return replyWithRows(res, () => getGames(player_id)); // this player's games
 });
 
 router.get("/player/:pid/game/:gid", async (req, res) => {
@@ -65,13 +77,7 @@ router.get("/games/:id", async (req, res) => {
   if (!game_id) {
     return res.json({ error: "id ?" });
   }
-  let result;
-  try {
-    result = getPlayers(game_id); // return this game's players.
-  } catch (err) {
-    if (err instanceof Error) return res.json({ error: err.message });
-  }
-  return res.json(result);
+  return replyWithRows(res, () => getPlayers(game_id)); // this game's players
 });
 
 router.put("/increase/:player_id", async (req, res) => {
@@ -123,14 +129,12 @@ router.put("/def/:player_id", async (req, res) => {
       game_id,
       Number(top_definition_id)
     );
-    const { score } = result;
-    if (result.ok) {
-    } else {
-      res.json(result);
+    if (!result.ok) {
+      return res.status(400).json(result);
     }
-    return res.json(score);
+    return res.json(result.score);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: errorMessage(err) });
   }
 });
 
@@ -150,35 +154,28 @@ router.post("/latest/:game_id", async (req, res) => {
     // if not ok, tell us why
     return res.json(leaderboard);
   }
-  let latestScore: any = [];
-  let countdown = leaderboard.latest.length;
   // update the latest top_definitions, as needed; returning the list
-  leaderboard.latest.forEach(async (scoreCard: any) => {
-    const { player_id, points, top_definition_id } = scoreCard;
-    log(`looking up top definition for player ${player_id}`);
-    const checkTop = await findTopDefinition(player_id, game_id); // sort
-    const latest_top_def = checkTop.ok && checkTop?.top_definition?.id;
-    if (latest_top_def && top_definition_id !== latest_top_def) {
-      log("top definition changed... updating score-card"); // update
-      await updateDefinition(player_id, game_id, latest_top_def);
-      countdown -= 1;
-      latestScore = [
-        ...latestScore,
-        {
-          player_id,
-          points,
-          top_definition_id: latest_top_def,
-        },
-      ];
-    } else {
-      log(`top definition remains to be ${top_definition_id}`);
-      countdown -= 1;
-      latestScore = [...latestScore, { player_id, points, top_definition_id }];
-    }
-    if (countdown < 1) {
-      return res.json(await latestScore);
-    }
-  });
+  let latestScore: any[];
+  try {
+    latestScore = await Promise.all(
+      leaderboard.latest.map(async (scoreCard: any) => {
+        const { player_id, points, top_definition_id } = scoreCard;
+        log(`looking up top definition for player ${player_id}`);
+        const checkTop = await findTopDefinition(player_id, game_id); // sort
+        const latest_top_def = checkTop.ok && checkTop?.top_definition?.id;
+        if (latest_top_def && top_definition_id !== latest_top_def) {
+          log("top definition changed... updating score-card"); // update
+          await updateDefinition(player_id, game_id, latest_top_def);
+          return { player_id, points, top_definition_id: latest_top_def };
+        }
+        log(`top definition remains to be ${top_definition_id}`);
+        return { player_id, points, top_definition_id };
+      })
+    );
+  } catch (err) {
+    return res.json({ ok: false, error: errorMessage(err) });
+  }
+  return res.json(latestScore);
 });
 
 export default router;

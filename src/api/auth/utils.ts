@@ -5,6 +5,7 @@ import Rounds from "../rounds/model";
 
 import secrets from "./secrets";
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 
 type Result<T> = { ok: true; value: T } | { ok: false; message: string };
 
@@ -52,7 +53,7 @@ function generateToken(
     lob: lobbyCode,
     ext: extra,
   };
-  const options = {
+  const options: jwt.SignOptions = {
     expiresIn: "1h",
   };
   return jwt.sign(payload, secrets.jwtSecret, options);
@@ -96,7 +97,7 @@ export async function newToken(
       pid: player_id,
     };
   } catch (err) {
-    return { ok: false, message: err.message, status: 400 };
+    return { ok: false, message: errorMessage(err), status: 400 };
   }
 }
 
@@ -153,7 +154,7 @@ export async function totalRecall(player_id: string) {
   } catch (err) {
     result = {
       ok: false,
-      message: err.message,
+      message: errorMessage(err),
       lobby: undefined,
       player: undefined,
     };
@@ -176,7 +177,7 @@ export async function totalRecall(player_id: string) {
       log("cannot find a last_lobby of player.");
       return {
         ok: true,
-        message: err.message,
+        message: errorMessage(err),
         spoilers: undefined,
         player,
       };
@@ -222,7 +223,7 @@ export async function verifyTricktionaryToken(
     }
     // NOTE: don't need to lookup player by id if we already have the last lobby from JWT
   } catch (err) {
-    return { ok: false, status: 403, message: err.message };
+    return { ok: false, status: 403, message: errorMessage(err) };
   }
   return {
     ok: true,

@@ -1,5 +1,6 @@
 import { localAxios, whereAmI } from "./common";
 import { log } from "../logger";
+import { errorMessage } from "../errorMessage";
 
 async function handleUpdateUsername(
   io: any,
@@ -56,7 +57,7 @@ async function handleUpdateUsername(
 
     io.to(lobbyCode).emit("receive-notification", notificationData, socket.id);
   } catch (err) {
-    log(err.message);
+    log(errorMessage(err));
   }
 }
 export default handleUpdateUsername;

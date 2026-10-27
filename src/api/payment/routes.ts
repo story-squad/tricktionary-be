@@ -5,6 +5,7 @@ import { stripe } from "./StripePayments";
 import { add, update } from "./model";
 import Stripe from "stripe";
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 
 const router = Router();
 
@@ -56,22 +57,22 @@ router.post("/checkout", async (req, res) => {
     }
   });
   if (errors.length > 0) {
-    res.status(400).json({ errors });
+    return res.status(400).json({ errors });
   }
   const result = await add(member_id, total);
   if (!result.ok) {
-    res.status(400).json({ error: result.message });
+    return res.status(400).json({ error: result.message });
   }
   // payment record id indicates a valid member & a valid item.
   payment_id = result.payment_id ? result.payment_id[0] : "";
   if (payment_id.length === 0) {
-    res.status(400).json({ error: "error while adding record" });
+    return res.status(400).json({ error: "error while adding record" });
   }
   const intent = await createPaymentIntent(payment_id, total);
   if (intent.error) {
-    res.status(400).json({ error: intent.error });
+    return res.status(400).json({ error: intent.error });
   }
-  res.status(201).json({ intent });
+  return res.status(201).json({ intent });
 });
 
 async function createPaymentIntent(payment_id: string, total: number) {
@@ -88,7 +89,7 @@ async function createPaymentIntent(payment_id: string, total: number) {
     clientSecret = paymentIntent.client_secret || "";
     updatedPayment = await update(payment_id, clientSecret);
   } catch (err) {
-    return { error: err.message };
+    return { error: errorMessage(err) };
   }
   if (!updatedPayment.ok) {
     log(updatedPayment.message);

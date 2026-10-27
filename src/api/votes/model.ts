@@ -10,7 +10,7 @@ export async function add(userID: string, definitionID: any, roundID: number) {
   if (!result.ok) {
     return log(result.message);
   }
-  const [voteId] = await db("Votes").insert(result.value).returning("id");
+  const [voteId] = (await db("Votes").insert(result.value).returning("id")).map((r: any) => r.id);
   return voteId;
 }
 

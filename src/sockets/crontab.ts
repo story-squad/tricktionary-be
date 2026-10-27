@@ -1,4 +1,4 @@
-import cron from "node-cron";
+import cron, { ScheduledTask } from "node-cron";
 import { log } from "../logger";
 
 // const MINUTES = process.env.MINUTES || 5;
@@ -26,7 +26,7 @@ interface cronTask {
   count: number; // number of times this task has been run
   created: number; // timestamp
   last: number; // timestamp
-  task: cron.ScheduledTask;
+  task: ScheduledTask;
 }
 
 /**
@@ -99,6 +99,13 @@ function schedulePulseCheck(
 }
 
 function checkPulse(o: any, k: string, io: any) {
+  if (!o[k]) {
+    // the lobby was deleted (everyone left); nothing left to check
+    log(`[delete] task: pulse check, lobby ${k} is gone`);
+    lobbyTasks[k]?.task.stop();
+    delete lobbyTasks[k];
+    return;
+  }
   const needsChecking = () =>
     o[k].players.filter((p: any) => p.pulseCheck && p.connected);
   const task = lobbyTasks[k]; // the first cron task for this room(k).
@@ -147,6 +154,7 @@ function getScheduledTask(lobbyCode: string) {
 function echoTime(io: any, timerTask: string, lobbyCode: string) {
   incrementTask(timerTask);
   const t = lobbyTasks[timerTask];
+  if (!t) return; // the last run removed the task
   io.to(lobbyCode).emit("synchronize", t.limit - t.count);
 }
 
@@ -179,6 +187,7 @@ function scheduleTimer(io: any, lobbyCode: string, limit: number) {
 }
 
 export {
+  checkPulse,
   startScheduledTask,
   stopScheduledTask,
   getScheduledTask,

@@ -1,6 +1,7 @@
 import db from "../../dbConfig";
 import { scoreCard } from "../score/model";
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 // variable name must be in lowerCamelCase, PascalCase or UPPER_CASE
 function add(userID: string, roundID: number, gameID: string) {
   return db("User-Rounds").insert({
@@ -15,8 +16,8 @@ async function addAllUserRounds(players: any, roundId: number, gameID: string) {
       await add(player.id, roundId, gameID);
       await scoreCard(player.id, gameID);
     } catch (err) {
-      log(err.message);
-      return { ok: false, message: err.message };
+      log(errorMessage(err));
+      return { ok: false, message: errorMessage(err) };
     }
   });
   return { ok: true, message: `added ${players.length} players` };

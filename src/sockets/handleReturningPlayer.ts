@@ -2,6 +2,8 @@ import { localAxios, privateMessage } from "./common";
 import { log } from "../logger";
 import handleLobbyJoin from "./handleLobbyJoin";
 import handleNewPlayer from "./handleNewPlayer";
+import handleErrorMessage from "./handleErrorMessage";
+import { errorMessage } from "../errorMessage";
 
 /**
  * Determine whether or not the player should auto re-join an existing game.
@@ -44,13 +46,24 @@ async function handleReturningPlayer(
     old_user_id = login.data.old_user_id;
     old_user_name = login.data.old_user_name;
   } catch (err) {
-    return { ok: false, message: err.message };
+    return { ok: false, message: errorMessage(err) };
   }
   // send player their new token.
   privateMessage(io, socket, "token update", newtoken);
   // check for last_played activity
-  if (!player.last_played || !lobbies[player.last_played]) {
+  if (!player.last_played) {
     log(`${player.last_played}, game not found.`);
+    return;
+  }
+  if (!lobbies[player.last_played]) {
+    // their game has ended; tell the client, which is waiting on the re-join
+    log(`${player.last_played}, game not found.`);
+    handleErrorMessage(
+      io,
+      socket,
+      2000,
+      `The lobby with code ${player.last_played} has ended`
+    );
     return;
   }
   // if we're not already in the room,
@@ -74,7 +87,8 @@ async function handleReturningPlayer(
   }
   // move the player forward.
   log(`Player ${player.name} has returned`);
-  handleLobbyJoin(
+  // awaited, so an error in the join reaches this handler's caller
+  await handleLobbyJoin(
     io,
     socket,
     player.name,

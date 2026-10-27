@@ -17,7 +17,7 @@ async function addHostChoice(
     times_shuffled,
   });
   return newHostChoice.ok
-    ? db("host-choices").insert(newHostChoice.value).returning("id")
+    ? db("host-choices").insert(newHostChoice.value).returning("id").then((rows: any[]) => rows.map((r) => r.id))
     : [-1, newHostChoice.message];
 }
 

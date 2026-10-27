@@ -2,6 +2,7 @@ import { GameSettings } from "../GameSettings";
 import { log } from "../logger";
 import axios from "axios";
 import * as dotenv from "dotenv";
+import { errorMessage } from "../errorMessage";
 dotenv.config();
 const localAxios = axios.create({
   baseURL: `${process.env.BASE_URL || "http://0.0.0.0"}:${
@@ -242,7 +243,7 @@ async function contributeWord(
   } catch (err) {
     log("error contributing.");
 
-    log(err);
+    log(String(err));
   }
   return newWord;
 }
@@ -256,7 +257,7 @@ async function wordFromID(id: any) {
       return { ok: false, message: "wordFromID: error" };
     }
   } catch (err) {
-    return { ok: false, message: err.message };
+    return { ok: false, message: errorMessage(err) };
   }
   return { ok: true, word };
 }
@@ -270,20 +271,27 @@ async function checkScores(lobbyCode: string, lobbies: any) {
   }
   // add host to list
   log(`updating score-cards for players in ${lobbyCode}`);
+  // not awaited: the round starts without waiting for the score cards. Each
+  // one logs its own error, since a rejection here would reach no handler and
+  // stop the process.
   return await [...players, {}].forEach(async (playerObj: any) => {
     const { username, pid } = playerObj;
-    const pathname = `/api/score/player/${pid}/game/${game_id}`;
-    let score = await localAxios.get(pathname);
-    if (!score.data.id) {
-      log(`creating score card for ${username}`);
-      score = await localAxios.post("/api/score/new", {
-        game_id,
-        player_id: pid,
-      });
-      log(`created score card ${score.data?.id} for ${username}`);
-    } else {
-      log(`found score card ${score.data.id}, for ${username}`);
-      // todo
+    try {
+      const pathname = `/api/score/player/${pid}/game/${game_id}`;
+      let score = await localAxios.get(pathname);
+      if (!score.data.id) {
+        log(`creating score card for ${username}`);
+        score = await localAxios.post("/api/score/new", {
+          game_id,
+          player_id: pid,
+        });
+        log(`created score card ${score.data?.id} for ${username}`);
+      } else {
+        log(`found score card ${score.data.id}, for ${username}`);
+        // todo
+      }
+    } catch (err) {
+      log(`[!ERROR] score card for ${username}: ${errorMessage(err)}`);
     }
   });
 }
@@ -313,7 +321,7 @@ async function startNewRound(
     log("ROUND ID: " + roundId);
   } catch (err) {
     log("error trying to start new round!");
-    return { ok: false, message: err.message };
+    return { ok: false, message: errorMessage(err) };
   }
   const roundSettings: any = {
     seconds: lobbySettings.seconds,
@@ -431,8 +439,8 @@ async function updatePlayerToken(
       return data;
     }
   } catch (err) {
-    log(err.message);
-    return { ok: false, message: err.message };
+    log(errorMessage(err));
+    return { ok: false, message: errorMessage(err) };
   }
   return { ok: true, token };
 }
@@ -453,7 +461,7 @@ async function doIt(
     r = [{ ...firstPlaceResult }];
   } catch (err) {
     log("error getting 1st place");
-    log(err.message);
+    log(errorMessage(err));
   }
   if (secondPlace) {
     try {
@@ -464,7 +472,7 @@ async function doIt(
       r = [...r, { ...secondPlaceResult }];
     } catch (err) {
       log("error getting second place");
-      log(err.message);
+      log(errorMessage(err));
     }
   }
   if (thirdPlace) {
@@ -476,7 +484,7 @@ async function doIt(
       r = [...r, { ...thirdPlaceResult }];
     } catch (err) {
       log("error getting third place");
-      log(err.message);
+      log(errorMessage(err));
     }
   }
   return r;

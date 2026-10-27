@@ -1,4 +1,5 @@
 import { localAxios, privateMessage } from "./common";
+import { errorMessage } from "../errorMessage";
 
 /**
  * Create a new Player record for this user
@@ -14,7 +15,7 @@ async function handleNewPlayer(io: any, socket: any) {
     login = await localAxios.post('/api/auth/new-player', { last_user_id });
     newtoken = login.data.token;
   } catch (err) {
-    return { ok: false, message: err.message };
+    return { ok: false, message: errorMessage(err) };
   }
   privateMessage(io, socket, "token update", newtoken)
 }

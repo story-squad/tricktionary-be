@@ -8,7 +8,7 @@ function add(gameState: any, wordId: number, lobbyCode: string) {
     spoilers: lobbyCode,
   });
   return newRound.ok
-    ? db("Rounds").insert(newRound.value).returning("id")
+    ? db("Rounds").insert(newRound.value).returning("id").then((rows: any[]) => rows.map((r) => r.id))
     : newRound.message;
 }
 

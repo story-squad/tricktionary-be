@@ -2,6 +2,7 @@ import { Router } from "express";
 import Definitions from "./model";
 import { DefinitionType } from "./utils";
 import { log } from "../../logger";
+import { errorMessage } from "../../errorMessage";
 
 const router = Router();
 
@@ -14,7 +15,7 @@ router.post("/new", async (req, res) => {
     defId = result.pop();
   } catch (err) {
     log("error! definitions router");
-    log(err.message);
+    log(errorMessage(err));
   }
   if (defId > -1) {
     res.status(201).json({ definitionId: defId });
@@ -70,7 +71,7 @@ router.put("/increase/game/:game_id/round/:round_id", async (req, res) => {
   try {
     await Definitions.incr(player_id, round_id, points);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: errorMessage(err) });
   }
   res.status(200).json({ ok: true });
 });
@@ -79,10 +80,11 @@ router.get("/round/:round_id", async (req, res) => {
   const round_id: number = Number(req.params.round_id);
   let data: any;
   try {
-    data = Definitions.thisRound(round_id);
+    data = await Definitions.thisRound(round_id);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: errorMessage(err) });
   }
+  return res.status(200).json(data);
 });
 
 router.get("/game/:game_id/player/:player_id", async (req, res) => {
@@ -101,7 +103,7 @@ router.get("/id/:id", async (req, res) => {
   try {
     definition = await Definitions.byId(definitionId).first();
   } catch (err) {
-    return res.status(400).json({ ok: false, error: err.message });
+    return res.status(400).json({ ok: false, error: errorMessage(err) });
   }
   return res.status(200).json({ ok: true, definition });
 });
