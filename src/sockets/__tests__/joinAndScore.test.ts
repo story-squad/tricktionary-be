@@ -5,7 +5,7 @@
 // small in-memory hub), and localAxios (the handlers' calls to this server's
 // REST API, which is where the database sits). No server or database needed.
 // Also: which phases a new player may join in, and a returning player's
-// re-join.
+// re-join, including one whose game has ended.
 import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { localAxios } from "../common";
@@ -275,4 +275,40 @@ test("a returning player gets back into a game in progress", async () => {
   assert.equal(rejoined.length, 1);
   assert.equal(rejoined[0].id, "back-socket");
   assert.equal(rejoined[0].points, 2);
+});
+
+test("a returning player whose game has ended gets error 2000", async () => {
+  const lobbies: any = {};
+  const back = connect("back-socket");
+  loginReply = {
+    token: "returning-token",
+    player: { id: "pid-9", name: "Gone", last_played: "QWER" },
+    old_user_id: "old-socket",
+    old_user_name: "Gone",
+  };
+
+  await handleReturningPlayer(io, back, "saved-token", lobbies);
+
+  assert.deepEqual(
+    back.received.map(([event]) => event),
+    ["token update", "error"]
+  );
+  const [[code, message]] = errorsFor(back);
+  assert.equal(code, 2000);
+  assert.match(message, /QWER/);
+  assert.deepEqual(lobbies, {});
+});
+
+test("a returning player with no saved game gets no error", async () => {
+  const back = connect("back-socket");
+  loginReply = {
+    token: "returning-token",
+    player: { id: "pid-9", name: "New", last_played: null },
+    old_user_id: "old-socket",
+    old_user_name: "New",
+  };
+
+  await handleReturningPlayer(io, back, "saved-token", {});
+
+  assert.deepEqual(errorsFor(back), []);
 });

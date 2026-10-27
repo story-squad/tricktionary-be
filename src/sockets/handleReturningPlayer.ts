@@ -2,6 +2,7 @@ import { localAxios, privateMessage } from "./common";
 import { log } from "../logger";
 import handleLobbyJoin from "./handleLobbyJoin";
 import handleNewPlayer from "./handleNewPlayer";
+import handleErrorMessage from "./handleErrorMessage";
 import { errorMessage } from "../errorMessage";
 
 /**
@@ -50,8 +51,19 @@ async function handleReturningPlayer(
   // send player their new token.
   privateMessage(io, socket, "token update", newtoken);
   // check for last_played activity
-  if (!player.last_played || !lobbies[player.last_played]) {
+  if (!player.last_played) {
     log(`${player.last_played}, game not found.`);
+    return;
+  }
+  if (!lobbies[player.last_played]) {
+    // their game has ended; tell the client, which is waiting on the re-join
+    log(`${player.last_played}, game not found.`);
+    handleErrorMessage(
+      io,
+      socket,
+      2000,
+      `The lobby with code ${player.last_played} has ended`
+    );
     return;
   }
   // if we're not already in the room,
