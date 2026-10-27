@@ -1,14 +1,15 @@
 // Run with `npm test` (Node's built-in runner on the compiled output).
 //
-// Two models start queries in a forEach without awaiting them. A failed query
-// there reaches no handler, so it used to be an unhandled rejection, which
-// stops the server; now each is logged. The knex instance is faked: each
-// table name maps to the rows its query resolves with, or an error.
+// getWordDetails (admin model) looks up the definitions of each round. The
+// lookups used to run in a forEach without being awaited, so the reply
+// usually had no definitions, and a failed lookup was an unhandled rejection,
+// which stops the server. Now the reply waits for them, and a failed one is
+// logged. The knex instance is faked: each table name maps to the rows its
+// query resolves with, or an error.
 import { test, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import * as dbConfig from "../../dbConfig";
 import Super from "../admin/model";
-import { bulkUpdate } from "../smash/model";
 
 let escaped: unknown[] = [];
 process.on("unhandledRejection", (err) => escaped.push(err));
@@ -54,18 +55,6 @@ function fakeDb(tables: { [table: string]: unknown }) {
   };
 }
 const settle = () => new Promise((resolve) => setTimeout(resolve, 40));
-
-test("smash bulkUpdate: a failed write is logged, and the records are returned", async () => {
-  fakeDb({ Smash: new Error("database is down") });
-  const records = [
-    { game_id: "g", round_id: 1, definition_id: 2, reaction_id: 3, value: 4 },
-  ];
-  const returned = await bulkUpdate(records, async (arr: any[]) => arr);
-  await settle();
-  assert.deepEqual(returned, records);
-  assert.deepEqual(escaped, []);
-  assert.ok(logged.some((l) => l.includes("storing smash total") && l.includes("database is down")));
-});
 
 test("admin getWordDetails: a failed definitions lookup is logged", async () => {
   fakeDb({

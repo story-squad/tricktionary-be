@@ -10,9 +10,7 @@ import assert from "node:assert/strict";
 import express from "express";
 import { passOn } from "../redisCache";
 import { sendReactions } from "../../reactions/routes";
-import { smashEmoji } from "../../smash/routes";
 import Reactions from "../../reactions/model";
-import * as smashModel from "../../smash/model";
 // supertest ships without types; it is only called here
 const request: any = require("supertest");
 
@@ -88,14 +86,6 @@ test("while Redis is unreachable, requests go on without the cache", async () =>
   assert.equal(req.redis, undefined);
 });
 
-test("an error in a cache callback is logged, and the callback resolves", async () => {
-  const callback = middleware.cache.createCallback("key", () => {
-    throw new Error("reply failed");
-  });
-  await callback(null, "1"); // would reject if the error escaped
-  assert.ok(logged.some((l) => /key callback failed: reply failed/.test(l)));
-});
-
 // GET /api/reactions
 const available = [{ id: 1, content: "x" }];
 const reactionsCache = (getValue: any) => ({ getValue, setValue: () => {} });
@@ -124,57 +114,5 @@ test("GET /api/reactions: a cached value is sent as is", async () => {
   const res = await request(app).get("/api/reactions").timeout(2000);
   assert.equal(res.status, 200);
   assert.deepEqual(res.body, cached);
-  assert.equal(sends, 1);
-});
-
-// PUT /api/smash/emoji/:lobbyCode
-const smashBody = { game_id: "game-1", roundId: 1, definitionId: 2, reactionId: 3 };
-const smashCache = (incValue: any) => ({ ...middleware.cache, incValue });
-
-test("PUT /api/smash/emoji: a failed cache update gets one 400", async () => {
-  const tc = smashCache((key: string, cb: any) => cb(new Error("connection lost")));
-  const app = appWith(tc, "put", "/api/smash/emoji/:lobbyCode", smashEmoji);
-  const res = await request(app).put("/api/smash/emoji/ABCD").send(smashBody).timeout(2000);
-  await flush();
-  assert.equal(res.status, 400);
-  assert.deepEqual(res.body, { error: "connection lost" });
-  assert.equal(sends, 1);
-  assert.deepEqual(escaped, []);
-});
-
-test("PUT /api/smash/emoji: a cache update replies with the count", async () => {
-  const tc = smashCache((key: string, cb: any) => cb(null, 4));
-  const app = appWith(tc, "put", "/api/smash/emoji/:lobbyCode", smashEmoji);
-  const res = await request(app).put("/api/smash/emoji/ABCD").send(smashBody).timeout(2000);
-  assert.equal(res.status, 200);
-  assert.deepEqual(res.body, { value: 4 });
-  assert.equal(sends, 1);
-});
-
-for (const [name, fakes] of [
-  ["the lookup fails", () => fake(smashModel, "get", dbError)],
-  ["the insert fails", () => {
-    fake(smashModel, "get", () => Promise.resolve(undefined));
-    fake(smashModel, "add", dbError);
-  }],
-] as const) {
-  test(`PUT /api/smash/emoji without the cache: when ${name}, one 400`, async () => {
-    fakes();
-    const app = appWith(undefined, "put", "/api/smash/emoji/:lobbyCode", smashEmoji);
-    const res = await request(app).put("/api/smash/emoji/ABCD").send(smashBody).timeout(2000);
-    await flush();
-    assert.equal(res.status, 400);
-    assert.equal(sends, 1);
-    assert.deepEqual(escaped, []);
-  });
-}
-
-test("PUT /api/smash/emoji without the cache replies with the stored count", async () => {
-  fake(smashModel, "get", () => Promise.resolve({ id: 9 }));
-  fake(smashModel, "incr", () => Promise.resolve([5]));
-  const app = appWith(undefined, "put", "/api/smash/emoji/:lobbyCode", smashEmoji);
-  const res = await request(app).put("/api/smash/emoji/ABCD").send(smashBody).timeout(2000);
-  assert.equal(res.status, 200);
-  assert.deepEqual(res.body, { value: 5 });
   assert.equal(sends, 1);
 });

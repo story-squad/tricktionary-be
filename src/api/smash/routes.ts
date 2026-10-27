@@ -1,102 +1,49 @@
 import { Router } from "express";
 import { log } from "../../logger";
-import { redisCache, TricktionaryCache } from "../middleware";
-import smashUpdate from "./util";
-import { bulkUpdate, cacheGroupName, getTotals } from "./model";
-import { collectCachedTotals } from "./totals";
+import { addReaction, getTotals } from "./model";
 import { errorMessage } from "../../errorMessage";
 
 const router = Router();
 
 /**
- * PUT /api/smash/emoji/:lobbyCode: count one reaction to a definition, in the
- * cache when there is one, otherwise in the database. Replies exactly once.
+ * PUT /api/smash/emoji/:lobbyCode: count one reaction to a definition in the
+ * Smash table and reply { value } with the new total. Replies exactly once.
  */
 export async function smashEmoji(req: any, res: any) {
-  const tc: TricktionaryCache = req.redis;
   const lobbyCode = req.params.lobbyCode;
   const game_id = req.body.game_id;
   // deconstruct required fields
-  const { roundId, definitionId, reactionId, value } = req.body;
+  const { roundId, definitionId, reactionId } = req.body;
   if (!lobbyCode || !game_id) {
     const details = `lobbyCode ${lobbyCode}, game_id ${game_id}`;
     log(`[SMASH!] error: ${details}`);
-    return await res.json({ error: details });
+    return res.json({ error: details });
   }
-  // initialize last value
-  const last = value || 0;
-  // exactly one reply, whichever way the update goes
-  const reply = (status: number, body: any) => {
-    if (!res.headersSent) res.status(status).json(body);
-  };
-  // non-cache callback for postgres;
-  const simpleCallback = async (value: any) => reply(200, { value });
-  // create a callback to return the result
-  const keyName = `${cacheGroupName}${game_id}-${roundId}-${definitionId}-${reactionId}`;
-  const tcCallback =
-    tc?.createCallback(keyName, simpleCallback, (err: any) =>
-      reply(400, { error: err ? errorMessage(err) : "cache update failed" })
-    ) || simpleCallback;
-  // call asynchronous update function
-  const result: any = await smashUpdate(
-    tc,
-    game_id,
-    roundId,
-    definitionId,
-    reactionId,
-    tcCallback,
-    last
-  );
-  // without the cache the update is done here; if it failed, nothing replied
-  if (!tc?.incValue) {
-    const error = result?.error;
-    reply(400, { error: error ? errorMessage(error) : "smash update failed" });
+  try {
+    const value = await addReaction(game_id, roundId, definitionId, reactionId);
+    return res.status(200).json({ value });
+  } catch (err) {
+    log(`[SMASH!] error: ${errorMessage(err)}`);
+    return res.status(400).json({ error: errorMessage(err) });
   }
 }
 
-router.put("/emoji/:lobbyCode", redisCache, smashEmoji);
-
-router.get(
-  "/totals/:game_id/:round_id",
-  redisCache,
-  async (req: any, res: any) => {
-    const tc: TricktionaryCache = req.redis;
-    const game_id: string = req.params.game_id;
-    const round_id: number = req.params.round_id;
-    if (!tc) {
-      // return the results from the RDB
-      try {
-        const totals = await getTotals(game_id, round_id);
-        return await res.status(200).json(totals);
-      } catch (err) {
-        return await res.status(400).json({ error: errorMessage(err) });
-      }
-    }
-    // const { game_id, round_id } = req.body;
-    // search key-names from the cache that match this pattern,
-    const pattern = `${cacheGroupName}${game_id}-${round_id}*`;
-    // exactly one reply, whichever way the lookup goes
-    const reply = (status: number, body: any) => {
-      if (!res.headersSent) res.status(status).json(body);
-    };
-    try {
-      collectCachedTotals(
-        tc,
-        pattern,
-        // lets rotate the board!
-        async (queue) => {
-          try {
-            await bulkUpdate(queue, async (value: any) => reply(200, value));
-          } catch (err) {
-            reply(400, { error: errorMessage(err) });
-          }
-        },
-        (err) => reply(400, { error: errorMessage(err) })
-      );
-    } catch (err) {
-      reply(400, { error: errorMessage(err) });
-    }
+/**
+ * GET /api/smash/totals/:game_id/:round_id: the round's reaction totals, from
+ * the Smash table. Replies exactly once.
+ */
+export async function smashTotals(req: any, res: any) {
+  const game_id: string = req.params.game_id;
+  const round_id: number = req.params.round_id;
+  try {
+    const totals = await getTotals(game_id, round_id);
+    return res.status(200).json(totals);
+  } catch (err) {
+    return res.status(400).json({ error: errorMessage(err) });
   }
-);
+}
+
+router.put("/emoji/:lobbyCode", smashEmoji);
+router.get("/totals/:game_id/:round_id", smashTotals);
 
 export default router;

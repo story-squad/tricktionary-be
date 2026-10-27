@@ -13,9 +13,6 @@ export type TricktionaryCache = {
   isConnected: any;
   connect: any;
   disconnect: any;
-  incValue: any;
-  findKeys: any;
-  createCallback: any;
 };
 
 interface rOptions {
@@ -181,50 +178,12 @@ function passOn(port: number, host: string, options: any, name: string) {
     middleware.disconnect(next);
   }
 
-  function incValue(keyName: string, cb?: any) {
-    const callBack = cb || redis.print;
-    clients?.setter?.incr(keyName, callBack);
-  }
-  function findKeys(pattern: string, cb?: any) {
-    const callBack = cb || redis.print;
-    clients?.getter?.keys(pattern, callBack);
-  }
-
-  /**
-   * create a callback function
-   * @param key name of stored value
-   * @param onReply function(value) => doSomethingWith(value)
-   * @param onError function(err) => doSomethingWith(err)
-   * @returns async function; it never rejects (redis ignores the promise, so
-   * a rejection would stop the process), an error in onReply or onError is
-   * logged
-   */
-  function createCallback(key: string, onReply: any, onError?: any) {
-    const errFunc = onError ? onError : redis.print;
-    return async function (err: any, value: any) {
-      try {
-        if (value && !err) {
-          // ie. onReply(value)=> res.json({ value });
-          return await onReply(value);
-        } else {
-          log(`[cache] ${key} not found!`);
-          return await errFunc(err);
-        }
-      } catch (cbErr) {
-        log(`[cache] ${key} callback failed: ${errorMessage(cbErr)}`);
-      }
-    };
-  }
-
   const cache: TricktionaryCache = {
     getValue,
     setValue,
     isConnected,
     connect,
-    disconnect,
-    incValue,
-    findKeys,
-    createCallback
+    disconnect
   };
   middleware.cache = cache;
   return middleware;
