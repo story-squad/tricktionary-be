@@ -1,5 +1,6 @@
 import { pseudoRandomizer } from "../options";
 import { log } from "../logger";
+import handleErrorMessage from "./handleErrorMessage";
 
 import {
   LC_LENGTH,
@@ -35,27 +36,50 @@ async function handleLobbyCreate(
     const last_player = await localAxios.get(
       `/api/player/last-user-id/${socket.id}`
     );
-    if (last_player.data.player) {
-      // create the Game
-      og_host = last_player.data.player.id;
-      game_id = await createGame(og_host);
-    }
+    og_host = last_player.data.player?.id;
   } catch (err) {
     if (err instanceof Error) {
       log(err.message);
     }
   }
+  if (!og_host) {
+    // No player record for this socket (no login, or it failed). Make one: the
+    // host's pid goes into its token, and a returning host is looked up by it,
+    // so it must be a Player.id, never the socket id.
+    try {
+      const { data } = await localAxios.post("/api/auth/new-player", {
+        last_user_id: socket.id,
+      });
+      og_host = data?.pid;
+    } catch (err) {
+      if (err instanceof Error) {
+        log(err.message);
+      }
+    }
+  }
+  if (!og_host) {
+    log("[!ERROR] no player record for HOST, lobby not created");
+    socket.leave(lobbyCode);
+    handleErrorMessage(
+      io,
+      socket,
+      2003,
+      "The lobby could not be created. Please try again."
+    );
+    return;
+  }
+  // create the Game
+  game_id = await createGame(og_host);
   log("LOBBY CREATED BY: " + og_host);
   log("GAME : " + game_id); // returns UNDEFINED
-  if (!game_id || !og_host) {
+  if (!game_id) {
     try {
       log("[!game_id] asking HOST to retry create lobby");
-      const newhost = og_host || socket.id;
       // ask player to retry with new token
       const { token } = await updatePlayerToken(
         io,
         socket,
-        newhost,
+        og_host,
         username,
         "",
         0,
@@ -67,7 +91,6 @@ async function handleLobbyCreate(
         return;
       }
       // (restart the process)
-      og_host = newhost;
       game_id = await createGame(og_host);
       log(`created new token for host with game_id : ${game_id}`);
     } catch (err) {

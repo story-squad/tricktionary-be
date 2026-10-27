@@ -16,22 +16,30 @@ export function registerGameEvents(io: any, socket: any, lobbies: any) {
   const on = (event: string, listener: (...args: any[]) => unknown) =>
     socket.on(event, guardHandler(event, socket, listener));
 
+  // The front end sends "login" and, without waiting for its reply, "create
+  // lobby" or "join lobby". Those look up the player record by socket id, which
+  // login is still creating (new player) or moving to this socket (returning
+  // player), so they wait for this socket's latest login to settle.
+  let loggedIn: Promise<unknown> = Promise.resolve();
+  const afterLogin = (task: () => unknown) => loggedIn.then(task);
+
   // LOGIN
   on("login", (token: string | undefined) => {
+    let handled: Promise<unknown>;
     if (token && token.length > 0) {
-      const handled = gameSocketHandler.handleReturningPlayer(
+      handled = gameSocketHandler.handleReturningPlayer(
         io,
         socket,
         token,
         lobbies
       );
       log(`Handling returning player - token: ${token}`);
-      return handled;
     } else {
-      const handled = gameSocketHandler.handleNewPlayer(io, socket);
+      handled = gameSocketHandler.handleNewPlayer(io, socket);
       log(`Handling new player`);
-      return handled;
     }
+    loggedIn = handled.catch(() => undefined);
+    return handled;
   });
   // more events to come.
   on("disconnecting", () =>
@@ -49,18 +57,22 @@ export function registerGameEvents(io: any, socket: any, lobbies: any) {
   });
 
   on("create lobby", (username: string) =>
-    gameSocketHandler.handleLobbyCreate(io, socket, username, lobbies)
+    afterLogin(() =>
+      gameSocketHandler.handleLobbyCreate(io, socket, username, lobbies)
+    )
   );
 
   on("join lobby", (username: string, lobbyCode: string) =>
-    gameSocketHandler.handleLobbyJoin(
-      io,
-      socket,
-      username,
-      lobbyCode,
-      lobbies,
-      false,
-      false
+    afterLogin(() =>
+      gameSocketHandler.handleLobbyJoin(
+        io,
+        socket,
+        username,
+        lobbyCode,
+        lobbies,
+        false,
+        false
+      )
     )
   );
 
