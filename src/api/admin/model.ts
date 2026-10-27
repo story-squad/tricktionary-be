@@ -19,7 +19,7 @@ export default {
  * @param roundId number
  */
 async function getRound(roundId: number) {
-  const definitions: any = await db("Definitions").where({ round_id: roundId });
+  const definitions: any = await db("definitions").where({ round_id: roundId });
   const definitionReactions: any = await db("Definition-Reactions").where({
     round_id: roundId,
   });
@@ -87,7 +87,7 @@ async function getWordDetails(word_id: number) {
 
 async function getDefinitionDetails(definition_id: number) {
   //get definition by id
-  const definition: any = await db("Definitions")
+  const definition: any = await db("definitions")
     .where({ id: definition_id })
     .first();
   //get all votes by definition id
@@ -111,7 +111,7 @@ async function getDefinitionDetails(definition_id: number) {
 //function that loops over all the definitions, and returns all of them sorted by most votes
 
 async function getAllDefinitions() {
-  const allDefs: Array<any> = await db("Definitions");
+  const allDefs: Array<any> = await db("definitions");
   let allDefDeets: Array<any> = [];
   for (let def of allDefs) {
     const defDeets: any = await getDefinitionDetails(def.id);
