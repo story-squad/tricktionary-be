@@ -4,11 +4,15 @@
 // through the real socket handlers with the boundaries faked: socket.io (a
 // small in-memory hub), and localAxios (the handlers' calls to this server's
 // REST API, which is where the database sits). No server or database needed.
+// Also: which phases a new player may join in, and a returning player's
+// re-join.
 import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { localAxios } from "../common";
 import handleLobbyCreate from "../handleLobbyCreate";
 import handleLobbyJoin from "../handleLobbyJoin";
+import handleReturningPlayer from "../handleReturningPlayer";
+import { lobbyTasks } from "../crontab";
 import { handleArrayOfGuesses } from "../handleGuess";
 
 type Call = { method: string; url: string; body?: any };
@@ -16,6 +20,8 @@ let calls: Call[] = [];
 let playerCount = 0;
 // player records by last_user_id (the socket id), as /api/auth keeps them
 let playersBySocket = new Map<string, string>();
+// what /api/auth/login answers a returning player's saved token with
+let loginReply: any = {};
 
 // localAxios: answer the REST calls the handlers make, and record them
 function fakeApi() {
@@ -38,6 +44,12 @@ function fakeApi() {
     switch (url) {
       case "/api/game/new":
         return reply({ ok: true, game_id: "game-1" });
+      case "/api/auth/login":
+        // the player record now belongs to the new socket
+        if (loginReply.player) {
+          playersBySocket.set(body.user_id, loginReply.player.id);
+        }
+        return reply(loginReply);
       case "/api/auth/new-player":
         playerCount++;
         playersBySocket.set(body.last_user_id, `pid-${playerCount}`);
@@ -132,11 +144,15 @@ async function lobbyWithFreshPlayer() {
   return { lobbies, lobbyCode, host, player, joins };
 }
 
+const errorsFor = (socket: FakeSocket) =>
+  socket.received.filter(([event]) => event === "error").map(([, args]) => args);
+
 beforeEach(() => {
   calls = [];
   sockets = [];
   playerCount = 0;
   playersBySocket = new Map();
+  loginReply = {};
   fakeApi();
 });
 
@@ -194,4 +210,69 @@ test("one correct vote awards one point", async () => {
     },
   ]);
   assert.equal(lobby.phase, "POSTGAME");
+});
+
+for (const phase of ["WRITING", "GUESSING", "POSTGAME"]) {
+  test(`a new player can't join while the game is in ${phase}`, async () => {
+    const { lobbies, lobbyCode } = await lobbyWithFreshPlayer();
+    lobbies[lobbyCode].phase = phase;
+    const late = connect("late-socket");
+    await joinFromInvite(late, "Late", lobbyCode, lobbies);
+
+    const lobby = lobbies[lobbyCode];
+    assert.deepEqual(
+      lobby.players.map((p: any) => p.id),
+      ["host-socket", "player-socket"]
+    );
+    assert.ok(!late.rooms.has(lobbyCode));
+    assert.ok(errorsFor(late).length > 0);
+    for (const [code, message] of errorsFor(late)) {
+      assert.equal(code, 2002);
+      assert.match(message, /has already begun their game/);
+    }
+  });
+}
+
+for (const phase of ["PREGAME", "RESULTS", "FINALE"]) {
+  test(`a new player can join while the game is in ${phase}`, async () => {
+    const { lobbies, lobbyCode } = await lobbyWithFreshPlayer();
+    lobbies[lobbyCode].phase = phase;
+    const late = connect("late-socket");
+    await joinFromInvite(late, "Late", lobbyCode, lobbies);
+
+    assert.deepEqual(
+      lobbies[lobbyCode].players.map((p: any) => p.id),
+      ["host-socket", "player-socket", "late-socket"]
+    );
+    assert.ok(late.rooms.has(lobbyCode));
+    assert.deepEqual(errorsFor(late), []);
+  });
+}
+
+test("a returning player gets back into a game in progress", async () => {
+  const { lobbies, lobbyCode, player } = await lobbyWithFreshPlayer();
+  const lobby = lobbies[lobbyCode];
+  lobby.phase = "WRITING";
+  lobby.players.find((p: any) => p.id === "player-socket").points = 2;
+  const pid = lobby.players.find((p: any) => p.id === "player-socket").pid;
+  // the old socket dropped; the player reconnects on a new one
+  player.rooms.clear();
+  const back = connect("back-socket");
+  loginReply = {
+    token: "returning-token",
+    player: { id: pid, name: "Fresh", last_played: lobbyCode },
+    old_user_id: "player-socket",
+    old_user_name: "Fresh",
+  };
+
+  await handleReturningPlayer(io, back, "saved-token", lobbies);
+  lobbyTasks[lobbyCode]?.task.stop(); // the pulse check a re-join schedules
+  delete lobbyTasks[lobbyCode];
+
+  assert.deepEqual(errorsFor(back), []);
+  assert.ok(back.rooms.has(lobbyCode));
+  const rejoined = lobbies[lobbyCode].players.filter((p: any) => p.pid === pid);
+  assert.equal(rejoined.length, 1);
+  assert.equal(rejoined[0].id, "back-socket");
+  assert.equal(rejoined[0].points, 2);
 });

@@ -157,8 +157,8 @@ async function joinLobby(
     Number(old_player_obj?.points) >= 0 ? Number(old_player_obj.points) : 0;
   await updatePlayerToken(io, socket, p_id, uname, "", points, lobbyCode);
 
-  if (lobbies[lobbyCode]?.phase in JOINABLE && !old_player_obj) {
-    // prevent *new players from joining mid-game.
+  if (!JOINABLE.includes(lobbies[lobbyCode]?.phase) && !old_player_obj) {
+    // prevent *new players from joining mid-game (returning players may).
     handleErrorMessage(
       io,
       socket,
